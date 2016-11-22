@@ -1572,7 +1572,7 @@ public class NanoMaterial
 				               "SerumConcentration", "SerumConcentrationUnit", 
 				               "AntibioticName", "AntibioticConcentration", 
 				               "AntibioticConcentrationUnit", "DOMForm", "DOMConcentration", 
-				               "DOMUnit", "SalinityValue", "SalinityUnit",				               
+				               "DOMUnit", "SalinityValue", "SalinityUnit"				               
 				                };
 		return headerFile;
 	}

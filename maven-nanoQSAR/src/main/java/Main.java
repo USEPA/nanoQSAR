@@ -32,7 +32,7 @@ public class Main {
 	 * CSV file; it gets the header file of the CSV file; it calls the getSqlQuery method to
 	 * obtain the SQL query statement; it passes the SQL query statement to the 
 	 * getNanoMaterials method that will read the data from the database and stores them in a
-	 * list of NanoMaterial objects.  These information is passed to the write method of the 
+	 * list of NanoMaterial objects.  This information is passed to the write method of the 
 	 * CsvFileWriter class that will generate the CSV file.
 	 * @author Wilson Melendez
 	 * @param None.

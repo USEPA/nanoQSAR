@@ -65,7 +65,7 @@ public class CsvFileWriterTest {
 	}
 	
 	/**
-	 * This method checks the content of a CSV file.
+	 * This method checks whether the contents of a CSV file was added correctly.
 	 * @author Wilson Melendez
 	 * @throws IOException
 	 */
@@ -85,7 +85,7 @@ public class CsvFileWriterTest {
 	    n1.setCellType("ARPE-19");
 		n1.setOrdMaterialID("TiO2-ACROS-21358");
 		n1.setSampleName("TiO2-I-142-NONE-0");
-		n1.setParticleConcentration(0);
+		n1.setParticleConcentration(60.0);
 		n1.setParticleExposDuration(48.0);
 		n1.setLc50(null);
 				
@@ -95,7 +95,11 @@ public class CsvFileWriterTest {
 		CsvFileWriter.writeCsvFile(output.getPath(), list, headerFile);
 		
 		// assert
+		assertThat(contentOf(output)).contains("cell viability");
 		assertThat(contentOf(output)).contains("TiO2-I-142-NONE-0");
+		assertThat(contentOf(output)).contains("ARPE-19");
+		assertThat(contentOf(output)).contains("60.0");
+		assertThat(contentOf(output)).contains("48.0");
 		assertThat(output).hasExtension("txt").hasParent(resolvePath("reports"));		
 		
 	}
