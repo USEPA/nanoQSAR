@@ -180,6 +180,19 @@ public class NanoMaterial
 	private String domUnit;
 	private Double salinityValue; 
 	private String salinityUnit;
+
+	private String mc_mediumDescription; 
+	private String mc_serumAdditive;
+	private Double mc_serumConcentration; 
+	private String mc_serumConcentrationUnit; 
+	private String mc_antibioticName;
+	private Double mc_antibioticConcentration; 
+	private String mc_antibioticConcentrationUnit; 
+	private String mc_domForm;
+	private Double mc_domConcentration; 
+	private String mc_domUnit;
+	private Double mc_salinityValue; 
+	private String mc_salinityUnit;
 	
 	// Get and Set methods
 	public int getMaterialCharID() {
@@ -1162,8 +1175,80 @@ public class NanoMaterial
 	}
 	public void setLc50(Double lc50) {
 		this.lc50 = lc50;
+	}	
+	public String getMc_mediumDescription() {
+		return mc_mediumDescription;
 	}
-	
+	public void setMc_mediumDescription(String mc_mediumDescription) {
+		this.mc_mediumDescription = mc_mediumDescription;
+	}
+	public String getMc_serumAdditive() {
+		return mc_serumAdditive;
+	}
+	public void setMc_serumAdditive(String mc_serumAdditive) {
+		this.mc_serumAdditive = mc_serumAdditive;
+	}
+	public Double getMc_serumConcentration() {
+		return mc_serumConcentration;
+	}
+	public void setMc_serumConcentration(Double mc_serumConcentration) {
+		this.mc_serumConcentration = mc_serumConcentration;
+	}
+	public String getMc_serumConcentrationUnit() {
+		return mc_serumConcentrationUnit;
+	}
+	public void setMc_serumConcentrationUnit(String mc_serumConcentrationUnit) {
+		this.mc_serumConcentrationUnit = mc_serumConcentrationUnit;
+	}
+	public String getMc_antibioticName() {
+		return mc_antibioticName;
+	}
+	public void setMc_antibioticName(String mc_antibioticName) {
+		this.mc_antibioticName = mc_antibioticName;
+	}
+	public Double getMc_antibioticConcentration() {
+		return mc_antibioticConcentration;
+	}
+	public void setMc_antibioticConcentration(Double mc_antibioticConcentration) {
+		this.mc_antibioticConcentration = mc_antibioticConcentration;
+	}
+	public String getMc_antibioticConcentrationUnit() {
+		return mc_antibioticConcentrationUnit;
+	}
+	public void setMc_antibioticConcentrationUnit(
+			String mc_antibioticConcentrationUnit) {
+		this.mc_antibioticConcentrationUnit = mc_antibioticConcentrationUnit;
+	}
+	public String getMc_domForm() {
+		return mc_domForm;
+	}
+	public void setMc_domForm(String mc_domForm) {
+		this.mc_domForm = mc_domForm;
+	}
+	public Double getMc_domConcentration() {
+		return mc_domConcentration;
+	}
+	public void setMc_domConcentration(Double mc_domConcentration) {
+		this.mc_domConcentration = mc_domConcentration;
+	}
+	public String getMc_domUnit() {
+		return mc_domUnit;
+	}
+	public void setMc_domUnit(String mc_domUnit) {
+		this.mc_domUnit = mc_domUnit;
+	}
+	public Double getMc_salinityValue() {
+		return mc_salinityValue;
+	}
+	public void setMc_salinityValue(Double mc_salinityValue) {
+		this.mc_salinityValue = mc_salinityValue;
+	}
+	public String getMc_salinityUnit() {
+		return mc_salinityUnit;
+	}
+	public void setMc_salinityUnit(String mc_salinityUnit) {
+		this.mc_salinityUnit = mc_salinityUnit;
+	}
 	
 	/**
 	 * This method store the fields into an array of strings and returns the array.
@@ -1172,85 +1257,11 @@ public class NanoMaterial
 	 * @param None.
 	 * @return String[]
 	 */
-	public String[] toStringArray()
+	public String[] storeDataAsStringArray()
 	{
-		String[] strNano = new String[162];
+		String[] strNano = new String[174];
 		int i = 0;
-		
-		// Assay table
-		strNano[i] = String.valueOf(getMeasurementID());
-		i++;
-		strNano[i] = String.valueOf(getAssayType());
-		i++;
-		strNano[i] = String.valueOf(getAssayName());
-		i++;
-		strNano[i] = String.valueOf(getSampleName());
-		i++;
-		strNano[i] = String.valueOf(getSubjectSpecies());
-		i++;
-		strNano[i] = String.valueOf(getSubjectID());
-		i++;
-		strNano[i] = String.valueOf(getCellType());
-		i++;
-		strNano[i] = String.valueOf(getCellSource());
-		i++;
-		strNano[i] = String.valueOf(getTestMediumID());
-		i++;
-		strNano[i] = String.valueOf(getPhAvg());
-		i++;
-		strNano[i] = String.valueOf(getPhApproxSymbol());
-		i++;
-	    strNano[i] = String.valueOf(getPhUncertain());
-	    i++;
-		strNano[i] = String.valueOf(getPhLow());
-		i++;
-		strNano[i] = String.valueOf(getPhHigh());
-		i++;
-		strNano[i] = String.valueOf(getMediumTemp());
-		i++;
-		strNano[i] = String.valueOf(getMediumTempUnit());
-		i++;
-		strNano[i] = String.valueOf(getTimeValue());
-		i++;
-		strNano[i] = String.valueOf(getTimeValueUnit());
-		i++;
-		strNano[i] = String.valueOf(getParticleConcentration());
-		i++;
-		strNano[i] = String.valueOf(getParticleConcentrationUnit());
-		i++;
-		strNano[i] = String.valueOf(getParticleExposDuration());
-		i++;
-		strNano[i] = String.valueOf(getParticleExposDurationUnit());
-		i++;
-		strNano[i] = String.valueOf(getUvaDose());
-		i++;
-		strNano[i] = String.valueOf(getUvaDoseUnit());
-		i++;
-		strNano[i] = String.valueOf(getUvaExposDuration());
-		i++;
-		strNano[i] = String.valueOf(getUvaExposDurationUnit());
-		i++;
-		strNano[i] = String.valueOf(getViabilityAvg());
-		i++;
-		strNano[i] = String.valueOf(getViabilityApproxSymbol());
-		i++;
-		strNano[i] = String.valueOf(getViabilityUnit());
-		i++;
-		strNano[i] = String.valueOf(getViabilityUncertain());
-		i++;
-		strNano[i] = String.valueOf(getViabilityLow());
-		i++;
-		strNano[i] = String.valueOf(getViabilityHigh());
-		i++;
-		strNano[i] = String.valueOf(getViabilityMethod());
-		i++;
-		strNano[i] = String.valueOf(getLc50());
-		i++;
-		strNano[i] = String.valueOf(getLc50ApproxSymbol());
-		i++;
-		strNano[i] = String.valueOf(getLc50Unit());
-		i++;
-		
+				
 		// MaterialChar Table		
 		strNano[i] = String.valueOf(getMaterialCharID());
 		i++;
@@ -1418,6 +1429,30 @@ public class NanoMaterial
 		i++;
 		strNano[i] = String.valueOf(getDispersionMediumID());
 		i++;
+		strNano[i] = String.valueOf(getMc_mediumDescription());
+		i++;
+		strNano[i] = String.valueOf(getMc_serumAdditive());
+		i++;
+		strNano[i] = String.valueOf(getMc_serumConcentration());
+		i++;
+		strNano[i] = String.valueOf(getMc_serumConcentrationUnit());
+		i++;
+		strNano[i] = String.valueOf(getMc_antibioticName());
+		i++;
+		strNano[i] = String.valueOf(getMc_antibioticConcentration());
+		i++;
+		strNano[i] = String.valueOf(getMc_antibioticConcentrationUnit());
+		i++;
+		strNano[i] = String.valueOf(getMc_domForm());
+		i++;
+		strNano[i] = String.valueOf(getMc_domConcentration());
+		i++;
+		strNano[i] = String.valueOf(getMc_domUnit());
+		i++;
+		strNano[i] = String.valueOf(getMc_salinityValue());
+		i++;
+		strNano[i] = String.valueOf(getMc_salinityUnit());
+		i++;
 		strNano[i] = String.valueOf(getSolubility());
 		i++;
 		strNano[i] = String.valueOf(getMc_pHAvg());
@@ -1479,8 +1514,24 @@ public class NanoMaterial
 		strNano[i] = String.valueOf(getSizeDistribHigh2());
 		i++;
 		
-		// Medium Table
-		strNano[i] = String.valueOf(getMediumID());
+		// Assay table
+		strNano[i] = String.valueOf(getMeasurementID());
+		i++;
+		strNano[i] = String.valueOf(getAssayType());
+		i++;
+		strNano[i] = String.valueOf(getAssayName());
+		i++;
+		strNano[i] = String.valueOf(getSampleName());
+		i++;
+		strNano[i] = String.valueOf(getSubjectSpecies());
+		i++;
+		strNano[i] = String.valueOf(getSubjectID());
+		i++;
+		strNano[i] = String.valueOf(getCellType());
+		i++;
+		strNano[i] = String.valueOf(getCellSource());
+		i++;
+		strNano[i] = String.valueOf(getTestMediumID());
 		i++;
 		strNano[i] = String.valueOf(getMediumDescription());
 		i++;
@@ -1505,7 +1556,60 @@ public class NanoMaterial
 		strNano[i] = String.valueOf(getSalinityValue());
 		i++;
 		strNano[i] = String.valueOf(getSalinityUnit());
-		
+		i++;
+		strNano[i] = String.valueOf(getPhAvg());
+		i++;
+		strNano[i] = String.valueOf(getPhApproxSymbol());
+		i++;
+	    strNano[i] = String.valueOf(getPhUncertain());
+	    i++;
+		strNano[i] = String.valueOf(getPhLow());
+		i++;
+		strNano[i] = String.valueOf(getPhHigh());
+		i++;
+		strNano[i] = String.valueOf(getMediumTemp());
+		i++;
+		strNano[i] = String.valueOf(getMediumTempUnit());
+		i++;
+		strNano[i] = String.valueOf(getTimeValue());
+		i++;
+		strNano[i] = String.valueOf(getTimeValueUnit());
+		i++;
+		strNano[i] = String.valueOf(getParticleConcentration());
+		i++;
+		strNano[i] = String.valueOf(getParticleConcentrationUnit());
+		i++;
+		strNano[i] = String.valueOf(getParticleExposDuration());
+		i++;
+		strNano[i] = String.valueOf(getParticleExposDurationUnit());
+		i++;
+		strNano[i] = String.valueOf(getUvaDose());
+		i++;
+		strNano[i] = String.valueOf(getUvaDoseUnit());
+		i++;
+		strNano[i] = String.valueOf(getUvaExposDuration());
+		i++;
+		strNano[i] = String.valueOf(getUvaExposDurationUnit());
+		i++;
+		strNano[i] = String.valueOf(getViabilityAvg());
+		i++;
+		strNano[i] = String.valueOf(getViabilityApproxSymbol());
+		i++;
+		strNano[i] = String.valueOf(getViabilityUnit());
+		i++;
+		strNano[i] = String.valueOf(getViabilityUncertain());
+		i++;
+		strNano[i] = String.valueOf(getViabilityLow());
+		i++;
+		strNano[i] = String.valueOf(getViabilityHigh());
+		i++;
+		strNano[i] = String.valueOf(getViabilityMethod());
+		i++;
+		strNano[i] = String.valueOf(getLc50());
+		i++;
+		strNano[i] = String.valueOf(getLc50ApproxSymbol());
+		i++;
+		strNano[i] = String.valueOf(getLc50Unit());
 		
 		return strNano;
 	}
@@ -1519,17 +1623,6 @@ public class NanoMaterial
 	public static String[] getHeaderFile()
 	{
 		String[] headerFile = {
-				               "MeasurementID", "AssayType", "AssayName", "SampleName", 
-	                           "SubjectSpecies", "SubjectID", "CellType", "CellSource", 
-	                           "TestMediumID", "pHAvg", "pHApproxSymbol", "pHUncertain",  
-	                           "pHLow", "pHHigh", "MediumTemp", "MediumTempUnit", 
-	                           "TimeValue", "TimeValueUnit", "ParticleConcentration", 
-				               "ParticleConcentrationUnit", "ParticleExposDuration", 
-				               "ParticleExposDurationUnit", "UVADose", "UVADoseUnit", 
-				               "UVAExposDuration", "UVAExposDurationUnit", "ViabilityAvg", 
-				               "ViabilityApproxSymbol", "ViabilityUnit", "ViabilityUncertain", 
-				               "ViabilityLow", "ViabilityHigh", "ViabilityMethod", "LC50", 
-				               "LC50ApproxSymbol", "LC50Unit",
 				               "MaterialCharID","ORDMaterialID", "DataSource", "LotNumber", "CoreComp",
 				               "ShellComp", "CoatingComp", "CoatingAmount", "CoatingAmountUnit", 
 				               "FunctionalGroups", "FunctionalizationProtocol", "Purity", 
@@ -1558,7 +1651,12 @@ public class NanoMaterial
                                "SurfaceAreaUncertain", "SurfaceAreaLow", "SurfaceAreaHigh", 
                                "SurfaceAreaMethod", "MC_TimeValue", "MC_TimeValueUnit", 
                                "MC_ParticleConcentration", "MC_ParticleConcentrationUnit", 
-                               "DispersionMediumID", "Solubility", "MC_pHAvg", "MC_pHApproxSymbol", 
+                               "DispersionMediumID", "MC_MediumDescription", "MC_SerumAdditive", 
+				               "MC_SerumConcentration", "MC_SerumConcentrationUnit", 
+				               "MC_AntibioticName", "MC_AntibioticConcentration", 
+				               "MC_AntibioticConcentrationUnit", "MC_DOMForm", "MC_DOMConcentration", 
+				               "MC_DOMUnit", "MC_SalinityValue", "MC_SalinityUnit", 			
+                               "Solubility", "MC_pHAvg", "MC_pHApproxSymbol", 
                                "MC_pHUncertain", "MC_pHLow", "MC_pHHigh", "MC_MediumTemp", "MC_MediumTempUnit", 
                                "ZetaPotentialAvg", "ZetaPotentialApproxSymbol", 
                                "ZetaPotentialUnit", "ZetaPotentialUncertain", "ZetaPotentialLow", 
@@ -1568,11 +1666,22 @@ public class NanoMaterial
                                "SizeDistribUncertain", "SizeDistribLow", "SizeDistribHigh", 
                                "SizeDistribAvg2", "SizeDistribApproxSymbol2", "SizeDistribUnit2", 
                                "SizeDistribUncertain2", "SizeDistribLow2", "SizeDistribHigh2",
-				               "MediumID", "MediumDescription", "SerumAdditive", 
+				               "MeasurementID", "AssayType", "AssayName", "SampleName", 
+	                           "SubjectSpecies", "SubjectID", "CellType", "CellSource", 
+	                           "TestMediumID", "MediumDescription", "SerumAdditive", 
 				               "SerumConcentration", "SerumConcentrationUnit", 
 				               "AntibioticName", "AntibioticConcentration", 
 				               "AntibioticConcentrationUnit", "DOMForm", "DOMConcentration", 
-				               "DOMUnit", "SalinityValue", "SalinityUnit"				               
+				               "DOMUnit", "SalinityValue", "SalinityUnit", 
+	                           "pHAvg", "pHApproxSymbol", "pHUncertain",  
+	                           "pHLow", "pHHigh", "MediumTemp", "MediumTempUnit", 
+	                           "TimeValue", "TimeValueUnit", "ParticleConcentration", 
+				               "ParticleConcentrationUnit", "ParticleExposDuration", 
+				               "ParticleExposDurationUnit", "UVADose", "UVADoseUnit", 
+				               "UVAExposDuration", "UVAExposDurationUnit", "ViabilityAvg", 
+				               "ViabilityApproxSymbol", "ViabilityUnit", "ViabilityUncertain", 
+				               "ViabilityLow", "ViabilityHigh", "ViabilityMethod", "LC50", 
+				               "LC50ApproxSymbol", "LC50Unit",
 				                };
 		return headerFile;
 	}

@@ -1,40 +1,30 @@
 import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.IOException;
 import java.sql.SQLException;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 /**
  * This class is used to test the MySqlQuery class.
  * @author Wilson Melendez
  *
  */
-public class MySqlQueryTest 
-{
-
+public class MySqlQueryTest {
+	
 	String sqlQuery = null;
 	MySqlQuery sqlNano = null;
 	List<NanoMaterial> nanomaterials;
-	
-	@BeforeClass  // Unused
-	public static void setUpBeforeClass() throws Exception 
-	{
-	}
 
-	@AfterClass  // Unused
-	public static void tearDownAfterClass() throws Exception 
-	{
-	}
-
+	/**
+	 * @throws java.lang.Exception
+	 * @author Wilson Melendez
+	 */
 	@Before
-	public void setUp() throws Exception 
-	{
+	public void setUp() throws Exception {
 		sqlNano = new MySqlQuery();	
 		sqlQuery = "SELECT link.LinkID, link.MaterialCharID, link.MeasurementID, "
 				 + "materialchar.ORDMaterialID, materialchar.DataSource, "
@@ -78,7 +68,7 @@ public class MySqlQueryTest
 				 + "materialchar.TimeValueUnit AS 'Mc_timeValueUnit', "
 				 + "materialchar.ParticleConcentration AS 'Mc_particleConcentration', "
 				 + "materialchar.ParticleConcentrationUnit AS 'Mc_particleConcentrationUnit', "
-				 + "materialchar.DispersionMediumID, "
+				 + "materialchar.DispersionMediumID, "				 
 				 + "materialchar.Solubility, "
 				 + "materialchar.pHAvg AS 'Mc_pHAvg', "
 				 + "materialchar.pHApproxSymbol AS 'Mc_pHApproxSymbol', "
@@ -98,6 +88,18 @@ public class MySqlQueryTest
 				 + "materialchar.SizeDistribAvg2, materialchar.SizeDistribApproxSymbol2, "
 				 + "materialchar.SizeDistribUnit2, materialchar.SizeDistribUncertain2, "
 				 + "materialchar.SizeDistribLow2, materialchar.SizeDistribHigh2, "
+				 + "Mc_medium.MediumDescription AS Mc_MediumDescription, "
+                 + "Mc_medium.SerumAdditive AS Mc_SerumAdditive, "
+				 + "Mc_medium.SerumConcentration AS Mc_SerumConcentration, "
+                 + "Mc_medium.SerumConcentrationUnit AS Mc_SerumConcentrationUnit, "
+				 + "Mc_medium.AntibioticName AS Mc_AntibioticName, "
+                 + "Mc_medium.AntibioticConcentration AS Mc_AntibioticConcentration, "
+				 + "Mc_medium.AntibioticConcentrationUnit AS Mc_AntibioticConcentrationUnit, " 
+                 + "Mc_medium.DOMForm AS Mc_DOMForm, " 
+                 + "Mc_medium.DOMConcentration AS Mc_DOMConcentration, "
+				 + "Mc_medium.DOMUnit AS Mc_DOMUnit, "
+                 + "Mc_medium.SalinityValue AS Mc_SalinityValue, " 
+                 + "Mc_medium.SalinityUnit AS Mc_SalinityUnit, "
 				 + "assay.AssayType, assay.AssayName, assay.SampleName, assay.SubjectSpecies, "
 				 + "assay.SubjectID, assay.CellType, assay.CellSource, assay.TestMediumID, "
 				 + "assay.pHAvg, assay.pHApproxSymbol, assay.pHUncertain, assay.pHLow, "
@@ -117,6 +119,8 @@ public class MySqlQueryTest
 				 + "FROM link "
 				 + "INNER JOIN materialchar "
 				 + "ON link.MaterialCharID = materialchar.MaterialCharID "
+				 + "INNER JOIN medium AS Mc_medium "
+                 + "ON materialchar.DispersionMediumID = Mc_medium.MediumID "
 				 + "INNER JOIN assay "
 				 + "ON link.MeasurementID = assay.MeasurementID "
 				 + "INNER JOIN medium "
@@ -124,32 +128,30 @@ public class MySqlQueryTest
 				 + "ORDER BY link.LinkID";
 	}
 
-	@After   // Unused
-	public void tearDown() throws Exception 
-	{
-	}
-
 	/**
+	 * Test method for {@link MySqlQuery#getSqlQuery()}.
 	 * This method compares two SQL queries.  They should be identical.
 	 * @author Wilson Melendez
 	 */
 	@Test
-	public void getSqlQueryTest() 
-	{
+	public void testGetSqlQuery() {
 		String str = sqlNano.getSqlQuery();
 		assertEquals(sqlQuery,str);
 	}
-	
+
 	/**
+	 * Test method for {@link MySqlQuery#getNanoMaterials(java.lang.String)}.
 	 * This method checks whether selected fields are the same as the expected values.
 	 * @author Wilson Melendez
 	 */
 	@Test
-	public void getNanoMaterialsTest()
-	{
+	public void testGetNanoMaterials() {
 		nanomaterials = new ArrayList<NanoMaterial>();
 		try
 		{
+			/* Input database connection information and name of output file. */
+			DBUtil.loadProperties();
+			
 			nanomaterials = sqlNano.getNanoMaterials(sqlQuery);
 			String strID = nanomaterials.get(0).getOrdMaterialID();
 			String strUnits = nanomaterials.get(0).getLc50Unit().trim();
@@ -161,6 +163,10 @@ public class MySqlQueryTest
 			System.out.println("Exception found: " + ex.getMessage());
 		}
 		catch (SQLException ex)
+		{
+			System.out.println("Exception found: " + ex.getMessage());
+		}
+		catch (IOException ex)
 		{
 			System.out.println("Exception found: " + ex.getMessage());
 		}

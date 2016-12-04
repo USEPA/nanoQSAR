@@ -8,16 +8,10 @@ import java.sql.SQLException;
  *
  */
 public class ConnectionManager 
-{
-	/* Static fields for name of driver, URL of database, username and password. */
-	private static String driverName = "com.mysql.jdbc.Driver";
-	private static String dbaseURL = "jdbc:mysql://au.epa.gov:3306/dev_naknowbase_v1";
-	private static String username = "app_naknowbase";
-	private static String password = "WgeV8hN938eDJsZX";
-	
+{	
 	public ConnectionManager()
 	{
-		// Empty constructor.
+		// Nothing to initialize for this class.
 	}
 	
 	/**
@@ -30,12 +24,11 @@ public class ConnectionManager
 	{
 		try
 		{
-			Class.forName(driverName);
+			Class.forName(DBUtil.getDriverName());
 		}
-		catch(ClassNotFoundException ex)
+		finally
 		{
-			System.out.println("Error: " + ex.getMessage());
-			throw ex;
+			// Nothing to clean up in this case.
 		}
 	}
 	
@@ -52,14 +45,11 @@ public class ConnectionManager
 		Connection conn = null;
 		try
 		{
-			conn = DriverManager.getConnection(dbaseURL, username, password);
-				
+			conn = DriverManager.getConnection(DBUtil.getDatabaseUrl(), DBUtil.getUsername(), DBUtil.getPassword());					
 		}
-		catch(SQLException ex)
+		finally
 		{
-			System.out.println("Error: Unable to connect to database.");
-			System.out.println("SQLException: " + ex.getMessage());	
-			throw ex;
+			// Nothing to clean up in this case.
 		}
 		
 		return conn;
@@ -83,15 +73,12 @@ public class ConnectionManager
 			connManager.getDriver();		
 			conn = connManager.createConnection();
 		}
-		catch(ClassNotFoundException ex)
+		finally
 		{
-			System.out.println("Error: " + ex.getMessage());
-			throw ex;
-		}
-		catch(SQLException ex)
-		{
-			System.out.println("Error: " + ex.getMessage());
-			throw ex;
+			if (conn == null)
+			{
+				System.out.println("A connection was not created and so an exception was thrown.");
+			}			
 		}
 		
 		return conn;

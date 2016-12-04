@@ -1,11 +1,7 @@
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
-import java.nio.file.*;
 
 import com.opencsv.CSVWriter;
 
@@ -29,16 +25,19 @@ public class CsvFileWriter
 	 */
 	public static void writeCsvFile(String filename, List<NanoMaterial> listNano, String[] headerFile) throws IOException
 	{
-		Path target = Paths.get(filename);
+		// Path target = Paths.get(filename);
 		String[] entries;
 		
 		try
 		{
-			if (Files.exists(target)) 
-			{
-				throw new IOException("File already exists.");
-			}
-			FileWriter file = new FileWriter(filename);
+			/* Output file can be regenerated so  we don't need this right now. */
+			/* if (Files.exists(target)) 
+			   {
+				   throw new IOException("File already exists.");
+			   }			
+			*/
+			
+			FileWriter file = new FileWriter(filename); 
 			
 			/* Create an instance of the CSVWriter class and specify the comma as the 
 			 * default separator. Default quote character is double quote. */ 
@@ -52,7 +51,7 @@ public class CsvFileWriter
 			{
 				/* Retrieve data as an array of strings and assign array to entries. 
 				 * The array represents one record (row of data). */
-				entries = nanoM.toStringArray();  
+				entries = nanoM.storeDataAsStringArray();  
 				
 				/* Write row of data to output using the writeNext method. */
 				csvOutput.writeNext(entries);     
@@ -62,7 +61,7 @@ public class CsvFileWriter
 		}
 		finally
 		{
-			// Nothing to do here.
+			// Nothing to clean up in this case.
 		}
 		
 	}

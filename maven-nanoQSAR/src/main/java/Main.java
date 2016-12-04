@@ -40,12 +40,10 @@ public class Main {
 	 */
 	public static void getNanoMaterials()
 	{
+		
 		MySqlQuery sqlNano = new MySqlQuery();
 		List<NanoMaterial> nanomaterials;
-		
-		/* Set up the path and name of the CSV file. */
-		Path p1 = Paths.get("OutputFile.csv");  
-		
+				
 		/* Obtain the header of the CSV file. */
 		String[] headerFile = NanoMaterial.getHeaderFile();
 		
@@ -53,21 +51,32 @@ public class Main {
 		
 		try
 		{
-			/*Obtain the SQL query statement. */
+			/* Input database connection information and name of output file. */
+			DBUtil.loadProperties();
+			
+			/* Set up the path and name of the CSV file. */
+			Path p1 = Paths.get(DBUtil.getCsvFileName());  
+			
+			/* Obtain the SQL query statement. */
 			sqlQuery = sqlNano.getSqlQuery();
 			
 			/* Read data from remote MySQL server and store them in a list.  */
 			nanomaterials = sqlNano.getNanoMaterials(sqlQuery);
 			
+			/* Check default units and perform unit conversions if necessary. */
+			DefaultUnits.checkUnits(nanomaterials);
+			
 			/* Write data to CSV file. */
 			CsvFileWriter.writeCsvFile(p1.toString(), nanomaterials, headerFile);
 			
-			/*  Print out selected data columns */
-			DBUtil.displayMetaData();
+			/*  Print out selected data columns: this has been commented out because
+			 * is is not really needed for the CSV file. */
+			/* DBUtil.displayMetaData();
 			for (NanoMaterial nanomaterial : nanomaterials)
 			{
 				DBUtil.displayNanoMaterial(nanomaterial);
 			}
+			*/
 		}
 		catch(SQLException ex)
 		{
@@ -82,8 +91,10 @@ public class Main {
 			System.out.println(ex.getMessage());
 			ex.printStackTrace();
 		}
+		catch(IllegalUnitsException ex)
+		{
+			ex.getMessage();
+		}
 	}
 	
-	
-
 }

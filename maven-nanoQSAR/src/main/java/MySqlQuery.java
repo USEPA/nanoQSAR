@@ -72,7 +72,7 @@ public class MySqlQuery
 				 + "materialchar.TimeValueUnit AS 'Mc_timeValueUnit', "
 				 + "materialchar.ParticleConcentration AS 'Mc_particleConcentration', "
 				 + "materialchar.ParticleConcentrationUnit AS 'Mc_particleConcentrationUnit', "
-				 + "materialchar.DispersionMediumID, "
+				 + "materialchar.DispersionMediumID, "				 
 				 + "materialchar.Solubility, "
 				 + "materialchar.pHAvg AS 'Mc_pHAvg', "
 				 + "materialchar.pHApproxSymbol AS 'Mc_pHApproxSymbol', "
@@ -92,6 +92,18 @@ public class MySqlQuery
 				 + "materialchar.SizeDistribAvg2, materialchar.SizeDistribApproxSymbol2, "
 				 + "materialchar.SizeDistribUnit2, materialchar.SizeDistribUncertain2, "
 				 + "materialchar.SizeDistribLow2, materialchar.SizeDistribHigh2, "
+				 + "Mc_medium.MediumDescription AS Mc_MediumDescription, "
+                 + "Mc_medium.SerumAdditive AS Mc_SerumAdditive, "
+				 + "Mc_medium.SerumConcentration AS Mc_SerumConcentration, "
+                 + "Mc_medium.SerumConcentrationUnit AS Mc_SerumConcentrationUnit, "
+				 + "Mc_medium.AntibioticName AS Mc_AntibioticName, "
+                 + "Mc_medium.AntibioticConcentration AS Mc_AntibioticConcentration, "
+				 + "Mc_medium.AntibioticConcentrationUnit AS Mc_AntibioticConcentrationUnit, " 
+                 + "Mc_medium.DOMForm AS Mc_DOMForm, " 
+                 + "Mc_medium.DOMConcentration AS Mc_DOMConcentration, "
+				 + "Mc_medium.DOMUnit AS Mc_DOMUnit, "
+                 + "Mc_medium.SalinityValue AS Mc_SalinityValue, " 
+                 + "Mc_medium.SalinityUnit AS Mc_SalinityUnit, "
 				 + "assay.AssayType, assay.AssayName, assay.SampleName, assay.SubjectSpecies, "
 				 + "assay.SubjectID, assay.CellType, assay.CellSource, assay.TestMediumID, "
 				 + "assay.pHAvg, assay.pHApproxSymbol, assay.pHUncertain, assay.pHLow, "
@@ -111,6 +123,8 @@ public class MySqlQuery
 				 + "FROM link "
 				 + "INNER JOIN materialchar "
 				 + "ON link.MaterialCharID = materialchar.MaterialCharID "
+				 + "INNER JOIN medium AS Mc_medium "
+                 + "ON materialchar.DispersionMediumID = Mc_medium.MediumID "
 				 + "INNER JOIN assay "
 				 + "ON link.MeasurementID = assay.MeasurementID "
 				 + "INNER JOIN medium "
@@ -315,7 +329,20 @@ public class MySqlQuery
 				nanomaterial.setDomConcentration((Double)rs.getObject("DomConcentration"));
 				nanomaterial.setDomUnit((String)rs.getObject("DomUnit"));
 				nanomaterial.setSalinityValue((Double)rs.getObject("SalinityValue"));
-				nanomaterial.setSalinityUnit((String)rs.getObject("SalinityUnit"));				
+				nanomaterial.setSalinityUnit((String)rs.getObject("SalinityUnit"));		
+				
+				nanomaterial.setMc_mediumDescription((String)rs.getObject("Mc_MediumDescription"));
+				nanomaterial.setMc_serumAdditive((String)rs.getObject("Mc_SerumAdditive"));
+				nanomaterial.setMc_serumConcentration((Double)rs.getObject("Mc_SerumConcentration"));
+				nanomaterial.setMc_serumConcentrationUnit((String)rs.getObject("Mc_SerumConcentrationUnit"));
+				nanomaterial.setMc_antibioticName((String)rs.getObject("Mc_AntibioticName"));
+				nanomaterial.setMc_antibioticConcentration((Double)rs.getObject("Mc_AntibioticConcentration"));
+				nanomaterial.setMc_antibioticConcentrationUnit((String)rs.getObject("Mc_AntibioticConcentrationUnit"));
+				nanomaterial.setMc_domForm((String)rs.getObject("Mc_DomForm"));
+				nanomaterial.setMc_domConcentration((Double)rs.getObject("Mc_DomConcentration"));
+				nanomaterial.setMc_domUnit((String)rs.getObject("Mc_DomUnit"));
+				nanomaterial.setMc_salinityValue((Double)rs.getObject("Mc_SalinityValue"));
+				nanomaterial.setMc_salinityUnit((String)rs.getObject("Mc_SalinityUnit"));		
 				
 				list.add(nanomaterial);  // Add object to list.
 				
