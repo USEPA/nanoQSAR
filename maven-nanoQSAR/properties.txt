@@ -1,0 +1,8 @@
+# Properties file for nanomaterial project.
+databaseURL = jdbc:mysql://au.epa.gov:3306/dev_naknowbase_v1
+DriverName = com.mysql.jdbc.Driver
+Password = WgeV8hN938eDJsZX
+Username = app_naknowbase
+CsvFileName = OutputFile.csv
+
+
