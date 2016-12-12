@@ -1,4 +1,5 @@
 import static org.junit.Assert.*;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -150,13 +151,203 @@ public class MySqlQueryTest {
 		try
 		{
 			/* Input database connection information and name of output file. */
-			DBUtil.loadProperties();
+			String filename = "C:\\Users\\wmelende\\git\\maven-nanoQSAR\\properties.txt";
+			DBUtil.loadProperties(filename);
 			
 			nanomaterials = sqlNano.getNanoMaterials(sqlQuery);
-			String strID = nanomaterials.get(0).getOrdMaterialID();
-			String strUnits = nanomaterials.get(0).getLc50Unit().trim();
-			assertEquals("TiO2-DEGUS-AeroxideP25", strID);
-			assertEquals("ug/mL", strUnits);
+			for (NanoMaterial nanoM : nanomaterials)
+			{
+				String strU;
+				
+				strU = String.valueOf(nanoM.getCoatingAmountUnit()).trim();
+				if (!strU.equals("ug") && !strU.equals("null") && !strU.equals("mg"))
+				{
+					throw new IllegalUnitsException("Illegal coating amount unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getPurityUnit()).trim();
+				if (!strU.equals("%") && !strU.equals("null") && !strU.equals("Mass %") && !strU.equals("fraction"))
+				{
+					throw new IllegalUnitsException("Illegal purity unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getContamUnit()).trim();
+				if (!strU.equals("ppm") && !strU.equals("null") && !strU.equals("ppt"))
+				{
+					throw new IllegalUnitsException("Illegal Contaminant unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getParticleOuterDiamUnit()).trim();
+				if (!strU.equals("nm") && !strU.equals("null") && !strU.equals("um"))
+				{
+					throw new IllegalUnitsException("Illegal Particle Outer Diameter unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getParticleInnerDiamUnit()).trim();
+				if (!strU.equals("nm") && !strU.equals("null") && !strU.equals("um"))
+				{
+					throw new IllegalUnitsException("Illegal Particle Inner Diameter unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getParticleLengthUnit()).trim();
+				if (!strU.equals("nm") && !strU.equals("null") && !strU.equals("um"))
+				{
+					throw new IllegalUnitsException("Illegal Particle Length unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getParticleThicknessUnit()).trim();
+				if (!strU.equals("nm") && !strU.equals("null") && !strU.equals("um"))
+				{
+					throw new IllegalUnitsException("Illegal Particle Thickness unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getSurfaceAreaUnit()).trim();
+				if (!strU.equals("m^2/g") && !strU.equals("null") && !strU.equals("cm^2/g"))
+				{
+					throw new IllegalUnitsException("Illegal surface area unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getTimeValueUnit()).trim();
+				if (!strU.equals("hours") && !strU.equals("null") && !strU.equals("minutes"))
+				{
+					throw new IllegalUnitsException("Illegal time value unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_timeValueUnit()).trim();
+				if (!strU.equals("hours") && !strU.equals("null") && !strU.equals("minutes"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_time value unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getParticleConcentrationUnit()).trim();
+				if (!strU.equals("ug/mL") && !strU.equals("null") && !strU.equals("mg/mL"))
+				{
+					throw new IllegalUnitsException("Illegal Particle Concentration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_particleConcentrationUnit()).trim();
+				if (!strU.equals("ug/mL") && !strU.equals("null") && !strU.equals("mg/mL"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_particle Concentration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMediumTempUnit()).trim();
+				if (!strU.equals("C") && !strU.equals("null") && !strU.equals("F") && !strU.equals("K"))
+				{
+					throw new IllegalUnitsException("Illegal medium temperature unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_mediumTempUnit()).trim();
+				if (!strU.equals("C") && !strU.equals("null") && !strU.equals("F") && !strU.equals("K"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_medium temperature unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getZetaPotentialUnit()).trim();
+				if (!strU.equals("mV") && !strU.equals("null") && !strU.equals("uV"))
+				{
+					throw new IllegalUnitsException("Illegal zeta potential unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getSizeDistribUnit()).trim();
+				if (!strU.equals("nm") && !strU.equals("null") && !strU.equals("um"))
+				{
+					throw new IllegalUnitsException("Illegal size distribution unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getSizeDistribUnit2()).trim();
+				if (!strU.equals("nm") && !strU.equals("null") && !strU.equals("um"))
+				{
+					throw new IllegalUnitsException("Illegal size distribution 2 unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getSerumConcentrationUnit()).trim();
+				if (!strU.equals("%") && !strU.equals("null") && !strU.equals("fraction"))
+				{
+					throw new IllegalUnitsException("Illegal serum concentration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_serumConcentrationUnit()).trim();
+				if (!strU.equals("%") && !strU.equals("null") && !strU.equals("fraction"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_serum concentration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getAntibioticConcentrationUnit()).trim();
+				if (!strU.equals("%") && !strU.equals("null") && !strU.equals("fraction"))
+				{
+					throw new IllegalUnitsException("Illegal antibiotic concentration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_antibioticConcentrationUnit()).trim();
+				if (!strU.equals("%") && !strU.equals("null") && !strU.equals("fraction"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_antibiotic concentration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getDomUnit()).trim();
+				if (!strU.equals("mg/L") && !strU.equals("null") && !strU.equals("ug/L"))
+				{
+					throw new IllegalUnitsException("Illegal DOM unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_domUnit()).trim();
+				if (!strU.equals("mg/L") && !strU.equals("null") && !strU.equals("ug/L"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_DOM unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getSalinityUnit()).trim();
+				if (!strU.equals("ppt") && !strU.equals("null") && !strU.equals("psu") && !strU.equals("g/kg"))
+				{
+					throw new IllegalUnitsException("Illegal salinity unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_salinityUnit()).trim();
+				if (!strU.equals("ppt") && !strU.equals("null") && !strU.equals("psu") && !strU.equals("g/kg"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_salinity unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getParticleExposDurationUnit()).trim();
+				if (!strU.equals("hours") && !strU.equals("null") && !strU.equals("minutes"))
+				{
+					throw new IllegalUnitsException("Illegal particle exposure duration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getUvaDoseUnit()).trim();
+				if (!strU.equals("J/cm^2") && !strU.equals("null") && !strU.equals("mJ/cm^2"))
+				{
+					throw new IllegalUnitsException("Illegal UVA dose unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getUvaExposDurationUnit()).trim();
+				if (!strU.equals("hours") && !strU.equals("null") && !strU.equals("minutes"))
+				{
+					throw new IllegalUnitsException("Illegal UVA exposure duration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getViabilityUnit()).trim();
+				if (!strU.equals("%") && !strU.equals("null") && !strU.equals("fraction"))
+				{
+					throw new IllegalUnitsException("Illegal viability unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getLc50Unit()).trim();
+				if (!strU.equals("ug/mL") && !strU.equals("null") && !strU.equals("mg/mL"))
+				{
+					throw new IllegalUnitsException("Illegal LC50 unit: " + strU);
+				}			
+			}
+			
+			// String strID = nanomaterials.get(0).getOrdMaterialID();
+			// String strUnits = nanomaterials.get(0).getLc50Unit().trim();
+			// assertEquals("TiO2-DEGUS-AeroxideP25", strID);
+			// assertEquals("ug/mL", strUnits);
+		}
+		catch(IllegalUnitsException ex)
+		{
+			System.out.println("Exception found: " + ex.getMessage());
 		}
 		catch(ClassNotFoundException ex)
 		{

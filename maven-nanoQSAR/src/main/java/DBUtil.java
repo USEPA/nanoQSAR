@@ -81,15 +81,15 @@ public class DBUtil
 	 * @author Wilson Melendez
 	 * @throws IOException
 	 */
-	public static void loadProperties() throws IOException
+	public static void loadProperties(String filename) throws IOException, NullPointerException
 	{
 		Properties prop = new Properties();
 		InputStream input = null;
 		
 		try
 		{
-			String strDirFile = System.getProperty("user.dir") + "\\properties.txt";
-			Path p1 = Paths.get(strDirFile);
+			// String strDirFile = System.getProperty("user.dir") + "\\properties.txt";
+			Path p1 = Paths.get(filename);
 			input = new FileInputStream(p1.toString());
 			
 			// Load properties file
@@ -101,15 +101,6 @@ public class DBUtil
 			setPassword(prop.getProperty("Password").trim());
 			setUsername(prop.getProperty("Username").trim());	
 			setCsvFileName(prop.getProperty("CsvFileName").trim());
-			
-			/*  The following lines have been commented out because they are only used
-			 * for diagnostic purposes.
-			System.out.println("Database URL = " + getDatabaseUrl());
-			System.out.println("Driver Name = " + getDriverName());
-			System.out.println("Password = " + getPassword());
-			System.out.println("Username = " + getUsername());
-			System.out.println("Name of CSV file = " + getCsvFileName());
-			*/
 		}
 		finally
 		{
@@ -121,7 +112,7 @@ public class DBUtil
 				}
 				catch(IOException ex)
 				{
-					ex.printStackTrace();
+					// ex.printStackTrace();
 					throw ex;
 				}				
 			}

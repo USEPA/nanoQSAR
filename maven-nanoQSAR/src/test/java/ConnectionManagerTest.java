@@ -22,7 +22,8 @@ public class ConnectionManagerTest {
 		
 		try
 		{
-			DBUtil.loadProperties();
+			String filename = "C:\\Users\\wmelende\\git\\maven-nanoQSAR\\properties.txt";
+			DBUtil.loadProperties(filename);
 			ConnectionManager connManager = new ConnectionManager();
 			connManager.getDriver();
 		}
@@ -46,7 +47,8 @@ public class ConnectionManagerTest {
 		ConnectionManager connManager = new ConnectionManager();
 		try
 		{		
-			DBUtil.loadProperties();
+			String filename = "C:\\Users\\wmelende\\git\\maven-nanoQSAR\\properties.txt";
+			DBUtil.loadProperties(filename);
 			conn = connManager.createConnection();		
 		}
 		catch(SQLException ex)

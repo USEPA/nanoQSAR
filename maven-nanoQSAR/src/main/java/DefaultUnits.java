@@ -15,1194 +15,1136 @@ public class DefaultUnits
 {
 	/**
 	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
+	 * @param nanoM
+	 * @param i
 	 * @throws IllegalUnitsException
 	 */
-	public static String checkDefaultCoatingAmountUnit(String strU) throws IllegalUnitsException
+	public static void checkDefaultCoatingAmountUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
 	{
-		String strTemp = null;
+		String strU = String.valueOf(nanoM.getCoatingAmountUnit()).trim();
+		String strValue = String.valueOf(nanoM.getCoatingAmount()).trim();
+		Double value;
 		
-		if (strU.trim().equals("ug") || strU.trim().equals("null"))
+		if (strU.equals("ug") || strU.equals("null") || strU.equals("mg"))
 		{
-			strTemp = strU;
-		}
-		else if (strU.trim().equals("mg"))
-		{
-			strTemp = "ug";
+			if (strU.equals("mg"))
+			{
+				nanoM.setCoatingAmountUnit("ug");
+				if (!strValue.equals("null"))
+				{
+					value = nanoM.getCoatingAmount() * 1000.0;
+					nanoM.setCoatingAmount(value);
+				}
+				
+			}		
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal coating amount units: " + strU);
+			throw new IllegalUnitsException("Illegal coating amount unit: " + strU + " at row " + i);
 		}
-		return strTemp;
 	}
 	
 	/**
 	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
+	 * @param nanoM
+	 * @param i
 	 * @throws IllegalUnitsException
 	 */
-	public static Double checkDefaultCoatingAmount(String strU, Double oldValue) throws IllegalUnitsException
+	public static void checkDefaultPurityUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
 	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("ug") || strU.trim().equals("null"))
+		String strU = String.valueOf(nanoM.getPurityUnit()).trim();
+		String strValue = String.valueOf(nanoM.getPurity()).trim();
+		Double value;
+		
+		if (strU.equals("%") || strU.equals("null") || strU.equals("Mass %") || strU.equals("fraction"))
 		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("mg"))
-		{
-			newValue = oldValue * 1000.0;
+			if (strU.equals("fraction"))
+			{
+				nanoM.setPurityUnit("%");
+				if (!strValue.equals("null"))
+				{
+					value = nanoM.getPurity() * 100.0;
+					nanoM.setPurity(value);
+				}
+				
+			}		
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal coating amount units: " + strU + " " + oldValue);
+			throw new IllegalUnitsException("Illegal purity units: " + strU + " at row = " + i);
 		}
-			
-		return newValue;
+
+	}
+		
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultContaminantUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getContamUnit()).trim();
+		String strValueAl = String.valueOf(nanoM.getContamAl()).trim();
+		String strValueAs = String.valueOf(nanoM.getContamAs()).trim();
+		String strValueBe = String.valueOf(nanoM.getContamBe()).trim();
+		String strValueCa = String.valueOf(nanoM.getContamCa()).trim();
+		String strValueCo = String.valueOf(nanoM.getContamCo()).trim();
+		String strValueCr = String.valueOf(nanoM.getContamCr()).trim();
+		String strValueFe = String.valueOf(nanoM.getContamFe()).trim();
+		String strValueK = String.valueOf(nanoM.getContamK()).trim();
+		String strValueMg = String.valueOf(nanoM.getContamMg()).trim();
+		String strValueNa = String.valueOf(nanoM.getContamNa()).trim();
+		String strValueP = String.valueOf(nanoM.getContamP()).trim();
+		String strValuePb = String.valueOf(nanoM.getContamPb()).trim();
+		String strValueSb = String.valueOf(nanoM.getContamSb()).trim();
+		String strValueSe = String.valueOf(nanoM.getContamSe()).trim();
+		String strValueSiO2 = String.valueOf(nanoM.getContamSiO2()).trim();
+		String strValueSn = String.valueOf(nanoM.getContamSn()).trim();
+		String strValueTl = String.valueOf(nanoM.getContamTl()).trim();
+		String strValueV = String.valueOf(nanoM.getContamV()).trim();
+		
+		
+		Double value;
+		
+		if (strU.equals("ppm") || strU.equals("null") || strU.equals("ppt"))
+		{
+			if (strU.equals("ppt"))
+			{
+				nanoM.setContamUnit("ppm");
+				
+				if (!strValueAl.equals("null"))
+				{
+					value = nanoM.getContamAl() * 1000.0;
+					nanoM.setContamAl(value);
+				}
+				if (!strValueAs.equals("null"))
+				{
+					value = nanoM.getContamAs() * 1000.0;
+					nanoM.setContamAs(value);
+				}
+				if (!strValueBe.equals("null"))
+				{
+					value = nanoM.getContamBe() * 1000.0;
+					nanoM.setContamBe(value);
+				}
+				if (!strValueCa.equals("null"))
+				{
+					value = nanoM.getContamCa() * 1000.0;
+					nanoM.setContamCa(value);
+				}
+				if (!strValueCo.equals("null"))
+				{
+					value = nanoM.getContamCo() * 1000.0;
+					nanoM.setContamCo(value);
+				}
+				if (!strValueCr.equals("null"))
+				{
+					value = nanoM.getContamCr()* 1000.0;
+					nanoM.setContamCr(value);
+				}
+				if (!strValueFe.equals("null"))
+				{
+					value = nanoM.getContamFe()* 1000.0;
+					nanoM.setContamFe(value);
+				}
+				if (!strValueK.equals("null"))
+				{
+					value = nanoM.getContamK() * 1000.0;
+					nanoM.setContamK(value);
+				}
+				if (!strValueMg.equals("null"))
+				{
+					value = nanoM.getContamMg() * 1000.0;
+					nanoM.setContamMg(value);
+				}
+				if (!strValueNa.equals("null"))
+				{
+					value = nanoM.getContamNa() * 1000.0;
+					nanoM.setContamNa(value);
+				}
+				if (!strValueP.equals("null"))
+				{
+					value = nanoM.getContamP() * 1000.0;
+					nanoM.setContamP(value);
+				}
+				if (!strValuePb.equals("null"))
+				{
+					value = nanoM.getContamPb()* 1000.0;
+					nanoM.setContamPb(value);
+				}
+				if (!strValueSb.equals("null"))
+				{
+					value = nanoM.getContamSb()* 1000.0;
+					nanoM.setContamSb(value);
+				}
+				if (!strValueSe.equals("null"))
+				{
+					value = nanoM.getContamSe()* 1000.0;
+					nanoM.setContamSe(value);
+				}
+				if (!strValueSiO2.equals("null"))
+				{
+					value = nanoM.getContamSiO2()* 1000.0;
+					nanoM.setContamSiO2(value);
+				}
+				if (!strValueSn.equals("null"))
+				{
+					value = nanoM.getContamSn()* 1000.0;
+					nanoM.setContamSn(value);
+				}
+				if (!strValueTl.equals("null"))
+				{
+					value = nanoM.getContamTl()* 1000.0;
+					nanoM.setContamTl(value);
+				}
+				if (!strValueV.equals("null"))
+				{
+					value = nanoM.getContamV()* 1000.0;
+					nanoM.setContamV(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal contaminant units: " + strU + " at row = " + i);
+		}		
+	}
+	
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultParticleOuterDiameterUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getParticleOuterDiamUnit()).trim();
+		String strValueAvg = String.valueOf(nanoM.getParticleOuterDiamAvg()).trim();
+		String strValueHigh = String.valueOf(nanoM.getParticleOuterDiamHigh()).trim();
+		String strValueLow = String.valueOf(nanoM.getParticleOuterDiamLow()).trim();
+		
+		Double value;
+		
+		if (strU.equals("nm") || strU.equals("null") || strU.equals("um"))
+		{
+			if (strU.equals("um"))
+			{
+				nanoM.setParticleOuterDiamUnit("nm");
+				if (!strValueAvg.equals("null"))
+				{
+					value = nanoM.getParticleOuterDiamAvg() * 1000.0;
+					nanoM.setParticleOuterDiamAvg(value);
+				}
+				if (!strValueHigh.equals("null"))
+				{
+					value = nanoM.getParticleOuterDiamHigh() * 1000.0;
+					nanoM.setParticleOuterDiamHigh(value);
+				}
+				if (!strValueLow.equals("null"))
+				{
+					value = nanoM.getParticleOuterDiamLow() * 1000.0;
+					nanoM.setParticleOuterDiamLow(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal particle outer diameter units: " + strU + " at row = " + i);
+		}
+	}
+	
+	
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultParticleInnerDiameterUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getParticleInnerDiamUnit()).trim();
+		String strValueAvg = String.valueOf(nanoM.getParticleInnerDiamAvg()).trim();
+		String strValueHigh = String.valueOf(nanoM.getParticleInnerDiamHigh()).trim();
+		String strValueLow = String.valueOf(nanoM.getParticleInnerDiamLow()).trim();
+		
+		Double value;
+		
+		if (strU.equals("nm") || strU.equals("null") || strU.equals("um"))
+		{
+			if (strU.equals("um"))
+			{
+				nanoM.setParticleInnerDiamUnit("nm");
+				if (!strValueAvg.equals("null"))
+				{
+					value = nanoM.getParticleInnerDiamAvg() * 1000.0;
+					nanoM.setParticleInnerDiamAvg(value);
+				}
+				if (!strValueHigh.equals("null"))
+				{
+					value = nanoM.getParticleInnerDiamHigh() * 1000.0;
+					nanoM.setParticleInnerDiamHigh(value);
+				}
+				if (!strValueLow.equals("null"))
+				{
+					value = nanoM.getParticleInnerDiamLow() * 1000.0;
+					nanoM.setParticleInnerDiamLow(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal particle inner diameter units: " + strU + " at row = " + i);
+		}
+	}
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultParticleLengthUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getParticleLengthUnit()).trim();
+		String strValueAvg = String.valueOf(nanoM.getParticleLengthAvg()).trim();
+		String strValueHigh = String.valueOf(nanoM.getParticleLengthHigh()).trim();
+		String strValueLow = String.valueOf(nanoM.getParticleLengthLow()).trim();
+		Double value;
+		
+		if (strU.equals("nm") || strU.equals("null") || strU.equals("um"))
+		{
+			if (strU.equals("um"))
+			{
+				nanoM.setParticleLengthUnit("nm");
+				if (!strValueAvg.equals("null"))
+				{
+					value = nanoM.getParticleLengthAvg() * 1000.0;
+					nanoM.setParticleLengthAvg(value);
+				}
+				if (!strValueHigh.equals("null"))
+				{
+					value = nanoM.getParticleLengthHigh() * 1000.0;
+					nanoM.setParticleLengthHigh(value);
+				}
+				if (!strValueLow.equals("null"))
+				{
+					value = nanoM.getParticleLengthLow() * 1000.0;
+					nanoM.setParticleLengthLow(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal particle length unit: " + strU + " at row " + i);
+		}
+	}
+	
+	
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultParticleThicknessUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getParticleThicknessUnit()).trim();
+		String strValueAvg = String.valueOf(nanoM.getParticleThicknessAvg()).trim();
+		String strValueHigh = String.valueOf(nanoM.getParticleThicknessHigh()).trim();
+		String strValueLow = String.valueOf(nanoM.getParticleThicknessLow()).trim();
+		Double value;
+		
+		if (strU.equals("nm") || strU.equals("null") || strU.equals("um"))
+		{
+			if (strU.equals("um"))
+			{
+				nanoM.setParticleThicknessUnit("nm");
+				if (!strValueAvg.equals("null"))
+				{
+					value = nanoM.getParticleThicknessAvg() * 1000.0;
+					nanoM.setParticleThicknessAvg(value);
+				}
+				if (!strValueHigh.equals("null"))
+				{
+					value = nanoM.getParticleThicknessHigh() * 1000.0;
+					nanoM.setParticleThicknessHigh(value);
+				}
+				if (!strValueLow.equals("null"))
+				{
+					value = nanoM.getParticleThicknessLow() * 1000.0;
+					nanoM.setParticleThicknessLow(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal particle thickness unit: " + strU + " at row " + i);
+		}
+	}
+	
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultSurfaceAreaUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getSurfaceAreaUnit()).trim();
+		String strValueAvg = String.valueOf(nanoM.getSurfaceAreaAvg()).trim();
+		String strValueHigh = String.valueOf(nanoM.getSurfaceAreaHigh()).trim();
+		String strValueLow = String.valueOf(nanoM.getSurfaceAreaLow()).trim();
+		Double value;
+		
+		if (strU.equals("m^2/g") || strU.equals("null") || strU.equals("cm^2/g"))
+		{
+			if (strU.equals("cm^2/g"))
+			{
+				nanoM.setSurfaceAreaUnit("m^2/g");
+				if (!strValueAvg.equals("null"))
+				{
+					value = nanoM.getSurfaceAreaAvg() * 1.0E-04;
+					nanoM.setSurfaceAreaAvg(value);
+				}
+				if (!strValueHigh.equals("null"))
+				{
+					value = nanoM.getSurfaceAreaHigh() * 1.0E-04;
+					nanoM.setSurfaceAreaHigh(value);
+				}
+				if (!strValueLow.equals("null"))
+				{
+					value = nanoM.getSurfaceAreaLow() * 1.0E-04;
+					nanoM.setSurfaceAreaLow(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal surface area unit: " + strU + " at row " + i);
+		}
+	}
+	
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultTimeValueUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getTimeValueUnit()).trim();
+		String strValue = String.valueOf(nanoM.getTimeValue()).trim();
+		Double value;
+		
+		if (strU.equals("hours") || strU.equals("null") || strU.equals("minutes"))
+		{
+			if (strU.equals("minutes"))
+			{
+				nanoM.setTimeValueUnit("hours");
+				if (!strValue.equals("null"))
+				{
+					value = nanoM.getTimeValue() / 60.0;
+					nanoM.setTimeValue(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal time value unit: " + strU + " at row " + i);
+		}	
+	}
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultMcTimeValueUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getMc_timeValueUnit()).trim();
+		String strValue = String.valueOf(nanoM.getMc_timeValue()).trim();
+		Integer value;
+		
+		if (strU.equals("hours") || strU.equals("null") || strU.equals("minutes"))
+		{
+			if (strU.equals("minutes"))
+			{
+				nanoM.setMc_timeValueUnit("hours");
+				if (!strValue.equals("null"))
+				{
+					value = nanoM.getMc_timeValue() / 60;
+					nanoM.setMc_timeValue(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal Mc_time_value unit: " + strU + " at row " + i);
+		}	
+	}
+		
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultParticleConcentrationUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getParticleConcentrationUnit()).trim();
+		String strValue = String.valueOf(nanoM.getParticleConcentration()).trim();
+		Double value;
+		
+		if (strU.equals("ug/mL") || strU.equals("null") || strU.equals("mg/mL"))
+		{
+			if (strU.equals("mg/mL"))
+			{
+				nanoM.setParticleConcentrationUnit("ug/mL");
+				if (!strValue.equals("null"))
+				{
+					value = nanoM.getParticleConcentration() * 1.0E+03;
+					nanoM.setParticleConcentration(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal particle concentration unit: " + strU + " row = " + i);
+		}
+	}
+	
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultMcParticleConcentrationUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getMc_particleConcentrationUnit()).trim();
+		String strValue = String.valueOf(nanoM.getMc_particleConcentration()).trim();
+		Double value;
+		
+		if (strU.equals("ug/mL") || strU.equals("null") || strU.equals("mg/mL"))
+		{
+			if (strU.equals("mg/mL"))
+			{
+				nanoM.setMc_particleConcentrationUnit("ug/mL");
+				if (!strValue.equals("null"))
+				{
+					value = nanoM.getMc_particleConcentration() * 1.0E+03;
+					nanoM.setMc_particleConcentration(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal Mc_particle_concentration unit: " + strU + " row = " + i);
+		}
+	}
+	
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultMediumTempUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getMediumTempUnit()).trim();
+		String strValue = String.valueOf(nanoM.getMediumTemp()).trim();
+		Double value;
+		
+		if (strU.equals("C") || strU.equals("null") || strU.equals("F") || strU.equals("K"))
+		{
+			if (strU.equals("F"))
+			{
+				nanoM.setMediumTempUnit("C");
+				if(!strValue.equals("null"))
+				{
+					value = (nanoM.getMediumTemp() - 32.0) * 5.0 / 9.0;
+					nanoM.setMediumTemp(value);
+				}				
+			}
+			else if (strU.equals("K"))
+			{
+				nanoM.setMediumTempUnit("C");
+				if(!strValue.equals("null"))
+				{
+					value = nanoM.getMediumTemp() - 273.15;
+					nanoM.setMediumTemp(value);
+				}				
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal medium temperature unit: " + strU + " at row = " + i);
+		}
+	}
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultMcMediumTempUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getMc_mediumTempUnit()).trim();
+		String strValue = String.valueOf(nanoM.getMc_mediumTemp()).trim();
+		Double value;
+		
+		if (strU.equals("C") || strU.equals("null") || strU.equals("F") || strU.equals("K"))
+		{
+			if (strU.equals("F"))
+			{
+				nanoM.setMc_mediumTempUnit("C");
+				if(!strValue.equals("null"))
+				{
+					value = (nanoM.getMc_mediumTemp() - 32.0) * 5.0 / 9.0;
+					nanoM.setMc_mediumTemp(value);
+				}				
+			}
+			else if (strU.equals("K"))
+			{
+				nanoM.setMc_mediumTempUnit("C");
+				if(!strValue.equals("null"))
+				{
+					value = nanoM.getMc_mediumTemp() - 273.15;
+					nanoM.setMc_mediumTemp(value);
+				}				
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal Mc_medium_temperature unit: " + strU + " at row = " + i);
+		}
+	}
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultZetaPotentialUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getZetaPotentialUnit()).trim();
+		String strValueAvg = String.valueOf(nanoM.getZetaPotentialAvg()).trim();
+		String strValueHigh = String.valueOf(nanoM.getZetaPotentialHigh()).trim();
+		String strValueLow = String.valueOf(nanoM.getZetaPotentialLow()).trim();
+		Double value;
+		
+		if (strU.equals("mV") || strU.equals("null") || strU.equals("uV"))
+		{
+			if (strU.equals("uV"))
+			{
+				nanoM.setZetaPotentialUnit("mV");
+				if (!strValueAvg.equals("null"))
+				{
+					value = nanoM.getZetaPotentialAvg() * 1.0E-03;
+					nanoM.setZetaPotentialAvg(value);
+				}
+				if (!strValueHigh.equals("null"))
+				{
+					value = nanoM.getZetaPotentialHigh() * 1.0E-03;
+					nanoM.setZetaPotentialHigh(value);
+				}
+				if (!strValueLow.equals("null"))
+				{
+					value = nanoM.getZetaPotentialLow() * 1.0E-03;
+					nanoM.setZetaPotentialLow(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal zeta potential unit: " + strU + " at row " + i);
+		}
+	}
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultSizeDistributionUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getSizeDistribUnit()).trim();
+		String strValueAvg = String.valueOf(nanoM.getSizeDistribAvg()).trim();
+		String strValueHigh = String.valueOf(nanoM.getSizeDistribHigh()).trim();
+		String strValueLow = String.valueOf(nanoM.getSizeDistribLow()).trim();
+		Double value;
+		
+		if (strU.equals("nm") || strU.equals("null") || strU.equals("um"))
+		{
+			if (strU.equals("um"))
+			{
+				nanoM.setSizeDistribUnit("nm");
+				if (!strValueAvg.equals("null"))
+				{
+					value = nanoM.getSizeDistribAvg() * 1.0E+03;
+					nanoM.setSizeDistribAvg(value);
+				}
+				if (!strValueHigh.equals("null"))
+				{
+					value = nanoM.getSizeDistribHigh() * 1.0E+03;
+					nanoM.setSizeDistribHigh(value);
+				}
+				if (!strValueLow.equals("null"))
+				{
+					value = nanoM.getSizeDistribLow() * 1.0E+03;
+					nanoM.setSizeDistribLow(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal size distribution unit: " + strU + " at row " + i);
+		}
+	}
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultSizeDistributionUnit2(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getSizeDistribUnit2()).trim();
+		String strValueAvg = String.valueOf(nanoM.getSizeDistribAvg2()).trim();
+		String strValueHigh = String.valueOf(nanoM.getSizeDistribHigh2()).trim();
+		String strValueLow = String.valueOf(nanoM.getSizeDistribLow2()).trim();
+		Double value;
+		
+		if (strU.equals("nm") || strU.equals("null") || strU.equals("um"))
+		{
+			if (strU.equals("um"))
+			{
+				nanoM.setSizeDistribUnit2("nm");
+				if (!strValueAvg.equals("null"))
+				{
+					value = nanoM.getSizeDistribAvg2() * 1.0E+03;
+					nanoM.setSizeDistribAvg2(value);
+				}
+				if (!strValueHigh.equals("null"))
+				{
+					value = nanoM.getSizeDistribHigh2() * 1.0E+03;
+					nanoM.setSizeDistribHigh2(value);
+				}
+				if (!strValueLow.equals("null"))
+				{
+					value = nanoM.getSizeDistribLow2() * 1.0E+03;
+					nanoM.setSizeDistribLow2(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal size distribution unit 2: " + strU + " at row " + i);
+		}
+	}
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultSerumConcentrationUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getSerumConcentrationUnit()).trim();
+		String strValue = String.valueOf(nanoM.getSerumConcentration()).trim();
+		Double value;
+		
+		if (strU.equals("%") || strU.equals("null") || strU.equals("fraction"))
+		{
+			if (strU.equals("fraction"))
+			{
+				nanoM.setSerumConcentrationUnit("%");
+				if (!strValue.equals("null"))
+				{
+					value = nanoM.getSerumConcentration() * 100.0;
+					nanoM.setSerumConcentration(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal serum concentration units: " + strU + " at row = " + i);
+		}
+	}
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultMcSerumConcentrationUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getMc_serumConcentrationUnit()).trim();
+		String strValue = String.valueOf(nanoM.getMc_serumConcentration()).trim();
+		Double value;
+		
+		if (strU.equals("%") || strU.equals("null") || strU.equals("fraction"))
+		{
+			if (strU.equals("fraction"))
+			{
+				nanoM.setMc_serumConcentrationUnit("%");
+				if (!strValue.equals("null"))
+				{
+					value = nanoM.getMc_serumConcentration() * 100.0;
+					nanoM.setMc_serumConcentration(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal Mc_serum_concentration units: " + strU + " at row = " + i);
+		}
+	}
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultAntibioticConcentrationUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getAntibioticConcentrationUnit()).trim();
+		String strValue = String.valueOf(nanoM.getAntibioticConcentration()).trim();
+		Double value;
+		
+		if (strU.equals("%") || strU.equals("null") || strU.equals("fraction"))
+		{
+			if (strU.equals("fraction"))
+			{
+				nanoM.setAntibioticConcentrationUnit("%");
+				if (!strValue.equals("null"))
+				{
+					value = nanoM.getAntibioticConcentration() * 100.0;
+					nanoM.setAntibioticConcentration(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal serum concentration units: " + strU + " at row = " + i);
+		}
+	}
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultMcAntibioticConcentrationUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getMc_antibioticConcentrationUnit()).trim();
+		String strValue = String.valueOf(nanoM.getMc_antibioticConcentration()).trim();
+		Double value;
+		
+		if (strU.equals("%") || strU.equals("null") || strU.equals("fraction"))
+		{
+			if (strU.equals("fraction"))
+			{
+				nanoM.setMc_antibioticConcentrationUnit("%");
+				if (!strValue.equals("null"))
+				{
+					value = nanoM.getMc_antibioticConcentration() * 100.0;
+					nanoM.setMc_antibioticConcentration(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal Mc_serum concentration units: " + strU + " at row = " + i);
+		}
+	}
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultDOMUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getDomUnit()).trim();
+		String strValue = String.valueOf(nanoM.getDomConcentration()).trim();
+		Double value;
+		
+		if (strU.equals("mg/L") || strU.equals("null") || strU.equals("ug/L"))
+		{
+			if (strU.equals("ug/L"))
+			{
+				nanoM.setDomUnit("mg/L");
+				if (!strValue.equals("null"))
+				{
+					value = nanoM.getDomConcentration() / 1000.0;
+					nanoM.setDomConcentration(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal DOM concentration unit: " + strU + " row = " + i);
+		}
+	}
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultMcDOMUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getMc_domUnit()).trim();
+		String strValue = String.valueOf(nanoM.getMc_domConcentration()).trim();
+		Double value;
+		
+		if (strU.equals("mg/L") || strU.equals("null") || strU.equals("ug/L"))
+		{
+			if (strU.equals("ug/L"))
+			{
+				nanoM.setMc_domUnit("mg/L");
+				if (!strValue.equals("null"))
+				{
+					value = nanoM.getMc_domConcentration() / 1000.0;
+					nanoM.setMc_domConcentration(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal Mc_DOM unit: " + strU + " row = " + i);
+		}
+	}
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultSalinityUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getSalinityUnit()).trim();
+		
+		if (strU.equals("ppt") || strU.equals("null") || strU.equals("psu") || strU.equals("g/kg"))
+		{
+			if (strU.equals("psu") || strU.equals("g/kg"))
+			{
+				nanoM.setSalinityUnit("ppt");
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal Salinity concentration unit: " + strU + " row = " + i);
+		}
+	}
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultMcSalinityUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getMc_salinityUnit()).trim();
+		
+		if (strU.equals("ppt") || strU.equals("null") || strU.equals("psu") || strU.equals("g/kg"))
+		{
+			if (strU.equals("psu") || strU.equals("g/kg"))
+			{
+				nanoM.setMc_salinityUnit("ppt");
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal Salinity concentration unit: " + strU + " row = " + i);
+		}
+	}
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultParticleExposureDurationUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getParticleExposDurationUnit()).trim();
+		String strValue = String.valueOf(nanoM.getParticleExposDuration()).trim();
+		Double value;
+		
+		if (strU.equals("hours") || strU.equals("null") || strU.equals("minutes"))
+		{
+			if (strU.equals("minutes"))
+			{
+				nanoM.setParticleExposDurationUnit("hours");
+				if (!strValue.equals("null"))
+				{
+					value = nanoM.getParticleExposDuration() / 60;
+					nanoM.setParticleExposDuration(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal particle exposure duration unit: " + strU + " at row = " + i);
+		}	
+	}
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultUVADoseUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getUvaDoseUnit()).trim();
+		String strValue = String.valueOf(nanoM.getUvaDose()).trim();
+		Double value;
+		
+		if (strU.equals("J/cm^2") || strU.equals("null") || strU.equals("mJ/cm^2"))
+		{
+			if (strU.trim().equals("mJ/cm^2"))
+			{
+				nanoM.setUvaDoseUnit("J/cm^2");
+				if (!strValue.equals("null"))
+				{
+					value = nanoM.getUvaDose() / 1000;
+					nanoM.setUvaDose(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal UVA dose units: " + strU + " at rown = " + i);
+		}
+	}
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultUVAExposureDurationUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getUvaExposDurationUnit()).trim();
+		String strValue = String.valueOf(nanoM.getUvaExposDuration()).trim();
+		Double value;
+		
+		if (strU.equals("hours") || strU.equals("null") || strU.equals("minutes"))
+		{
+			if (strU.equals("minutes"))
+			{
+				nanoM.setUvaExposDurationUnit("hours");
+				if (!strValue.equals("null"))
+				{
+					value = nanoM.getUvaExposDuration() / 60;
+					nanoM.setUvaExposDuration(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal UVA exposure duration unit: " + strU + " at row = " + i);
+		}	
+	}
+	
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultViabilityUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getViabilityUnit()).trim();
+		String strValueAvg = String.valueOf(nanoM.getViabilityAvg()).trim();
+		String strValueHigh = String.valueOf(nanoM.getViabilityHigh()).trim();
+		String strValueLow = String.valueOf(nanoM.getViabilityLow()).trim();
+		Double value;
+		
+		if (strU.equals("%") || strU.equals("null") || strU.equals("fraction"))
+		{
+			if (strU.equals("fraction"))
+			{
+				nanoM.setViabilityUnit("%");
+				if (!strValueAvg.equals("null"))
+				{
+					value = nanoM.getViabilityAvg() * 100.0;
+					nanoM.setViabilityAvg(value);
+				}
+				if (!strValueHigh.equals("null"))
+				{
+					value = nanoM.getViabilityHigh() * 100.0;
+					nanoM.setViabilityHigh(value);
+				}
+				if (!strValueLow.equals("null"))
+				{
+					value = nanoM.getViabilityLow() * 100.0;
+					nanoM.setViabilityLow(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal viability unit: " + strU + " at row = " + i);
+		}
+	}
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param nanoM
+	 * @param i
+	 * @throws IllegalUnitsException
+	 */
+	public static void checkDefaultLC50Unit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	{
+		String strU = String.valueOf(nanoM.getLc50Unit()).trim();
+		String strValue = String.valueOf(nanoM.getLc50()).trim();
+		Double value;
+		
+		if (strU.equals("ug/mL") || strU.equals("null") || strU.equals("mg/mL"))
+		{
+			if (strU.equals("mg/mL"))
+			{
+				nanoM.setLc50Unit("ug/mL");
+				if (!strValue.equals("null"))
+				{
+					value = nanoM.getLc50() * 1000.0;
+					nanoM.setLc50(value);
+				}
+			}
+		}
+		else
+		{
+			throw new IllegalUnitsException("Illegal LC50 unit: " + strU + " at row = " + i);
+		}
 	}
 
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultPurityUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("%") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal purity units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultPurity(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("%") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal purity units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultContaminantUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("ppm") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else if (strU.trim().equals("ppt"))
-		{
-			strTemp = "ppm";
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal contaminant units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultContaminant(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("ppm") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("ppt"))
-		{
-			newValue = oldValue * 1000.0;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal contaminant units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultParticleOuterDiameterUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("nm") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else if (strU.trim().equals("um"))
-		{
-			strTemp = "nm";
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal particle outer diameter units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultParticleOuterDiameter(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("nm") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("um"))
-		{
-			newValue = oldValue * 1000.0;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal particle outer diameter units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultParticleInnerDiameterUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("nm") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else if (strU.trim().equals("um"))
-		{
-			strTemp = "nm";
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal particle inner diameter units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultParticleInnerDiameter(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("nm") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("um"))
-		{
-			newValue = oldValue * 1000.0;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal particle inner diameter units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultParticleLengthUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("nm") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else if (strU.trim().equals("um"))
-		{
-			strTemp = "nm";
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal particle length units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultParticleLength(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("nm") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("um"))
-		{
-			newValue = oldValue * 1000.0;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal particle length units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultParticleThicknessUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("nm") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else if (strU.trim().equals("um"))
-		{
-			strTemp = "nm";
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal particle thickness units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultParticleThickness(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("nm") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("um"))
-		{
-			newValue = oldValue * 1000.0;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal particle thickness units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultSurfaceAreaUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("m^2/g") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else if (strU.trim().equals("cm^2/g"))
-		{
-			strTemp = "m^2/g";
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal surface area units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultSurfaceArea(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("m^2/g") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("cm^2/g"))
-		{
-			newValue = oldValue * 1.0E-04;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal surface area units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */	
-	public static String checkDefaultTimeValueUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("hours") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else if (strU.trim().equals("minutes"))
-		{
-			strTemp = "hours";
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal time value units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Integer newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Integer checkDefaultTimeValue(String strU, Integer oldValue) throws IllegalUnitsException
-	{
-	    Integer newValue;
-	    
-		if (strU.trim().equals("hours") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("minutes"))
-		{
-			newValue = oldValue / 60;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal time value units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultTimeValue(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("hours") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("minutes"))
-		{
-			newValue = oldValue / 60;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal time value units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultParticleConcentrationUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("ug/mL") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else if (strU.trim().equals("mg/mL"))
-		{
-			strTemp = "ug/mL";
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal particle concentration units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultParticleConcentration(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("ug/mL") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("mg/mL"))
-		{
-			newValue = oldValue * 1.0E+03;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal particle concentration units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultMediumTempUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("C") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else if (strU.trim().equals("F"))
-		{
-			strTemp = "C";
-		}
-		else if (strU.trim().equals("K"))
-		{
-			strTemp = "C";
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal medium temperature units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultMediumTemp(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("C") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("F"))
-		{
-			newValue = (oldValue - 32.0) * 5.0 / 9.0;
-		}
-		else if (strU.trim().equals("K"))
-		{
-			newValue = oldValue - 273.15;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal mediumm temperature units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultZetaPotentialUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("mV") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else if (strU.trim().equals("uV"))
-		{
-			strTemp = "mV";
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal zeta potential units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultZetaPotential(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("mV") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("uV"))
-		{
-			newValue = oldValue * 1.0E-03;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal zeta potential units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultSizeDistributionUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("nm") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else if (strU.trim().equals("um"))
-		{
-			strTemp = "nm";
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal size distribution units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultSizeDistribution(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("nm") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("um"))
-		{
-			newValue = oldValue * 1.0E+03;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal size distribution units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultSizeDistributionUnit2(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("nm") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else if (strU.trim().equals("um"))
-		{
-			strTemp = "nm";
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal size distribution 2 units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultSizeDistribution2(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("nm") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("um"))
-		{
-			newValue = oldValue * 1.0E+03;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal size distribution 2 units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultSerumConcentrationUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("%") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal serum concentration units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultSerumConcentration(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("%") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal serum concentration units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultAntibioticConcentrationUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("%") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal antibiotic concentration units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultAntibioticConcentration(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("%") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal antibiotic concentration units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultDOMUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("mg/L") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else if (strU.trim().equals("ug/L"))
-		{
-			strTemp = "mg/L";
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal DOM units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultDOMConcentration(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("mg/L") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("ug/L"))
-		{
-			newValue = oldValue / 1000.0;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal DOM units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultSalinityUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("ppt") || strU.trim().equals("psu") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal salinity units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultSalinityValue(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("ppt") || strU.trim().equals("psu") || strU.trim().equals("g/kg") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal salinity units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultParticleExposureDurationUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("hours") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else if (strU.trim().equals("minutes"))
-		{
-			strTemp = "hours";
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal exposoure duration units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultParticleExposureDuration(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("hours") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("minutes"))
-		{
-			newValue = oldValue / 60.0;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal exposure duration units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultUVADoseUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("J/cm^2") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else if (strU.trim().equals("mJ/cm^2"))
-		{
-			strTemp = "J/cm^2";
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal UVA dose units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultUVADose(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("J/cm^2") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("mJ/cm^2"))
-		{
-			newValue = oldValue / 1000.0;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal UVA dose units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultUVAExposureDurationUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("hours") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else if (strU.trim().equals("minutes"))
-		{
-			strTemp = "hours";
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultUVAExposureDuration(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("hours") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("minutes"))
-		{
-			newValue = oldValue / 60.0;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultViabilityUnit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("%") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultViability(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("%") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU 
-	 * @return String strTemp
-	 * @throws IllegalUnitsException
-	 */
-	public static String checkDefaultLC50Unit(String strU) throws IllegalUnitsException
-	{
-		String strTemp = null;
-		
-		if (strU.trim().equals("ug/mL") || strU.trim().equals("null"))
-		{
-			strTemp = strU;
-		}
-		else if (strU.trim().equals("mg/mL"))
-		{
-			strTemp = "ug/mL";
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal units: " + strU);
-		}
-		return strTemp;
-	}
-	
-	/**
-	 * @author Wilson Melendez
-	 * @param strU
-	 * @param oldValue
-	 * @return Double newValue
-	 * @throws IllegalUnitsException
-	 */
-	public static Double checkDefaultLC50(String strU, Double oldValue) throws IllegalUnitsException
-	{
-	    Double newValue;
-	    
-		if (strU.trim().equals("ug/mL") || strU.trim().equals("null"))
-		{
-			newValue = oldValue;
-		}
-		else if (strU.trim().equals("mg/mL"))
-		{
-			newValue = oldValue * 1000.0;
-		}
-		else
-		{
-			throw new IllegalUnitsException("Illegal units: " + strU + " " + oldValue);
-		}
-			
-		return newValue;
-	}
 	
 	/**
 	 * This method loops over the list array and passes the units and values
@@ -1213,454 +1155,49 @@ public class DefaultUnits
 	 * @throws IllegalUnitsException
 	 */
 	public static void checkUnits(List<NanoMaterial> listNano) throws IllegalUnitsException
-	{
-		String oldColumnUnits, newColumnUnits;
-		Double fieldValue;
-		Integer fieldValueInt;
-		
+	{		
 		try 
 		{
 			for(int i = 0; i < listNano.size(); i++)  
 			{				
-				/* Coating amount on nanoparticle */ 
-				oldColumnUnits = String.valueOf(listNano.get(i).getCoatingAmountUnit());
-				fieldValue = listNano.get(i).getCoatingAmount();
-				newColumnUnits = checkDefaultCoatingAmountUnit(oldColumnUnits);	
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setCoatingAmountUnit(newColumnUnits);				
-					listNano.get(i).setCoatingAmount(checkDefaultCoatingAmount(oldColumnUnits, fieldValue));
-				}
-								
-				/* Purity */
-				oldColumnUnits = String.valueOf(listNano.get(i).getPurityUnit());
-				fieldValue = listNano.get(i).getPurity();
-				newColumnUnits = checkDefaultPurityUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setPurityUnit(newColumnUnits);				
-					listNano.get(i).setPurity(checkDefaultPurity(oldColumnUnits, fieldValue));
-				}
-								
-				/* Contaminants  */
-				oldColumnUnits = String.valueOf(listNano.get(i).getContamUnit());
-				newColumnUnits = checkDefaultContaminantUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setContamUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getContamAl();
-					listNano.get(i).setContamAl(checkDefaultContaminant(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getContamAs();
-					listNano.get(i).setContamAs(checkDefaultContaminant(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getContamBe();
-					listNano.get(i).setContamBe(checkDefaultContaminant(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getContamCa();
-					listNano.get(i).setContamCa(checkDefaultContaminant(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getContamCo();
-					listNano.get(i).setContamCo(checkDefaultContaminant(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getContamCr();
-					listNano.get(i).setContamCr(checkDefaultContaminant(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getContamFe();
-					listNano.get(i).setContamFe(checkDefaultContaminant(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getContamK();
-					listNano.get(i).setContamK(checkDefaultContaminant(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getContamMg();
-					listNano.get(i).setContamMg(checkDefaultContaminant(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getContamNa();
-					listNano.get(i).setContamNa(checkDefaultContaminant(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getContamP();
-					listNano.get(i).setContamP(checkDefaultContaminant(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getContamPb();
-					listNano.get(i).setContamPb(checkDefaultContaminant(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getContamSb();
-					listNano.get(i).setContamSb(checkDefaultContaminant(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getContamSe();
-					listNano.get(i).setContamSe(checkDefaultContaminant(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getContamSiO2();
-					listNano.get(i).setContamSiO2(checkDefaultContaminant(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getContamSn();
-					listNano.get(i).setContamSn(checkDefaultContaminant(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getContamTl();
-					listNano.get(i).setContamTl(checkDefaultContaminant(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getContamV();
-					listNano.get(i).setContamV(checkDefaultContaminant(oldColumnUnits, fieldValue));
-				}
-							
-				/* Particle outer diameter */
-				oldColumnUnits = String.valueOf(listNano.get(i).getParticleOuterDiamUnit());	
-				newColumnUnits = checkDefaultParticleOuterDiameterUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setParticleOuterDiamUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getParticleOuterDiamAvg();
-					listNano.get(i).setParticleOuterDiamAvg(checkDefaultParticleOuterDiameter(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getParticleOuterDiamLow();
-					listNano.get(i).setParticleOuterDiamLow(checkDefaultParticleOuterDiameter(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getParticleOuterDiamHigh();
-					listNano.get(i).setParticleOuterDiamHigh(checkDefaultParticleOuterDiameter(oldColumnUnits, fieldValue));
-				}
-				
-				
-				/* Particle inner diameter */
-				oldColumnUnits = String.valueOf(listNano.get(i).getParticleInnerDiamUnit());				
-				newColumnUnits = checkDefaultParticleInnerDiameterUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setParticleInnerDiamUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getParticleInnerDiamAvg();
-					listNano.get(i).setParticleInnerDiamAvg(checkDefaultParticleOuterDiameter(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getParticleInnerDiamLow();
-					listNano.get(i).setParticleInnerDiamLow(checkDefaultParticleOuterDiameter(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getParticleInnerDiamHigh();
-					listNano.get(i).setParticleInnerDiamHigh(checkDefaultParticleOuterDiameter(oldColumnUnits, fieldValue));
-				}
-								
-				/* Particle length */
-				oldColumnUnits = String.valueOf(listNano.get(i).getParticleLengthUnit());				
-				newColumnUnits = checkDefaultParticleLengthUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setParticleLengthUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getParticleLengthAvg();
-					listNano.get(i).setParticleLengthAvg(checkDefaultParticleLength(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getParticleLengthLow();
-					listNano.get(i).setParticleLengthLow(checkDefaultParticleLength(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getParticleLengthHigh();
-					listNano.get(i).setParticleLengthHigh(checkDefaultParticleLength(oldColumnUnits, fieldValue));
-				}
-								
-				/* Particle thickness parameters */
-				oldColumnUnits = String.valueOf(listNano.get(i).getParticleThicknessUnit());	
-				newColumnUnits = checkDefaultParticleThicknessUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setParticleThicknessUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getParticleThicknessAvg();
-					listNano.get(i).setParticleThicknessAvg(checkDefaultParticleThickness(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getParticleThicknessLow();
-					listNano.get(i).setParticleThicknessLow(checkDefaultParticleThickness(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getParticleThicknessHigh();
-					listNano.get(i).setParticleThicknessHigh(checkDefaultParticleThickness(oldColumnUnits, fieldValue));
-				}
-								
-				/* Surface area parameters */
-				oldColumnUnits = String.valueOf(listNano.get(i).getSurfaceAreaUnit());				
-				newColumnUnits = checkDefaultSurfaceAreaUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setSurfaceAreaUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getSurfaceAreaAvg();
-					listNano.get(i).setSurfaceAreaAvg(checkDefaultSurfaceArea(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getSurfaceAreaLow();
-					listNano.get(i).setSurfaceAreaLow(checkDefaultSurfaceArea(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getSurfaceAreaHigh();
-					listNano.get(i).setSurfaceAreaHigh(checkDefaultSurfaceArea(oldColumnUnits, fieldValue));
-				}
-				
-				
-				/* Time oldValue parameter */
-				oldColumnUnits = String.valueOf(listNano.get(i).getTimeValueUnit());				
-				newColumnUnits = checkDefaultTimeValueUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setTimeValueUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getTimeValue();
-					listNano.get(i).setTimeValue(checkDefaultTimeValue(oldColumnUnits, fieldValue));
-				}
-								
-				oldColumnUnits = String.valueOf(listNano.get(i).getMc_timeValueUnit());				
-				newColumnUnits = checkDefaultTimeValueUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setMc_timeValueUnit(newColumnUnits);
-					
-					fieldValueInt = listNano.get(i).getMc_timeValue();
-					listNano.get(i).setMc_timeValue(checkDefaultTimeValue(oldColumnUnits, fieldValueInt));
-				}
-								
-				/* Particle concentration */
-				oldColumnUnits = String.valueOf(listNano.get(i).getParticleConcentrationUnit());				
-				newColumnUnits = checkDefaultParticleConcentrationUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setParticleConcentrationUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getParticleConcentration();
-					listNano.get(i).setParticleConcentration(checkDefaultParticleConcentration(oldColumnUnits, fieldValue));
-				}
-								
-				oldColumnUnits = String.valueOf(listNano.get(i).getMc_particleConcentrationUnit());				
-				newColumnUnits = checkDefaultParticleConcentrationUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setMc_particleConcentrationUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getMc_particleConcentration();
-					listNano.get(i).setMc_particleConcentration(checkDefaultParticleConcentration(oldColumnUnits, fieldValue));
-				}
-				
-				
-				/* Medium temperature */
-				oldColumnUnits = String.valueOf(listNano.get(i).getMediumTempUnit());
-				newColumnUnits = checkDefaultMediumTempUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setMediumTempUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getMediumTemp();
-					listNano.get(i).setMediumTemp(checkDefaultParticleConcentration(oldColumnUnits, fieldValue));
-				}
-								
-				oldColumnUnits = String.valueOf(listNano.get(i).getMc_mediumTempUnit());				
-				newColumnUnits = checkDefaultMediumTempUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setMc_mediumTempUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getMc_mediumTemp();
-					listNano.get(i).setMc_mediumTemp(checkDefaultParticleConcentration(oldColumnUnits, fieldValue));
-				}
-								
-				/* Zeta potential of nanoparticles */
-				oldColumnUnits = String.valueOf(listNano.get(i).getZetaPotentialUnit());				
-				newColumnUnits = checkDefaultZetaPotentialUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setZetaPotentialUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getZetaPotentialAvg();
-					listNano.get(i).setZetaPotentialAvg(checkDefaultZetaPotential(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getZetaPotentialLow();
-					listNano.get(i).setZetaPotentialLow(checkDefaultZetaPotential(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getZetaPotentialHigh();
-					listNano.get(i).setZetaPotentialHigh(checkDefaultZetaPotential(oldColumnUnits, fieldValue));
-				}
-								
-				/* Size distribution parameters*/
-				oldColumnUnits = String.valueOf(listNano.get(i).getSizeDistribUnit());				
-				newColumnUnits = checkDefaultSizeDistributionUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setSizeDistribUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getSizeDistribAvg();
-					listNano.get(i).setSizeDistribAvg(checkDefaultSizeDistribution(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getSizeDistribLow();
-					listNano.get(i).setSizeDistribLow(checkDefaultSizeDistribution(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getSizeDistribHigh();
-					listNano.get(i).setSizeDistribHigh(checkDefaultSizeDistribution(oldColumnUnits, fieldValue));
-				}
-								
-				/* Size distribution parameters 2*/
-				oldColumnUnits = String.valueOf(listNano.get(i).getSizeDistribUnit2());				
-				newColumnUnits = checkDefaultSizeDistributionUnit2(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setSizeDistribUnit2(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getSizeDistribAvg2();
-					listNano.get(i).setSizeDistribAvg2(checkDefaultSizeDistribution2(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getSizeDistribLow2();
-					listNano.get(i).setSizeDistribLow2(checkDefaultSizeDistribution2(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getSizeDistribHigh2();
-					listNano.get(i).setSizeDistribHigh2(checkDefaultSizeDistribution2(oldColumnUnits, fieldValue));
-				}
-				
-			
-				/* Serum concentration */
-				oldColumnUnits = String.valueOf(listNano.get(i).getSerumConcentrationUnit());				
-				newColumnUnits = checkDefaultSerumConcentrationUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setSerumConcentrationUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getSerumConcentration();
-					listNano.get(i).setSerumConcentration(checkDefaultSerumConcentration(oldColumnUnits, fieldValue));
-				}
-								
-				oldColumnUnits = String.valueOf(listNano.get(i).getMc_serumConcentrationUnit());				
-				newColumnUnits = checkDefaultSerumConcentrationUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setMc_serumConcentrationUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getMc_serumConcentration();
-					listNano.get(i).setMc_serumConcentration(checkDefaultSerumConcentration(oldColumnUnits, fieldValue));
-				}
-								
-				/* Antibiotic concentration */
-				oldColumnUnits = String.valueOf(listNano.get(i).getAntibioticConcentrationUnit());
-				newColumnUnits = checkDefaultAntibioticConcentrationUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setAntibioticConcentrationUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getAntibioticConcentration();
-					listNano.get(i).setAntibioticConcentration(checkDefaultAntibioticConcentration(oldColumnUnits, fieldValue));
-				}
-								
-				oldColumnUnits = String.valueOf(listNano.get(i).getMc_antibioticConcentrationUnit());				
-				newColumnUnits = checkDefaultAntibioticConcentrationUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setMc_antibioticConcentrationUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getMc_antibioticConcentration();
-					listNano.get(i).setMc_antibioticConcentration(checkDefaultAntibioticConcentration(oldColumnUnits, fieldValue));
-				}
-								
-				/* DOM (dissolved organic matter) concentration */
-				oldColumnUnits = String.valueOf(listNano.get(i).getDomUnit());	
-				newColumnUnits = checkDefaultDOMUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setDomUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getDomConcentration();
-					listNano.get(i).setDomConcentration(checkDefaultDOMConcentration(oldColumnUnits, fieldValue));
-				}
-				
-				oldColumnUnits = String.valueOf(listNano.get(i).getMc_domUnit());				
-				newColumnUnits = checkDefaultDOMUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setMc_domUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getMc_domConcentration();
-					listNano.get(i).setMc_domConcentration(checkDefaultDOMConcentration(oldColumnUnits, fieldValue));
-				}
-								
-				/* Salinity oldValue */
-				oldColumnUnits = String.valueOf(listNano.get(i).getSalinityUnit());
-				newColumnUnits = checkDefaultSalinityUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setSalinityUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getSalinityValue();
-					listNano.get(i).setSalinityValue(checkDefaultSalinityValue(oldColumnUnits, fieldValue));
-				}
-						
-				oldColumnUnits = String.valueOf(listNano.get(i).getMc_salinityUnit());				
-				newColumnUnits = checkDefaultSalinityUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setMc_salinityUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getMc_salinityValue();
-					listNano.get(i).setMc_salinityValue(checkDefaultSalinityValue(oldColumnUnits, fieldValue));
-				}
-								
-				/* Particle exposure concentration */
-				oldColumnUnits = String.valueOf(listNano.get(i).getParticleExposDurationUnit());				
-				newColumnUnits = checkDefaultParticleExposureDurationUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setParticleExposDurationUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getParticleExposDuration();
-					listNano.get(i).setParticleExposDuration(checkDefaultParticleExposureDuration(oldColumnUnits, fieldValue));
-				}
-								
-				/* UVA dose */
-				oldColumnUnits = String.valueOf(listNano.get(i).getUvaDoseUnit());
-				newColumnUnits = checkDefaultUVADoseUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setUvaDoseUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getUvaDose();
-					listNano.get(i).setUvaDose(checkDefaultUVADose(oldColumnUnits, fieldValue));
-				}
-								
-				/* UVA exposure duration */
-				oldColumnUnits = String.valueOf(listNano.get(i).getUvaExposDurationUnit());
-				newColumnUnits = checkDefaultUVAExposureDurationUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setUvaExposDurationUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getUvaExposDuration();
-					listNano.get(i).setUvaExposDuration(checkDefaultUVAExposureDuration(oldColumnUnits, fieldValue));
-				}
-								
-				/* Viability average */ 
-				oldColumnUnits = String.valueOf(listNano.get(i).getViabilityUnit());	
-				newColumnUnits = checkDefaultViabilityUnit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setViabilityUnit(newColumnUnits);
-					
-					fieldValue = listNano.get(i).getViabilityAvg();
-					listNano.get(i).setViabilityAvg(checkDefaultViability(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getViabilityLow();
-					listNano.get(i).setViabilityLow(checkDefaultViability(oldColumnUnits, fieldValue));
-					
-					fieldValue = listNano.get(i).getViabilityHigh();
-					listNano.get(i).setViabilityHigh(checkDefaultViability(oldColumnUnits, fieldValue));
-				}
-								
-				/*  LC50 */
-				oldColumnUnits = String.valueOf(listNano.get(i).getLc50Unit());
-				newColumnUnits = checkDefaultLC50Unit(oldColumnUnits);
-				if (!newColumnUnits.equals(oldColumnUnits))
-				{
-					listNano.get(i).setLc50Unit(newColumnUnits);					
-					fieldValue = listNano.get(i).getLc50();
-					listNano.get(i).setLc50(checkDefaultLC50(oldColumnUnits, fieldValue)); 
-				}
-										
+				checkDefaultCoatingAmountUnit(listNano.get(i), i);			
+				checkDefaultPurityUnit(listNano.get(i), i);
+				checkDefaultContaminantUnit(listNano.get(i), i);				
+				checkDefaultParticleOuterDiameterUnit(listNano.get(i), i);
+				checkDefaultParticleInnerDiameterUnit(listNano.get(i), i);
+				checkDefaultParticleLengthUnit(listNano.get(i), i);
+				checkDefaultParticleThicknessUnit(listNano.get(i), i);
+				checkDefaultSurfaceAreaUnit(listNano.get(i), i);
+				checkDefaultTimeValueUnit(listNano.get(i), i);
+				checkDefaultMcTimeValueUnit(listNano.get(i), i);
+				checkDefaultParticleConcentrationUnit(listNano.get(i), i);
+				checkDefaultMcParticleConcentrationUnit(listNano.get(i), i);
+				checkDefaultMediumTempUnit(listNano.get(i), i);
+				checkDefaultMcMediumTempUnit(listNano.get(i), i);
+				checkDefaultZetaPotentialUnit(listNano.get(i), i);
+				checkDefaultSizeDistributionUnit(listNano.get(i), i);	
+				checkDefaultSizeDistributionUnit2(listNano.get(i), i);
+				checkDefaultSerumConcentrationUnit(listNano.get(i), i);
+				checkDefaultMcSerumConcentrationUnit(listNano.get(i), i);
+				checkDefaultAntibioticConcentrationUnit(listNano.get(i), i);
+				checkDefaultMcAntibioticConcentrationUnit(listNano.get(i), i);
+				checkDefaultDOMUnit(listNano.get(i), i);	
+				checkDefaultMcDOMUnit(listNano.get(i), i);
+				checkDefaultSalinityUnit(listNano.get(i), i);	
+				checkDefaultMcSalinityUnit(listNano.get(i), i);
+				checkDefaultParticleExposureDurationUnit(listNano.get(i), i);				
+				checkDefaultUVADoseUnit(listNano.get(i), i);
+				checkDefaultUVAExposureDurationUnit(listNano.get(i), i);				
+				checkDefaultViabilityUnit(listNano.get(i), i);
+				checkDefaultLC50Unit(listNano.get(i), i);														
 			}
 		}
 		catch (IllegalUnitsException ex)
 		{
-			ex.printStackTrace();
 			ex.getMessage();
 			throw ex;
 		}
-		
-		
+				
 	}
 
 }

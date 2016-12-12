@@ -11,6 +11,11 @@ import java.sql.SQLException;
 import java.io.IOException;
 import java.util.List;
 import java.nio.file.*;
+import java.util.logging.*;
+
+import javax.annotation.processing.FilerException;
+
+import org.assertj.core.internal.InputStreamsException;
 
 public class Main {
 
@@ -23,7 +28,19 @@ public class Main {
 	 */
 	public static void main(String[] args) 
 	{
-		getNanoMaterials();
+		String filename = null;
+		
+		if (args == null || args.length == 0)  // Use default properties file.
+		{
+			filename = System.getProperty("user.dir") + "\\properties.txt";
+		}
+		else  // Use command-line specified properties file.
+		{
+			filename = args[0].trim();
+			System.out.println("Argument passed to the program: " + args[0]);
+		}
+		
+		getNanoMaterials(filename);
 	}
 	
 	/**
@@ -38,9 +55,12 @@ public class Main {
 	 * @param None.
 	 * @return Nothing.
 	 */
-	public static void getNanoMaterials()
+	public static void getNanoMaterials(String filename)
 	{
-		
+		Logger logger = Logger.getLogger("getNanoMaterials.class");
+		String logFile = System.getProperty("user.dir") + "\\nanoQSAR.log";
+		FileHandler fh;
+				
 		MySqlQuery sqlNano = new MySqlQuery();
 		List<NanoMaterial> nanomaterials;
 				
@@ -51,8 +71,16 @@ public class Main {
 		
 		try
 		{
+			fh = new FileHandler(logFile);
+			logger.setUseParentHandlers(false);
+			logger.addHandler(fh);
+			logger.setLevel(Level.INFO);
+			
+			SimpleFormatter formatter = new SimpleFormatter();
+			fh.setFormatter(formatter);
+						
 			/* Input database connection information and name of output file. */
-			DBUtil.loadProperties();
+			DBUtil.loadProperties(filename);
 			
 			/* Set up the path and name of the CSV file. */
 			Path p1 = Paths.get(DBUtil.getCsvFileName());  
@@ -77,24 +105,36 @@ public class Main {
 				DBUtil.displayNanoMaterial(nanomaterial);
 			}
 			*/
+			fh.close();
 		}
 		catch(SQLException ex)
 		{
-			ex.printStackTrace();
+			logger.log(Level.SEVERE, "SQL exception found.", ex);
+			// ex.printStackTrace();
 		}
 		catch(ClassNotFoundException ex)
 		{
-			ex.printStackTrace();
+			logger.log(Level.SEVERE, "Class not found exception found.", ex);
+			// ex.printStackTrace();
 		}
 		catch(IOException ex)
 		{
-			System.out.println(ex.getMessage());
-			ex.printStackTrace();
+			logger.log(Level.SEVERE, "File not found exception found.", ex);
+			// ex.printStackTrace();
+		}
+		catch(NullPointerException ex)
+		{
+			logger.log(Level.SEVERE, "Null pointer exception found.", ex);
+		}
+		catch(SecurityException ex)
+		{
+			logger.log(Level.SEVERE, "Security exception found.", ex);
 		}
 		catch(IllegalUnitsException ex)
 		{
-			ex.getMessage();
+			logger.log(Level.SEVERE, "Class not found exception found.", ex.getMessage());
 		}
+		
 	}
 	
 }
