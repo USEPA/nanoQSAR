@@ -22,7 +22,7 @@ public class ConnectionManagerTest {
 		
 		try
 		{
-			String filename = "C:\\Users\\wmelende\\git\\maven-nanoQSAR\\properties.txt";
+			String filename = System.getProperty("user.dir") + "\\properties.txt";
 			DBUtil.loadProperties(filename);
 			ConnectionManager connManager = new ConnectionManager();
 			connManager.getDriver();
@@ -47,7 +47,7 @@ public class ConnectionManagerTest {
 		ConnectionManager connManager = new ConnectionManager();
 		try
 		{		
-			String filename = "C:\\Users\\wmelende\\git\\maven-nanoQSAR\\properties.txt";
+			String filename = System.getProperty("user.dir") + "\\properties.txt";
 			DBUtil.loadProperties(filename);
 			conn = connManager.createConnection();		
 		}

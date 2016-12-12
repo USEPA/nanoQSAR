@@ -13,10 +13,6 @@ import java.util.List;
 import java.nio.file.*;
 import java.util.logging.*;
 
-import javax.annotation.processing.FilerException;
-
-import org.assertj.core.internal.InputStreamsException;
-
 public class Main {
 
 	/**
