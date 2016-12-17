@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
 * This class gets a connection to the database, submits a SQL query to the database, 
@@ -15,6 +17,8 @@ import java.util.List;
 
 public class MySqlQuery 
 {
+	/* Need this line to allow logging of error messages */
+	private final static Logger lOGGER = Logger.getLogger( LoggerInfo.class.getName() );
 	
 	public MySqlQuery()
 	{
@@ -150,9 +154,18 @@ public class MySqlQuery
 		Connection conn = null;
 		ResultSet rs = null;
 		
-		try
-		{		
+		try  // Create a connection to the database.
+		{
 			conn = ConnectionManager.getConnection();			
+		}
+		catch(ClassNotFoundException | SQLException ex)
+		{
+			// Throw exception back to the calling method.  Do not proceed with the rest of the code.
+			throw ex;  
+		}
+		
+		try
+		{								
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(sqlQuery);
 			
@@ -348,6 +361,11 @@ public class MySqlQuery
 				
 			}
 			
+		}
+		catch(SQLException ex)
+		{
+			lOGGER.log(Level.SEVERE, "Statement or ResultSet failed.", ex);
+			throw ex;
 		}
 		finally  // Close everything.
 		{

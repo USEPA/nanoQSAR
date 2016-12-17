@@ -15,6 +15,8 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.nio.file.*;
 
 /**
@@ -33,6 +35,8 @@ public class DBUtil
 	private static String password;
 	private static String csvFileName;
 	
+	/* Need this line to allow logging of error messages */
+	private final static Logger lOGGER = Logger.getLogger( LoggerInfo.class.getName() );
 	
 	public static String getDriverName() {
 		return driverName;
@@ -102,6 +106,18 @@ public class DBUtil
 			setUsername(prop.getProperty("Username").trim());	
 			setCsvFileName(prop.getProperty("CsvFileName").trim());
 		}
+		catch(IOException ex)
+		{
+			System.out.println("Properties file, " + filename + ", was not found.");
+			lOGGER.log(Level.SEVERE, "Properties file, " + filename + ", was not found.", ex);
+			throw ex;
+		}
+		catch(NullPointerException ex)
+		{
+			System.out.println("Null pointer exception: check spelling of properties.");
+			lOGGER.log(Level.SEVERE, "NUll pointer exception: check spelling of properties.", ex);
+			throw ex;
+		}
 		finally
 		{
 			if (input != null)
@@ -112,7 +128,8 @@ public class DBUtil
 				}
 				catch(IOException ex)
 				{
-					// ex.printStackTrace();
+					System.out.println("InputStream variable, input, could not be closed.");
+					lOGGER.log(Level.SEVERE, "InputStream variable, input, could not be closed.", ex);
 					throw ex;
 				}				
 			}
@@ -123,7 +140,7 @@ public class DBUtil
 	 * @author Wilson Melendez
 	 * @param connection It is used to establish connection to remote MySQL server.
 	 */
-	public static void close(Connection connection)
+	public static void close(Connection connection) throws SQLException
 	{
 		if (connection != null)
 		{
@@ -131,9 +148,11 @@ public class DBUtil
 			{
 				connection.close();
 			}
-			catch(SQLException e)
+			catch(SQLException ex)
 			{
-				System.out.println("Error: " + e.getMessage());
+				System.out.println("Error: " + ex.getMessage());
+				lOGGER.log(Level.SEVERE, "Connection could not be closed.", ex);
+				throw ex;
 			}
 		}
 	}
@@ -142,7 +161,7 @@ public class DBUtil
 	 * @author Wilson Melendez
 	 * @param statement
 	 */
-	public static void close(Statement statement)
+	public static void close(Statement statement) throws SQLException
 	{
 		if (statement != null)
 		{
@@ -150,9 +169,11 @@ public class DBUtil
 			{
 				statement.close();
 			}
-			catch(SQLException e)
+			catch(SQLException ex)
 			{
-				System.out.println("Error: " + e.getMessage());
+				System.out.println("Error: " + ex.getMessage());
+				lOGGER.log(Level.SEVERE, "Statement could not be closed.", ex);
+				throw ex;
 			}
 		}
 	}
@@ -161,7 +182,7 @@ public class DBUtil
 	 * @author Wilson Melendez
 	 * @param resultset It is an object used to hold results returned by remote MySQL server.
 	 */
-	public static void close(ResultSet resultset)
+	public static void close(ResultSet resultset) throws SQLException
 	{
 		if (resultset != null)
 		{
@@ -169,9 +190,11 @@ public class DBUtil
 			{
 				resultset.close();
 			}
-			catch(SQLException e)
+			catch(SQLException ex)
 			{
-				System.out.println("Error: " + e.getMessage());
+				System.out.println("Error: " + ex.getMessage());
+				lOGGER.log(Level.SEVERE, "ResultSet could not be closed.", ex);
+				throw ex;
 			}
 		}
 	}

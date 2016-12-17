@@ -3,6 +3,8 @@
  */
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class checks for default units of fields and converts units and its corresponding
@@ -13,6 +15,9 @@ import java.util.List;
  */
 public class DefaultUnits 
 {
+	/* Need this line to allow logging of error messages */
+	private final static Logger lOGGER = Logger.getLogger( LoggerInfo.class.getName() );
+	
 	/**
 	 * @author Wilson Melendez
 	 * @param nanoM
@@ -533,14 +538,14 @@ public class DefaultUnits
 		String strValue = String.valueOf(nanoM.getMc_particleConcentration()).trim();
 		Double value;
 		
-		if (strU.equals("ug/mL") || strU.equals("null") || strU.equals("mg/mL"))
+		if (strU.equals("mg/L") || strU.equals("null") || strU.equals("ug/L"))
 		{
-			if (strU.equals("mg/mL"))
+			if (strU.equals("ug/L"))
 			{
-				nanoM.setMc_particleConcentrationUnit("ug/mL");
+				nanoM.setMc_particleConcentrationUnit("mg/L");
 				if (!strValue.equals("null"))
 				{
-					value = nanoM.getMc_particleConcentration() * 1.0E+03;
+					value = nanoM.getMc_particleConcentration() / 1000.0;
 					nanoM.setMc_particleConcentration(value);
 				}
 			}
@@ -1194,7 +1199,8 @@ public class DefaultUnits
 		}
 		catch (IllegalUnitsException ex)
 		{
-			ex.getMessage();
+			System.out.println("Unknown/illegal units were found.  Check log file.");
+			lOGGER.log(Level.SEVERE, "Illegal units exception found.", ex);
 			throw ex;
 		}
 				

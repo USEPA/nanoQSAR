@@ -2,6 +2,8 @@
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.opencsv.CSVWriter;
 
@@ -12,6 +14,9 @@ import com.opencsv.CSVWriter;
  */
 public class CsvFileWriter 
 {	
+	/* Need this line to allow logging of error messages */
+	private final static Logger lOGGER = Logger.getLogger( LoggerInfo.class.getName() );
+	
 	/**
 	 * This method writes the data to a CSV file.  It uses openCSV, which is a CSV
 	 * parser library for Java.  It was downloaded via Maven and it can be found under the
@@ -29,14 +34,7 @@ public class CsvFileWriter
 		String[] entries;
 		
 		try
-		{
-			/* Output file can be regenerated so  we don't need this right now. */
-			/* if (Files.exists(target)) 
-			   {
-				   throw new IOException("File already exists.");
-			   }			
-			*/
-			
+		{	
 			FileWriter file = new FileWriter(filename); 
 			
 			/* Create an instance of the CSVWriter class and specify the comma as the 
@@ -59,9 +57,11 @@ public class CsvFileWriter
 			/* Close the writer. */
 			csvOutput.close();   
 		}
-		finally
+		catch(IOException ex)
 		{
-			// Nothing to clean up in this case.
+			System.out.println("FileWriter for " + filename + " could not be constructed.");
+			lOGGER.log(Level.SEVERE, "FileWriter for " + filename + " could not be constructed.", ex);	
+			throw ex;
 		}
 		
 	}

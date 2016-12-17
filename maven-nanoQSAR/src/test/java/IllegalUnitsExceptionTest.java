@@ -12,7 +12,10 @@ import org.junit.Test;
  */
 public class IllegalUnitsExceptionTest {
 	/**
+	 * This test checks for the throwing of the IllegalUnitsException if invalid units are
+	 * entered.
 	 * Test method for {@link IllegalUnitsException#IllegalUnitsException(java.lang.String)}.
+	 * @author Wilson Melendez
 	 */
 	@Test(expected=IllegalUnitsException.class)
 	public void testIllegalUnitsException() throws IllegalUnitsException
@@ -20,12 +23,11 @@ public class IllegalUnitsExceptionTest {
 		try 
 		{
 			String strUnits = "lb/ft3";
-			verifyUnits(strUnits);
-			
+			verifyUnits(strUnits);			
 		}
-		finally
+		catch (IllegalUnitsException ex)
 		{
-			System.out.println("Exception was thrown successfully.");
+			throw ex;
 		}
   
 	}
@@ -42,6 +44,7 @@ public class IllegalUnitsExceptionTest {
 	
 	/**
 	 * Test method for {@link IllegalUnitsException#getMessage()}.
+	 * @author Wilson Melendez
 	 */
 	@Test
 	public void testGetMessage() {

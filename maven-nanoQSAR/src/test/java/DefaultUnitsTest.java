@@ -1,6 +1,13 @@
 import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.BeforeClass;
 
 /**
  * 
@@ -14,15 +21,452 @@ import org.junit.Test;
 public class DefaultUnitsTest {
 	
 	private static Double DELTA = 1.0E-15;
-	String newUnit1, newUnit2, newUnit3;
-	Double newValue1, newValue2, newValue3;
+	private static List<NanoMaterial> nanomaterials;
+	private static MySqlQuery sqlNano;
+	private static String sqlQuery;
 	Double nullValue = null;
-	NanoMaterial nanoM = new NanoMaterial();
-	int i = 0;
+	NanoMaterial nanoM = new NanoMaterial();	
+	int i = 0;  // This is just a dummy index from the  point of this test.
 	
+	@BeforeClass
+	public static void setUp() throws IOException
+	{
+		/* Input database connection information and name of output file. */
+		String filename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
+		DBUtil.loadProperties(filename);
+		
+		DefaultUnitsTest sqlTest = new DefaultUnitsTest();
+		sqlTest.sqlNano = new MySqlQuery();
+		sqlTest.sqlQuery = sqlTest.sqlNano.getSqlQuery();
+		sqlTest.nanomaterials = new ArrayList<NanoMaterial>();
+	}
 	
 	/**
-	 * Test method for {@link DefaultUnits#checkDefaultCoatingAmountUnit(java.lang.String)}.
+	 * This test checks whether the data mined from the MySQL database have valid units.
+	 * There are first, second, and null options specified for each parameter with units.
+	 * @author Wilson Melendez
+	 */
+	@Test
+	public void testBeforeUnitConversion()
+	{
+		// nanomaterials = new ArrayList<NanoMaterial>();
+		try
+		{	
+			nanomaterials = sqlNano.getNanoMaterials(sqlQuery);
+			String strU;
+			
+			for (NanoMaterial nanoM : nanomaterials)
+			{				
+				strU = String.valueOf(nanoM.getCoatingAmountUnit()).trim();
+				if (!strU.equals("ug") && !strU.equals("null") && !strU.equals("mg"))
+				{
+					throw new IllegalUnitsException("Illegal coating amount unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getPurityUnit()).trim();
+				if (!strU.equals("%") && !strU.equals("null") && !strU.equals("Mass %") && !strU.equals("fraction"))
+				{
+					throw new IllegalUnitsException("Illegal purity unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getContamUnit()).trim();
+				if (!strU.equals("ppm") && !strU.equals("null") && !strU.equals("ppt"))
+				{
+					throw new IllegalUnitsException("Illegal Contaminant unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getParticleOuterDiamUnit()).trim();
+				if (!strU.equals("nm") && !strU.equals("null") && !strU.equals("um"))
+				{
+					throw new IllegalUnitsException("Illegal Particle Outer Diameter unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getParticleInnerDiamUnit()).trim();
+				if (!strU.equals("nm") && !strU.equals("null") && !strU.equals("um"))
+				{
+					throw new IllegalUnitsException("Illegal Particle Inner Diameter unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getParticleLengthUnit()).trim();
+				if (!strU.equals("nm") && !strU.equals("null") && !strU.equals("um"))
+				{
+					throw new IllegalUnitsException("Illegal Particle Length unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getParticleThicknessUnit()).trim();
+				if (!strU.equals("nm") && !strU.equals("null") && !strU.equals("um"))
+				{
+					throw new IllegalUnitsException("Illegal Particle Thickness unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getSurfaceAreaUnit()).trim();
+				if (!strU.equals("m^2/g") && !strU.equals("null") && !strU.equals("cm^2/g"))
+				{
+					throw new IllegalUnitsException("Illegal surface area unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getTimeValueUnit()).trim();
+				if (!strU.equals("hours") && !strU.equals("null") && !strU.equals("minutes"))
+				{
+					throw new IllegalUnitsException("Illegal time value unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_timeValueUnit()).trim();
+				if (!strU.equals("hours") && !strU.equals("null") && !strU.equals("minutes"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_time value unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getParticleConcentrationUnit()).trim();
+				if (!strU.equals("ug/mL") && !strU.equals("null") && !strU.equals("mg/mL"))
+				{
+					throw new IllegalUnitsException("Illegal Particle Concentration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_particleConcentrationUnit()).trim();
+				if (!strU.equals("mg/L") && !strU.equals("null") && !strU.equals("ug/L"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_particle Concentration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMediumTempUnit()).trim();
+				if (!strU.equals("C") && !strU.equals("null") && !strU.equals("F") && !strU.equals("K"))
+				{
+					throw new IllegalUnitsException("Illegal medium temperature unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_mediumTempUnit()).trim();
+				if (!strU.equals("C") && !strU.equals("null") && !strU.equals("F") && !strU.equals("K"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_medium temperature unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getZetaPotentialUnit()).trim();
+				if (!strU.equals("mV") && !strU.equals("null") && !strU.equals("uV"))
+				{
+					throw new IllegalUnitsException("Illegal zeta potential unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getSizeDistribUnit()).trim();
+				if (!strU.equals("nm") && !strU.equals("null") && !strU.equals("um"))
+				{
+					throw new IllegalUnitsException("Illegal size distribution unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getSizeDistribUnit2()).trim();
+				if (!strU.equals("nm") && !strU.equals("null") && !strU.equals("um"))
+				{
+					throw new IllegalUnitsException("Illegal size distribution 2 unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getSerumConcentrationUnit()).trim();
+				if (!strU.equals("%") && !strU.equals("null") && !strU.equals("fraction"))
+				{
+					throw new IllegalUnitsException("Illegal serum concentration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_serumConcentrationUnit()).trim();
+				if (!strU.equals("%") && !strU.equals("null") && !strU.equals("fraction"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_serum concentration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getAntibioticConcentrationUnit()).trim();
+				if (!strU.equals("%") && !strU.equals("null") && !strU.equals("fraction"))
+				{
+					throw new IllegalUnitsException("Illegal antibiotic concentration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_antibioticConcentrationUnit()).trim();
+				if (!strU.equals("%") && !strU.equals("null") && !strU.equals("fraction"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_antibiotic concentration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getDomUnit()).trim();
+				if (!strU.equals("mg/L") && !strU.equals("null") && !strU.equals("ug/L"))
+				{
+					throw new IllegalUnitsException("Illegal DOM unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_domUnit()).trim();
+				if (!strU.equals("mg/L") && !strU.equals("null") && !strU.equals("ug/L"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_DOM unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getSalinityUnit()).trim();
+				if (!strU.equals("ppt") && !strU.equals("null") && !strU.equals("psu") && !strU.equals("g/kg"))
+				{
+					throw new IllegalUnitsException("Illegal salinity unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_salinityUnit()).trim();
+				if (!strU.equals("ppt") && !strU.equals("null") && !strU.equals("psu") && !strU.equals("g/kg"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_salinity unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getParticleExposDurationUnit()).trim();
+				if (!strU.equals("hours") && !strU.equals("null") && !strU.equals("minutes"))
+				{
+					throw new IllegalUnitsException("Illegal particle exposure duration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getUvaDoseUnit()).trim();
+				if (!strU.equals("J/cm^2") && !strU.equals("null") && !strU.equals("mJ/cm^2"))
+				{
+					throw new IllegalUnitsException("Illegal UVA dose unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getUvaExposDurationUnit()).trim();
+				if (!strU.equals("hours") && !strU.equals("null") && !strU.equals("minutes"))
+				{
+					throw new IllegalUnitsException("Illegal UVA exposure duration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getViabilityUnit()).trim();
+				if (!strU.equals("%") && !strU.equals("null") && !strU.equals("fraction"))
+				{
+					throw new IllegalUnitsException("Illegal viability unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getLc50Unit()).trim();
+				if (!strU.equals("ug/mL") && !strU.equals("null") && !strU.equals("mg/mL"))
+				{
+					throw new IllegalUnitsException("Illegal LC50 unit: " + strU);
+				}			
+			}			
+		}
+		catch(IllegalUnitsException ex)
+		{
+			Assert.fail("Exception was thrown: " + ex);		
+		}
+		catch(ClassNotFoundException ex)
+		{
+			Assert.fail("Exception was thrown: " + ex);		
+		}
+		catch (SQLException ex)
+		{
+			Assert.fail("Exception was thrown: " + ex);		
+		}
+	}
+	
+	/**
+	 * This test checks whether the data have default units (first option or null) after calling
+	 * the unit conversion method.
+	 * @author Wilson Melendez
+	 */
+	@Test
+	public void testAfterUnitConversion()
+	{
+		try
+		{	
+			String strU;
+			nanomaterials = sqlNano.getNanoMaterials(sqlQuery);
+			/* Check default units and perform unit conversions if necessary. */
+			DefaultUnits.checkUnits(nanomaterials);
+			
+			for (NanoMaterial nanoM : nanomaterials)
+			{				
+				strU = String.valueOf(nanoM.getCoatingAmountUnit()).trim();
+				if (!strU.equals("ug") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal coating amount unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getPurityUnit()).trim();
+				if (!strU.equals("%") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal purity unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getContamUnit()).trim();
+				if (!strU.equals("ppm") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal Contaminant unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getParticleOuterDiamUnit()).trim();
+				if (!strU.equals("nm") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal Particle Outer Diameter unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getParticleInnerDiamUnit()).trim();
+				if (!strU.equals("nm") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal Particle Inner Diameter unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getParticleLengthUnit()).trim();
+				if (!strU.equals("nm") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal Particle Length unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getParticleThicknessUnit()).trim();
+				if (!strU.equals("nm") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal Particle Thickness unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getSurfaceAreaUnit()).trim();
+				if (!strU.equals("m^2/g") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal surface area unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getTimeValueUnit()).trim();
+				if (!strU.equals("hours") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal time value unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_timeValueUnit()).trim();
+				if (!strU.equals("hours") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_time value unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getParticleConcentrationUnit()).trim();
+				if (!strU.equals("ug/mL") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal Particle Concentration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_particleConcentrationUnit()).trim();
+				if (!strU.equals("mg/L") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_particle Concentration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMediumTempUnit()).trim();
+				if (!strU.equals("C") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal medium temperature unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_mediumTempUnit()).trim();
+				if (!strU.equals("C") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_medium temperature unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getZetaPotentialUnit()).trim();
+				if (!strU.equals("mV") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal zeta potential unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getSizeDistribUnit()).trim();
+				if (!strU.equals("nm") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal size distribution unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getSizeDistribUnit2()).trim();
+				if (!strU.equals("nm") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal size distribution 2 unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getSerumConcentrationUnit()).trim();
+				if (!strU.equals("%") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal serum concentration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_serumConcentrationUnit()).trim();
+				if (!strU.equals("%") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_serum concentration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getAntibioticConcentrationUnit()).trim();
+				if (!strU.equals("%") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal antibiotic concentration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_antibioticConcentrationUnit()).trim();
+				if (!strU.equals("%") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_antibiotic concentration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getDomUnit()).trim();
+				if (!strU.equals("mg/L") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal DOM unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_domUnit()).trim();
+				if (!strU.equals("mg/L") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_DOM unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getSalinityUnit()).trim();
+				if (!strU.equals("ppt") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal salinity unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getMc_salinityUnit()).trim();
+				if (!strU.equals("ppt") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal Mc_salinity unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getParticleExposDurationUnit()).trim();
+				if (!strU.equals("hours") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal particle exposure duration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getUvaDoseUnit()).trim();
+				if (!strU.equals("J/cm^2") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal UVA dose unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getUvaExposDurationUnit()).trim();
+				if (!strU.equals("hours") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal UVA exposure duration unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getViabilityUnit()).trim();
+				if (!strU.equals("%") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal viability unit: " + strU);
+				}
+				
+				strU = String.valueOf(nanoM.getLc50Unit()).trim();
+				if (!strU.equals("ug/mL") && !strU.equals("null"))
+				{
+					throw new IllegalUnitsException("Illegal LC50 unit: " + strU);
+				}			
+			}			
+		}
+		catch(IllegalUnitsException ex)
+		{
+			Assert.fail("Exception was thrown: " + ex);		
+		}
+		catch(ClassNotFoundException ex)
+		{
+			Assert.fail("Exception was thrown: " + ex);		
+		}
+		catch (SQLException ex)
+		{
+			Assert.fail("Exception was thrown: " + ex);		
+		}
+	}
+	
+	/**
+	 * @ author Wilson Melendez
+	 * This is a test method for the checkDefaultCoatingAmountUnit method.
 	 */
 	@Test
 	public void testCheckDefaultCoatingAmountUnit() {		
@@ -53,7 +497,8 @@ public class DefaultUnitsTest {
 
 	
 	/**
-	 * Test method for {@link DefaultUnits#checkDefaultPurityUnit(java.lang.String)}.
+	 * @ author Wilson Melendez
+	 * This is a test method for the checkPurityUnit method.
 	 */
 	@Test
 	public void testCheckDefaultPurityUnit() {
@@ -83,17 +528,54 @@ public class DefaultUnitsTest {
 
 
 	/**
-	 * Test method for {@link DefaultUnits#checkDefaultContaminantUnit(java.lang.String)}.
+	 * @ author Wilson Melendez
+	 * This is a test method for the checkDefaultCoatingAmountUnit method.
 	 */
 	@Test
 	public void testCheckDefaultContaminantUnit() {
 		try
 		{
-			nanoM.setContamUnit("ppm");
+			nanoM.setContamUnit("ppm");		
 			nanoM.setContamAl(15.0);
+			nanoM.setContamAs(15.0);
+			nanoM.setContamBe(15.0);
+			nanoM.setContamCa(15.0);
+			nanoM.setContamCo(15.0);
+			nanoM.setContamCr(15.0);
+			nanoM.setContamFe(15.0);
+			nanoM.setContamK(15.0);
+			nanoM.setContamMg(15.0);
+			nanoM.setContamNa(15.0);
+			nanoM.setContamP(15.0);
+			nanoM.setContamPb(15.0);
+			nanoM.setContamSb(15.0);
+			nanoM.setContamSe(15.0);
+			nanoM.setContamSiO2(15.0);
+			nanoM.setContamSn(15.0);
+			nanoM.setContamTl(15.0);
+			nanoM.setContamV(15.0);
+			
 			DefaultUnits.checkDefaultContaminantUnit(nanoM, i);
-			assertEquals("ppm", nanoM.getContamUnit());	
-			assertEquals(15.0, nanoM.getContamAl(), DELTA);	
+			assertEquals("ppm", nanoM.getContamUnit());				
+			assertEquals(15.0, nanoM.getContamAl(), DELTA);				
+			assertEquals(15.0, nanoM.getContamAs(), DELTA);				
+			assertEquals(15.0, nanoM.getContamBe(), DELTA);				
+			assertEquals(15.0, nanoM.getContamCa(), DELTA);				
+			assertEquals(15.0, nanoM.getContamCo(), DELTA);				
+			assertEquals(15.0, nanoM.getContamCr(), DELTA);				
+			assertEquals(15.0, nanoM.getContamFe(), DELTA);				
+			assertEquals(15.0, nanoM.getContamK(), DELTA);				
+			assertEquals(15.0, nanoM.getContamMg(), DELTA);				
+			assertEquals(15.0, nanoM.getContamNa(), DELTA);				
+			assertEquals(15.0, nanoM.getContamP(), DELTA);				
+			assertEquals(15.0, nanoM.getContamPb(), DELTA);				
+			assertEquals(15.0, nanoM.getContamSb(), DELTA);				
+			assertEquals(15.0, nanoM.getContamSe(), DELTA);				
+			assertEquals(15.0, nanoM.getContamSiO2(), DELTA);				
+			assertEquals(15.0, nanoM.getContamSn(), DELTA);				
+			assertEquals(15.0, nanoM.getContamTl(), DELTA);				
+			assertEquals(15.0, nanoM.getContamV(), DELTA);	
+			
 			
 			nanoM.setContamUnit("null");
 			DefaultUnits.checkDefaultContaminantUnit(nanoM, i);
@@ -101,9 +583,43 @@ public class DefaultUnitsTest {
 			
 			nanoM.setContamUnit("ppt");
 			nanoM.setContamAl(20.0);
+			nanoM.setContamAs(20.0);
+			nanoM.setContamBe(20.0);
+			nanoM.setContamCa(20.0);
+			nanoM.setContamCo(20.0);
+			nanoM.setContamCr(20.0);
+			nanoM.setContamFe(20.0);
+			nanoM.setContamK(20.0);
+			nanoM.setContamMg(20.0);
+			nanoM.setContamNa(20.0);
+			nanoM.setContamP(20.0);
+			nanoM.setContamPb(20.0);
+			nanoM.setContamSb(20.0);
+			nanoM.setContamSe(20.0);
+			nanoM.setContamSiO2(20.0);
+			nanoM.setContamSn(20.0);
+			nanoM.setContamTl(20.0);
+			nanoM.setContamV(20.0);
 			DefaultUnits.checkDefaultContaminantUnit(nanoM, i);
 			assertEquals("ppm", nanoM.getContamUnit());	
 			assertEquals(20000.0, nanoM.getContamAl(), DELTA);
+			assertEquals(20000.0, nanoM.getContamAs(), DELTA);				
+			assertEquals(20000.0, nanoM.getContamBe(), DELTA);				
+			assertEquals(20000.0, nanoM.getContamCa(), DELTA);				
+			assertEquals(20000.0, nanoM.getContamCo(), DELTA);				
+			assertEquals(20000.0, nanoM.getContamCr(), DELTA);				
+			assertEquals(20000.0, nanoM.getContamFe(), DELTA);				
+			assertEquals(20000.0, nanoM.getContamK(), DELTA);				
+			assertEquals(20000.0, nanoM.getContamMg(), DELTA);				
+			assertEquals(20000.0, nanoM.getContamNa(), DELTA);				
+			assertEquals(20000.0, nanoM.getContamP(), DELTA);				
+			assertEquals(20000.0, nanoM.getContamPb(), DELTA);				
+			assertEquals(20000.0, nanoM.getContamSb(), DELTA);				
+			assertEquals(20000.0, nanoM.getContamSe(), DELTA);				
+			assertEquals(20000.0, nanoM.getContamSiO2(), DELTA);				
+			assertEquals(20000.0, nanoM.getContamSn(), DELTA);				
+			assertEquals(20000.0, nanoM.getContamTl(), DELTA);				
+			assertEquals(20000.0, nanoM.getContamV(), DELTA);	
 		}
 		catch (IllegalUnitsException ex)
 		{
@@ -113,7 +629,8 @@ public class DefaultUnitsTest {
 	
 
 	/**
-	 * Test method for {@link DefaultUnits#checkDefaultParticleOuterDiameterUnit(java.lang.String)}.
+	 * @author Wilson Melendez
+	 * Test method tests the  checkDefaultParticleOuterDiameterUnit method.
 	 */
 	@Test
 	public void testCheckDefaultParticleOuterDiameterUnit() {
@@ -121,9 +638,13 @@ public class DefaultUnitsTest {
 		{
 			nanoM.setParticleOuterDiamUnit("nm");
 			nanoM.setParticleOuterDiamAvg(15.0);
+			nanoM.setParticleOuterDiamHigh(15.0);
+			nanoM.setParticleOuterDiamLow(15.0);
 			DefaultUnits.checkDefaultParticleOuterDiameterUnit(nanoM, i);
 			assertEquals("nm", nanoM.getParticleOuterDiamUnit());	
 			assertEquals(15.0, nanoM.getParticleOuterDiamAvg(), DELTA);	
+			assertEquals(15.0, nanoM.getParticleOuterDiamHigh(), DELTA);	
+			assertEquals(15.0, nanoM.getParticleOuterDiamLow(), DELTA);	
 			
 			nanoM.setParticleOuterDiamUnit("null");
 			DefaultUnits.checkDefaultParticleOuterDiameterUnit(nanoM, i);
@@ -131,9 +652,13 @@ public class DefaultUnitsTest {
 			
 			nanoM.setParticleOuterDiamUnit("um");
 			nanoM.setParticleOuterDiamAvg(20.0);
+			nanoM.setParticleOuterDiamHigh(20.0);
+			nanoM.setParticleOuterDiamLow(20.0);
 			DefaultUnits.checkDefaultParticleOuterDiameterUnit(nanoM, i);
 			assertEquals("nm", nanoM.getParticleOuterDiamUnit());	
 			assertEquals(20000.0, nanoM.getParticleOuterDiamAvg(), DELTA);
+			assertEquals(20000.0, nanoM.getParticleOuterDiamHigh(), DELTA);
+			assertEquals(20000.0, nanoM.getParticleOuterDiamLow(), DELTA);
 		}
 		catch (IllegalUnitsException ex)
 		{
@@ -142,7 +667,8 @@ public class DefaultUnitsTest {
 	}
 
 	/**
-	 * Test method for {@link DefaultUnits#checkDefaultParticleInnerDiameterUnit(java.lang.String)}.
+	 * @author Wilson Melendez
+	 * Test method the checkDefaultParticleInnerDiameterUnit method.
 	 */
 	@Test
 	public void testCheckDefaultParticleInnerDiameterUnit() {
@@ -150,9 +676,13 @@ public class DefaultUnitsTest {
 		{
 			nanoM.setParticleInnerDiamUnit("nm");
 			nanoM.setParticleInnerDiamAvg(15.0);
+			nanoM.setParticleInnerDiamHigh(15.0);
+			nanoM.setParticleInnerDiamLow(15.0);
 			DefaultUnits.checkDefaultParticleInnerDiameterUnit(nanoM, i);
 			assertEquals("nm", nanoM.getParticleInnerDiamUnit());	
 			assertEquals(15.0, nanoM.getParticleInnerDiamAvg(), DELTA);	
+			assertEquals(15.0, nanoM.getParticleInnerDiamHigh(), DELTA);
+			assertEquals(15.0, nanoM.getParticleInnerDiamLow(), DELTA);
 			
 			nanoM.setParticleInnerDiamUnit("null");
 			DefaultUnits.checkDefaultParticleInnerDiameterUnit(nanoM, i);
@@ -160,9 +690,13 @@ public class DefaultUnitsTest {
 			
 			nanoM.setParticleInnerDiamUnit("um");
 			nanoM.setParticleInnerDiamAvg(20.0);
+			nanoM.setParticleInnerDiamHigh(20.0);
+			nanoM.setParticleInnerDiamLow(20.0);
 			DefaultUnits.checkDefaultParticleInnerDiameterUnit(nanoM, i);
 			assertEquals("nm", nanoM.getParticleInnerDiamUnit());	
 			assertEquals(20000.0, nanoM.getParticleInnerDiamAvg(), DELTA);
+			assertEquals(20000.0, nanoM.getParticleInnerDiamHigh(), DELTA);
+			assertEquals(20000.0, nanoM.getParticleInnerDiamLow(), DELTA);
 		}
 		catch (IllegalUnitsException ex)
 		{
@@ -171,7 +705,8 @@ public class DefaultUnitsTest {
 	}
 
 	/**
-	 * Test method for {@link DefaultUnits#checkDefaultParticleLengthUnit(java.lang.String)}.
+	 * @author Wilson Melendez
+	 * Test method tests the DefaultParticleLengthUnit method.
 	 */
 	@Test
 	public void testCheckDefaultParticleLengthUnit() {
@@ -179,9 +714,13 @@ public class DefaultUnitsTest {
 		{
 			nanoM.setParticleLengthUnit("nm");
 			nanoM.setParticleLengthAvg(15.0);
+			nanoM.setParticleLengthHigh(15.0);
+			nanoM.setParticleLengthLow(15.0);
 			DefaultUnits.checkDefaultParticleLengthUnit(nanoM, i);
 			assertEquals("nm", nanoM.getParticleLengthUnit());	
-			assertEquals(15.0, nanoM.getParticleLengthAvg(), DELTA);	
+			assertEquals(15.0, nanoM.getParticleLengthAvg(), DELTA);
+			assertEquals(15.0, nanoM.getParticleLengthHigh(), DELTA);
+			assertEquals(15.0, nanoM.getParticleLengthLow(), DELTA);
 			
 			nanoM.setParticleLengthUnit("null");
 			DefaultUnits.checkDefaultParticleLengthUnit(nanoM, i);
@@ -189,9 +728,13 @@ public class DefaultUnitsTest {
 			
 			nanoM.setParticleLengthUnit("um");
 			nanoM.setParticleLengthAvg(20.0);
+			nanoM.setParticleLengthHigh(20.0);
+			nanoM.setParticleLengthLow(20.0);
 			DefaultUnits.checkDefaultParticleLengthUnit(nanoM, i);
 			assertEquals("nm", nanoM.getParticleLengthUnit());	
 			assertEquals(20000.0, nanoM.getParticleLengthAvg(), DELTA);
+			assertEquals(20000.0, nanoM.getParticleLengthHigh(), DELTA);
+			assertEquals(20000.0, nanoM.getParticleLengthLow(), DELTA);
 		}
 		catch (IllegalUnitsException ex)
 		{
@@ -200,7 +743,8 @@ public class DefaultUnitsTest {
 	}
 
 	/**
-	 * Test method for {@link DefaultUnits#checkDefaultParticleThicknessUnit(java.lang.String)}.
+	 * @author Wilson Melendez
+	 * Test method the checkDefaultParticleThicknessUnit method.
 	 */
 	@Test
 	public void testCheckDefaultParticleThicknessUnit() {
@@ -208,9 +752,13 @@ public class DefaultUnitsTest {
 		{
 			nanoM.setParticleThicknessUnit("nm");
 			nanoM.setParticleThicknessAvg(15.0);
+			nanoM.setParticleThicknessHigh(15.0);
+			nanoM.setParticleThicknessLow(15.0);
 			DefaultUnits.checkDefaultParticleThicknessUnit(nanoM, i);
 			assertEquals("nm", nanoM.getParticleThicknessUnit());	
 			assertEquals(15.0, nanoM.getParticleThicknessAvg(), DELTA);	
+			assertEquals(15.0, nanoM.getParticleThicknessHigh(), DELTA);	
+			assertEquals(15.0, nanoM.getParticleThicknessLow(), DELTA);	
 			
 			nanoM.setParticleThicknessUnit("null");
 			DefaultUnits.checkDefaultParticleThicknessUnit(nanoM, i);
@@ -218,9 +766,13 @@ public class DefaultUnitsTest {
 			
 			nanoM.setParticleThicknessUnit("um");
 			nanoM.setParticleThicknessAvg(20.0);
+			nanoM.setParticleThicknessHigh(20.0);
+			nanoM.setParticleThicknessLow(20.0);
 			DefaultUnits.checkDefaultParticleThicknessUnit(nanoM, i);
 			assertEquals("nm", nanoM.getParticleThicknessUnit());	
 			assertEquals(20000.0, nanoM.getParticleThicknessAvg(), DELTA);
+			assertEquals(20000.0, nanoM.getParticleThicknessHigh(), DELTA);
+			assertEquals(20000.0, nanoM.getParticleThicknessLow(), DELTA);
 		}
 		catch (IllegalUnitsException ex)
 		{
@@ -229,7 +781,8 @@ public class DefaultUnitsTest {
 	}
 
 	/**
-	 * Test method for {@link DefaultUnits#checkDefaultSurfaceAreaUnit(java.lang.String)}.
+	 * @author Wilson Melendez
+	 * Test method tests the DefaultSurfaceAreaUnit method.
 	 */
 	@Test
 	public void testCheckDefaultSurfaceAreaUnit() {
@@ -237,9 +790,13 @@ public class DefaultUnitsTest {
 		{
 			nanoM.setSurfaceAreaUnit("m^2/g");
 			nanoM.setSurfaceAreaAvg(15.0);
+			nanoM.setSurfaceAreaHigh(15.0);
+			nanoM.setSurfaceAreaLow(15.0);
 			DefaultUnits.checkDefaultSurfaceAreaUnit(nanoM, i);
 			assertEquals("m^2/g", nanoM.getSurfaceAreaUnit());	
 			assertEquals(15.0, nanoM.getSurfaceAreaAvg(), DELTA);	
+			assertEquals(15.0, nanoM.getSurfaceAreaHigh(), DELTA);
+			assertEquals(15.0, nanoM.getSurfaceAreaLow(), DELTA);
 			
 			nanoM.setSurfaceAreaUnit("null");
 			DefaultUnits.checkDefaultSurfaceAreaUnit(nanoM, i);
@@ -247,9 +804,13 @@ public class DefaultUnitsTest {
 			
 			nanoM.setSurfaceAreaUnit("cm^2/g");
 			nanoM.setSurfaceAreaAvg(1000.0);
+			nanoM.setSurfaceAreaHigh(1000.0);
+			nanoM.setSurfaceAreaLow(1000.0);
 			DefaultUnits.checkDefaultSurfaceAreaUnit(nanoM, i);
 			assertEquals("m^2/g", nanoM.getSurfaceAreaUnit());	
 			assertEquals(0.1, nanoM.getSurfaceAreaAvg(), DELTA);
+			assertEquals(0.1, nanoM.getSurfaceAreaHigh(), DELTA);
+			assertEquals(0.1, nanoM.getSurfaceAreaLow(), DELTA);
 		}
 		catch (IllegalUnitsException ex)
 		{
@@ -258,7 +819,8 @@ public class DefaultUnitsTest {
 	}
 
 	/**
-	 * Test method for {@link DefaultUnits#checkDefaultTimeValueUnit(java.lang.String)}.
+	 * @author Wilson Melendez
+	 * Test method tests the DefaultTimeValueUnit method.
 	 */
 	@Test
 	public void testCheckDefaultTimeValueUnit() {
@@ -287,7 +849,8 @@ public class DefaultUnitsTest {
 	}
 
 	/**
-	 * Test method for CheckDefaultMcTimeValueUnit
+	 * @author Wilson Melendez
+	 * Test method tests the CheckDefaultMcTimeValueUnit method.
 	 */
 	@Test
 	public void testCheckDefaultMcTimeValueUnit() {
@@ -317,6 +880,7 @@ public class DefaultUnitsTest {
 
 
 	/**
+	 * @author Wilson Melendez
 	 * Test method for {@link DefaultUnits#checkDefaultParticleConcentrationUnit(java.lang.String)}.
 	 */
 	@Test
@@ -346,27 +910,28 @@ public class DefaultUnitsTest {
 	}
 
 	/**
+	 * @author Wilson Melendez
 	 * Test method for CheckDefaultMcParticleConcentrationUnit
 	 */
 	@Test
 	public void testCheckDefaultMcParticleConcentrationUnit() {
 		try
 		{
-			nanoM.setMc_particleConcentrationUnit("ug/mL");
+			nanoM.setMc_particleConcentrationUnit("mg/L");
 			nanoM.setMc_particleConcentration(15.0);
 			DefaultUnits.checkDefaultMcParticleConcentrationUnit(nanoM, i);
-			assertEquals("ug/mL", nanoM.getMc_particleConcentrationUnit());	
+			assertEquals("mg/L", nanoM.getMc_particleConcentrationUnit());	
 			assertEquals(15.0, nanoM.getMc_particleConcentration(), DELTA);	
 			
 			nanoM.setMc_particleConcentrationUnit("null");
 			DefaultUnits.checkDefaultMcParticleConcentrationUnit(nanoM, i);
 			assertEquals("null", nanoM.getMc_particleConcentrationUnit());	
 			
-			nanoM.setMc_particleConcentrationUnit("mg/mL");
+			nanoM.setMc_particleConcentrationUnit("ug/L");
 			nanoM.setMc_particleConcentration(1.0);
 			DefaultUnits.checkDefaultMcParticleConcentrationUnit(nanoM, i);
-			assertEquals("ug/mL", nanoM.getMc_particleConcentrationUnit());	
-			assertEquals(1000.0, nanoM.getMc_particleConcentration(), DELTA);
+			assertEquals("mg/L", nanoM.getMc_particleConcentrationUnit());	
+			assertEquals(0.001, nanoM.getMc_particleConcentration(), DELTA);
 		}
 		catch (IllegalUnitsException ex)
 		{
@@ -375,6 +940,7 @@ public class DefaultUnitsTest {
 	}
 
 	/**
+	 * @author Wilson Melendez
 	 * Test method for {@link DefaultUnits#checkDefaultMediumTempUnit(java.lang.String)}.
 	 */
 	@Test
@@ -410,6 +976,9 @@ public class DefaultUnitsTest {
 	}
 
 	@Test
+	/**
+	 * @author Wilson Melendez
+	 */
 	public void testCheckDefaultMcMediumTempUnit() {
 		try
 		{
@@ -442,6 +1011,7 @@ public class DefaultUnitsTest {
 	}
 
 	/**
+	 * @author Wilson Melendez
 	 * Test method for CheckDefaultZetaPotentialUnit.
 	 */
 	@Test
@@ -450,9 +1020,13 @@ public class DefaultUnitsTest {
 		{
 			nanoM.setZetaPotentialUnit("mV");
 			nanoM.setZetaPotentialAvg(15.0);
+			nanoM.setZetaPotentialHigh(15.0);
+			nanoM.setZetaPotentialLow(15.0);
 			DefaultUnits.checkDefaultZetaPotentialUnit(nanoM, i);
 			assertEquals("mV", nanoM.getZetaPotentialUnit());	
 			assertEquals(15.0, nanoM.getZetaPotentialAvg(), DELTA);	
+			assertEquals(15.0, nanoM.getZetaPotentialHigh(), DELTA);
+			assertEquals(15.0, nanoM.getZetaPotentialLow(), DELTA);
 			
 			nanoM.setZetaPotentialUnit("null");
 			DefaultUnits.checkDefaultZetaPotentialUnit(nanoM, i);
@@ -460,9 +1034,13 @@ public class DefaultUnitsTest {
 			
 			nanoM.setZetaPotentialUnit("uV");
 			nanoM.setZetaPotentialAvg(1.0);
+			nanoM.setZetaPotentialHigh(1.0);
+			nanoM.setZetaPotentialLow(1.0);
 			DefaultUnits.checkDefaultZetaPotentialUnit(nanoM, i);
 			assertEquals("mV", nanoM.getZetaPotentialUnit());	
 			assertEquals(0.001, nanoM.getZetaPotentialAvg(), DELTA);
+			assertEquals(0.001, nanoM.getZetaPotentialHigh(), DELTA);
+			assertEquals(0.001, nanoM.getZetaPotentialLow(), DELTA);
 		}
 		catch (IllegalUnitsException ex)
 		{
@@ -472,6 +1050,7 @@ public class DefaultUnitsTest {
 
 	
 	/**
+	 * @author Wilson Melendez
 	 * Test method for {@link DefaultUnits#checkDefaultSizeDistributionUnit(java.lang.String)}.
 	 */
 	@Test
@@ -480,9 +1059,13 @@ public class DefaultUnitsTest {
 		{
 			nanoM.setSizeDistribUnit("nm");
 			nanoM.setSizeDistribAvg(15.0);
+			nanoM.setSizeDistribHigh(15.0);
+			nanoM.setSizeDistribLow(15.0);
 			DefaultUnits.checkDefaultSizeDistributionUnit(nanoM, i);
 			assertEquals("nm", nanoM.getSizeDistribUnit());	
 			assertEquals(15.0, nanoM.getSizeDistribAvg(), DELTA);	
+			assertEquals(15.0, nanoM.getSizeDistribHigh(), DELTA);
+			assertEquals(15.0, nanoM.getSizeDistribLow(), DELTA);
 			
 			nanoM.setSizeDistribUnit("null");
 			DefaultUnits.checkDefaultSizeDistributionUnit(nanoM, i);
@@ -490,9 +1073,13 @@ public class DefaultUnitsTest {
 			
 			nanoM.setSizeDistribUnit("um");
 			nanoM.setSizeDistribAvg(20.0);
+			nanoM.setSizeDistribHigh(20.0);
+			nanoM.setSizeDistribLow(20.0);
 			DefaultUnits.checkDefaultSizeDistributionUnit(nanoM, i);
 			assertEquals("nm", nanoM.getSizeDistribUnit());	
 			assertEquals(20000.0, nanoM.getSizeDistribAvg(), DELTA);
+			assertEquals(20000.0, nanoM.getSizeDistribHigh(), DELTA);
+			assertEquals(20000.0, nanoM.getSizeDistribLow(), DELTA);
 		}
 		catch (IllegalUnitsException ex)
 		{
@@ -502,6 +1089,7 @@ public class DefaultUnitsTest {
 
 
 	/**
+	 * @author Wilson Melendez
 	 * Test method for {@link DefaultUnits#checkDefaultSizeDistributionUnit2(java.lang.String)}.
 	 */
 	@Test
@@ -510,9 +1098,13 @@ public class DefaultUnitsTest {
 		{
 			nanoM.setSizeDistribUnit2("nm");
 			nanoM.setSizeDistribAvg2(15.0);
+			nanoM.setSizeDistribHigh2(15.0);
+			nanoM.setSizeDistribLow2(15.0);
 			DefaultUnits.checkDefaultSizeDistributionUnit2(nanoM, i);
 			assertEquals("nm", nanoM.getSizeDistribUnit2());	
-			assertEquals(15.0, nanoM.getSizeDistribAvg2(), DELTA);	
+			assertEquals(15.0, nanoM.getSizeDistribAvg2(), DELTA);
+			assertEquals(15.0, nanoM.getSizeDistribHigh2(), DELTA);
+			assertEquals(15.0, nanoM.getSizeDistribLow2(), DELTA);
 			
 			nanoM.setSizeDistribUnit2("null");
 			DefaultUnits.checkDefaultSizeDistributionUnit2(nanoM, i);
@@ -520,9 +1112,13 @@ public class DefaultUnitsTest {
 			
 			nanoM.setSizeDistribUnit2("um");
 			nanoM.setSizeDistribAvg2(20.0);
+			nanoM.setSizeDistribHigh2(20.0);
+			nanoM.setSizeDistribLow2(20.0);
 			DefaultUnits.checkDefaultSizeDistributionUnit2(nanoM, i);
 			assertEquals("nm", nanoM.getSizeDistribUnit2());	
 			assertEquals(20000.0, nanoM.getSizeDistribAvg2(), DELTA);
+			assertEquals(20000.0, nanoM.getSizeDistribHigh2(), DELTA);
+			assertEquals(20000.0, nanoM.getSizeDistribLow2(), DELTA);
 		}
 		catch (IllegalUnitsException ex)
 		{
@@ -532,6 +1128,7 @@ public class DefaultUnitsTest {
 
 
 	/**
+	 * @author Wilson Melendez
 	 * Test method for {@link DefaultUnits#checkDefaultSerumConcentrationUnit(java.lang.String)}.
 	 */
 	@Test
@@ -560,6 +1157,9 @@ public class DefaultUnitsTest {
 		}
 	}
 
+	/**
+	 * @author Wilson Melendez
+	 */
 	@Test
 	public void testCheckDefaultMcSerumConcentrationUnit() {
 		try
@@ -587,7 +1187,7 @@ public class DefaultUnitsTest {
 	}
 
 	/**
-	 * 
+	 * @author Wilson Melendez
 	 */
 	@Test
 	public void testCheckDefaultAntibioticConcentrationUnit() {
@@ -615,6 +1215,9 @@ public class DefaultUnitsTest {
 		}
 	}
 
+	/**
+	 * @author Wilson Melendez
+	 */
 	@Test
 	public void testCheckDefaultMcAntibioticConcentrationUnit() {
 		try
@@ -643,6 +1246,7 @@ public class DefaultUnitsTest {
 
 
 	/**
+	 * @author Wilson Melendez
 	 * Test method for CheckDefaultDOMUnit
 	 */
 	@Test
@@ -672,7 +1276,7 @@ public class DefaultUnitsTest {
 	}
 
 	/**
-	 * 
+	 * @author Wilson Melendez
 	 */
 	@Test
 	public void testCheckDefaultMcDOMUnit() {
@@ -701,6 +1305,7 @@ public class DefaultUnitsTest {
 	}
 
 	/**
+	 * @author Wilson Melendez
 	 * Test method for {@link DefaultUnits#checkDefaultSalinityUnit(java.lang.String)}.
 	 */
 	@Test
@@ -729,6 +1334,10 @@ public class DefaultUnitsTest {
 		}
 	}
 
+	/**
+	 * @author Wilson Melendez
+	 * This method tests for the checkDefaultMcSalinityUnit method.
+	 */
 	@Test
 	public void testCheckDefaultMcSalinityUnit() {
 		try
@@ -757,7 +1366,8 @@ public class DefaultUnitsTest {
 	
 	
 	/**
-	 * Test method for {@link DefaultUnits#checkDefaultParticleExposureDurationUnit(java.lang.String)}.
+	 * @author Wilson Melendez
+	 * This method tests the checkDefaultParticleExposureDurationUnit method.
 	 */
 	@Test
 	public void testCheckDefaultParticleExposureDurationUnit() {
@@ -786,7 +1396,8 @@ public class DefaultUnitsTest {
 	}
 
 	/**
-	 * Test method for {@link DefaultUnits#checkDefaultUVADoseUnit(java.lang.String)}.
+	 * @author Wilson Melendez
+	 * Test method tests the checkDefaultUVADoseUnit method.
 	 */
 	@Test
 	public void testCheckDefaultUVADoseUnit() {
@@ -815,7 +1426,8 @@ public class DefaultUnitsTest {
 	}
 
 	/**
-	 * Test method for {@link DefaultUnits#checkDefaultUVAExposureDurationUnit(java.lang.String)}.
+	 * @author Wilson Melendez
+	 * Test method tests the checkDefaultUVAExposureDurationUnit method.
 	 */
 	@Test
 	public void testCheckDefaultUVAExposureDurationUnit() {
@@ -845,7 +1457,8 @@ public class DefaultUnitsTest {
 
 	
 	/**
-	 * Test method for {@link DefaultUnits#checkDefaultViabilityUnit(java.lang.String)}.
+	 * @author Wilson Melendez
+	 * Test method the checkDefaultViabilityUnit method.
 	 */
 	@Test
 	public void testCheckDefaultViabilityUnit() {
@@ -853,9 +1466,13 @@ public class DefaultUnitsTest {
 		{
 			nanoM.setViabilityUnit("%");
 			nanoM.setViabilityAvg(15.0);
+			nanoM.setViabilityHigh(15.0);
+			nanoM.setViabilityLow(15.0);
 			DefaultUnits.checkDefaultViabilityUnit(nanoM, i);
 			assertEquals("%", nanoM.getViabilityUnit());	
-			assertEquals(15.0, nanoM.getViabilityAvg(), DELTA);	
+			assertEquals(15.0, nanoM.getViabilityAvg(), DELTA);
+			assertEquals(15.0, nanoM.getViabilityHigh(), DELTA);
+			assertEquals(15.0, nanoM.getViabilityLow(), DELTA);
 			
 			nanoM.setViabilityUnit("null");
 			DefaultUnits.checkDefaultViabilityUnit(nanoM, i);
@@ -863,9 +1480,13 @@ public class DefaultUnitsTest {
 			
 			nanoM.setViabilityUnit("fraction");
 			nanoM.setViabilityAvg(0.20);
+			nanoM.setViabilityHigh(0.20);
+			nanoM.setViabilityLow(0.20);
 			DefaultUnits.checkDefaultViabilityUnit(nanoM, i);
 			assertEquals("%", nanoM.getViabilityUnit());	
-			assertEquals(20.0, nanoM.getViabilityAvg(), DELTA);;
+			assertEquals(20.0, nanoM.getViabilityAvg(), DELTA);
+			assertEquals(20.0, nanoM.getViabilityHigh(), DELTA);
+			assertEquals(20.0, nanoM.getViabilityLow(), DELTA);
 		}
 		catch (IllegalUnitsException ex)
 		{
@@ -874,7 +1495,8 @@ public class DefaultUnitsTest {
 	}
 
 	/**
-	 * Test method for {@link DefaultUnits#checkDefaultLC50Unit(java.lang.String)}.
+	 * @author Wilson Melendez
+	 * Test method the checkDefaultLC50Unit method.
 	 */
 	@Test
 	public void testCheckDefaultLC50Unit() {

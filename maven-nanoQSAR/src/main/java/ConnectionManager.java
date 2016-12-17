@@ -1,6 +1,8 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class is used to handle connections to the MySQL database server.
@@ -9,6 +11,8 @@ import java.sql.SQLException;
  */
 public class ConnectionManager 
 {	
+	private final static Logger lOGGER = Logger.getLogger( LoggerInfo.class.getName() );
+	
 	public ConnectionManager()
 	{
 		// Nothing to initialize for this class.
@@ -26,9 +30,11 @@ public class ConnectionManager
 		{
 			Class.forName(DBUtil.getDriverName());
 		}
-		finally
+		catch(ClassNotFoundException ex)
 		{
-			// Nothing to clean up in this case.
+			System.out.println("getDriver error: driver class " + DBUtil.getDriverName() + " was not found.");
+			lOGGER.log(Level.SEVERE, "getDriver error: driver class " + DBUtil.getDriverName() + " was not found.", ex);
+			throw ex;
 		}
 	}
 	
@@ -47,9 +53,11 @@ public class ConnectionManager
 		{
 			conn = DriverManager.getConnection(DBUtil.getDatabaseUrl(), DBUtil.getUsername(), DBUtil.getPassword());					
 		}
-		finally
+		catch(SQLException ex)
 		{
-			// Nothing to clean up in this case.
+			System.out.println("Connection error: a connection to the database was not established.");
+			lOGGER.log(Level.SEVERE, "Connection error: a connection to the database was not established.", ex);	
+			throw ex;
 		}
 		
 		return conn;
@@ -73,12 +81,9 @@ public class ConnectionManager
 			connManager.getDriver();		
 			conn = connManager.createConnection();
 		}
-		finally
+		catch(ClassNotFoundException | SQLException ex)
 		{
-			if (conn == null)
-			{
-				System.out.println("A connection was not created and so an exception was thrown.");
-			}			
+			throw ex;
 		}
 		
 		return conn;

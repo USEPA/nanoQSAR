@@ -13,30 +13,54 @@ import java.util.List;
 import java.nio.file.*;
 import java.util.logging.*;
 
+
 public class Main {
 
 	/**
-	 * This is the main method. It calls the getNanoMaterials method.
+	 * This is the main method. It calls the LoggerInfo.init and getNanoMaterials methods.
 	 * @author Wilson Melendez
 	 * @version 1.0
-	 * @param args  Unused.
+	 * @param args  Properties file.
 	 * @return Nothing.
 	 */
+	
+	/* Create an object of type Logger so we can log error or warning messages. */
+	private final static Logger lOGGER = Logger.getLogger( LoggerInfo.class.getName() );
+	
 	public static void main(String[] args) 
 	{
 		String filename = null;
 		
 		if (args == null || args.length == 0)  // Use default properties file.
 		{
-			filename = System.getProperty("user.dir") + "\\properties.txt";
+			filename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
+			System.out.println("Using default properties file: " + filename);
 		}
 		else  // Use command-line specified properties file.
 		{
 			filename = args[0].trim();
-			System.out.println("Argument passed to the program: " + args[0]);
+			System.out.println("Using command-line entered properties file: " + args[0]);
 		}
 		
-		getNanoMaterials(filename);
+		try
+		{
+			/* Initialize log file information. Throw IOException and/or SecurityException 
+			 * if creation of file handler was not successful. */
+			LoggerInfo.init();  
+			
+			/* Perform necessary steps to data-mine MySQL database and write data to 
+			 * CSV file. */
+			getNanoMaterials(filename);  
+		}
+		catch(IOException | SecurityException ex)
+		{
+		    System.out.println("Creation of file handler for log file failed.");
+			ex.printStackTrace();  // This is the only case when the stack trace is sent to the console.
+		}
+		finally
+		{
+			LoggerInfo.close();
+		}
 	}
 	
 	/**
@@ -51,12 +75,8 @@ public class Main {
 	 * @param None.
 	 * @return Nothing.
 	 */
-	public static void getNanoMaterials(String filename)
-	{
-		Logger logger = Logger.getLogger("getNanoMaterials.class");
-		String logFile = System.getProperty("user.dir") + "\\nanoQSAR.log";
-		FileHandler fh;
-				
+	public static void getNanoMaterials(String filename) 
+	{			
 		MySqlQuery sqlNano = new MySqlQuery();
 		List<NanoMaterial> nanomaterials;
 				
@@ -66,15 +86,7 @@ public class Main {
 		String sqlQuery = null;
 		
 		try
-		{
-			fh = new FileHandler(logFile);
-			logger.setUseParentHandlers(false);
-			logger.addHandler(fh);
-			logger.setLevel(Level.INFO);
-			
-			SimpleFormatter formatter = new SimpleFormatter();
-			fh.setFormatter(formatter);
-						
+		{				
 			/* Input database connection information and name of output file. */
 			DBUtil.loadProperties(filename);
 			
@@ -101,36 +113,12 @@ public class Main {
 				DBUtil.displayNanoMaterial(nanomaterial);
 			}
 			*/
-			fh.close();
+			
 		}
-		catch(SQLException ex)
+		catch(SQLException | ClassNotFoundException | IOException | NullPointerException | SecurityException | IllegalUnitsException ex)
 		{
-			logger.log(Level.SEVERE, "SQL exception found.", ex);
-			// ex.printStackTrace();
-		}
-		catch(ClassNotFoundException ex)
-		{
-			logger.log(Level.SEVERE, "Class not found exception found.", ex);
-			// ex.printStackTrace();
-		}
-		catch(IOException ex)
-		{
-			logger.log(Level.SEVERE, "File not found exception found.", ex);
-			// ex.printStackTrace();
-		}
-		catch(NullPointerException ex)
-		{
-			logger.log(Level.SEVERE, "Null pointer exception found.", ex);
-		}
-		catch(SecurityException ex)
-		{
-			logger.log(Level.SEVERE, "Security exception found.", ex);
-		}
-		catch(IllegalUnitsException ex)
-		{
-			logger.log(Level.SEVERE, "Class not found exception found.", ex.getMessage());
-		}
-		
+			lOGGER.log(Level.SEVERE, "Exception was thrown: finishing up the execution of the program.");			
+		}		
 	}
 	
 }
