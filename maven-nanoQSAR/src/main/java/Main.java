@@ -7,6 +7,7 @@
  *
  */
 
+import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.io.IOException;
 import java.util.List;
@@ -115,9 +116,9 @@ public class Main {
 			*/
 			
 		}
-		catch(SQLException | ClassNotFoundException | IOException | NullPointerException | SecurityException | IllegalUnitsException ex)
+		catch(SQLException | ClassNotFoundException | IOException | SecurityException | IllegalUnitsException | GeneralSecurityException ex)
 		{
-			lOGGER.log(Level.SEVERE, "Exception was thrown: finishing up the execution of the program.");			
+			lOGGER.log(Level.SEVERE, "Exception was thrown: ending the execution of the program.");			
 		}		
 	}
 	

@@ -1,6 +1,7 @@
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,24 +22,26 @@ import org.junit.BeforeClass;
 public class DefaultUnitsTest {
 	
 	private static Double DELTA = 1.0E-15;
-	private static List<NanoMaterial> nanomaterials;
-	private static MySqlQuery sqlNano;
-	private static String sqlQuery;
+	private static List<NanoMaterial> nanomaterials = new ArrayList<NanoMaterial>();
+	private static MySqlQuery sqlNano = new MySqlQuery();
+	private static String sqlQuery = sqlNano.getSqlQuery();
 	Double nullValue = null;
 	NanoMaterial nanoM = new NanoMaterial();	
 	int i = 0;  // This is just a dummy index from the  point of this test.
 	
 	@BeforeClass
-	public static void setUp() throws IOException
+	public static void setUp() throws IOException, GeneralSecurityException
 	{
 		/* Input database connection information and name of output file. */
-		String filename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
-		DBUtil.loadProperties(filename);
-		
-		DefaultUnitsTest sqlTest = new DefaultUnitsTest();
-		sqlTest.sqlNano = new MySqlQuery();
-		sqlTest.sqlQuery = sqlTest.sqlNano.getSqlQuery();
-		sqlTest.nanomaterials = new ArrayList<NanoMaterial>();
+		try
+		{
+			String filename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
+			DBUtil.loadProperties(filename);
+		}
+		catch(IOException | GeneralSecurityException ex)
+		{
+			throw ex;
+		}
 	}
 	
 	/**

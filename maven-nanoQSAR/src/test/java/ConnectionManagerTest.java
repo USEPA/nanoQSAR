@@ -5,6 +5,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -19,10 +20,17 @@ public class ConnectionManagerTest {
 	ConnectionManager connManager = new ConnectionManager();
 	
 	@BeforeClass
-	public static void setUpProperties() throws IOException
+	public static void setUpProperties() throws IOException, GeneralSecurityException
 	{
-		String filename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
-		DBUtil.loadProperties(filename);
+		try
+		{
+			String filename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
+			DBUtil.loadProperties(filename);
+		}
+		catch(GeneralSecurityException ex)
+		{
+			throw ex;
+		}
 	}
 	
 	/**

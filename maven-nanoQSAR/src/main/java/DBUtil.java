@@ -7,6 +7,9 @@
  *
  */
 import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.ResultSet;
@@ -19,6 +22,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.nio.file.*;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
+
 /**
  * This class is used to call static methods that perform general purpose tasks such as
  * closing Java connector related objects, printing out selected items to the screen, and
@@ -28,12 +37,15 @@ import java.nio.file.*;
  */
 public class DBUtil 
 {
+	public static final String AES = "AES";
+	
 	/* Static fields for name of driver, URL of database, username and password. */
 	private static String driverName;
 	private static String databaseUrl;
 	private static String username;
 	private static String password;
 	private static String csvFileName;
+	private static String passwordKey;
 	
 	/* Need this line to allow logging of error messages */
 	private final static Logger lOGGER = Logger.getLogger( LoggerInfo.class.getName() );
@@ -79,20 +91,28 @@ public class DBUtil
 		DBUtil.csvFileName = csvFileName;
 	}
 
+	public static String getPasswordKey() {
+		return passwordKey;
+	}
+
+	public static void setPasswordKey(String passwordKey) {
+		DBUtil.passwordKey = passwordKey;
+	}
+
+	
 	/**
 	 * This method opens and reads a property file containing database connection
 	 * information and the name of the output file.
 	 * @author Wilson Melendez
 	 * @throws IOException
 	 */
-	public static void loadProperties(String filename) throws IOException, NullPointerException
+	public static void loadProperties(String filename) throws IOException, GeneralSecurityException
 	{
 		Properties prop = new Properties();
 		InputStream input = null;
 		
 		try
 		{
-			// String strDirFile = System.getProperty("user.dir") + "\\properties.txt";
 			Path p1 = Paths.get(filename);
 			input = new FileInputStream(p1.toString());
 			
@@ -105,6 +125,10 @@ public class DBUtil
 			setPassword(prop.getProperty("Password").trim());
 			setUsername(prop.getProperty("Username").trim());	
 			setCsvFileName(prop.getProperty("CsvFileName").trim());
+			setPasswordKey(prop.getProperty("Key").trim());
+			
+			/* Decrypt password using the key. */
+			decryptPassword();
 		}
 		catch(IOException ex)
 		{
@@ -112,10 +136,10 @@ public class DBUtil
 			lOGGER.log(Level.SEVERE, "Properties file, " + filename + ", was not found.", ex);
 			throw ex;
 		}
-		catch(NullPointerException ex)
+		catch(GeneralSecurityException ex)
 		{
-			System.out.println("Null pointer exception: check spelling of properties.");
-			lOGGER.log(Level.SEVERE, "NUll pointer exception: check spelling of properties.", ex);
+			System.out.println("Password de-encryption failed: check log file.");
+			lOGGER.log(Level.SEVERE, "Password de-encryption failed.", ex);
 			throw ex;
 		}
 		finally
@@ -135,6 +159,72 @@ public class DBUtil
 			}
 		}
 	}
+	
+	/**
+	 * This method converts a string of hexadecimal digits to an array of bytes.
+	 * @param s
+	 * @return
+	 */
+	public static byte[] hexStringToByteArray(String s) 
+    {
+        byte[] b = new byte[s.length() / 2];
+        for (int i = 0; i < b.length; i++) 
+        {
+            int index = i * 2;
+            int v = Integer.parseInt(s.substring(index, index + 2), 16);
+            b[i] = (byte) v;
+        }
+        return b;
+    }
+	
+	/**
+	 * This method decrypts the password using a key.
+	 * @author Wilson Melendez
+	 * @throws GeneralSecurityException
+	 */
+	public static void decryptPassword() throws GeneralSecurityException
+	{
+		String tempkey = getPasswordKey();                
+        byte[] decrypted;
+        String OriginalPassword;
+        Cipher cipher = null;
+        byte[] bytekey = hexStringToByteArray(tempkey);
+        SecretKeySpec sks = new SecretKeySpec(bytekey, DBUtil.AES);
+        
+        try 
+        {
+			cipher = Cipher.getInstance(DBUtil.AES);
+		} 
+        catch (NoSuchAlgorithmException | NoSuchPaddingException ex) 
+        {
+			System.out.println("Attempt to creat cipher object failed.");
+			throw ex;
+		}
+		
+        try 
+        {
+			cipher.init(Cipher.DECRYPT_MODE, sks);
+		} 
+        catch (InvalidKeyException ex) 
+        {
+			System.out.println("Initialization of cipher failed.");
+			throw ex;
+		}
+        
+		try 
+		{
+			decrypted = cipher.doFinal(hexStringToByteArray(getPassword()));
+		} 
+		catch (IllegalBlockSizeException | BadPaddingException ex) 
+		{
+			System.out.println("Decryption of password failed.");
+			throw ex;
+		}
+		
+		OriginalPassword = new String(decrypted);
+        setPassword(OriginalPassword);
+	}
+	
 	
 	/**
 	 * @author Wilson Melendez
