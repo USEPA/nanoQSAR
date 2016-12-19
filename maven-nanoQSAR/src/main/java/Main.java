@@ -106,14 +106,6 @@ public class Main {
 			/* Write data to CSV file. */
 			CsvFileWriter.writeCsvFile(p1.toString(), nanomaterials, headerFile);
 			
-			/*  Print out selected data columns: this has been commented out because
-			 * is is not really needed for the CSV file. */
-			/* DBUtil.displayMetaData();
-			for (NanoMaterial nanomaterial : nanomaterials)
-			{
-				DBUtil.displayNanoMaterial(nanomaterial);
-			}
-			*/
 			
 		}
 		catch(SQLException | ClassNotFoundException | IOException | SecurityException | IllegalUnitsException | GeneralSecurityException ex)
