@@ -1,8 +1,6 @@
 
 import java.io.IOException;
 
-import nanoQsarMatrixBuilder.Matrix;
-
 /**
  * 
  */

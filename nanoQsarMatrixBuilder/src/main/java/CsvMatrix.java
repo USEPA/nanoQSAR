@@ -3,8 +3,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
-import nanoQsarMatrixBuilder.Matrix;
-
 import com.opencsv.CSVReader;
 
 
