@@ -138,7 +138,7 @@ public class DBUtil
 		}
 		catch(GeneralSecurityException ex)
 		{
-			System.out.println("Password de-encryption failed: check log file.");
+			// System.out.println("Password de-encryption failed: check log file.");
 			lOGGER.log(Level.SEVERE, "Password de-encryption failed.", ex);
 			throw ex;
 		}
@@ -152,7 +152,7 @@ public class DBUtil
 				}
 				catch(IOException ex)
 				{
-					System.out.println("InputStream variable, input, could not be closed.");
+					// System.out.println("InputStream variable, input, could not be closed.");
 					lOGGER.log(Level.SEVERE, "InputStream variable, input, could not be closed.", ex);
 					throw ex;
 				}				
@@ -196,8 +196,7 @@ public class DBUtil
 			cipher = Cipher.getInstance(DBUtil.AES);
 		} 
         catch (NoSuchAlgorithmException | NoSuchPaddingException ex) 
-        {
-			// System.out.println("Attempt to create cipher object failed.");
+        {			
 			lOGGER.log(Level.SEVERE,"Attempt to create cipher object failed.",ex);
 			throw ex;
 		}
@@ -207,8 +206,7 @@ public class DBUtil
 			cipher.init(Cipher.DECRYPT_MODE, sks);
 		} 
         catch (InvalidKeyException ex) 
-        {
-			// System.out.println("Initialization of cipher failed.");
+        {			
 			lOGGER.log(Level.SEVERE,"Initialization of cipher failed.",ex);
 			throw ex;
 		}
@@ -218,8 +216,7 @@ public class DBUtil
 			decrypted = cipher.doFinal(hexStringToByteArray(getPassword()));
 		} 
 		catch (IllegalBlockSizeException | BadPaddingException ex) 
-		{
-			// System.out.println("Decryption of password failed.");
+		{			
 			lOGGER.log(Level.SEVERE,"Decryption of password failed.",ex);
 			throw ex;
 		}
@@ -243,7 +240,7 @@ public class DBUtil
 			}
 			catch(SQLException ex)
 			{
-				System.out.println("Error: " + ex.getMessage());
+				// System.out.println("Error: " + ex.getMessage());
 				lOGGER.log(Level.SEVERE, "Connection could not be closed.", ex);
 				throw ex;
 			}
@@ -264,7 +261,7 @@ public class DBUtil
 			}
 			catch(SQLException ex)
 			{
-				System.out.println("Error: " + ex.getMessage());
+				// System.out.println("Error: " + ex.getMessage());
 				lOGGER.log(Level.SEVERE, "Statement could not be closed.", ex);
 				throw ex;
 			}
@@ -285,7 +282,7 @@ public class DBUtil
 			}
 			catch(SQLException ex)
 			{
-				System.out.println("Error: " + ex.getMessage());
+				// System.out.println("Error: " + ex.getMessage());
 				lOGGER.log(Level.SEVERE, "ResultSet could not be closed.", ex);
 				throw ex;
 			}
