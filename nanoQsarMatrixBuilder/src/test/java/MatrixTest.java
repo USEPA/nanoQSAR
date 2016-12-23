@@ -14,7 +14,7 @@ import org.junit.Test;
  * @author Wilson Melendez
  *
  */
-public class testMatrix {
+public class MatrixTest {
 
 	/**
 	 * @throws java.lang.Exception
