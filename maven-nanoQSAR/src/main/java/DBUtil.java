@@ -197,7 +197,8 @@ public class DBUtil
 		} 
         catch (NoSuchAlgorithmException | NoSuchPaddingException ex) 
         {
-			System.out.println("Attempt to creat cipher object failed.");
+			// System.out.println("Attempt to create cipher object failed.");
+			lOGGER.log(Level.SEVERE,"Attempt to create cipher object failed.",ex);
 			throw ex;
 		}
 		
@@ -207,7 +208,8 @@ public class DBUtil
 		} 
         catch (InvalidKeyException ex) 
         {
-			System.out.println("Initialization of cipher failed.");
+			// System.out.println("Initialization of cipher failed.");
+			lOGGER.log(Level.SEVERE,"Initialization of cipher failed.",ex);
 			throw ex;
 		}
         
@@ -217,7 +219,8 @@ public class DBUtil
 		} 
 		catch (IllegalBlockSizeException | BadPaddingException ex) 
 		{
-			System.out.println("Decryption of password failed.");
+			// System.out.println("Decryption of password failed.");
+			lOGGER.log(Level.SEVERE,"Decryption of password failed.",ex);
 			throw ex;
 		}
 		

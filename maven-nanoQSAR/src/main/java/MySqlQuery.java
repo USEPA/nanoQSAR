@@ -154,15 +154,8 @@ public class MySqlQuery
 		Connection conn = null;
 		ResultSet rs = null;
 		
-		try  // Create a connection to the database.
-		{
-			conn = ConnectionManager.getConnection();			
-		}
-		catch(ClassNotFoundException | SQLException ex)
-		{
-			// Throw exception back to the calling method.  Do not proceed with the rest of the code.
-			throw ex;  
-		}
+		/* Get the connection to the database. */
+		conn = ConnectionManager.getConnection();	
 		
 		try
 		{								

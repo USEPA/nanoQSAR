@@ -486,6 +486,7 @@ public class DefaultUnitsTest {
 			assertEquals("null", nanoM.getCoatingAmountUnit());	
 			
 			nanoM.setCoatingAmountUnit("mg");
+			nanoM.setCoatingAmount(1.0);
 			DefaultUnits.checkDefaultCoatingAmountUnit(nanoM, i);
 			assertEquals("ug", nanoM.getCoatingAmountUnit());	
 			assertEquals(1000.0, nanoM.getCoatingAmount(), DELTA);	
