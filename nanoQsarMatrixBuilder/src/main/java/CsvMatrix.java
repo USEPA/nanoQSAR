@@ -2,6 +2,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.opencsv.CSVReader;
 
@@ -13,8 +15,18 @@ import com.opencsv.CSVReader;
 public class CsvMatrix 
 {
 	private static List<String[]> rows;
+	private static String[] header;
 	
-	public static void readCsvFile(String filename) throws IOException
+	/* Need this line to allow logging of error messages */
+	private final static Logger lOGGER = Logger.getLogger( LoggerInfo.class.getName() );
+	
+	/**
+	 * @author Wilson Melendez
+	 * @param filename
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public static void readCsvFile(String filename) throws FileNotFoundException, IOException
 	{
 		FileReader fReader;
 		try
@@ -24,12 +36,23 @@ public class CsvMatrix
 		catch(FileNotFoundException ex)
 		{
 			System.out.println("CSV file was not found.");
+			lOGGER.log(Level.SEVERE, "CSV file was not found.");	
 			throw ex;
 		}
 		
+		/* Create instance of CSVReader. */
 		CSVReader csvInput = new CSVReader(fReader);
+		
+		/* Read contents of CSV file all at once and store it in array list. */
 		rows = csvInput.readAll();
 		
+		/* Read the first row of the Xmatrix and store it in the header string array. */
+		header = rows.get(0);
+		
+		/* Remove the header line from the array list; header is row 0. */
+		rows.remove(0);
+		
+		/* Close connection to CSV file, but throw exception if failure to close. */
 		try
 		{
 			csvInput.close();
@@ -37,317 +60,314 @@ public class CsvMatrix
 		catch(IOException ex)
 		{
 			System.out.println("Attempt to close CSV reader failed.");
+			lOGGER.log(Level.SEVERE, "Attempt to close CSV reader failed.");	
 			throw ex;
 		}
 	}
 	
-	public static void buildMatrix()
+	/**
+	 * This method builds the X and Y matrices needed by the PLS Regression algorithm.
+	 * Null values are converted to random values using the Math.randow() method.
+	 * @author Wilson Melendez
+	 */
+	public static void buildMatrices()
 	{		
 		String[] nextLine;
-		String[] header = null;
-		int rowsSizem2= rows.size() - 2;
-		double[][] data = new double[rowsSizem2][71];
-			
-		header = rows.get(0);
+		int rowsSize = rows.size();  // Number of rows in array list.
+		double[][] Xmatrix = new double[rowsSize][67];
+		double[][] Ymatrix = new double[rowsSize][2];
 		
-		for (int i = 0; i < rowsSizem2; i++)
+		for (int i = 0; i < rowsSize; i++)
 		{
-			nextLine = rows.get(i+1);
-			int j = 0;			
+			nextLine = rows.get(i);
+			int j = 0;	
+			int jy = 0;
 			for (int k = 0; k < nextLine.length-1; k++)
 			{		
 				switch (header[k].trim())
 				{
 				case "CoatingAmount":
-					data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+					Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*100.0;
 					j++;
 					break;
 				case "Purity":
-					data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+					Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*100.0;
 					j++;
 					break;	
 				case "ContamAl": 
-					data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+					Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*1500.0;
 					j++;
 					break;	
 				case "ContamAs": 
-					data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+					Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*1500.0;
 					j++;
 					break;	
 				case "ContamBe":
-					data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+					Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*1500.0;
 					j++;
 					break;	
                 case "ContamCa":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*1500.0;
                 	j++;
                 	break;	
                 case "ContamCo":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*1500.0;
                 	j++;
                 	break;	
                 case "ContamCr":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*1500.0;
                 	j++;
                 	break;	
                 case "ContamFe":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*1500.0;
                 	j++;
                 	break;	
                 case "ContamK":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*1500.0;
                 	j++;
                 	break;	
                 case "ContamMg":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*1500.0;
                 	j++;
                 	break;	
                 case "ContamNa":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*1500.0;
                 	j++;
                 	break;	
                 case "ContamP":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*1500.0;
                 	j++;
                 	break;	
                 case "ContamPb":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*1500.0;
                 	j++;
                 	break;	
                 case "ContamSb":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*1500.0;
                 	j++;
                 	break;	
                 case "ContamSe":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*1500.0;
                 	j++;
                 	break;	
                 case "ContamSiO2":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*1500.0;
                 	j++;
                 	break;	
                 case "ContamSn":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*1500.0;
                 	j++;
                 	break;	
                 case "ContamTl":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*1500.0;
                 	j++;
                 	break;	
                 case "ContamV":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*1500.0;
                 	j++;
                 	break;	
                 case "ParticleOuterDiamAvg":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*250.0;
                 	j++;
                 	break;	
                 case "ParticleOuterDiamLow":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*100.0;
                 	j++;
                 	break;	
                 case "ParticleOuterDiamHigh":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*300.0;
                 	j++;
                 	break;	
                 case "ParticleInnerDiamAvg":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*100.0;
                 	j++;
                 	break;	
                 case "ParticleInnerDiamLow":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*100.0;
                 	j++;
                 	break;	
                 case "ParticleInnerDiamHigh":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*100.0;
                 	j++;
                 	break;	
                 case "ParticleLengthAvg":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*100.0;
                 	j++;
                 	break;	
                 case "ParticleLengthLow":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*100.0;
                 	j++;
                 	break;	
                 case "ParticleLengthHigh":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*100.0;
                 	j++;
                 	break;	
                 case "ParticleThicknessAvg":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*100.0;
                 	j++;
                 	break;	
                 case "ParticleThicknessLow":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*100.0;
                 	j++;
                 	break;	
                 case "ParticleThicknessHigh":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*100.0;
                 	j++;
                 	break;	
                 case "SurfaceAreaAvg":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*300.0;
                 	j++;
                 	break;		
                 case "SurfaceAreaLow":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*300.0;
                 	j++;
                 	break;		
                 case "SurfaceAreaHigh":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*300.0;
                 	j++;
                 	break;	
                 case "MC_TimeValue":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*240.0;
                 	j++;
                 	break;		
                 case "MC_ParticleConcentration":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*100.0;
                 	j++;
                 	break;	
                 case "MC_SerumConcentration":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 100.0;
                 	j++;
                 	break;		
                 case "MC_AntibioticConcentration":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 100.0;
                 	j++;
                 	break;	
                 case "MC_DOMConcentration":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 20.0;
                 	j++;
                 	break;	
                 case "MC_SalinityValue":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 35.0;
                 	j++;
                 	break;	
                 case "MC_pHAvg":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 14.0;
                 	j++;
                 	break;	
                 case "MC_pHLow":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 14.0;
                 	j++;
                 	break;	
                 case "MC_pHHigh":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 14.0;
                 	j++;
                 	break;	
                 case "MC_MediumTemp":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 30.0 * Math.random() + 10.0;
                 	j++;
                 	break;	
                 case "ZetaPotentialAvg":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : -Math.random() * 100.0;
                 	j++;
                 	break;	
                 case "ZetaPotentialLow":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : -Math.random() * 100.0;
                 	j++;
                 	break;	
                 case "ZetaPotentialHigh":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : -Math.random() * 100.0;
                 	j++;
                 	break;	
                 case "SizeDistribAvg":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 3000.0;
                 	j++;
                 	break;
                 case "SizeDistribLow":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 3000.0;
                 	j++;
                 	break;
                 case "SizeDistribHigh":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 3000.0;
                 	j++;
                 	break;
                 case "SizeDistribAvg2":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 3000.0;
                 	j++;
                 	break;
                 case "SizeDistribLow2":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 3000.0;
                 	j++;
                 	break;
                 case "SizeDistribHigh2":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 3000.0;
                 	j++;
                 	break;
                 case "SerumConcentration":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 100.0;
                 	j++;
                 	break;
                 case "AntibioticConcentration":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 100.0;
                 	j++;
                 	break;
                 case "DOMConcentration":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 20.0;
                 	j++;
                 	break;
                 case "SalinityValue":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 35.0;
                 	j++;
                 	break;	
                 case "pHAvg":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 4.0 + Math.random() * 6.0;
                 	j++;
                 	break;	
                 case "pHLow":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 4.0;
                 	j++;
                 	break;	
                 case "pHHigh":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 10.0 + Math.random() * 4.0;
                 	j++;
                 	break;	
                 case "MediumTemp":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 30.0 * Math.random() + 10.0;
                 	j++;
                 	break;
                 case "TimeValue":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 48.0;
                 	j++;
                 	break;		
                 case "ParticleConcentration":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 100.0;
                 	j++;
                 	break;	
                 case "ParticleExposDuration":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 48.0;
                 	j++;
                 	break;	
                 case "UVADose":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 10.0;
                 	j++;
                 	break;	
                 case "UVAExposDuration":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
+                	Xmatrix[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random() * 2.0;
                 	j++;
                 	break;	
                 case "ViabilityAvg":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
-                	j++;
-                	break;	
-                case "ViabilityLow":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
-                	j++;
-                	break;	
-                case "ViabilityHigh":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
-                	j++;
+                	Ymatrix[i][jy] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*100.0;
+                	jy++;
                 	break;	
                 case "LC50":
-                	data[i][j] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : 0.0;
-                	//System.out.println("j = " + j);
+                	Ymatrix[i][jy] = !nextLine[k].equals("null") ? Double.parseDouble(nextLine[k]) : Math.random()*100.0;
                 	break;	
 				}
 			}
 		}
 		
 		// Store values in Matrix class
-		Matrix D = new Matrix(data);
+		Matrix.setDataX(Xmatrix);
+		Matrix.setDataY(Ymatrix);
 		
 	}
 

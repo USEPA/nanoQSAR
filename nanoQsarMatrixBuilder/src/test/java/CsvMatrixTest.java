@@ -1,14 +1,9 @@
-import static org.junit.Assert.*;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import org.junit.Test;
 
-/**
- * 
- */
 
 /**
  * @author Wilson Melendez
@@ -17,47 +12,33 @@ import org.junit.Test;
 public class CsvMatrixTest {
 
 	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	/**
 	 * Test method for {@link CsvMatrix#readCsvFile(java.lang.String)}.
 	 */
-	@Test
-	public void testReadCsvFile() {
-		fail("Not yet implemented"); // TODO
+	@Test(expected=FileNotFoundException.class)
+	public void testReadCsvFile() throws FileNotFoundException, IOException
+	{
+		try
+		{
+			String filename = "test.csv";
+			CsvMatrix.readCsvFile(filename);
+		}
+		catch(FileNotFoundException ex)
+		{
+			throw ex;
+		}
+		catch(IOException ex)
+		{
+			throw ex;
+		}
 	}
 
 	/**
-	 * Test method for {@link CsvMatrix#buildMatrix()}.
+	 * Test method for {@link CsvMatrix#buildMatrices()}.
 	 */
-	@Test
-	public void testBuildMatrix() {
-		fail("Not yet implemented"); // TODO
+	@Test(expected=NullPointerException.class)
+	public void testBuildMatrices() 
+	{
+		CsvMatrix.buildMatrices();
 	}
 
 }
