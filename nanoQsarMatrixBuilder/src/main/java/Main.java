@@ -27,7 +27,7 @@ public class Main
 		
 		if (args == null || args.length == 0)  // Use default CSV file.
 		{
-			filename = System.getProperty("user.dir") + "\\OutputFile.csv";
+			filename = System.getProperty("user.dir") + "\\nanoQSAR.csv";
 			System.out.println("Using default CSV file: " + filename);
 		}
 		else  // Use command-line specified CSV file.
@@ -60,8 +60,10 @@ public class Main
 			CsvMatrix.buildMatrices();
 			
 			/* Print X and Y matrices to standard output */
-			Matrix.showX();
-			Matrix.showY();
+			CsvMatrix.showX();
+			CsvMatrix.showY();
+			
+			// CsvMatrix.performPlsRegression();
 			
 			/* Close logger file. */
 			LoggerInfo.close();
