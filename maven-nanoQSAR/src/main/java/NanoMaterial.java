@@ -1259,7 +1259,7 @@ public class NanoMaterial
 	 */
 	public String[] storeDataAsStringArray()
 	{
-		String[] strNano = new String[174];
+		String[] strNano = new String[173];
 		int i = 0;
 				
 		// MaterialChar Table		
