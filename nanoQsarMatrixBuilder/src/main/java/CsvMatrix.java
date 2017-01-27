@@ -1,7 +1,8 @@
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -9,8 +10,10 @@ import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.jblas.DoubleMatrix;
+import org.jblas.Solve;
 
 import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
 
 
 /**
@@ -26,6 +29,17 @@ public class CsvMatrix
 	private static String[] header;
 	private static DoubleMatrix Xmatrix;
 	private static DoubleMatrix Ymatrix;
+	private static DoubleMatrix Umatrix;
+	private static DoubleMatrix Tmatrix;
+	private static DoubleMatrix Wmatrix;		
+	private static DoubleMatrix Cmatrix;
+	private static DoubleMatrix Pmatrix;
+	private static DoubleMatrix Bpls;
+	private static DoubleMatrix BplsStar;
+	private static DoubleMatrix Xaugmented;
+	private static DoubleMatrix Ypred;
+	private static double EPSILON = 1.0e-6;
+	private static double EPSILON_DEFLATION = 1.0e-1;
 	
 	/* Need this line to allow logging of error messages */
 	private final static Logger lOGGER = Logger.getLogger( LoggerInfo.class.getName() );
@@ -59,6 +73,99 @@ public class CsvMatrix
 	 */
 	public static DoubleMatrix getYmatrix() {
 		return Ymatrix;
+	}
+
+	
+	/**
+	 * @return the bpls
+	 */
+	public static DoubleMatrix getBpls() {
+		return Bpls;
+	}
+
+	/**
+	 * @param bpls the bpls to set
+	 */
+	public static void setBpls(DoubleMatrix bpls) {
+		Bpls = bpls;
+	}
+
+	/**
+	 * @return the bplsStar
+	 */
+	public static DoubleMatrix getBplsStar() {
+		return BplsStar;
+	}
+
+	/**
+	 * @param bplsStar the bplsStar to set
+	 */
+	public static void setBplsStar(DoubleMatrix bplsStar) {
+		BplsStar = bplsStar;
+	}
+
+	
+	/**
+	 * @return the xcolumns
+	 */
+	public static int getXcolumns() {
+		return xcolumns;
+	}
+
+	/**
+	 * @return the ycolumns
+	 */
+	public static int getYcolumns() {
+		return ycolumns;
+	}
+
+	/**
+	 * @return the rowsSize
+	 */
+	public static int getRowsSize() {
+		return rowsSize;
+	}
+
+	/**
+	 * @return the tmatrix
+	 */
+	public static DoubleMatrix getTmatrix() {
+		return Tmatrix;
+	}
+
+	/**
+	 * @return the wmatrix
+	 */
+	public static DoubleMatrix getWmatrix() {
+		return Wmatrix;
+	}
+
+	/**
+	 * @return the cmatrix
+	 */
+	public static DoubleMatrix getCmatrix() {
+		return Cmatrix;
+	}
+
+	/**
+	 * @return the pmatrix
+	 */
+	public static DoubleMatrix getPmatrix() {
+		return Pmatrix;
+	}
+
+	/**
+	 * @return the xaugmented
+	 */
+	public static DoubleMatrix getXaugmented() {
+		return Xaugmented;
+	}
+
+	/**
+	 * @return the ypred
+	 */
+	public static DoubleMatrix getYpred() {
+		return Ypred;
 	}
 
 	/**
@@ -115,6 +222,9 @@ public class CsvMatrix
 	public static void buildMatrices()
 	{		
 		boolean foundNulls = false;
+		rowsSize = rows.size();  // Number of rows in array list.
+		Xmatrix = new DoubleMatrix(rowsSize,xcolumns);   // X matrix
+		Ymatrix = new DoubleMatrix(rowsSize,ycolumns);   // Y matrix
 		
 		/* Check whether data has any null values. */
 		for (String[] str : rows)
@@ -128,11 +238,11 @@ public class CsvMatrix
 		
 		if (foundNulls)		
 		{
-			buildMatricesContainingNulls();  // Handle case with null values.
+			buildMatricesContainingNulls(Xmatrix, Ymatrix);  // Handle case with null values.
 		}
 		else
 		{
-			buildMatricesWithoutNulls();  // Handle case with no null values.
+			buildMatricesWithoutNulls(Xmatrix, Ymatrix);  // Handle case with no null values.
 		}		
 	}
 	
@@ -141,7 +251,7 @@ public class CsvMatrix
 	 * containing null values.
 	 * @author Wilson Melendez
 	 */
-	public static void buildMatricesContainingNulls()
+	public static void buildMatricesContainingNulls(DoubleMatrix Xorig, DoubleMatrix Yorig)
 	{
 		String[] nextLine;
 		int[] jcolX = new int[xcolumns];  // Positional indices of X-matrix columns in CSV file.
@@ -150,58 +260,55 @@ public class CsvMatrix
 		double[] maxValueX = new double[xcolumns];  // Maximum random values of columns in X matrix
 		double[] minValueY = new double[ycolumns];  // Minimum random values of columns in Y matrix
 		double[] maxValueY = new double[ycolumns];  // Maximum random values of columns in Y matrix
-		rowsSize = rows.size();  // Number of rows in array list.
-		Xmatrix = new DoubleMatrix(rowsSize,xcolumns);   // X matrix
-		Ymatrix = new DoubleMatrix(rowsSize,ycolumns);   // Y matrix
-		
+				
 		int j = 0, jy = 0;		
 		List<String> listHeader = Arrays.asList(header);
 		
 		/* Store indices and minimum/maximum random values of X-matrix columns */
 		jcolX[j] = listHeader.indexOf("CoatingAmount");	
-		minValueX[j] = 0.0;  maxValueX[j] = 100.0; j++;
+		minValueX[j] = 10.0;  maxValueX[j] = 100.0; j++;
 	    jcolX[j] = listHeader.indexOf("Purity");	
-	    minValueX[j] = 0.0;  maxValueX[j] = 100.0; j++;
+	    minValueX[j] = 10.0;  maxValueX[j] = 100.0; j++;
 		jcolX[j] = listHeader.indexOf("ContamAl"); 
-		minValueX[j] = 0.0;  maxValueX[j] = 1500.0; j++;
+		minValueX[j] = 10.0;  maxValueX[j] = 1500; j++;
 		jcolX[j] = listHeader.indexOf("ContamAs"); 
-		minValueX[j] = 0.0;  maxValueX[j] = 1500.0; j++;
+		minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
 		jcolX[j] = listHeader.indexOf("ContamBe");	
-		minValueX[j] = 0.0;  maxValueX[j] = 1500.0; j++;
+		minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
         jcolX[j] = listHeader.indexOf("ContamCa"); 
-        minValueX[j] = 0.0;  maxValueX[j] = 1500.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
         jcolX[j] = listHeader.indexOf("ContamCo"); 
-        minValueX[j] = 0.0;  maxValueX[j] = 1500.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
         jcolX[j] = listHeader.indexOf("ContamCr"); 
-        minValueX[j] = 0.0;  maxValueX[j] = 1500.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
         jcolX[j] = listHeader.indexOf("ContamFe"); 
-        minValueX[j] = 0.0;  maxValueX[j] = 1500.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
         jcolX[j] = listHeader.indexOf("ContamK");  
-        minValueX[j] = 0.0;  maxValueX[j] = 1500.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
         jcolX[j] = listHeader.indexOf("ContamMg");     
-        minValueX[j] = 0.0;  maxValueX[j] = 1500.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
         jcolX[j] = listHeader.indexOf("ContamNa"); 
-        minValueX[j] = 0.0;  maxValueX[j] = 1500.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
         jcolX[j] = listHeader.indexOf("ContamP");  
-        minValueX[j] = 0.0;  maxValueX[j] = 1500.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
         jcolX[j] = listHeader.indexOf("ContamPb"); 
-        minValueX[j] = 0.0;  maxValueX[j] = 1500.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
         jcolX[j] = listHeader.indexOf("ContamSb"); 
-        minValueX[j] = 0.0;  maxValueX[j] = 1500.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
         jcolX[j] = listHeader.indexOf("ContamSe"); 
-        minValueX[j] = 0.0;  maxValueX[j] = 1500.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
         jcolX[j] = listHeader.indexOf("ContamSiO2");
-        minValueX[j] = 0.0;  maxValueX[j] = 1500.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
         jcolX[j] = listHeader.indexOf("ContamSn"); 
-        minValueX[j] = 0.0;  maxValueX[j] = 1500.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
         jcolX[j] = listHeader.indexOf("ContamTl"); 
-        minValueX[j] = 0.0;  maxValueX[j] = 1500.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
         jcolX[j] = listHeader.indexOf("ContamV");  
-        minValueX[j] = 0.0;  maxValueX[j] = 1500.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
         jcolX[j] = listHeader.indexOf("ParticleOuterDiamAvg");  
         minValueX[j] = 100.0;  maxValueX[j] = 250; j++;
         jcolX[j] = listHeader.indexOf("ParticleOuterDiamLow"); 
-        minValueX[j] = 0.0;  maxValueX[j] = 100.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 100.0; j++;
         jcolX[j] = listHeader.indexOf("ParticleOuterDiamHigh"); 
         minValueX[j] = 250.0;  maxValueX[j] = 400; j++;
         jcolX[j] = listHeader.indexOf("ParticleInnerDiamAvg"); 
@@ -213,33 +320,33 @@ public class CsvMatrix
         jcolX[j] = listHeader.indexOf("ParticleLengthAvg");     
         minValueX[j] = 50.0;  maxValueX[j] = 100.0; j++;
         jcolX[j] = listHeader.indexOf("ParticleLengthLow");    
-        minValueX[j] = 0.0;  maxValueX[j] = 50; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 50; j++;
         jcolX[j] = listHeader.indexOf("ParticleLengthHigh"); 
         minValueX[j] = 100.0;  maxValueX[j] = 150; j++;
         jcolX[j] = listHeader.indexOf("ParticleThicknessAvg"); 
         minValueX[j] = 50.0;  maxValueX[j] = 100.0; j++;
         jcolX[j] = listHeader.indexOf("ParticleThicknessLow");  
-        minValueX[j] = 0.0;  maxValueX[j] = 50; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 50; j++;
         jcolX[j] = listHeader.indexOf("ParticleThicknessHigh");  
         minValueX[j] = 100.0;  maxValueX[j] = 150; j++;
         jcolX[j] = listHeader.indexOf("SurfaceAreaAvg");       
         minValueX[j] = 150.0;  maxValueX[j] = 300; j++;
         jcolX[j] = listHeader.indexOf("SurfaceAreaLow");  
-        minValueX[j] = 0.0;  maxValueX[j] = 150; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 150; j++;
         jcolX[j] = listHeader.indexOf("SurfaceAreaHigh");  
         minValueX[j] = 300.0;  maxValueX[j] = 450; j++;
         jcolX[j] = listHeader.indexOf("MC_TimeValue");    
-        minValueX[j] = 0.0;  maxValueX[j] = 240; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 240; j++;
         jcolX[j] = listHeader.indexOf("MC_ParticleConcentration"); 
-        minValueX[j] = 0.0;  maxValueX[j] = 100.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 100.0; j++;
         jcolX[j] = listHeader.indexOf("MC_SerumConcentration");    
-        minValueX[j] = 0.0;  maxValueX[j] = 100.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 100.0; j++;
         jcolX[j] = listHeader.indexOf("MC_AntibioticConcentration");   
-        minValueX[j] = 0.0;  maxValueX[j] = 100.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 100.0; j++;
         jcolX[j] = listHeader.indexOf("MC_DOMConcentration");       
-        minValueX[j] = 0.0;  maxValueX[j] = 20.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 20.0; j++;
         jcolX[j] = listHeader.indexOf("MC_SalinityValue");        	
-        minValueX[j] = 0.0;  maxValueX[j] = 35.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 35.0; j++;
         jcolX[j] = listHeader.indexOf("MC_pHAvg");        	      
         minValueX[j] = 4.0;  maxValueX[j] = 10.0; j++;
         jcolX[j] = listHeader.indexOf("MC_pHLow");        	       
@@ -251,29 +358,29 @@ public class CsvMatrix
         jcolX[j] = listHeader.indexOf("ZetaPotentialAvg");        	
         minValueX[j] = -30.0;  maxValueX[j] = -100.0; j++;
         jcolX[j] = listHeader.indexOf("ZetaPotentialLow");     
-        minValueX[j] = 0.0;  maxValueX[j] = -30.0; j++;
+        minValueX[j] = -10.0;  maxValueX[j] = -30.0; j++;
         jcolX[j] = listHeader.indexOf("ZetaPotentialHigh");    
         minValueX[j] = -100.0;  maxValueX[j] = -150; j++;
         jcolX[j] = listHeader.indexOf("SizeDistribAvg");        
         minValueX[j] = 1000.0;  maxValueX[j] = 2000; j++;
         jcolX[j] = listHeader.indexOf("SizeDistribLow");        
-        minValueX[j] = 0.0;  maxValueX[j] = 1000; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 1000; j++;
         jcolX[j] = listHeader.indexOf("SizeDistribHigh");        	
         minValueX[j] = 2000.0;  maxValueX[j] = 3000; j++;
         jcolX[j] = listHeader.indexOf("SizeDistribAvg2");        	
         minValueX[j] = 1000.0;  maxValueX[j] = 2000; j++;
         jcolX[j] = listHeader.indexOf("SizeDistribLow2");        
-        minValueX[j] = 0.0;  maxValueX[j] = 1000; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 1000; j++;
         jcolX[j] = listHeader.indexOf("SizeDistribHigh2");       
         minValueX[j] = 2000.0;  maxValueX[j] = 3000; j++;
         jcolX[j] = listHeader.indexOf("SerumConcentration");      
-        minValueX[j] = 0.0;  maxValueX[j] = 100.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 100.0; j++;
         jcolX[j] = listHeader.indexOf("AntibioticConcentration");   
-        minValueX[j] = 0.0;  maxValueX[j] = 100.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 100.0; j++;
         jcolX[j] = listHeader.indexOf("DOMConcentration");        
-        minValueX[j] = 0.0;  maxValueX[j] = 20.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 20.0; j++;
         jcolX[j] = listHeader.indexOf("SalinityValue");      
-        minValueX[j] = 0.0;  maxValueX[j] = 35.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 35.0; j++;
         jcolX[j] = listHeader.indexOf("pHAvg");        	      
         minValueX[j] = 4.0;  maxValueX[j] = 10.0; j++;
         jcolX[j] = listHeader.indexOf("pHLow");         	  
@@ -283,36 +390,36 @@ public class CsvMatrix
         jcolX[j] = listHeader.indexOf("MediumTemp");        	 
         minValueX[j] = 10.0;  maxValueX[j] = 40.0; j++;
         jcolX[j] = listHeader.indexOf("TimeValue");        	         
-        minValueX[j] = 48.0;  maxValueX[j] = 48.0; j++;
+        minValueX[j] = 48.0;  maxValueX[j] = 72.0; j++;
         jcolX[j] = listHeader.indexOf("ParticleConcentration");     
-        minValueX[j] = 0.0;  maxValueX[j] = 100.0; j++;
+        minValueX[j] = 10.0;  maxValueX[j] = 100.0; j++;
         jcolX[j] = listHeader.indexOf("ParticleExposDuration");       
-        minValueX[j] = 48.0;  maxValueX[j] = 48.0; j++;
+        minValueX[j] = 48.0;  maxValueX[j] = 72.0; j++;
         jcolX[j] = listHeader.indexOf("UVADose");        	          
         minValueX[j] = 0.0;  maxValueX[j] = 10.0; j++;
         jcolX[j] = listHeader.indexOf("UVAExposDuration");     
-        minValueX[j] = 0.0;  maxValueX[j] = 2.0; j++;
+        minValueX[j] = 1.0;  maxValueX[j] = 2.0; j++;
         
         /* Store indices and minimum/maximum random values of Y-matrix columns */
         jcolY[jy]   = listHeader.indexOf("ViabilityAvg");        
-        minValueY[jy] = 0.0;  maxValueY[jy] = 100.0; jy++;
+        minValueY[jy] = 10.0;  maxValueY[jy] = 100.0; jy++;
         jcolY[jy]   = listHeader.indexOf("LC50");
-        minValueY[jy] = 0.0;  maxValueY[jy] = 100.0;
+        minValueY[jy] = 10.0;  maxValueY[jy] = 100.0;
            
 		/* Loop over the rows of the data */
-		for (int i = 0; i < rowsSize; i++)
+		for (int i = 0; i < Xorig.rows; i++)
 		{
 			nextLine = rows.get(i);	  // Get the ith row of the data
 			for (int k = 0; k < xcolumns; k++)   // Loop over the columns
 			{
 				int jcol = jcolX[k];
-				Xmatrix.put(i,k,getValue(nextLine[jcol], minValueX[k], maxValueX[k]));
+				Xorig.put(i,k,getValue(nextLine[jcol], minValueX[k], maxValueX[k]));
 			}
 			
 			for (int k = 0; k < ycolumns; k++)
 			{
 				int jcol = jcolY[k];
-				Ymatrix.put(i,k,getValue(nextLine[jcol], minValueY[k], maxValueY[k]));
+				Yorig.put(i,k,getValue(nextLine[jcol], minValueY[k], maxValueY[k]));
 			}	
 				
 		}
@@ -322,14 +429,11 @@ public class CsvMatrix
 	 * This method builds the X and Y matrices for the case of data without null values.
 	 * @author Wilson Melendez
 	 */
-	public static void buildMatricesWithoutNulls()
+	public static void buildMatricesWithoutNulls(DoubleMatrix Xorig, DoubleMatrix Yorig)
 	{
 		String[] nextLine;
 		int[] jcolX = new int[xcolumns];  // Positional indices of X-matrix columns in CSV file.
 		int[] jcolY = new int[ycolumns];  // Positional indices of Y-matrix columns in CSV file.
-		rowsSize = rows.size();  // Number of rows in array list.
-		Xmatrix = new DoubleMatrix(rowsSize,xcolumns);   // X matrix
-		Ymatrix = new DoubleMatrix(rowsSize,ycolumns);   // Y matrix
 		
 		int j = 0, jy = 0;		
 		List<String> listHeader = Arrays.asList(header);
@@ -409,19 +513,19 @@ public class CsvMatrix
         
            
 		/* Loop over the rows of the data */
-		for (int i = 0; i < rowsSize; i++)
+		for (int i = 0; i < Xorig.rows; i++)
 		{
 			nextLine = rows.get(i);	  // Get the ith row of the data
 			for (int k = 0; k < xcolumns; k++)   // Loop over the columns
 			{
 				int jcol = jcolX[k];
-				Xmatrix.put(i,k,Double.parseDouble(nextLine[jcol]));
+				Xorig.put(i,k,Double.parseDouble(nextLine[jcol]));
 			}
 			
 			for (int k = 0; k < ycolumns; k++)
 			{
 				int jcol = jcolY[k];
-				Ymatrix.put(i,k,Double.parseDouble(nextLine[jcol]));
+				Yorig.put(i,k,Double.parseDouble(nextLine[jcol]));
 			}	
 				
 		}
@@ -457,57 +561,274 @@ public class CsvMatrix
 	 * @param A
 	 * @return
 	 */
-	public static DoubleMatrix standardizeMatrix(DoubleMatrix A)
+	public static void normalizeMatrix(DoubleMatrix A, DoubleMatrix meanA, DoubleMatrix stdA)
 	{
-		DoubleMatrix B = A;
 		DescriptiveStatistics stats = new DescriptiveStatistics();
-		for (int j = 0; j < B.columns; j++)
+		for (int j = 0; j < A.columns; j++)
 		{
-			for (int i = 0; i < B.rows; i++)
+			for (int i = 0; i < A.rows; i++)
 			{
-				stats.addValue(B.get(i, j));
+				stats.addValue(A.get(i, j));
 			}
 			
 			double mean = stats.getMean();
 			double std = stats.getStandardDeviation();
+			meanA.put(j, mean);
+			stdA.put(j, std);
 			
-			for (int i = 0; i < B.rows; i++)
+			for (int i = 0; i < A.rows; i++)
 			{
-				double zScore = (std > 0.0) ? (B.get(i, j) - mean) / std : 0.0;
-				B.put(i, j, zScore);
+				double zScore = (std > 0.0) ? (A.get(i, j) - mean) / std : 0.0;
+				A.put(i, j, zScore);
 			}
 			
 			stats.clear();
 		}
-		return B;
+	}
+	
+	/**
+	 * This method converts the elements of a matrix into Z-scores.
+	 * Z-score = (Xi - Xavg) / (standard deviation).
+	 * @author Wilson Melendez
+	 * @param A
+	 * @return
+	 */
+	public static void normalizeVector(DoubleMatrix A, DoubleMatrix meanA, DoubleMatrix stdA)
+	{
+		DescriptiveStatistics stats = new DescriptiveStatistics();
+	    for (int i = 0; i < A.rows; i++)
+	    {
+			stats.addValue(A.get(i));
+		}
+			
+		double mean = stats.getMean();
+		double std = stats.getStandardDeviation();
+		meanA.put(0, mean);
+		stdA.put(0, std);
+			
+		for (int i = 0; i < A.rows; i++)
+		{
+			double zScore = (std > 0.0) ? (A.get(i) - mean) / std : 0.0;
+			A.put(i, zScore);
+		}
+			
+		stats.clear();
+	}
+	
+	/**
+	 * This method sets up the PLS regression algorithm.
+	 * @param Xorig
+	 * @param Yorig
+	 */
+	public static void performPLSR(DoubleMatrix Xorig, DoubleMatrix Yorig)
+	{	
+		/* Normalize the Xmatrix. */
+		DoubleMatrix X0 = new DoubleMatrix(Xorig.rows,Xorig.columns);
+		X0.copy(Xorig);
+		DoubleMatrix meanX = new DoubleMatrix(xcolumns);
+		DoubleMatrix stdX = new DoubleMatrix(xcolumns);
+        normalizeMatrix(X0, meanX, stdX);
+        
+        /* Normalize the Ymatrix. */
+		DoubleMatrix Y0 = new DoubleMatrix(Yorig.rows);
+		Y0.copy(Yorig);
+		DoubleMatrix meanY = new DoubleMatrix(1);
+		DoubleMatrix stdY = new DoubleMatrix(1);
+		normalizeVector(Y0, meanY, stdY);
+		
+		List<Double> bValues = new ArrayList<Double>();
+		DoubleMatrix Bmatrix = new DoubleMatrix();
+		
+		/* Perform the NIPALS algorithm. NIPALS is a PLS regression algorithm. */
+		performNIPALS(X0, Y0, bValues);
+		
+		/* Build the B matrix. B is a diagonal matrix that enters in the calculation
+		 * of the BPLS matrix. The diagonal elements represent the regression weights. */
+		DoubleMatrix mB = new DoubleMatrix(bValues.size());
+		for (int i = 0; i < mB.length; i++)
+		{
+			mB.put(i,bValues.get(i));
+		}		
+		Bmatrix = DoubleMatrix.diag(mB);
+		
+		/* Calculate the Moore-Penrose pseudo-inverse of the transpose of the P matrix. */
+		DoubleMatrix ptInv = Solve.pinv(Pmatrix.transpose());
+		
+		/* Calculate the PLS regression weights. This is also known as the BPLS vector. */
+		Bpls = ptInv.mmul(Bmatrix).mmul(Cmatrix.transpose());
+		
+		/* Re-introduce units into Bpls. */
+		BplsStar = new DoubleMatrix(Bpls.rows+1);
+		for (int i = 0; i < Bpls.rows; i++)
+		{
+			double bUnits = 0.0;
+			if (stdX.get(i) > 0.0)
+			{
+				bUnits = stdY.get(0) * Bpls.get(i) / stdX.get(i);
+			}
+			BplsStar.put(i+1, bUnits);
+		}
+		
+		/* Calculate intercept. */
+		double sum = 0.0;
+		for (int i = 0; i < Bpls.rows; i++)
+		{
+			sum = sum + stdX.get(i) * BplsStar.get(i+1);
+		}
+		double intercept = meanY.get(0) - sum;
+		BplsStar.put(0, intercept);
+		
+		/* Write the BPLS* vector to a CSV file. */
+		writeBplsStarToCsv(BplsStar);
+		
+		/* Augment the Xmatrix by adding a first column of ones. */
+		DoubleMatrix Ones = DoubleMatrix.ones(Xorig.rows);
+		Xaugmented = DoubleMatrix.concatHorizontally(Ones, CsvMatrix.getXmatrix());
+		
+		/* Predict the Y values */
+		Ypred = Xaugmented.mmul(BplsStar);
+		
+	}
+	
+	/**
+	 * This method writes BPLS* to a CSV file.
+	 * @param Bstar
+	 */
+	public static void writeBplsStarToCsv(DoubleMatrix Bstar)
+	{
+		String[] entries = new String[Bstar.rows];
+		String filename = System.getProperty("user.dir") + "\\nanoQSAR_BPLS.csv";
+		
+		try
+		{	
+			FileWriter file = new FileWriter(filename); 
+					
+			/* Create an instance of the CSVWriter class and specify the comma as the 
+			 * default separator. Default quote character is double quote. */ 
+			CSVWriter csvOutput = new CSVWriter(file,CSVWriter.DEFAULT_SEPARATOR);
+					
+			/* Write header line to CSV file. */
+			//csvOutput.writeNext(headerLine);   
+					
+			for (int i = 0; i < Bstar.rows; i++)
+			{
+				entries[i] = String.valueOf(Bstar.get(i));
+			}
+						
+			/* Write row of data to output using the writeNext method. */
+			csvOutput.writeNext(entries);   
+			
+			/* Close the writer. */
+			   csvOutput.close();   
+		}
+		catch(IOException ex)
+		{
+			System.out.println("FileWriter for " + filename + " could not be constructed.");
+			lOGGER.log(Level.SEVERE, "FileWriter for " + filename + " could not be constructed.", ex);	
+		}
 	}
 	
 	/**
 	 * This method performs the PLSR algorithm.
 	 * @author Wilson Melendez
 	 */
-	public static void performPlsRegression()
+	public static void performNIPALS(DoubleMatrix X0, DoubleMatrix Y0, List<Double> bValues)
 	{
-		/* Standardize the X and Y matrices */
-		DoubleMatrix X = standardizeMatrix(Xmatrix);
-		DoubleMatrix Y = standardizeMatrix(Ymatrix);
+		int rowsMatrix = X0.rows;
+		DoubleMatrix X = X0;
+		DoubleMatrix Y = Y0;
+		DoubleMatrix u = new DoubleMatrix(rowsMatrix);		
+		DoubleMatrix w;		
+		DoubleMatrix t = new DoubleMatrix(rowsMatrix);
+		DoubleMatrix t1 = new DoubleMatrix(rowsMatrix);		
+		DoubleMatrix c;		
+		DoubleMatrix Xtu;
+		DoubleMatrix Xw;
+		DoubleMatrix Ytt;
+		DoubleMatrix tdiff;
+		DoubleMatrix p;		
+		DoubleMatrix tpt, tct;		
+		boolean IsFirstTime, HasNotConverged, IsFirstDeflation;
+		double normX;
+					
+		IsFirstDeflation = true;
 		
-		/* Initialize the u vector */
-		DoubleMatrix u = Y.getColumn(0);
-		
-		/* Calculate w */
-		DoubleMatrix Xt = X.transpose();
-		DoubleMatrix w = Xt.mmul(u).div(u.dot(u));
-		
-		/* Calculate X-scores, t */
-		DoubleMatrix t = X.mmul(w);
-		
-		/* Calculated Y-weights, c */
-		DoubleMatrix Yt = Y.transpose();
-		DoubleMatrix c = Yt.mmul(t).div(t.dot(t));
-		
-		/* Calculate an updated set of Y-scores, u */
-		u = Y.mmul(c).div(c.dot(c));
+		do
+		{
+			/* Initialize the u vector with random numbers: use normally distributed
+			 * random values. */
+			u = DoubleMatrix.randn(rowsMatrix);
+			
+			IsFirstTime = true;
+			HasNotConverged = true;
+			do
+			{
+				/* Calculate w and normalize the result. */
+				Xtu = X.transpose().mmul(u);
+				w = Xtu.div(Xtu.norm2());
+				
+				/* Calculate X-scores, t, and normalize the result. */
+				Xw = X.mmul(w);
+				t1 = Xw.div(Xw.norm2());
+				
+				/* Calculated Y-weights, c, and normalize the result. */
+				Ytt = Y.transpose().mmul(t1);
+				c = Ytt.div(Ytt.norm2());
+				
+				/* Calculate an updated set of Y-scores, u */
+				u = Y.mmul(c);
+								
+				if (IsFirstTime)
+				{
+					IsFirstTime = false;
+					HasNotConverged = false;
+				}
+				else
+				{
+					tdiff = t.sub(t1);
+					double changeT = tdiff.norm2() / t1.norm2();
+					//System.out.println("Change in t = " + changeT);
+					if (changeT < EPSILON) HasNotConverged = false;
+				}
+				
+				t = t1;
+				
+			} while (HasNotConverged);
+			
+			double b = t.transpose().dot(u);
+			bValues.add(b);
+			
+			/* Compute the factor loadings for X. */
+			p = X.transpose().mmul(t);
+			
+			/* Deflate the X and Y matrices.  */
+			tpt = t.mmul(p.transpose());
+			tct = t.mmul(c.transpose());
+			X = X.sub(tpt);
+			Y = Y.sub(tct.muli(b));
+			normX = X.norm2();
+			//System.out.println("Norm of deflated X = " + normX);
+			
+			if (IsFirstDeflation)
+			{
+				Tmatrix = t;
+				Umatrix = u;
+				Pmatrix = p;
+				Cmatrix = c;				
+				Wmatrix = w;
+				IsFirstDeflation = false;
+			}
+			else
+			{
+				Tmatrix = DoubleMatrix.concatHorizontally(Tmatrix,t);
+				Umatrix = DoubleMatrix.concatHorizontally(Umatrix,u);
+				Pmatrix = DoubleMatrix.concatHorizontally(Pmatrix,p);
+				Cmatrix = DoubleMatrix.concatHorizontally(Cmatrix,c);
+				Wmatrix = DoubleMatrix.concatHorizontally(Wmatrix,w);
+			}
+			
+		} while (normX > EPSILON_DEFLATION);		
+	
 	}
 	
 	/**

@@ -5,8 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.jblas.DoubleMatrix;
-import org.junit.Assert;
+
 import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 
@@ -15,6 +16,47 @@ import org.junit.Test;
  *
  */
 public class CsvMatrixTest {
+	
+	@Test
+	public void testMatrices() throws FileNotFoundException, IOException
+	{
+		
+		try
+		{
+			String filename = System.getProperty("user.dir") + "\\nanoQSAR.csv";
+			/* Open and read CSV file. */
+			CsvMatrix.readCsvFile(filename);
+			/* Build X and Y matrices. */
+			CsvMatrix.buildMatrices();
+				
+			//* Get the X and Y matrices and proceed to perform the PLS regression. */
+			DoubleMatrix Xorig = CsvMatrix.getXmatrix();
+			DoubleMatrix Yorig = CsvMatrix.getYmatrix();
+			CsvMatrix.performPLSR(Xorig,Yorig.getColumn(1));
+			
+			DoubleMatrix T = CsvMatrix.getTmatrix();
+			DoubleMatrix Imatrix = T.transpose().mmul(T);
+			double normI = Math.pow(Imatrix.norm2(), 2);
+			double nrows = Imatrix.rows;
+			assertEquals(nrows, normI, 1.0e-06);
+			
+			DoubleMatrix W = CsvMatrix.getWmatrix();
+			DoubleMatrix Imatrix1 = W.transpose().mmul(W);
+			double normI1 = Math.pow(Imatrix1.norm2(), 2);
+			double nrows1 = Imatrix1.rows;
+			assertEquals(nrows1, normI1, 1.0e-06);
+			
+		}
+		catch(FileNotFoundException ex)
+		{
+			throw ex;
+		}
+		catch(IOException ex)
+		{
+		    throw ex;
+		}
+	        				
+	} 
 
 	/**
 	 * Test method for {@link CsvMatrix#readCsvFile(java.lang.String)}.
@@ -40,6 +82,7 @@ public class CsvMatrixTest {
 	/**
 	 * Test method for buildMatricesContainingNulls().
 	 */
+
 	@Test
 	public void testBuildMatricesContainingNulls() 
 	{
@@ -127,10 +170,10 @@ public class CsvMatrixTest {
 		Y.put(0,1,0.2);
 		
 		rowsTest.add(values);
-		CsvMatrix.setRows(rowsTest);	
-		CsvMatrix.buildMatricesContainingNulls();
-		DoubleMatrix Xtest = CsvMatrix.getXmatrix();
-		DoubleMatrix Ytest = CsvMatrix.getYmatrix();
+		CsvMatrix.setRows(rowsTest);
+	    DoubleMatrix Xtest = new DoubleMatrix(1,67);
+	    DoubleMatrix Ytest = new DoubleMatrix(1,2);
+		CsvMatrix.buildMatricesContainingNulls(Xtest, Ytest);
 		
 		DoubleMatrix Xsame, Ysame;
 		Xsame = (X.eq(Xtest));  
@@ -233,9 +276,9 @@ public class CsvMatrixTest {
 		
 		rowsTest.add(values);
 		CsvMatrix.setRows(rowsTest);	
-		CsvMatrix.buildMatricesWithoutNulls();
-		DoubleMatrix Xtest = CsvMatrix.getXmatrix();
-		DoubleMatrix Ytest = CsvMatrix.getYmatrix();
+		DoubleMatrix Xtest = new DoubleMatrix(1,67);
+	    DoubleMatrix Ytest = new DoubleMatrix(1,2);
+		CsvMatrix.buildMatricesWithoutNulls(Xtest, Ytest);
 		
 		DoubleMatrix Xsame, Ysame;
 		Xsame = (X.eq(Xtest));  
@@ -250,6 +293,9 @@ public class CsvMatrixTest {
 		assertEquals(1.0,Ysame.get(0,1),1.0e-15);
 	}
 
+	/**
+	 * @author Wilson Melendez
+	 */
 	@Test
 	public void testGetValue()
 	{
@@ -261,4 +307,45 @@ public class CsvMatrixTest {
 		value = CsvMatrix.getValue(str, 0.0, 100.0);
 		assertEquals(54.7,value,1.0e-15);
 	}
+	
+	
+	//@Test
+	public void testPlsRegression() throws IOException
+	{
+		double epsilon = 1.0;
+		
+		String filename = System.getProperty("user.dir") + "\\nanoQSAR.csv";
+		/* Open and read CSV file. */
+		try
+		{
+			CsvMatrix.readCsvFile(filename);
+		}
+		catch(IOException ex)
+		{
+			throw ex;
+		}
+        		
+		/* Build X and Y matrices. */
+		CsvMatrix.buildMatrices();
+		
+		/* Get the X and Y matrices and proceed to perform the PLS regression. */
+		DoubleMatrix Xorig = CsvMatrix.getXmatrix();
+		DoubleMatrix Yorig = CsvMatrix.getYmatrix();
+		CsvMatrix.performPLSR(Xorig,Yorig.getColumn(1));
+		
+		DoubleMatrix Ypred1 = CsvMatrix.getYpred();
+		DoubleMatrix Bpls1 = CsvMatrix.getBplsStar();
+		
+		CsvMatrix.performPLSR(Xorig,Ypred1.getColumn(0));
+		DoubleMatrix Bpls2 = CsvMatrix.getBplsStar();
+		
+		double norm1 = Bpls1.norm2();
+		double norm2 = Bpls2.norm2();
+		//double norm3 = Bpls3.norm2();
+		System.out.println("norm1, norm2 = " + norm1 + " " + norm2);
+		double diff = Math.abs(norm2-norm1);
+		boolean cond = diff < epsilon;
+		assertTrue(cond);
+	} 
+
 }

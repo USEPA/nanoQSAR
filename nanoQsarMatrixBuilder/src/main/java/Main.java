@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jblas.DoubleMatrix;
+
 
 /**
  * This program reads the contents of a CSV file, builds the X and Y matrices needed by the
- * PLS regression algorithm, and prints the matrices to the console.
+ * PLS regression algorithm, and writes the vector with regression weights to a CSV file.
  * @author Wilson Melendez
  *
  */
@@ -59,11 +61,10 @@ public class Main
 			/* Build X and Y matrices. */
 			CsvMatrix.buildMatrices();
 			
-			/* Print X and Y matrices to standard output */
-			CsvMatrix.showX();
-			CsvMatrix.showY();
-			
-			// CsvMatrix.performPlsRegression();
+			/* Get the X and Y matrices and proceed to perform the PLS regression. */
+			DoubleMatrix Xorig = CsvMatrix.getXmatrix();
+			DoubleMatrix Yorig = CsvMatrix.getYmatrix();
+			CsvMatrix.performPLSR(Xorig,Yorig.getColumn(1));
 			
 			/* Close logger file. */
 			LoggerInfo.close();
