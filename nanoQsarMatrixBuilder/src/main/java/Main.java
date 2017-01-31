@@ -9,7 +9,8 @@ import org.jblas.DoubleMatrix;
 
 /**
  * This program reads the contents of a CSV file, builds the X and Y matrices needed by the
- * PLS regression algorithm, and writes the vector with regression weights to a CSV file.
+ * PLS regression algorithm, writes the vector with regression weights to a CSV file, and performs
+ * a 5-fold cross-validation analysis.
  * @author Wilson Melendez
  *
  */
@@ -61,10 +62,32 @@ public class Main
 			/* Build X and Y matrices. */
 			CsvMatrix.buildMatrices();
 			
-			/* Get the X and Y matrices and proceed to perform the PLS regression. */
+			/* Get the X and Y matrices.  Use a single column for the Y matrix. */
 			DoubleMatrix Xorig = CsvMatrix.getXmatrix();
 			DoubleMatrix Yorig = CsvMatrix.getYmatrix();
-			CsvMatrix.performPLSR(Xorig,Yorig.getColumn(1));
+			DoubleMatrix Yorig1 = Yorig.getColumn(1);  // Use LC50 as the effect variable.
+			
+			/* Perform PLS regression and return the BPLS* vector. */
+			DoubleMatrix BplsS = CsvMatrix.performPLSR(Xorig,Yorig1);  
+			
+			/* Write BPLS* vector to a CSV file. */
+			CsvMatrix.writeBplsStarToCsv(BplsS);
+			
+			/* Predict the Y values. */
+			DoubleMatrix Ypredicted = CsvMatrix.predictResults(Xorig, BplsS);
+			
+			/* Calculate R2. R^2 = || Y - Ypredicted||^2  */
+			double r2 = 0.0;
+			DoubleMatrix Ydiff = Yorig1.sub(Ypredicted);
+			r2 = Math.pow(Ydiff.norm2(), 2.0);
+			System.out.println("R2 = " + r2);
+			
+			/* Split original data into 5 subsets that will be used for a 5-fold
+			 * cross-validation analysis. */
+			CsvMatrix.splitDataIntoSets();
+			
+			/* Perform a 5-fold cross-validation and compute Q2. */
+			CsvMatrix.performFiveFoldCrossValidation();
 			
 			/* Close logger file. */
 			LoggerInfo.close();
