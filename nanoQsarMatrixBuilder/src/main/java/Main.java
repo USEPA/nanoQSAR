@@ -1,6 +1,8 @@
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,7 +24,9 @@ public class Main
 	private final static Logger lOGGER = Logger.getLogger( Logger.class.getName() );
 	
 	/**
+	 * This is the main method.
 	 * @param args
+	 * @author Wilson Melendez
 	 */
 	public static void main(String[] args) 
 	{
@@ -62,10 +66,12 @@ public class Main
 			/* Build X and Y matrices. */
 			CsvMatrix.buildMatrices();
 			
-			/* Get the X and Y matrices.  Use a single column for the Y matrix. */
+			/* Get the X and Y matrices.  Use a single column for 
+			 * the Y matrix. */
 			DoubleMatrix Xorig = CsvMatrix.getXmatrix();
 			DoubleMatrix Yorig = CsvMatrix.getYmatrix();
-			DoubleMatrix Yorig1 = Yorig.getColumn(1);  // Use LC50 as the effect variable.
+			DoubleMatrix Yorig1 = new DoubleMatrix(Yorig.rows, 1);
+			Yorig1 = Yorig.getColumn(1);  // Use LC50 as the effect variable.
 			
 			/* Perform PLS regression and return the BPLS* vector. */
 			DoubleMatrix BplsS = CsvMatrix.performPLSR(Xorig,Yorig1);  
@@ -84,10 +90,24 @@ public class Main
 			
 			/* Split original data into 5 subsets that will be used for a 5-fold
 			 * cross-validation analysis. */
-			CsvMatrix.splitDataIntoSets();
+			List<Integer> list = new ArrayList<Integer>();
+			CsvMatrix.splitDataIntoSets(Xorig, Yorig1, list);
+			
+			/* Use the list containing the re-shuffled indices to 
+			 * obtain the re-shuffled Y vector. */
+			DoubleMatrix Yshuffled = new DoubleMatrix(Yorig1.rows);
+			for (int i = 0; i < Yorig1.rows; i++)
+			{
+				int index = list.get(i);
+				Yshuffled.put(i, Yorig1.get(index));
+			}
 			
 			/* Perform a 5-fold cross-validation and compute Q2. */
-			CsvMatrix.performFiveFoldCrossValidation();
+			DoubleMatrix Ytilde = CsvMatrix.performFiveFoldCrossValidation();
+			double Q2 = 0.0;
+			DoubleMatrix Ydiff1 = Yshuffled.sub(Ytilde);
+			Q2 = Math.pow(Ydiff1.norm2(), 2.0);
+			System.out.println("Q2 = " + Q2);
 			
 			/* Close logger file. */
 			LoggerInfo.close();
