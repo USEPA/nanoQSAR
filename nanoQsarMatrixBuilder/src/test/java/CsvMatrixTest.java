@@ -4,6 +4,7 @@ import java.util.List;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.jblas.DoubleMatrix;
 
 import static org.junit.Assert.*;
@@ -20,45 +21,27 @@ public class CsvMatrixTest {
 	@Test
 	public void testMatrices() throws FileNotFoundException, IOException
 	{
-		
-		try
-		{
-			String filename = System.getProperty("user.dir") + "\\nanoQSAR.csv";
-			/* Open and read CSV file. */
-			CsvMatrix.readCsvFile(filename);
-			/* Build X and Y matrices. */
-			CsvMatrix.buildMatrices();
-				
-			//* Get the X and Y matrices and proceed to perform the PLS regression. */
-			DoubleMatrix Xorig = CsvMatrix.getXmatrix();
-			DoubleMatrix Yorig = CsvMatrix.getYmatrix();
-			DoubleMatrix Yorig1 = new DoubleMatrix(Yorig.rows, 1);
-			Yorig1 = Yorig.getColumn(1);  
-			DoubleMatrix Bstar = CsvMatrix.performPLSR(Xorig,Yorig1);
+		int num_rows = 250;
+	    int num_cols = 67;
+        DoubleMatrix Xorig = new DoubleMatrix(num_rows, num_cols);
+		DoubleMatrix Yorig = new DoubleMatrix(num_cols, 1);
 			
-			DoubleMatrix T = CsvMatrix.getTmatrix();
-			DoubleMatrix Imatrix = T.transpose().mmul(T);
-			//CsvMatrix.showX(Imatrix);
-			double normI = Math.pow(Imatrix.norm2(), 2);
-			double nrows = Imatrix.rows;
-			assertEquals(nrows, normI, 1.0e-06);
+		Xorig = DoubleMatrix.rand(num_rows, num_cols);
+		Yorig = DoubleMatrix.rand(num_rows, 1);
 			
-			DoubleMatrix W = CsvMatrix.getWmatrix();
-			DoubleMatrix Imatrix1 = W.transpose().mmul(W);
-			//CsvMatrix.showX(Imatrix1);
-			double normI1 = Math.pow(Imatrix1.norm2(), 2);
-			double nrows1 = Imatrix1.rows;
-			assertEquals(nrows1, normI1, 1.0e-06);
+		DoubleMatrix Bstar = CsvMatrix.performPLSR(Xorig,Yorig);
 			
-		}
-		catch(FileNotFoundException ex)
-		{
-			throw ex;
-		}
-		catch(IOException ex)
-		{
-		    throw ex;
-		}
+		DoubleMatrix T = CsvMatrix.getTmatrix();
+		DoubleMatrix Imatrix = T.transpose().mmul(T);
+		double normI = Math.pow(Imatrix.norm2(), 2);
+		double nrows = Imatrix.rows;
+		assertEquals(nrows, normI, 1.0e-02);
+			
+		DoubleMatrix W = CsvMatrix.getWmatrix();
+		DoubleMatrix Imatrix1 = W.transpose().mmul(W);
+		double normI1 = Math.pow(Imatrix1.norm2(), 2);
+		double nrows1 = Imatrix1.rows;
+		assertEquals(nrows1, normI1, 1.0e-02);
 	        				
 	} 
 
@@ -351,27 +334,111 @@ public class CsvMatrixTest {
 				              { -1.7313,  0.7797,  0.4513}};
 				             		
 		
-		DoubleMatrix X1 = new DoubleMatrix(xMatrix);
-		DoubleMatrix Y1 = new DoubleMatrix(yMatrix);
+		DoubleMatrix X = new DoubleMatrix(xMatrix);
+		DoubleMatrix Y = new DoubleMatrix(yMatrix);
 		
-		DoubleMatrix Bpls1 = CsvMatrix.performPLSR(X1,Y1);
-		DoubleMatrix T1 = CsvMatrix.getTmatrix();		
-		DoubleMatrix U1 = CsvMatrix.getUmatrix();
-		DoubleMatrix W1 = CsvMatrix.getWmatrix();
-		CsvMatrix.showX(W1);
-		DoubleMatrix Imatrix1 = W1.transpose().mmul(W1);
-		CsvMatrix.showX(Imatrix1);
+		DoubleMatrix BplsStar = CsvMatrix.performPLSR(X,Y);
 		
-		/* Predict the Y values. */
-		DoubleMatrix Ypredicted = CsvMatrix.predictResults(X1, Bpls1);
+		/* Predict the Y values using X and BPLS*. */
+		DoubleMatrix Ypredicted = CsvMatrix.predictResults(X, BplsStar);
 		
-		/* Calculate R2. R^2 = || Y - Ypredicted||^2  */
-		double r2 = 0.0;
-		DoubleMatrix Ydiff = Y1.sub(Ypredicted);
-		r2 = Math.pow(Ydiff.norm2(), 2.0);
+		/* Calculate the residual sum of squares also known as RESS.
+		 * The equation is : RESS = ||Y - Ypredicted||^2  
+		 * where || is the norm of a vector.
+		 */
+		double ress = 0.0;
+		DoubleMatrix Ydiff = Y.sub(Ypredicted);
+		ress = Math.pow(Ydiff.norm2(), 2.0);
 		
 		/* Verify that r2 is equal to 1.25. */
-		assertEquals(1.25, r2, 1.0E-06);
+		assertEquals(1.25, ress, 1.0E-06);
+		
+		/* Calculate average of observed values. */
+		DescriptiveStatistics stats = new DescriptiveStatistics();
+		DoubleMatrix meanY = new DoubleMatrix(Y.rows, Y.columns);
+		for (int j = 0; j < Y.columns; j++)
+		{
+			for (int i = 0; i < Y.rows; i++)
+			{
+				stats.addValue(Y.get(i, j));
+			}
+			
+			double mean = stats.getMean();
+			
+			for (int i = 0; i < Y.rows; i++)
+			{
+				meanY.put(i, j, mean);
+			}
+			
+			stats.clear();
+		}
+		
+		/* Calculate R2 as the following: 
+		 * R2 = 1.0 - (||Y- Ypredicted||^2 / ||Y - meanY||^2) 
+		 */
+		DoubleMatrix YdiffMean = Y.sub(meanY);
+		double sumYmean = Math.pow(YdiffMean.norm2(), 2.0);
+		double sumYmean1 = Math.pow(YdiffMean.getColumn(0).norm2(), 2.0);
+		double sumYmean2 = Math.pow(YdiffMean.getColumn(1).norm2(), 2.0);
+		double sumYmean3 = Math.pow(YdiffMean.getColumn(2).norm2(), 2.0);
+		double ress1 = Math.pow(Ydiff.getColumn(0).norm2(), 2.0);
+		double ress2 = Math.pow(Ydiff.getColumn(1).norm2(), 2.0);
+		double ress3 = Math.pow(Ydiff.getColumn(2).norm2(), 2.0);
+		double R2 = 1.0 - (ress / sumYmean);
+		assertTrue("R2 > 0.9", R2 > 0.9);
+		
+		double R2Col1 = 1.0 - (ress1 / sumYmean1);
+		assertTrue("R2Col1 > 0.9", R2Col1 > 0.9);
+		double R2Col2 = 1.0 - (ress2 / sumYmean2);
+		assertTrue("R2Col2 > 0.9", R2Col2 > 0.9);
+		double R2Col3 = 1.0 - (ress3 / sumYmean3);
+		assertTrue("R2Col3 > 0.8", R2Col3 > 0.8);
+		
+		/* Split original data into 5 subsets that will be used for a 5-fold
+		 * cross-validation analysis. 
+		 */
+		List<Integer> list = new ArrayList<Integer>();
+		CsvMatrix.splitDataIntoSets(X, Y, list);
+				
+		/* Use the list containing the re-shuffled indices to 
+		 * obtain the re-shuffled Y vector. 
+		 */
+		DoubleMatrix Yshuffled = new DoubleMatrix(5,3);
+		for (int j = 0; j < 3; j++)
+		{
+			for (int i = 0; i < 5; i++)
+			{
+			    int index = list.get(i);
+				Yshuffled.put(i, j, Y.get(index, j));
+			}
+		}
+		
+		/* Perform a 5-fold cross-validation and compute Q2. */		
+		DoubleMatrix Ytilde = CsvMatrix.performFiveFoldCrossValidation();
+		double sum1 = 0.0;
+		double sum2 = 0.0;
+		DoubleMatrix YdiffMean1 = Yshuffled.sub(meanY);
+		DoubleMatrix YdiffShuffledTilde = Yshuffled.sub(Ytilde);
+		sum1 = Math.pow(YdiffShuffledTilde.norm2(), 2.0);
+		sum2 = Math.pow(YdiffMean1.norm2(), 2.0);
+		
+		sumYmean1 = Math.pow(YdiffMean1.getColumn(0).norm2(), 2.0);
+		sumYmean2 = Math.pow(YdiffMean1.getColumn(1).norm2(), 2.0);
+		sumYmean3 = Math.pow(YdiffMean1.getColumn(2).norm2(), 2.0);
+		ress1 = Math.pow(YdiffShuffledTilde.getColumn(0).norm2(), 2.0);
+		ress2 = Math.pow(YdiffShuffledTilde.getColumn(1).norm2(), 2.0);
+		ress3 = Math.pow(YdiffShuffledTilde.getColumn(2).norm2(), 2.0);
+		
+		double Q2 = 1.0 - sum1/sum2;
+		assertTrue("Q2 < R2", Q2 < R2);
+		
+		double Q2Col1 = 1.0 - (ress1 / sumYmean1);
+		assertTrue("Q2Col1 > 0.9", Q2Col1 > 0.9);
+		double Q2Col2 = 1.0 - (ress2 / sumYmean2);
+		assertTrue("Q2Col2 > 0.9", Q2Col2 > 0.9);
+		double Q2Col3 = 1.0 - (ress3 / sumYmean3);
+		assertTrue("Q2Col3 < 0.0", Q2Col3 < 0.0);
+		
 	}
 	
 	/**
@@ -391,25 +458,43 @@ public class CsvMatrixTest {
 		
 		double a = 0.2;
 		double b = 0.6;
+		double maxNumber = 10.0;
 		
 		DoubleMatrix X1 = new DoubleMatrix(nrows,ncols);
 		DoubleMatrix Y1 = new DoubleMatrix(nrows,1);
 		
-		X1 = DoubleMatrix.rand(nrows,ncols);
-		Y1 = DoubleMatrix.rand(nrows,1);
+		/* Generate random values for the X matrix. */
+		for (int j = 0; j < ncols; j++)
+		{
+			for (int i = 0; i < nrows; i++)
+			{
+				double rValue = (2.0 * Math.random() - 1.0) * maxNumber;
+			    X1.put(i, j, rValue);
+			}			
+		}
 		
+		/* Generate random values for the Y matrix. */
+		for (int i = 0; i < nrows; i++)
+		{
+			double rValue = (2.0 * Math.random() - 1.0) * maxNumber;
+		    Y1.put(i, 0, rValue);
+		}			
+		
+		/* Make column 4 of the X matrix to be a linear combination 
+		 * of columns 1 and 2. 
+		 */
 		for (int i = 0; i < nrows; i++)
 		{
 			double v = a * X1.get(i, 0) + b * X1.get(i, 1);
 			X1.put(i, 3, v);
 		}
 		
+		/* Perform the PLS algorithm.*/
 		DoubleMatrix Bpls1 = CsvMatrix.performPLSR(X1,Y1);
+		
 		DoubleMatrix T1 = CsvMatrix.getTmatrix();
-		DoubleMatrix W1 = CsvMatrix.getWmatrix();
-		CsvMatrix.showX(W1);
-		DoubleMatrix Imatrix1 = W1.transpose().mmul(W1);
-		CsvMatrix.showX(Imatrix1);
+		
+		/* Verify that the dimensionality of the latent space is 5. */
 		assertTrue("Latent space dimensionality is equal to 5.", T1.columns == 5);
 	}
 	
@@ -421,33 +506,61 @@ public class CsvMatrixTest {
 	 * d) Confirm the latent space has only 1 dimension.
 	 * @author Wilson Melendez
 	 */
-	//@Test 
+	@Test 
 	public void testPLS_v2()
 	{ 
 		int nrows = 10;
 		int ncols = 6;
-		
+		int colXY = 0;
+		double maxNumber = 10.0;
+		double delta = 1.0E-06;
 		DoubleMatrix X2 = new DoubleMatrix(nrows,ncols);
 		DoubleMatrix Y2 = new DoubleMatrix(nrows,1);
 		
-		X2 = DoubleMatrix.rand(nrows,ncols);
-		Y2 = DoubleMatrix.rand(nrows,1);
+		/* Generate random values for the X matrix. */
+		for (int j = 0; j < ncols; j++)
+		{
+			for (int i = 0; i < nrows; i++)
+			{
+				double rValue = (2.0 * Math.random() - 1.0) * maxNumber;
+			    X2.put(i, j, rValue);
+			}			
+		}
 		
+		/* Generate random values for the Y matrix. */
+		for (int i = 0; i < nrows; i++)
+		{
+			double rValue = (2.0 * Math.random() - 1.0) * maxNumber;
+		    Y2.put(i, 0, rValue);
+		}			
+		
+		/* Set one of the X columns equal to Y. */
 		for (int i = 0; i < nrows; i++)
 		{
 			double v = Y2.get(i, 0);
-			X2.put(i, 0, v);
+			X2.put(i, colXY, v);
 		}
 		
+		/* Perform the PLS algorithm and calculate BPLS* */
 		DoubleMatrix Bpls1 = CsvMatrix.performPLSR(X2,Y2);
-		DoubleMatrix B2 = CsvMatrix.getBmatrix();
-		CsvMatrix.showX(B2);
 		
-		double ssy = CsvMatrix.getSsy();
-		double perCentExplained = (Math.pow(B2.get(0,0), 2.0) / ssy) * 100.0 
-				+ (Math.pow(B2.get(1,1), 2.0) / ssy) * 100.0
-				+  (Math.pow(B2.get(2,2), 2.0) / ssy) * 100.0;;
-		assertTrue("% explained by first component is greater than 70%.", perCentExplained > 70.0);
+		/* Confirm the latent space has only 1 dimension. 
+		 * Loop over the rows of BPLS* and verify that only one
+		 * element is non-zero and equal to 1.
+		 * The element equal to 1 should be in row number colXY + 1.
+		 */
+		for (int i = 0; i < Bpls1.rows; i++)
+		{
+			if (i == (colXY + 1))  // This should be the only non-zero element.
+			{
+				assertEquals(1.0, Bpls1.get(i), delta);
+			}
+			else  // All other elements should be zero or close to it.
+			{
+				assertEquals(0.0, Bpls1.get(i), delta);
+			}
+		}
+		
 	}
 	
 	
@@ -473,13 +586,16 @@ public class CsvMatrixTest {
 		/* Number of columns */
 		int m = 20;
 		
+		/* Maximum values for the data and errors. */
+		double maxNumber = 20.0;
+		double maxError = 10.0;
+		
 		/* Vector of Coefficients  */
 		DoubleMatrix B = new DoubleMatrix(m + 1);
 		
 		/* Matrix of results */
 		DoubleMatrix Y = new DoubleMatrix(n);
-		DoubleMatrix Ypred = new DoubleMatrix(n);
-		//DoubleMatrix errorY = new DoubleMatrix(n);
+		DoubleMatrix Yobs = new DoubleMatrix(n);
 		
 		/* Matrix containing the predictors. */
 		DoubleMatrix X = new DoubleMatrix(n, m);
@@ -488,10 +604,21 @@ public class CsvMatrixTest {
 		DoubleMatrix Xb = new DoubleMatrix(n, m + 1);
 		
 		/* Generate b0, b1, b2, ..., bm coefficients. */
-		B = DoubleMatrix.rand(m + 1);
+		for (int i = 0; i < m + 1; i++)
+		{
+			double rValue = (2.0 * Math.random() - 1.0) * maxNumber;
+			B.put(i, rValue);
+		}
 				
 		/* Generate random values for X. */
-		X = DoubleMatrix.rand(n, m);
+		for (int j = 0; j < m; j++)
+		{
+			for (int i = 0; i < n; i++)
+			{
+				double rValue = (2.0 * Math.random() - 1.0) * maxNumber;
+			    X.put(i, j, rValue);
+			}			
+		}
 		
 		/* Augment the X matrix by adding a column of 1's as the
 		 * first column. */
@@ -501,25 +628,45 @@ public class CsvMatrixTest {
 		/* Calculate the Y matrix using the Xb and B matrices. */
 		Y = Xb.mmul(B);
 		
-		/* Add a small error to Y and store the new values in Ypred. */
-		double errorY = Math.random() * 0.02;		
-		Ypred = Y.add(errorY);
+		/* Add a small error to Y and store the new values in Yobs. */
+		for (int i = 0; i < n; i++)
+		{
+			double rValue = Y.get(i) + (2.0 * Math.random() - 1.0) * maxError;
+			Yobs.put(i, rValue);
+		}
+		
+		/* Calculate average of observed values. */
+		DescriptiveStatistics stats = new DescriptiveStatistics();
+	    for (int i = 0; i < Yobs.rows; i++)
+	    {
+			stats.addValue(Yobs.get(i));
+		}
+		double meanY = stats.getMean();
 		
 		/* Perform the PLS regression algorithm and return the 
 		 * BPLS matrix.
 		 */
-		DoubleMatrix BPLSS = CsvMatrix.performPLSR(X,Ypred);		
-		DoubleMatrix Ypred1 = CsvMatrix.predictResults(X, BPLSS);
-		double r2 = 0.0;
-		DoubleMatrix Ydiff = Y.sub(Ypred1);
-		r2 = Math.pow(Ydiff.norm2(), 2.0);
-		double error = Math.pow(errorY, 2.0) * n;
-		assertEquals(error, r2, 1.0E-06);
+		DoubleMatrix BPLSS = CsvMatrix.performPLSR(X,Yobs);	
+		
+		/* Predict the results using X and BPLS*. */
+		DoubleMatrix Ypred = CsvMatrix.predictResults(X, BPLSS);
+		
+		/* Calculate R2. */
+		double sum1 = 0.0, sum2 = 0.0;
+		for (int i = 0; i < n; i++)
+		{
+			sum1 = sum1 + (Yobs.get(i) - Ypred.get(i)) * (Yobs.get(i) - Ypred.get(i));
+			sum2 = sum2 + (Yobs.get(i) - meanY) * (Yobs.get(i) - meanY);
+		}
+		
+		double r2 = 1.0 - sum1/sum2;
+		
+		assertEquals(1.0, r2, 1.0E-02);
 		
 		/* Split original data into 5 subsets that will be used for a 5-fold
 		 * cross-validation analysis. */
 		List<Integer> list = new ArrayList<Integer>();
-		CsvMatrix.splitDataIntoSets(X, Ypred, list);
+		CsvMatrix.splitDataIntoSets(X, Yobs, list);
 				
 		/* Use the list containing the re-shuffled indices to 
 		 * obtain the re-shuffled Y vector. */
@@ -527,52 +674,22 @@ public class CsvMatrixTest {
 		for (int i = 0; i < n; i++)
 		{
 			int index = list.get(i);
-			Yshuffled.put(i, Y.get(index));
+			Yshuffled.put(i, Yobs.get(index));
 		}
 		
 		/* Perform a 5-fold cross-validation and compute Q2. */		
 		DoubleMatrix Ytilde = CsvMatrix.performFiveFoldCrossValidation();
-		double Q2 = 0.0;
-		DoubleMatrix Ydiff1 = Yshuffled.sub(Ytilde);
-		Q2 = Math.pow(Ydiff1.norm2(), 2.0);
-		assertEquals(r2, Q2, 1.0E-06);
+		sum1 = 0.0;
+		sum2 = 0.0;
+		for (int i = 0; i < n; i++)
+		{
+			sum1 = sum1 + (Yshuffled.get(i) - Ytilde.get(i)) * (Yshuffled.get(i) - Ytilde.get(i));
+			sum2 = sum2 + (Yshuffled.get(i) - meanY) * (Yshuffled.get(i) - meanY);
+		}
+		
+		double Q2 = 1.0 - sum1/sum2;
+		assertEquals(r2, Q2, 1.0E-02);
 		
 	}
-	
-	//@Test
-	public void testPlsRegression() throws IOException
-	{
-		double epsilon = 1.0;
-		
-		String filename = System.getProperty("user.dir") + "\\nanoQSAR.csv";
-		/* Open and read CSV file. */
-		try
-		{
-			CsvMatrix.readCsvFile(filename);
-		}
-		catch(IOException ex)
-		{
-			throw ex;
-		}
-        		
-		/* Build X and Y matrices. */
-		CsvMatrix.buildMatrices();
-		
-		/* Get the X and Y matrices and proceed to perform the PLS regression. */
-		DoubleMatrix Xorig = CsvMatrix.getXmatrix();
-		DoubleMatrix Yorig = CsvMatrix.getYmatrix();
-		DoubleMatrix Bpls1 = CsvMatrix.performPLSR(Xorig,Yorig.getColumn(1));
-		
-		DoubleMatrix Ypred1 = CsvMatrix.predictResults(Xorig, Bpls1);
-				
-		DoubleMatrix Bpls2 = CsvMatrix.performPLSR(Xorig,Ypred1);
-		
-		double norm1 = Bpls1.norm2();
-		double norm2 = Bpls2.norm2();
-		System.out.println("norm1, norm2 = " + norm1 + " " + norm2);
-		double diff = Math.abs(norm2-norm1);
-		boolean cond = diff < epsilon;
-		assertTrue(true);
-	} 
 
 }

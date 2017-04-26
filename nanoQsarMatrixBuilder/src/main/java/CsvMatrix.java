@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.jblas.DoubleMatrix;
+import org.jblas.Singular;
 import org.jblas.Solve;
 
 import com.opencsv.CSVReader;
@@ -28,7 +29,7 @@ public class CsvMatrix
 	private static int rowsSize;
 	private static int numDataSets = 5;
 	private static Integer[] numSetRows = new Integer[numDataSets];
-	private static List<List<Integer>> indicesSets = new ArrayList<List<Integer>>();
+	
 	private static List<String[]> rows;
 	private static String[] header;
 	private static DoubleMatrix Xmatrix;
@@ -42,13 +43,12 @@ public class CsvMatrix
 	
 	private static DoubleMatrix[] XmatrixSet = new DoubleMatrix[numDataSets];
 	private static DoubleMatrix[] YmatrixSet = new DoubleMatrix[numDataSets];
-	private static DoubleMatrix Yresults;
 	
 	private static double ssx;
 	private static double ssy;
 	
 	private static double EPSILON = 1.0e-6;
-	private static double EPSILON_DEFLATION = 1.0e-2;
+	private static double EPSILON_DEFLATION = 1.0e-6;
 	
 	/* Need this line to allow logging of error messages */
 	private final static Logger lOGGER = Logger.getLogger( LoggerInfo.class.getName() );
@@ -176,15 +176,6 @@ public class CsvMatrix
 	
 	/**
 	 * 
-	 * @return the Yresults
-	 * @author Wilson Melendez
-	 */
-	public static DoubleMatrix getYresults(){
-		return Yresults;
-	}
-	
-	/**
-	 * 
 	 * @return
 	 * @author Wilson Melendez
 	 */
@@ -223,7 +214,6 @@ public class CsvMatrix
 			throw ex;
 		}
 		
-		// boolean keepCR = false;
 		/* Create instance of CSVReader. */
 		CSVReader csvInput = new CSVReader(fReader);
 		
@@ -705,7 +695,8 @@ public class CsvMatrix
 		Bmatrix = null;
 		
 		/* Normalize the Xmatrix by turning each element of the 
-		 * matrix into Z-scores. */
+		 * matrix into Z-scores. 
+		 */
 		DoubleMatrix X0 = new DoubleMatrix(Xorig.rows,Xorig.columns);
 		X0.copy(Xorig);
 		DoubleMatrix meanX = new DoubleMatrix(Xorig.columns);
@@ -713,22 +704,25 @@ public class CsvMatrix
         normalizeMatrix(X0, meanX, stdX);
         
         /* Normalize the Ymatrix by turning each element of the 
-		 * matrix into Z-scores.*/        
+		 * matrix into Z-scores.
+		 */        
         DoubleMatrix Y0 = new DoubleMatrix(Yorig.rows,Yorig.columns);
         Y0.copy(Yorig);	
 		DoubleMatrix meanY = new DoubleMatrix(Yorig.columns);
 		DoubleMatrix stdY = new DoubleMatrix(Yorig.columns);		
 	    normalizeMatrix(Y0, meanY, stdY);
-		
+        
 		/* Calculate the sum of squares for Y0. */
 		ssy = sumOfSquares(Y0);
 		
 		/* Declare a list of double values that will hold the b
-		 * coefficients.  The b values are used to predict Y. */
+		 * coefficients.  The b values are used to predict Y. 
+		 */
 		List<Double> bValues = new ArrayList<Double>();
 				
 		/* Perform the NIPALS algorithm. NIPALS is a PLS regression 
-		 * algorithm. */
+		 * algorithm. 
+		 */
 		performNIPALS(X0, Y0, bValues);
 		
 		DoubleMatrix Bpls = null;
@@ -736,7 +730,8 @@ public class CsvMatrix
 		
 		/* Build the B matrix. B is a diagonal matrix that enters in the 
 		 * calculation of the BPLS matrix. The diagonal elements 
-		 * represent the regression weights. */
+		 * represent the regression weights. 
+		 */
 		DoubleMatrix mB = new DoubleMatrix(bValues.size());
 		for (int i = 0; i < mB.length; i++)
 		{
@@ -749,11 +744,13 @@ public class CsvMatrix
 		DoubleMatrix ptInv = Solve.pinv(Pmatrix.transpose());
 		
 		/* Calculate the PLS regression weights. This is also known as 
-		 * the BPLS vector. */
+		 * the BPLS vector. 
+		 */
 		Bpls = ptInv.mmul(Bmatrix).mmul(Cmatrix.transpose());
+        
+		/* Re-introduce units into the BPLS vector. */
+		BplsStar = new DoubleMatrix(Bpls.rows + 1, Bpls.columns);
 		
-		/* Re-introduce units into the Bpls vector. */
-		BplsStar = new DoubleMatrix(Bpls.rows+1,Bpls.columns);
 		for (int j = 0; j < Bpls.columns; j++)
 		{
 			for (int i = 0; i < Bpls.rows; i++)
@@ -841,6 +838,24 @@ public class CsvMatrix
 	}
 	
 	/**
+	 * This  method calculates the rank of a matrix using the results
+	 * of singular value decomposition.
+	 * @param A
+	 * @param svdOfA
+	 * @return
+	 * @author Wilson Melendez
+	 */
+	public static double rank(DoubleMatrix A, DoubleMatrix svdOfA)
+	{
+		double maxSizeA = Math.max(A.rows, A.columns);
+		double eps = Math.pow(2.0, -52.0);
+		double maxS = svdOfA.max();
+		double tol = maxSizeA * eps * maxS;
+		double r = svdOfA.gt(tol).sum();
+		return r;
+	}
+	
+	/**
 	 * This method performs a version of the PLSR algorithm known as
 	 * NIPALS.
 	 * @author Wilson Melendez
@@ -848,13 +863,14 @@ public class CsvMatrix
 	public static void performNIPALS(DoubleMatrix X0, DoubleMatrix Y0, List<Double> bValues)
 	{
 		int rowsMatrix = X0.rows;
-		DoubleMatrix X = X0;
-		DoubleMatrix Y = Y0;
+		int colsMatrix = X0.columns;
+		DoubleMatrix X = new DoubleMatrix();
+		DoubleMatrix Y = new DoubleMatrix();
 		DoubleMatrix u = new DoubleMatrix(rowsMatrix);
 		DoubleMatrix u0 = new DoubleMatrix(rowsMatrix);
 		DoubleMatrix u1 = new DoubleMatrix(rowsMatrix);
 		DoubleMatrix udiff = new DoubleMatrix(rowsMatrix);
-		DoubleMatrix w;		
+		DoubleMatrix w = new DoubleMatrix(colsMatrix);		
 		DoubleMatrix t = new DoubleMatrix(rowsMatrix);
 		DoubleMatrix t1 = new DoubleMatrix(rowsMatrix);		
 		DoubleMatrix c;		
@@ -863,62 +879,64 @@ public class CsvMatrix
 		DoubleMatrix Ytt;
 		DoubleMatrix tdiff;
 		DoubleMatrix p;		
-		DoubleMatrix tpt, tct;		
-		boolean IsFirstTime, HasNotConverged, IsFirstDeflation;
-		double normX, deltaU, deltaT;
+		DoubleMatrix tpt, tct;	
 		
+		boolean IsFirstDeflation;
+		double normX, normY0, normY1, deltaU, deltaY;
+		int numDeflations = 0;
+		X = X0;
+		Y = Y0;
+		
+		/* Calculate the rank of X */
+		DoubleMatrix[] fullSVD = Singular.fullSVD(X0);
+		DoubleMatrix singularValuesDM = fullSVD[1];
+		double rank = rank(X0, singularValuesDM);
+		
+		/* Set the maximum number of latent variables/structures 
+		 * to the rank of the X matrix.
+		 */
+		int maxNumLS = (int) rank;
+		
+		/* Initialize parameters */
 		IsFirstDeflation = true;
-		IsFirstTime = true;
+		normY0 = Y.norm2();
 		
 		do
-		{			
-			// u.copy(Y0.getColumn(0));
-			/* Initialize the u vector with random numbers. */
-			u = DoubleMatrix.randn(rowsMatrix);
+		{		
+			/* Initialize u with one of the Y columns. */
+			u0 = Y.getColumn(0);
 						
-			IsFirstTime = true;
-			HasNotConverged = true;
+			numDeflations = numDeflations + 1;
+			if (numDeflations > maxNumLS) break; 
+			
 			do
 			{
 				/* Calculate w and normalize the result. */
-				Xtu = X.transpose().mmul(u);
+				Xtu = X.transpose().mmul(u0);				
 				w = Xtu.div(Xtu.norm2());
 				
 				/* Calculate X-scores, t, and normalize the result. */
-				Xw = X.mmul(w);
+				Xw = X.mmul(w);				
 				t1 = Xw.div(Xw.norm2());
 				
-				/* Calculated Y-weights, c, and normalize the result. */
+				/* Calculate Y-weights, c, and normalize the result. */
 				Ytt = Y.transpose().mmul(t1);
 				c = Ytt.div(Ytt.norm2());
 				
 				/* Calculate an updated set of Y-scores, u */
-				u = Y.mmul(c);
-						
-				if (IsFirstTime)
-				{
-					IsFirstTime = false;
-					if (Y0.columns == 1) HasNotConverged = false;
-				}
-				else
-				{					
-					tdiff = t.sub(t1);
-					double changeT = tdiff.norm2() / t1.norm2();
-					//System.out.println("changeT = " + changeT);
-					if (changeT < EPSILON) HasNotConverged = false;
-				}
-				t = t1;
-				//IsFirstTime = false;
-				//udiff = u1.sub(u0);
-				//deltaU = udiff.norm2();
-				//System.out.println("deltaU = " + deltaU);
-				//if (deltaU < EPSILON) HasNotConverged = false;
-				//u0 = u1;
+				u1 = Y.mmul(c);
+					
+				/* Calculate the change in u and check whether it is
+				 * less than a small number.
+				 */
+				udiff = u1.sub(u0);
+				deltaU = udiff.norm2();
+				u0 = u1;
 				
-			} while (HasNotConverged);
+			} while (deltaU > EPSILON);
 			
-			//u = u1;
-			//t = t1;
+			u = u1;
+			t = t1;
 			
 			double b = t.transpose().dot(u);
 			bValues.add(b);
@@ -926,13 +944,13 @@ public class CsvMatrix
 			/* Compute the factor loadings for X. */
 			p = X.transpose().mmul(t);
 			
-			/* Deflate the X and Y matrices.  */
+			/* Deflate the X and Y matrices. */
 			tpt = t.mmul(p.transpose());
 			tct = t.mmul(c.transpose());
 			X = X.sub(tpt);
 			Y = Y.sub(tct.muli(b));
-			normX = X.norm2();
 			
+			/* Store t, u, p, c, and w in their corresponding matrices. */
 			if (IsFirstDeflation)
 			{
 				Tmatrix = t;
@@ -951,7 +969,13 @@ public class CsvMatrix
 				Wmatrix = DoubleMatrix.concatHorizontally(Wmatrix,w);				
 			}
 			
-		} while (normX > EPSILON_DEFLATION);		
+			/* Calculate the norms of X and Y, and the change in Y. */
+			normX = X.norm2();
+			normY1 = Y.norm2();
+			deltaY = Math.abs(normY1 - normY0);
+			normY0 = normY1;
+			
+		} while (normX > EPSILON_DEFLATION && deltaY > EPSILON);		
 	
 	}
 	
@@ -962,8 +986,18 @@ public class CsvMatrix
 	 */
 	public static void splitDataIntoSets(DoubleMatrix X0, DoubleMatrix Y0, List<Integer> list)
 	{
+		for (int i = 0; i < numDataSets; i++)
+		{
+			XmatrixSet[i] = null;
+			YmatrixSet[i] = null;
+		}
+		
+		List<List<Integer>> indicesSets = new ArrayList<List<Integer>>();
+		
 		int numRows = X0.rows;
 		int numCols = X0.columns;
+		int numYrows = Y0.rows;
+		int numYcols = Y0.columns;
 		
 		/* Generate list of indices. */
 		for (int i = 0; i < numRows; i++)
@@ -1005,14 +1039,11 @@ public class CsvMatrix
 			jmin = jmin + numSetRows[i];
 		}
 		
-		/* Get the Ymatrix column of interest. */
-		DoubleMatrix Ysingle = Y0.getColumn(0);
-		
 		/* Split the original data in 5 sets and store them in matrices. */
 		for (int k = 0; k < numDataSets; k++)
 		{
 			XmatrixSet[k] = new DoubleMatrix(numSetRows[k], numCols);
-			YmatrixSet[k] = new DoubleMatrix(numSetRows[k]);
+			YmatrixSet[k] = new DoubleMatrix(numSetRows[k], numYcols);
 			for (int i = 0; i < numSetRows[k]; i++)
 			{
 				int rowI = indicesSets.get(k).get(i);
@@ -1021,21 +1052,10 @@ public class CsvMatrix
 					XmatrixSet[k].put(i, j, X0.get(rowI,j));					
 				}
 				
-			    YmatrixSet[k].put(i, Ysingle.get(rowI));												
-			}
-		}
-		
-		Yresults = new DoubleMatrix(numRows);
-		/* Build a copy of the full Y vector. */
-		for (int k = 0; k < numDataSets; k++)
-		{
-			if (k == 0)
-			{
-				Yresults.copy(YmatrixSet[k]);
-			}
-			else
-			{
-				Yresults = DoubleMatrix.concatVertically(Yresults,YmatrixSet[k]);
+				for (int j = 0; j < numYcols; j++)
+				{
+					YmatrixSet[k].put(i, j, Y0.get(rowI,j));
+				}			    												
 			}
 		}
 	}
@@ -1048,7 +1068,6 @@ public class CsvMatrix
 	{
 		DoubleMatrix[] Yhat = new DoubleMatrix[numDataSets];
 		DoubleMatrix Ytilde = new DoubleMatrix();
-		double Q2 = 0.0;
 		
 		for (int ifold = 0; ifold < numDataSets; ifold++)
 		{
@@ -1082,53 +1101,49 @@ public class CsvMatrix
 			/* Perform the PLS regression analysis. */
 			DoubleMatrix BplsS = performPLSR(Xtraining, Ytraining);
 			
-			/* Calculate the prediction of the Y values that were left out. */
+			/* Predict the Y values that were left out. */
 			Yhat[ifold] = predictResults(XmatrixSet[ifold], BplsS);			
 			
-			/* Build the predicted Y's into a matrix. */
+			/* Build the predicted Y's into a single matrix. */
 			if (ifold == 0) 
 			{
 				Ytilde.copy(Yhat[ifold]);							
 			}
 			else
 			{
-				Ytilde = DoubleMatrix.concatVertically(Ytilde,Yhat[ifold]);	
+				Ytilde = DoubleMatrix.concatVertically(Ytilde, Yhat[ifold]);	
 			}
 		}
 		
-		
-		/* Calculate Q2.  It is given by the equation ||Y - Y~||^2 */
-		//DoubleMatrix Ydiff = Yresults.sub(Ytilde);
-		//Q2 = Math.pow(Ydiff.norm2(), 2.0);
-		//System.out.println("Q2 = " + Q2);
 		return Ytilde;
 	}
 	
 	/**
-	  * Print X matrix to standard output.
-	  * @author Wilson Melendez
-	  */
-	public static void showX(DoubleMatrix A) 
+	 * This method prints a matrix to standard output.
+	 * @param A
+	 * @author Wilson Melendez
+	 */
+	public static void showM(DoubleMatrix A) 
 	 {
 		 for (int i = 0; i < A.rows; i++) 
 		 {
 			 for (int j = 0; j < A.columns; j++) 
 			 {
-				 System.out.printf("%9.4f ", A.get(i,j)); 
+				 System.out.printf("%11.6f ", A.get(i,j)); 
 			 }
 	         System.out.println();
 		 }	         
 	 }
 	  
 	 /**
-	  * Print single-column Y matrix to standard output.
+	  * Print single-column matrix to standard output.
 	  * @author Wilson Melendez
 	  */
-	 public static void showY(DoubleMatrix A) 
+	 public static void showV(DoubleMatrix A) 
 	 {
 		 for (int i = 0; i < A.rows; i++) 
 		 {			 
-			System.out.printf("%9.4f ", Ymatrix.get(i)); 	
+			System.out.printf("%11.6f ", Ymatrix.get(i)); 	
 			System.out.println();
 		 }
 	 }

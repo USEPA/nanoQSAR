@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.jblas.DoubleMatrix;
 
 
@@ -82,11 +83,21 @@ public class Main
 			/* Predict the Y values. */
 			DoubleMatrix Ypredicted = CsvMatrix.predictResults(Xorig, BplsS);
 			
+			/* Calculate average of observed values. */
+			DescriptiveStatistics stats = new DescriptiveStatistics();
+		    for (int i = 0; i < Yorig1.rows; i++)
+		    {
+				stats.addValue(Yorig1.get(i));
+			}
+			double meanY = stats.getMean();
+			
 			/* Calculate R2. R^2 = || Y - Ypredicted||^2  */
-			double r2 = 0.0;
+			double R2 = 0.0;
 			DoubleMatrix Ydiff = Yorig1.sub(Ypredicted);
-			r2 = Math.pow(Ydiff.norm2(), 2.0);
-			System.out.println("R2 = " + r2);
+			double sum1 = Math.pow(Ydiff.norm2(), 2.0);
+			double sum2 = Math.pow(Yorig1.sub(meanY).norm2(), 2.0);
+			R2 = 1.0 - (sum1 / sum2);
+			System.out.println("R2 = " + R2);
 			
 			/* Split original data into 5 subsets that will be used for a 5-fold
 			 * cross-validation analysis. */
@@ -106,7 +117,8 @@ public class Main
 			DoubleMatrix Ytilde = CsvMatrix.performFiveFoldCrossValidation();
 			double Q2 = 0.0;
 			DoubleMatrix Ydiff1 = Yshuffled.sub(Ytilde);
-			Q2 = Math.pow(Ydiff1.norm2(), 2.0);
+			sum1 = Math.pow(Ydiff1.norm2(), 2.0);
+			Q2 = 1.0 - (sum1 / sum2);
 			System.out.println("Q2 = " + Q2);
 			
 			/* Close logger file. */
