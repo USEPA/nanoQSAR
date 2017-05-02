@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -95,6 +96,10 @@ public class PropertiesInformation
 			// Load properties file
 			prop.load(input);
 		
+			setCsvFileName(prop.getProperty("CsvFileName").trim());
+			setDatabaseUrl(prop.getProperty("databaseURL").trim());
+			setDriverName(prop.getProperty("DriverName").trim());
+			setUsername(prop.getProperty("Username").trim());
 			setPassword(prop.getProperty("Password").trim());
 		}
 		catch(IOException ex)
@@ -128,10 +133,20 @@ public class PropertiesInformation
 	 */
 	public static void writePasswordKey(String filename) throws ConfigurationException
 	{
-		PropertiesConfiguration config = new PropertiesConfiguration(filename);
+		File outFile = new File(filename);
+		if (outFile.exists())
+		{
+			outFile.delete();
+		}
+		
+		PropertiesConfiguration config = new PropertiesConfiguration(outFile);
 		
 		try
 		{
+			config.setProperty("CsvFileName",getCsvFileName());
+			config.setProperty("databaseURL",getDatabaseUrl());
+			config.setProperty("DriverName",getDriverName());
+			config.setProperty("Username",getUsername());
 			config.setProperty("Password",getPassword());
 			config.setProperty("Key",getKey());
 			config.save();

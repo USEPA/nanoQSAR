@@ -25,10 +25,11 @@ public class EncryptionDatabasePassword
 	public static void main(String[] args)
 	{        
         String filename;
+        String outputFile = System.getProperty("user.dir") + "\\nanoQSAR.properties";
         
         if (args == null || args.length == 0)  // Use default properties file.
 		{
-			filename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
+			filename = System.getProperty("user.dir") + "\\nanoQSAR_Original.properties";
 			System.out.println("Using default properties file: " + filename);
 		}
 		else  // Use command-line specified properties file.
@@ -49,11 +50,7 @@ public class EncryptionDatabasePassword
         	KeyGenerationPasswordEncryption.encryptPassword();
         	
         	/* Write encrypted password and key to properties file.*/
-        	PropertiesInformation.writePasswordKey(filename);
-        	
-        	/* Decrypt the password: this has been commented out because it is 
-        	 * used only for verification. */
-        	// KeyGenerationPasswordEncryption.decryptPassword();
+        	PropertiesInformation.writePasswordKey(outputFile);
         	
         }
         catch(IOException | GeneralSecurityException | ConfigurationException ex)
