@@ -11,7 +11,6 @@ import java.util.logging.SimpleFormatter;
  */
 public class LoggerInfo 
 {
-	private final static Logger lOGGER = Logger.getLogger( LoggerInfo.class.getName() );
 	private static FileHandler fh = null;
 	
 	/**
@@ -34,10 +33,13 @@ public class LoggerInfo
 		
 		SimpleFormatter formatter = new SimpleFormatter();
 		fh.setFormatter(formatter);
-		lOGGER.setUseParentHandlers(false);
-		lOGGER.addHandler(fh);        
-		lOGGER.setLevel(Level.CONFIG);		
 		
+		/* Get the logger. */
+		Logger logger = CsvMatrix.getLogger(); 
+		
+		logger.setUseParentHandlers(false);
+		logger.addHandler(fh);        
+		logger.setLevel(Level.CONFIG);			
 	}
 	
 	/**

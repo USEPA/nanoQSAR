@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -53,6 +52,13 @@ public class CsvMatrix
 	/* Need this line to allow logging of error messages */
 	private final static Logger lOGGER = Logger.getLogger( LoggerInfo.class.getName() );
 	
+	/**
+	 * @return the logger
+	 */
+	public static Logger getLogger() {
+		return lOGGER;
+	}
+
 	/**
 	 * 
 	 * @return
@@ -209,8 +215,7 @@ public class CsvMatrix
 		}
 		catch(FileNotFoundException ex)
 		{
-			System.out.println("CSV file was not found.");
-			lOGGER.log(Level.SEVERE, "CSV file was not found.");	
+			lOGGER.severe("CSV file was not found.");	
 			throw ex;
 		}
 		
@@ -233,8 +238,7 @@ public class CsvMatrix
 		}
 		catch(IOException ex)
 		{
-			System.out.println("Attempt to close CSV reader failed.");
-			lOGGER.log(Level.SEVERE, "Attempt to close CSV reader failed.");	
+			lOGGER.severe("Attempt to close CSV reader failed.");	
 			throw ex;
 		}
 	}
@@ -832,8 +836,7 @@ public class CsvMatrix
 		}
 		catch(IOException ex)
 		{
-			System.out.println("FileWriter for " + filename + " could not be constructed.");
-			lOGGER.log(Level.SEVERE, "FileWriter for " + filename + " could not be constructed.", ex);	
+			lOGGER.severe("FileWriter for " + filename + " could not be constructed." + ex);	
 		}
 	}
 	

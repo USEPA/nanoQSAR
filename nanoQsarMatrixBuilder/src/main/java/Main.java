@@ -3,7 +3,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -21,9 +20,7 @@ import org.jblas.DoubleMatrix;
 
 public class Main 
 {	
-	/* Create an object of type Logger so we can log error or warning messages. */
-	private final static Logger lOGGER = Logger.getLogger( Logger.class.getName() );
-	
+
 	/**
 	 * This is the main method.
 	 * @param args
@@ -44,12 +41,12 @@ public class Main
 			System.out.println("Using command-line entered CSV file: " + args[0]);
 		}
 		
-		/* Read in contents of CSV file */
+		/* Initialize logger. */
 		try
 		{
 			/* Initialize log file information. Throw IOException and/or SecurityException 
 			 * if creation of file handler was not successful. */
-			LoggerInfo.init(); 			
+			LoggerInfo.init(); 
 		}
 		catch(IOException | SecurityException ex)
 		{
@@ -58,6 +55,9 @@ public class Main
 			ex.printStackTrace();  // This is the only case when the stack trace is sent to the console.
 			System.exit(1);  // End the execution of the program.
 		}
+		
+		/* Get the logger. */
+		Logger logger = CsvMatrix.getLogger(); 
 		
 		try
 		{		
@@ -91,13 +91,17 @@ public class Main
 			}
 			double meanY = stats.getMean();
 			
+			
+			
 			/* Calculate R2. R^2 = || Y - Ypredicted||^2  */
 			double R2 = 0.0;
 			DoubleMatrix Ydiff = Yorig1.sub(Ypredicted);
 			double sum1 = Math.pow(Ydiff.norm2(), 2.0);
 			double sum2 = Math.pow(Yorig1.sub(meanY).norm2(), 2.0);
 			R2 = 1.0 - (sum1 / sum2);
-			System.out.println("R2 = " + R2);
+			
+			/* Store R2 in the logger file. */
+			logger.info("R2 = " + R2);
 			
 			/* Split original data into 5 subsets that will be used for a 5-fold
 			 * cross-validation analysis. */
@@ -119,18 +123,20 @@ public class Main
 			DoubleMatrix Ydiff1 = Yshuffled.sub(Ytilde);
 			sum1 = Math.pow(Ydiff1.norm2(), 2.0);
 			Q2 = 1.0 - (sum1 / sum2);
-			System.out.println("Q2 = " + Q2);
+			
+			/* Store Q2 in the logger file. */
+			logger.info("Q2 = " + Q2);
 			
 			/* Close logger file. */
 			LoggerInfo.close();
 		}
 		catch(FileNotFoundException ex)
 		{
-			lOGGER.log(Level.SEVERE, "Exception was thrown: ending the execution of the program.");	
+			logger.severe("Exception was thrown: ending the execution of the program. \n" + ex);	
 		}
 		catch(IOException ex)
 		{
-			lOGGER.log(Level.SEVERE, "Exception was thrown: ending the execution of the program.");	
+			logger.severe("Exception was thrown: ending the execution of the program. \n" + ex);	
 		}		
 		
 	}

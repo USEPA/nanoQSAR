@@ -1,6 +1,8 @@
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -51,18 +53,39 @@ public class CsvMatrixTest {
 	 */
 	@Test(expected=FileNotFoundException.class)
 	public void testReadCsvFile() throws FileNotFoundException, IOException
-	{
+	{		
+		/* Create CsvMatrix object. */
+		CsvMatrix csvMatrix = new CsvMatrix();
+		
+		/* Get the logger associated with the CsvMatrix class. */
+		Logger logTest = CsvMatrix.getLogger();
+		
 		try
 		{
-			String filename = "FileDoesNotExist.csv";
+			/* Initialize log file information. Throw IOException and/or SecurityException 
+			 * if creation of file handler was not successful. */
+			LoggerInfo.init(); 
+			
+			/* Get the level state of the logger. */
+			String strLevel = logTest.getLevel().toString();
+			
+			/* If the logger's level is on, set it to OFF. */
+			if (!strLevel.equals("OFF")) logTest.setLevel(Level.OFF);
+			
+			/* Pass the name of a non-existing CSV file to the 
+			 * readCsvFile method. This will throw a file-not-found 
+			 * exception. */
+			String filename = "FileDoesNotExist.csv";	
 			CsvMatrix.readCsvFile(filename);
 		}
 		catch(FileNotFoundException ex)
 		{
+			logTest.setLevel(Level.CONFIG);  // Restore logger's level to its original state.
 			throw ex;
 		}
 		catch(IOException ex)
 		{
+			logTest.setLevel(Level.CONFIG);  // Restore logger's level to its original state.
 			throw ex;
 		}
 	}
