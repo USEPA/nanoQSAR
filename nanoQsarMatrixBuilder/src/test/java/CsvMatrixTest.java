@@ -3,15 +3,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.jblas.DoubleMatrix;
 
 import static org.junit.Assert.*;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.rules.TemporaryFolder;
 
 
 /**
@@ -81,11 +92,13 @@ public class CsvMatrixTest {
 		catch(FileNotFoundException ex)
 		{
 			logTest.setLevel(Level.CONFIG);  // Restore logger's level to its original state.
+			LoggerInfo.close();
 			throw ex;
 		}
 		catch(IOException ex)
 		{
 			logTest.setLevel(Level.CONFIG);  // Restore logger's level to its original state.
+			LoggerInfo.close();
 			throw ex;
 		}
 	}
@@ -713,6 +726,59 @@ public class CsvMatrixTest {
 		double Q2 = 1.0 - sum1/sum2;
 		assertEquals(r2, Q2, 1.0E-02);
 		
+	}
+	
+	/**
+	 * This test performs the following steps:
+	 * 1) It runs the whole application.
+	 * 2) It checks whether the log file was created.
+	 * 3) it checks whether the log file is empty or not.
+	 * @author Wilson Melendez
+	 */
+	@Test
+	public void testMainProgram()
+	{
+		String[] args = null;
+		/* Run the application. */
+		Main.main(args);
+		
+		/* Verify that the log file was created and that it's not
+		 * empty. */
+		String logFile = System.getProperty("user.dir") + "\\nanoQSAR.log";		
+		File file = new File(logFile);
+		assertTrue("Log file exists.", file.exists());
+		assertTrue("Log file is not empty.", file.length() > 0);		
+	}
+	
+	/**
+	 * This test checks whether the readCsvFile method successfully
+	 * recognizes a CSV file with a name other than the default one. 
+	 * If the CSV file cannot be found, an exception will be thrown and
+	 * the test will fail.
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @author Wilson Melendez
+	 */
+	@Test
+	public void testNonDefaultCsvFile() throws FileNotFoundException, IOException
+	{
+		/* Create a temporary file and write data to it. */
+		String filename = System.getProperty("user.dir") + "\\nanoQSAR1.csv";
+		FileWriter fw = new FileWriter(filename);
+		BufferedWriter buffer = new BufferedWriter(fw);
+		buffer.write("1,2,3,4,5,\n");  // Write something to the file.
+		buffer.close();
+		fw.close();
+		
+		/* Pass the name of the file to the readCsvFile method
+		 * for processing. If the file is found, no exception will be
+		 * thrown and the test will succeed.  If the file is not found, 
+		 * an exception will be thrown and the test will fail. */
+		CsvMatrix.readCsvFile(filename);
+		
+		/* Delete the temporary file. */
+		File file = new File(filename);
+		file.delete();
 	}
 
 }

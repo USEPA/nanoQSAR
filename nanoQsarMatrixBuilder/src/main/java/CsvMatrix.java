@@ -1,4 +1,6 @@
+import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -21,7 +23,7 @@ import com.opencsv.CSVWriter;
  * @author Wilson Melendez
  *
  */
-public class CsvMatrix 
+public class CsvMatrix
 {
 	private static int xcolumns = 67;
 	private static int ycolumns = 2;
@@ -235,6 +237,7 @@ public class CsvMatrix
 		try
 		{
 			csvInput.close();
+			fReader.close();
 		}
 		catch(IOException ex)
 		{
@@ -688,6 +691,7 @@ public class CsvMatrix
 	 * @param Yorig
 	 * @return
 	 * @author Wilson Melendez
+	 * @throws IOException 
 	 */
 	public static DoubleMatrix performPLSR(DoubleMatrix Xorig, DoubleMatrix Yorig)
 	{	
@@ -780,7 +784,7 @@ public class CsvMatrix
 			double intercept = meanY.get(j) - sum;
 			BplsStar.put(0, j, intercept);
 		}
-				
+			
 		return BplsStar;				
 	}
 	
