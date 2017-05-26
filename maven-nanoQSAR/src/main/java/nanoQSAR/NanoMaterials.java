@@ -16,7 +16,7 @@ import com.opencsv.CSVWriter;
 import datamine.DBUtil;
 import datamine.MySqlQuery;
 
-public class NanoMats extends Vector<NanoMaterial> {
+public class NanoMaterials extends Vector<NanoMaterial> {
 	
 	/**
 	 * 
@@ -24,7 +24,7 @@ public class NanoMats extends Vector<NanoMaterial> {
 	private static final long serialVersionUID = 9210392203321638729L;
 	private MySqlQuery sqlQuery =  null;
 	
-	public NanoMats(MySqlQuery sqlQuery) throws Exception {
+	public NanoMaterials(MySqlQuery sqlQuery) throws Exception {
 		super();
 		this.mineNanoMaterials(sqlQuery);
 	}
