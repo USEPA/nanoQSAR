@@ -209,7 +209,7 @@ public class MySqlQuery
 				"UVAExposDuration", "UVAExposDurationUnit", "ViabilityAvg", 
 				"ViabilityApproxSymbol", "ViabilityUnit", "ViabilityUncertain", 
 				"ViabilityLow", "ViabilityHigh", "ViabilityMethod", "LC50", 
-				"LC50ApproxSymbol", "LC50Unit",
+				"LC50ApproxSymbol", "LC50Unit"
 		};
 		return header;
 	}
@@ -221,9 +221,9 @@ public class MySqlQuery
 	 * @throws ClassNotFoundException  If no connection driver is available, throw exception.
 	 * @throws SQLException  An exception may be thrown if connection to database fails.
 	 */
-	public List<NanoMaterial> getNanoMaterials() throws ClassNotFoundException, SQLException
+	public List<NanoMaterial> getNanoMaterials() throws Exception
 	{		
-		List<NanoMaterial> list = new ArrayList<NanoMaterial>();
+		ArrayList<NanoMaterial> list = new ArrayList<NanoMaterial>();
 		NanoMaterial nanomaterial = null;
 		Statement stmt = null;
 		Connection conn = null;

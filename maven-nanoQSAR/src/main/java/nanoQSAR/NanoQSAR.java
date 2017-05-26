@@ -1,12 +1,7 @@
 package nanoQSAR;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.GeneralSecurityException;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Vector;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,53 +19,66 @@ public class NanoQSAR {
 	 */
 
 	/* Default filenames */
-	static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR_prop.txt";
+	static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
 	static String outFilename = System.getProperty("user.dir") + "\\nanoQSAR_out.csv";
 	static String plsFilename = System.getProperty("user.dir") + "\\nanoQSAR_pls.csv";
 	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR.log";
 	
 	/* Create an object of type Logger so we can log error or warning messages. */
-	private final static Logger lOGGER = Logger.getLogger("nanoQSAR");
+	protected static Logger LOGGER =  Logger.getLogger("nanoQSAR", null);
 	
 	public static void main(String[] args) 
 	{
-		String filename = null;
-		
-		if (args == null || args.length == 0)  // Use default properties file.
-		{
-			filename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
-			System.out.println("Using default properties file: " + filename);
-		}
-		else  // Use command-line specified properties file.
-		{
-			filename = args[0].trim();
-			System.out.println("Using command-line entered properties file: " + args[0]);
-		}
-		
 		try	{
-			
+		
+			if (args == null || args.length == 0) { // Use default properties file.
+
+				//	System.out.println("Using default properties file: " + filename);
+
+			} else if (args.length == 1 && args[0].trim().matches("-h")) { // respond with user options
+
+				System.out.println("User options:");
+				System.out.println("nanoQSAR -h");
+				System.out.println("nanoQSAR");
+				System.out.println("nanoQSAR propFilename");
+
+			} else if (args.length == 1) { // Using command-line entered properties file
+
+				propFilename = args[0].trim();
+
+			} else { // Something is wrong
+
+				throw new Exception("Invalid options are used");
+				
+			}
+
 			/* Initialize log file information. Throw IOException and/or SecurityException 
 			 * if creation of file handler was not successful. */
-			LoggerInfo.init();
-			
+			LOGGER.setLevel(Level.INFO);
+			if (!LOGGER.getUseParentHandlers()) {
+				LOGGER.addHandler(new FileHandler(logFilename));
+				LOGGER.addHandler(new ConsoleHandler());
+			}
+//			LoggerInfo.init();
+
 			/* Input database connection information and name of output file. */
 			DBUtil.loadProperties(propFilename);  
-			
+
 			/* Data-mine MySQL database */
-			NanoMaterials nanoMats = new NanoMaterials(new MySqlQuery());
-			
+//			NanoMaterials nanoMats = new NanoMaterials(new MySqlQuery());
+
 			/* write data to CSV file. */
-			nanoMats.writeCsvFile(DBUtil.getCsvFileName());
-  
+//			nanoMats.writeCsvFile(DBUtil.getCsvFileName());
+
 		} catch(Exception ex) {
-			
-		    System.out.println(ex.getMessage());
+
+			System.out.println(ex.getMessage());
 			ex.printStackTrace();  // This is the only case when the stack trace is sent to the console.
-			
+
 		} finally {
-			
+
 			LoggerInfo.close();
-			
+
 		}
 		
 	}

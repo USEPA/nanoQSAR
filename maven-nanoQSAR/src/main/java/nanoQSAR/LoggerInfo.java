@@ -30,6 +30,11 @@ public class LoggerInfo
 		try
 		{
 			fh = new FileHandler(logFile);
+			SimpleFormatter formatter = new SimpleFormatter();
+			fh.setFormatter(formatter);
+			lOGGER.setUseParentHandlers(false);
+			lOGGER.addHandler(fh);
+			lOGGER.setLevel(Level.CONFIG);	
 		}
 		catch(SecurityException | IOException ex)
 		{
@@ -37,11 +42,7 @@ public class LoggerInfo
 			throw ex;
 		}
 		
-		SimpleFormatter formatter = new SimpleFormatter();
-		fh.setFormatter(formatter);
-		lOGGER.setUseParentHandlers(false);
-		lOGGER.addHandler(fh);        
-		lOGGER.setLevel(Level.CONFIG);		
+	
 		
 	}
 	

@@ -46,7 +46,7 @@ public class DBUtil
 	private static String passwordKey;
 	
 	/* Need this line to allow logging of error messages */
-	private final static Logger lOGGER = Logger.getLogger("nanoQSAR");
+	private static Logger lOGGER = Logger.getLogger("nanoQSAR");
 	
 	public static String getDriverName() {
 		return driverName;

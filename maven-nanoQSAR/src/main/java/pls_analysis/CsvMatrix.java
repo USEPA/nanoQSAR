@@ -56,7 +56,7 @@ public class CsvMatrix
 	private static double EPSILON_DEFLATION = 1.0e-6;
 	
 	/* Need this line to allow logging of error messages */
-	private final static Logger lOGGER = Logger.getLogger(LoggerInfo.class.getName());
+	private final static Logger lOGGER = Logger.getLogger("nanoQSAR");
 	
 	/**
 	 * @return the logger
