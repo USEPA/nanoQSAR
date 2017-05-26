@@ -196,9 +196,7 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	private String mc_salinityUnit;
 
 	public NanoMaterial() {
-		
 		super();
-
 	}
 	
 	// Get and Set methods

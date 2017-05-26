@@ -1,12 +1,22 @@
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ConnectionManagerTest.class,
-		CsvFileWriterTest.class, DefaultUnitsTest.class,
-		IllegalUnitsExceptionTest.class, MySqlQueryTest.class,
-		NanoMaterialTest.class })
+@SuiteClasses({datamineTests.AllDatamineTests.class,
+		nanoQSARTests.AllNanoQSARTests.class })
 public class AllTests {
-
+	
+	private static final Logger log = Logger.getGlobal();
+	
+	@Before
+	void SetUp () {
+		log.setLevel(Level.WARNING);
+	}
+	
 }
+

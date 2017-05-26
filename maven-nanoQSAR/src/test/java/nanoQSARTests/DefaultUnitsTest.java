@@ -1,13 +1,19 @@
+package nanoQSARTests;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+
+import datamine.DBUtil;
+import datamine.MySqlQuery;
+import nanoQSAR.DefaultUnits;
+import nanoQSAR.IllegalUnitsException;
+import nanoQSAR.NanoMaterial;
+import nanoQSAR.NanoMaterials;
+
 import org.junit.BeforeClass;
 
 /**
@@ -16,15 +22,13 @@ import org.junit.BeforeClass;
 
 /**
  * This class tests the methods of the DefaultUnits class.
- * @author Wilson Melendez
+ * @author Wilson Melendez & Paul Harten
  *
  */
 public class DefaultUnitsTest {
 	
 	private static Double DELTA = 1.0E-15;
-	private static List<NanoMaterial> nanomaterials = new ArrayList<NanoMaterial>();
-	private static MySqlQuery sqlNano = new MySqlQuery();
-	private static String sqlQuery = sqlNano.getSqlQuery();
+
 	Double nullValue = null;
 	NanoMaterial nanoM = new NanoMaterial();	
 	int i = 0;  // This is just a dummy index from the  point of this test.
@@ -52,10 +56,10 @@ public class DefaultUnitsTest {
 	@Test
 	public void testBeforeUnitConversion()
 	{
-		// nanomaterials = new ArrayList<NanoMaterial>();
+
 		try
 		{	
-			nanomaterials = sqlNano.getNanoMaterials(sqlQuery);
+			NanoMaterials nanomaterials = new NanoMaterials(new MySqlQuery());
 			String strU;
 			
 			for (NanoMaterial nanoM : nanomaterials)
@@ -240,18 +244,10 @@ public class DefaultUnitsTest {
 					throw new IllegalUnitsException("Illegal LC50 unit: " + strU);
 				}			
 			}			
-		}
-		catch(IllegalUnitsException ex)
-		{
-			Assert.fail("Exception was thrown: " + ex);		
-		}
-		catch(ClassNotFoundException ex)
-		{
-			Assert.fail("Exception was thrown: " + ex);		
-		}
-		catch (SQLException ex)
-		{
-			Assert.fail("Exception was thrown: " + ex);		
+		} catch (Exception ex) {
+			
+			Assert.fail("Exception was thrown: " + ex);	
+
 		}
 	}
 	
@@ -264,9 +260,10 @@ public class DefaultUnitsTest {
 	public void testAfterUnitConversion()
 	{
 		try
-		{	
+		{
+			NanoMaterials nanomaterials = new NanoMaterials(new MySqlQuery());
 			String strU;
-			nanomaterials = sqlNano.getNanoMaterials(sqlQuery);
+			
 			/* Check default units and perform unit conversions if necessary. */
 			DefaultUnits.checkUnits(nanomaterials);
 			
@@ -452,18 +449,10 @@ public class DefaultUnitsTest {
 					throw new IllegalUnitsException("Illegal LC50 unit: " + strU);
 				}			
 			}			
-		}
-		catch(IllegalUnitsException ex)
-		{
-			Assert.fail("Exception was thrown: " + ex);		
-		}
-		catch(ClassNotFoundException ex)
-		{
-			Assert.fail("Exception was thrown: " + ex);		
-		}
-		catch (SQLException ex)
-		{
-			Assert.fail("Exception was thrown: " + ex);		
+		} catch (Exception ex) {
+			
+			Assert.fail("Exception was thrown: " + ex.getMessage());	
+
 		}
 	}
 	

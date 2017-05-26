@@ -1,8 +1,14 @@
+package datamineTests;
 import static org.junit.Assert.*;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import datamine.DBUtil;
+import datamine.MySqlQuery;
+import nanoQSAR.NanoMaterial;
+import nanoQSAR.NanoMaterials;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,8 +124,68 @@ public class MySqlQueryTest {
 			 + "INNER JOIN medium "
 			 + "ON assay.TestMediumID = medium.MediumID "
 			 + "ORDER BY link.LinkID";
-	static MySqlQuery sqlNano = new MySqlQuery();
-	List<NanoMaterial> nanomaterials;
+	
+	String[] header = {
+			"MaterialCharID","ORDMaterialID", "DataSource", "LotNumber", "CoreComp",
+			"ShellComp", "CoatingComp", "CoatingAmount", "CoatingAmountUnit", 
+			"FunctionalGroups", "FunctionalizationProtocol", "Purity", 
+			"PurityApproxSymbol", "PurityUnit", "PurityMethod", 
+			"PurityRefChemical", "ContamUnit", "ContamAl", "ContamAs", 
+			"ContamBe", "ContamCa", "ContamCo", "ContamCr", "ContamFe", 
+			"ContamK", "ContamMg", "ContamNa", "ContamP", "ContamPb", "ContamSb", 
+			"ContamSe", "ContamSiO2", "ContamSn", "ContamTl", "ContamV", 
+			"ContamMethod", "CrystalStructure", "CrystalStructureMethod", 
+			"SynthesisMethod", "SynthesisDate", "ParticleOuterDiamAvg", 
+			"ParticleOuterDiamApproxSymbol", "ParticleOuterDiamUnit", 
+			"ParticleOuterDiamUncertain", "ParticleOuterDiamLow", 
+			"ParticleOuterDiamHigh", "ParticleOuterDiamMethod", 
+			"ParticleInnerDiamAvg", "ParticleInnerDiamApproxSymbol", 
+			"ParticleInnerDiamUnit", "ParticleInnerDiamUncertain", 
+			"ParticleInnerDiamLow", "ParticleInnerDiamHigh", 
+			"ParticleInnerDiamMethod", "ParticleLengthAvg", 
+			"ParticleLengthApproxSymbol", "ParticleLengthUnit", 
+			"ParticleLengthUncertain", "ParticleLengthLow", 
+			"ParticleLengthHigh", "ParticleLengthMethod", 
+			"ParticleThicknessAvg", "ParticleThicknessApproxSymbol", 
+			"ParticleThicknessUnit", "ParticleThicknessUncertain", 
+			"ParticleThicknessLow", "ParticleThicknessHigh", 
+			"ParticleThicknessMethod", "WallNumber", "AspectRatio", "Shape", 
+			"SurfaceAreaAvg", "SurfaceAreaApproxSymbol", "SurfaceAreaUnit", 
+			"SurfaceAreaUncertain", "SurfaceAreaLow", "SurfaceAreaHigh", 
+			"SurfaceAreaMethod", "MC_TimeValue", "MC_TimeValueUnit", 
+			"MC_ParticleConcentration", "MC_ParticleConcentrationUnit", 
+			"DispersionMediumID", "MC_MediumDescription", "MC_SerumAdditive", 
+			"MC_SerumConcentration", "MC_SerumConcentrationUnit", 
+			"MC_AntibioticName", "MC_AntibioticConcentration", 
+			"MC_AntibioticConcentrationUnit", "MC_DOMForm", "MC_DOMConcentration", 
+			"MC_DOMUnit", "MC_SalinityValue", "MC_SalinityUnit", 			
+			"Solubility", "MC_pHAvg", "MC_pHApproxSymbol", 
+			"MC_pHUncertain", "MC_pHLow", "MC_pHHigh", "MC_MediumTemp", "MC_MediumTempUnit", 
+			"ZetaPotentialAvg", "ZetaPotentialApproxSymbol", 
+			"ZetaPotentialUnit", "ZetaPotentialUncertain", "ZetaPotentialLow", 
+			"ZetaPotentialHigh", "ZetaPotentialMethod", "SizeDistribType", 
+			"SizeDistribModality", "SizeDistribMethod", "SizeDistribAvg", 
+			"SizeDistribApproxSymbol", "SizeDistribUnit", 
+			"SizeDistribUncertain", "SizeDistribLow", "SizeDistribHigh", 
+			"SizeDistribAvg2", "SizeDistribApproxSymbol2", "SizeDistribUnit2", 
+			"SizeDistribUncertain2", "SizeDistribLow2", "SizeDistribHigh2",
+			"MeasurementID", "AssayType", "AssayName", "SampleName", 
+			"SubjectSpecies", "SubjectID", "CellType", "CellSource", 
+			"TestMediumID", "MediumDescription", "SerumAdditive", 
+			"SerumConcentration", "SerumConcentrationUnit", 
+			"AntibioticName", "AntibioticConcentration", 
+			"AntibioticConcentrationUnit", "DOMForm", "DOMConcentration", 
+			"DOMUnit", "SalinityValue", "SalinityUnit", 
+			"pHAvg", "pHApproxSymbol", "pHUncertain",  
+			"pHLow", "pHHigh", "MediumTemp", "MediumTempUnit", 
+			"TimeValue", "TimeValueUnit", "ParticleConcentration", 
+			"ParticleConcentrationUnit", "ParticleExposDuration", 
+			"ParticleExposDurationUnit", "UVADose", "UVADoseUnit", 
+			"UVAExposDuration", "UVAExposDurationUnit", "ViabilityAvg", 
+			"ViabilityApproxSymbol", "ViabilityUnit", "ViabilityUncertain", 
+			"ViabilityLow", "ViabilityHigh", "ViabilityMethod", "LC50", 
+			"LC50ApproxSymbol", "LC50Unit"
+	};
 	
 	@BeforeClass
 	public static void setUp() throws IOException, GeneralSecurityException
@@ -133,56 +199,35 @@ public class MySqlQueryTest {
 	/**
 	 * Test method for {@link MySqlQuery#getSqlQuery()}.
 	 * This method compares two SQL queries.  They should be identical.
-	 * @author Wilson Melendez
+	 * @author Wilson Melendez & Paul Harten
 	 */
+	@Test
+	public void testMySqlQuery() {
+		MySqlQuery mySqlQuery = new MySqlQuery();
+		Assert.assertNotNull(mySqlQuery);
+	}
+	
 	@Test
 	public void testGetSqlQuery() {
-		String str = sqlNano.getSqlQuery();
-		assertEquals(sqlQuery,str);
+		MySqlQuery mySqlQuery = new MySqlQuery();
+		Assert.assertTrue("SqlQuery strings don't match", sqlQuery.matches(mySqlQuery.getSqlQuery()));
 	}
 
-	/**
-	 * @author Wilson Melendez
-	 * This method checks for unknown/illegal units in the data extracted from the database.
-	 */
 	@Test
-	public void testGetNanoMaterials() 
-	{
+	public void testGetHeader() {
+		MySqlQuery mySqlQuery = new MySqlQuery();
+		String[] remoteHeader = mySqlQuery.getHeader();
 		
-		nanomaterials = new ArrayList<NanoMaterial>();
-		int icountOrd = 0;
-		int icountLc = 0;
-		int isymbol = 0;
-		try
-		{
-			nanomaterials = sqlNano.getNanoMaterials(sqlQuery);
-			for (NanoMaterial nanoM : nanomaterials)
-			{
-				if (nanoM.getOrdMaterialID().contains("TiO2-DEGUS-AeroxideP25"))
-				{
-					icountOrd++;
-				}
-				if (nanoM.getLc50Unit().contains("ug/mL"))
-				{
-					icountLc++;
-				}
-				if (String.valueOf(nanoM.getPurityApproxSymbol()).contains("="))
-				{
-					isymbol++;
-				}
-			}
-			assertTrue(icountOrd > 0);	
-			assertTrue(icountLc > 0);
-			assertTrue(isymbol > 0);
+		for (int i=0; i<header.length; i++) {
+			Assert.assertTrue("Header "+i+" doesn't match", header[i].matches(remoteHeader[i]));
 		}
-		catch(ClassNotFoundException ex)
-		{
-			Assert.fail("Exception was thrown: " + ex);		
-		}
-		catch(SQLException ex)
-		{
-			Assert.fail("Exception was thrown: " + ex);		
-		}
+
 	}
+
+	@Test
+	public void testGetNanoMaterials() {
+		fail("Not yet implemented");
+	}
+
 	
 }
