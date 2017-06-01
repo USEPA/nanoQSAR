@@ -65,7 +65,7 @@ public class NanoQSAR {
 			DBUtil.loadProperties(propFilename);  
 
 			/* Data-mine MySQL database */
-//			NanoMaterials nanoMats = new NanoMaterials(new MySqlQuery());
+			NanoMaterials nanoMaterial = new NanoMaterials(new MySqlQuery());
 
 			/* write data to CSV file. */
 //			nanoMats.writeCsvFile(DBUtil.getCsvFileName());

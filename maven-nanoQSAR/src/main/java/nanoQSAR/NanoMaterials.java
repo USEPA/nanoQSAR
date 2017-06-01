@@ -22,7 +22,6 @@ public class NanoMaterials extends Vector<NanoMaterial> {
 	 * 
 	 */
 	private static final long serialVersionUID = 9210392203321638729L;
-	private MySqlQuery sqlQuery =  null;
 	private String[] header = null;
 	
 	public NanoMaterials() throws Exception {
@@ -82,7 +81,7 @@ public class NanoMaterials extends Vector<NanoMaterial> {
 			CSVWriter csvOutput = new CSVWriter(file, CSVWriter.DEFAULT_SEPARATOR);
 			
 			/* Write header line to CSV file. */
-			csvOutput.writeNext(sqlQuery.getHeader());   
+			csvOutput.writeNext(this.getHeader());   
 			
 			/* Loop over list of NanoMaterial objects */
 			for(NanoMaterial nanoM : this) {

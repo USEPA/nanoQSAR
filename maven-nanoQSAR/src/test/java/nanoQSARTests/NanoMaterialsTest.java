@@ -14,7 +14,9 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
+import datamine.DBUtil;
 import datamine.MySqlQuery;
+import junit.framework.Assert;
 import nanoQSAR.NanoMaterial;
 import nanoQSAR.NanoMaterials;
 
@@ -23,21 +25,43 @@ import nanoQSAR.NanoMaterials;
  *
  */
 public class NanoMaterialsTest {
+	
+	static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
 
 	/**
-	 * Test method for {@link nanoQSAR.NanoMaterials#NanoMaterials(datamine.MySqlQuery)}.
+	 * Test method for {@link nanoQSAR.NanoMaterials#NanoMaterials()}.
+	 * @throws Exception 
 	 */
 	@Test
-	public final void testNanoMaterials() {
-		fail("Not yet implemented");
+	public final void testNanoMaterialsConstructor1() throws Exception {
+		NanoMaterials nanoMaterials = new NanoMaterials();
+		Assert.assertNotNull("NanoMaterials Constructer failed", nanoMaterials);
+		Assert.assertTrue("NanoMaterials Constructor is not zero size", nanoMaterials.size()==0);
+	}
+	/**
+	 * Test method for {@link nanoQSAR.NanoMaterials#NanoMaterials(datamine.MySqlQuery)}.
+	 * @throws Exception 
+	 */
+	@Test
+	public final void testNanoMaterialsConstructor2() throws Exception {
+		/* Input database connection information and name of output file. */
+		DBUtil.loadProperties(propFilename);
+		NanoMaterials nanoMaterials = new NanoMaterials(new MySqlQuery());
+		Assert.assertNotNull("NanoMaterials Constructer failed", nanoMaterials);
+		Assert.assertFalse("NanoMaterials Constructor is zero size", nanoMaterials.size()==0);
 	}
 
 	/**
 	 * Test method for {@link nanoQSAR.NanoMaterials#mineNanoMaterials(datamine.MySqlQuery)}.
+	 * @throws Exception 
 	 */
 	@Test
-	public final void testMineNanoMaterials() {
-		fail("Not yet implemented");
+	public final void testMineNanoMaterials() throws Exception {
+		NanoMaterials nanoMaterials = new NanoMaterials();
+		DBUtil.loadProperties(propFilename);
+		nanoMaterials.mineNanoMaterials(new MySqlQuery());
+		Assert.assertNotNull("NanoMaterials Constructer failed", nanoMaterials);
+		Assert.assertFalse("NanoMaterials Constructor is zero size", nanoMaterials.size()==0);
 	}
 
 	/**
@@ -65,6 +89,7 @@ public class NanoMaterialsTest {
 				
 		// Create array list of NanoMaterial objects.
 		NanoMaterials nanoMaterials = new NanoMaterials();
+
 		nanoMaterials.setHeader(mySqlQuery.getHeader());
 	
 		NanoMaterial n1 = new NanoMaterial();
