@@ -25,9 +25,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultCoatingAmountUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultCoatingAmountUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getCoatingAmountUnit()).trim();
 		String strValue = String.valueOf(nanoM.getCoatingAmount()).trim();
@@ -48,7 +48,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal coating amount unit: " + strU + " at row " + i);
+			throw new Exception("Illegal coating amount unit: " + strU + " at row " + i);
 		}
 	}
 	
@@ -56,9 +56,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultPurityUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultPurityUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getPurityUnit()).trim();
 		String strValue = String.valueOf(nanoM.getPurity()).trim();
@@ -79,7 +79,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal purity units: " + strU + " at row = " + i);
+			throw new Exception("Illegal purity units: " + strU + " at row = " + i);
 		}
 
 	}
@@ -88,9 +88,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultContaminantUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultContaminantUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getContamUnit()).trim();
 		String strValueAl = String.valueOf(nanoM.getContamAl()).trim();
@@ -215,7 +215,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal contaminant units: " + strU + " at row = " + i);
+			throw new Exception("Illegal contaminant units: " + strU + " at row = " + i);
 		}		
 	}
 	
@@ -224,9 +224,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultParticleOuterDiameterUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultParticleOuterDiameterUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getParticleOuterDiamUnit()).trim();
 		String strValueAvg = String.valueOf(nanoM.getParticleOuterDiamAvg()).trim();
@@ -259,7 +259,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal particle outer diameter units: " + strU + " at row = " + i);
+			throw new Exception("Illegal particle outer diameter units: " + strU + " at row = " + i);
 		}
 	}
 	
@@ -269,9 +269,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultParticleInnerDiameterUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultParticleInnerDiameterUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getParticleInnerDiamUnit()).trim();
 		String strValueAvg = String.valueOf(nanoM.getParticleInnerDiamAvg()).trim();
@@ -304,7 +304,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal particle inner diameter units: " + strU + " at row = " + i);
+			throw new Exception("Illegal particle inner diameter units: " + strU + " at row = " + i);
 		}
 	}
 	
@@ -312,9 +312,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultParticleLengthUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultParticleLengthUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getParticleLengthUnit()).trim();
 		String strValueAvg = String.valueOf(nanoM.getParticleLengthAvg()).trim();
@@ -346,7 +346,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal particle length unit: " + strU + " at row " + i);
+			throw new Exception("Illegal particle length unit: " + strU + " at row " + i);
 		}
 	}
 	
@@ -356,9 +356,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultParticleThicknessUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultParticleThicknessUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getParticleThicknessUnit()).trim();
 		String strValueAvg = String.valueOf(nanoM.getParticleThicknessAvg()).trim();
@@ -390,7 +390,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal particle thickness unit: " + strU + " at row " + i);
+			throw new Exception("Illegal particle thickness unit: " + strU + " at row " + i);
 		}
 	}
 	
@@ -399,9 +399,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultSurfaceAreaUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultSurfaceAreaUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getSurfaceAreaUnit()).trim();
 		String strValueAvg = String.valueOf(nanoM.getSurfaceAreaAvg()).trim();
@@ -433,7 +433,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal surface area unit: " + strU + " at row " + i);
+			throw new Exception("Illegal surface area unit: " + strU + " at row " + i);
 		}
 	}
 	
@@ -442,9 +442,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultTimeValueUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultTimeValueUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getTimeValueUnit()).trim();
 		String strValue = String.valueOf(nanoM.getTimeValue()).trim();
@@ -464,7 +464,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal time value unit: " + strU + " at row " + i);
+			throw new Exception("Illegal time value unit: " + strU + " at row " + i);
 		}	
 	}
 	
@@ -472,9 +472,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultMcTimeValueUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultMcTimeValueUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getMc_timeValueUnit()).trim();
 		String strValue = String.valueOf(nanoM.getMc_timeValue()).trim();
@@ -494,7 +494,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal Mc_time_value unit: " + strU + " at row " + i);
+			throw new Exception("Illegal Mc_time_value unit: " + strU + " at row " + i);
 		}	
 	}
 		
@@ -502,9 +502,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultParticleConcentrationUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultParticleConcentrationUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getParticleConcentrationUnit()).trim();
 		String strValue = String.valueOf(nanoM.getParticleConcentration()).trim();
@@ -524,7 +524,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal particle concentration unit: " + strU + " row = " + i);
+			throw new Exception("Illegal particle concentration unit: " + strU + " row = " + i);
 		}
 	}
 	
@@ -533,9 +533,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultMcParticleConcentrationUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultMcParticleConcentrationUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getMc_particleConcentrationUnit()).trim();
 		String strValue = String.valueOf(nanoM.getMc_particleConcentration()).trim();
@@ -555,7 +555,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal Mc_particle_concentration unit: " + strU + " row = " + i);
+			throw new Exception("Illegal Mc_particle_concentration unit: " + strU + " row = " + i);
 		}
 	}
 	
@@ -564,9 +564,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultMediumTempUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultMediumTempUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getMediumTempUnit()).trim();
 		String strValue = String.valueOf(nanoM.getMediumTemp()).trim();
@@ -595,7 +595,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal medium temperature unit: " + strU + " at row = " + i);
+			throw new Exception("Illegal medium temperature unit: " + strU + " at row = " + i);
 		}
 	}
 	
@@ -603,9 +603,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultMcMediumTempUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultMcMediumTempUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getMc_mediumTempUnit()).trim();
 		String strValue = String.valueOf(nanoM.getMc_mediumTemp()).trim();
@@ -634,7 +634,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal Mc_medium_temperature unit: " + strU + " at row = " + i);
+			throw new Exception("Illegal Mc_medium_temperature unit: " + strU + " at row = " + i);
 		}
 	}
 	
@@ -642,9 +642,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultZetaPotentialUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultZetaPotentialUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getZetaPotentialUnit()).trim();
 		String strValueAvg = String.valueOf(nanoM.getZetaPotentialAvg()).trim();
@@ -676,7 +676,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal zeta potential unit: " + strU + " at row " + i);
+			throw new Exception("Illegal zeta potential unit: " + strU + " at row " + i);
 		}
 	}
 	
@@ -684,9 +684,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultSizeDistributionUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultSizeDistributionUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getSizeDistribUnit()).trim();
 		String strValueAvg = String.valueOf(nanoM.getSizeDistribAvg()).trim();
@@ -718,7 +718,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal size distribution unit: " + strU + " at row " + i);
+			throw new Exception("Illegal size distribution unit: " + strU + " at row " + i);
 		}
 	}
 	
@@ -726,9 +726,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultSizeDistributionUnit2(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultSizeDistributionUnit2(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getSizeDistribUnit2()).trim();
 		String strValueAvg = String.valueOf(nanoM.getSizeDistribAvg2()).trim();
@@ -760,7 +760,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal size distribution unit 2: " + strU + " at row " + i);
+			throw new Exception("Illegal size distribution unit 2: " + strU + " at row " + i);
 		}
 	}
 	
@@ -768,9 +768,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultSerumConcentrationUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultSerumConcentrationUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getSerumConcentrationUnit()).trim();
 		String strValue = String.valueOf(nanoM.getSerumConcentration()).trim();
@@ -790,7 +790,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal serum concentration units: " + strU + " at row = " + i);
+			throw new Exception("Illegal serum concentration units: " + strU + " at row = " + i);
 		}
 	}
 	
@@ -798,9 +798,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultMcSerumConcentrationUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultMcSerumConcentrationUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getMc_serumConcentrationUnit()).trim();
 		String strValue = String.valueOf(nanoM.getMc_serumConcentration()).trim();
@@ -820,7 +820,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal Mc_serum_concentration units: " + strU + " at row = " + i);
+			throw new Exception("Illegal Mc_serum_concentration units: " + strU + " at row = " + i);
 		}
 	}
 	
@@ -828,9 +828,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultAntibioticConcentrationUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultAntibioticConcentrationUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getAntibioticConcentrationUnit()).trim();
 		String strValue = String.valueOf(nanoM.getAntibioticConcentration()).trim();
@@ -850,7 +850,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal serum concentration units: " + strU + " at row = " + i);
+			throw new Exception("Illegal serum concentration units: " + strU + " at row = " + i);
 		}
 	}
 	
@@ -858,9 +858,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultMcAntibioticConcentrationUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultMcAntibioticConcentrationUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getMc_antibioticConcentrationUnit()).trim();
 		String strValue = String.valueOf(nanoM.getMc_antibioticConcentration()).trim();
@@ -880,7 +880,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal Mc_serum concentration units: " + strU + " at row = " + i);
+			throw new Exception("Illegal Mc_serum concentration units: " + strU + " at row = " + i);
 		}
 	}
 	
@@ -888,9 +888,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultDOMUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultDOMUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getDomUnit()).trim();
 		String strValue = String.valueOf(nanoM.getDomConcentration()).trim();
@@ -910,7 +910,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal DOM concentration unit: " + strU + " row = " + i);
+			throw new Exception("Illegal DOM concentration unit: " + strU + " row = " + i);
 		}
 	}
 	
@@ -918,9 +918,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultMcDOMUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultMcDOMUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getMc_domUnit()).trim();
 		String strValue = String.valueOf(nanoM.getMc_domConcentration()).trim();
@@ -940,7 +940,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal Mc_DOM unit: " + strU + " row = " + i);
+			throw new Exception("Illegal Mc_DOM unit: " + strU + " row = " + i);
 		}
 	}
 	
@@ -948,9 +948,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultSalinityUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultSalinityUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getSalinityUnit()).trim();
 		
@@ -963,7 +963,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal Salinity concentration unit: " + strU + " row = " + i);
+			throw new Exception("Illegal Salinity concentration unit: " + strU + " row = " + i);
 		}
 	}
 	
@@ -971,9 +971,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultMcSalinityUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultMcSalinityUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getMc_salinityUnit()).trim();
 		
@@ -986,7 +986,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal Salinity concentration unit: " + strU + " row = " + i);
+			throw new Exception("Illegal Salinity concentration unit: " + strU + " row = " + i);
 		}
 	}
 	
@@ -994,9 +994,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultParticleExposureDurationUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultParticleExposureDurationUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getParticleExposDurationUnit()).trim();
 		String strValue = String.valueOf(nanoM.getParticleExposDuration()).trim();
@@ -1016,7 +1016,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal particle exposure duration unit: " + strU + " at row = " + i);
+			throw new Exception("Illegal particle exposure duration unit: " + strU + " at row = " + i);
 		}	
 	}
 	
@@ -1024,9 +1024,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultUVADoseUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultUVADoseUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getUvaDoseUnit()).trim();
 		String strValue = String.valueOf(nanoM.getUvaDose()).trim();
@@ -1046,7 +1046,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal UVA dose units: " + strU + " at rown = " + i);
+			throw new Exception("Illegal UVA dose units: " + strU + " at rown = " + i);
 		}
 	}
 	
@@ -1054,9 +1054,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultUVAExposureDurationUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultUVAExposureDurationUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getUvaExposDurationUnit()).trim();
 		String strValue = String.valueOf(nanoM.getUvaExposDuration()).trim();
@@ -1076,7 +1076,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal UVA exposure duration unit: " + strU + " at row = " + i);
+			throw new Exception("Illegal UVA exposure duration unit: " + strU + " at row = " + i);
 		}	
 	}
 	
@@ -1085,9 +1085,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultViabilityUnit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultViabilityUnit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getViabilityUnit()).trim();
 		String strValueAvg = String.valueOf(nanoM.getViabilityAvg()).trim();
@@ -1119,7 +1119,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal viability unit: " + strU + " at row = " + i);
+			throw new Exception("Illegal viability unit: " + strU + " at row = " + i);
 		}
 	}
 	
@@ -1127,9 +1127,9 @@ public class DefaultUnits
 	 * @author Wilson Melendez
 	 * @param nanoM
 	 * @param i
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkDefaultLC50Unit(NanoMaterial nanoM, int i) throws IllegalUnitsException
+	public static void checkDefaultLC50Unit(NanoMaterial nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getLc50Unit()).trim();
 		String strValue = String.valueOf(nanoM.getLc50()).trim();
@@ -1149,7 +1149,7 @@ public class DefaultUnits
 		}
 		else
 		{
-			throw new IllegalUnitsException("Illegal LC50 unit: " + strU + " at row = " + i);
+			throw new Exception("Illegal LC50 unit: " + strU + " at row = " + i);
 		}
 	}
 
@@ -1160,9 +1160,9 @@ public class DefaultUnits
 	 * of found non-default units, and updates units and values of fields in the list array.
 	 * @author Wilson Melendez
 	 * @param listNano
-	 * @throws IllegalUnitsException
+	 * @throws Exception
 	 */
-	public static void checkUnits(Vector<NanoMaterial> nanoMats) throws IllegalUnitsException
+	public static void checkUnits(Vector<NanoMaterial> nanoMats) throws Exception
 	{		
 		try 
 		{
@@ -1201,7 +1201,7 @@ public class DefaultUnits
 				checkDefaultLC50Unit(nanoMaterial, i);														
 			}
 		}
-		catch (IllegalUnitsException ex)
+		catch (Exception ex)
 		{
 			System.out.println("Unknown/illegal units were found.  Check log file.");
 			lOGGER.log(Level.SEVERE, "Illegal units exception found.", ex);

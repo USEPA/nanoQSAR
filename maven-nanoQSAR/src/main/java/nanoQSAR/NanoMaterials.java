@@ -23,6 +23,11 @@ public class NanoMaterials extends Vector<NanoMaterial> {
 	 */
 	private static final long serialVersionUID = 9210392203321638729L;
 	private MySqlQuery sqlQuery =  null;
+	private String[] header = null;
+	
+	public NanoMaterials() throws Exception {
+		super();
+	}
 	
 	public NanoMaterials(MySqlQuery sqlQuery) throws Exception {
 		super();
@@ -47,6 +52,9 @@ public class NanoMaterials extends Vector<NanoMaterial> {
 			
 			/* Read data from remote MySQL server and store them in a list.  */
 			this.addAll(sqlQuery.getNanoMaterials());
+			
+			/* Read header from remote MySQL server and store in a String array.  */
+			this.setHeader(sqlQuery.getHeader());
 			
 			/* Check default units and perform unit conversions if necessary. */
 			DefaultUnits.checkUnits(this);
@@ -96,6 +104,14 @@ public class NanoMaterials extends Vector<NanoMaterial> {
 			
 		}
 		
+	}
+	
+	public void setHeader(String[] header) {
+		this.header = header;
+	}
+	
+	public String[] getHeader() {
+		return this.header;
 	}
 
 }

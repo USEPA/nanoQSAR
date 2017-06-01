@@ -195,7 +195,7 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	private Double mc_salinityValue; 
 	private String mc_salinityUnit;
 
-	public NanoMaterial() {
+	public NanoMaterial() throws Exception {
 		super();
 	}
 	
@@ -1619,6 +1619,16 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 		return strNano;
 	}
 	
+	@Override
+	public NanoMaterial clone() throws CloneNotSupportedException {
+		
+		NanoMaterial clone = (NanoMaterial)super.clone();
 
+		clone.antibioticConcentration = this.antibioticConcentration;
+			
+			
+		return clone;
+		
+	}
 	
 }

@@ -229,11 +229,12 @@ public class MySqlQuery
 		Connection conn = null;
 		ResultSet rs = null;
 		
-		/* Get the connection to the database. */
-		conn = ConnectionManager.getConnection();	
-		
 		try
 		{
+			/* Get the connection to the database. */
+			conn = ConnectionManager.getConnection();
+			
+			/* create the connection statement */
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(getSqlQuery());
 			

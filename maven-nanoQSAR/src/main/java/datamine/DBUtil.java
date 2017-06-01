@@ -128,7 +128,7 @@ public class DBUtil
 		}
 		catch(IOException ex)
 		{
-			System.out.println("Properties file, " + filename + ", was not found.");
+//			System.out.println("Properties file, " + filename + ", was not found.");
 			lOGGER.log(Level.SEVERE, "Properties file, " + filename + ", was not found.", ex);
 			throw ex;
 		}

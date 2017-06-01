@@ -226,7 +226,18 @@ public class MySqlQueryTest {
 
 	@Test
 	public void testGetNanoMaterials() {
-		fail("Not yet implemented");
+
+		try {
+			MySqlQuery mySqlQuery = new MySqlQuery();
+			Assert.assertNotNull(mySqlQuery);
+			List<NanoMaterial> nanoMaterials = mySqlQuery.getNanoMaterials();
+			Assert.assertNotNull(nanoMaterials);
+			Assert.assertFalse("Unexpected: nanoMaterials database is empty", nanoMaterials.isEmpty());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	

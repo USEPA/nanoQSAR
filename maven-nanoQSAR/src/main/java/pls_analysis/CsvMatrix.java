@@ -20,9 +20,6 @@ import org.jblas.Solve;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
-import nanoQSAR.LoggerInfo;
-
-
 /**
  * @author Wilson Melendez
  *
