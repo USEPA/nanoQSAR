@@ -172,19 +172,22 @@ public class CsvMatrixTest {
 	               "LC50ApproxSymbol", "LC50Unit",          
 	                };
 		CsvMatrix.setHeader(expectedCsvHeader);
-		String[] values = new String[173];
+		CsvMatrix.selectNumericColumns();
+		int xcols = CsvMatrix.getXcolumns();
+		int ycols = CsvMatrix.getYcolumns();
+		String[] values = new String[expectedCsvHeader.length];
 		List<String[]> rowsTest = new ArrayList<String[]>();
-		DoubleMatrix X = new DoubleMatrix(1,67);
-		DoubleMatrix Y = new DoubleMatrix(1,2);
+		DoubleMatrix X = new DoubleMatrix(1,xcols);
+		DoubleMatrix Y = new DoubleMatrix(1,ycols);
 		
-		for (int i = 0; i < 173; i++)
+		for (int i = 0; i < expectedCsvHeader.length; i++)
 		{
 			values[i] = "0.2";
 		}
 		values[7] = "2.3";
 		values[11] = "98.4";
 		
-		for (int i = 0; i < 67; i++)
+		for (int i = 0; i < xcols; i++)
 		{
 			X.put(0,i,0.2);
 		}
@@ -195,15 +198,15 @@ public class CsvMatrixTest {
 		
 		rowsTest.add(values);
 		CsvMatrix.setRows(rowsTest);
-	    DoubleMatrix Xtest = new DoubleMatrix(1,67);
-	    DoubleMatrix Ytest = new DoubleMatrix(1,2);
+	    DoubleMatrix Xtest = new DoubleMatrix(1,xcols);
+	    DoubleMatrix Ytest = new DoubleMatrix(1,ycols);
 		CsvMatrix.buildMatricesContainingNulls(Xtest, Ytest);
 		
 		DoubleMatrix Xsame, Ysame;
 		Xsame = (X.eq(Xtest));  
 		Ysame = (Y.eq(Ytest));
 		
-		for (int i = 0; i < 67; i++)
+		for (int i = 0; i < xcols; i++)
 		{
 			assertEquals(1.0,Xsame.get(0,i),1.0e-15);
 		}
@@ -277,19 +280,22 @@ public class CsvMatrixTest {
 	               "LC50ApproxSymbol", "LC50Unit",          
 	                };
 		CsvMatrix.setHeader(expectedCsvHeader);
-		String[] values = new String[173];
+		CsvMatrix.selectNumericColumns();
+		int xcols = CsvMatrix.getXcolumns();
+		int ycols = CsvMatrix.getYcolumns();
+		String[] values = new String[expectedCsvHeader.length];
 		List<String[]> rowsTest = new ArrayList<String[]>();
-		DoubleMatrix X = new DoubleMatrix(1,67);
-		DoubleMatrix Y = new DoubleMatrix(1,2);
+		DoubleMatrix X = new DoubleMatrix(1,xcols);
+		DoubleMatrix Y = new DoubleMatrix(1,ycols);
 		
-		for (int i = 0; i < 173; i++)
+		for (int i = 0; i < expectedCsvHeader.length; i++)
 		{
 			values[i] = "0.2";
 		}
 		values[7] = "2.3";
 		values[11] = "98.4";
 		
-		for (int i = 0; i < 67; i++)
+		for (int i = 0; i < xcols; i++)
 		{
 			X.put(0,i,0.2);
 		}
@@ -300,15 +306,15 @@ public class CsvMatrixTest {
 		
 		rowsTest.add(values);
 		CsvMatrix.setRows(rowsTest);	
-		DoubleMatrix Xtest = new DoubleMatrix(1,67);
-	    DoubleMatrix Ytest = new DoubleMatrix(1,2);
+		DoubleMatrix Xtest = new DoubleMatrix(1,xcols);
+	    DoubleMatrix Ytest = new DoubleMatrix(1,ycols);
 		CsvMatrix.buildMatricesWithoutNulls(Xtest, Ytest);
 		
 		DoubleMatrix Xsame, Ysame;
 		Xsame = (X.eq(Xtest));  
 		Ysame = (Y.eq(Ytest));
 		
-		for (int i = 0; i < 67; i++)
+		for (int i = 0; i < xcols; i++)
 		{
 			assertEquals(1.0,Xsame.get(0,i),1.0e-15);
 		}

@@ -63,6 +63,9 @@ public class Main
 		{		
 			/* Open and read CSV file. */
             CsvMatrix.readCsvFile(filename);
+            
+            /* Select columns with numeric data in CSV file. */
+            CsvMatrix.selectNumericColumns();
 			
 			/* Build X and Y matrices. */
 			CsvMatrix.buildMatrices();

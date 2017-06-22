@@ -25,14 +25,20 @@ import com.opencsv.CSVWriter;
  */
 public class CsvMatrix
 {
-	private static int xcolumns = 67;
-	private static int ycolumns = 2;
+	private static int xcolumns;
+	private static int ycolumns;
 	private static int rowsSize;
 	private static int numDataSets = 5;
 	private static Integer[] numSetRows = new Integer[numDataSets];
 	
 	private static List<String[]> rows;
 	private static String[] header;
+	private static Integer[] jcolX; // Positional indices of X-matrix columns in CSV file. 
+	private static Integer[] jcolY; // Positional indices of Y-matrix columns in CSV file.
+	private static Double[] minValueX;
+	private static Double[] minValueY;
+	private static Double[] maxValueX;
+	private static Double[] maxValueY;
 	private static DoubleMatrix Xmatrix;
 	private static DoubleMatrix Ymatrix;
 	private static DoubleMatrix Umatrix;
@@ -53,6 +59,56 @@ public class CsvMatrix
 	
 	/* Need this line to allow logging of error messages */
 	private final static Logger lOGGER = Logger.getLogger( LoggerInfo.class.getName() );
+	
+	/**
+	 * @param xcolumns the xcolumns to set
+	 */
+	public static void setXcolumns(int xcolumns) {
+		CsvMatrix.xcolumns = xcolumns;
+	}
+
+	/**
+	 * @param ycolumns the ycolumns to set
+	 */
+	public static void setYcolumns(int ycolumns) {
+		CsvMatrix.ycolumns = ycolumns;
+	}
+
+	public static void setJcolX(ArrayList<Integer> list)
+	{
+		CsvMatrix.jcolX = new Integer[list.size()];
+		CsvMatrix.jcolX = list.toArray(CsvMatrix.jcolX);
+	}
+	
+	public static void setJcolY(ArrayList<Integer> list)
+	{
+		CsvMatrix.jcolY = new Integer[list.size()];
+		CsvMatrix.jcolY = list.toArray(CsvMatrix.jcolY);
+	}
+	
+	public static void setMinValueX(ArrayList<Double> list)
+	{
+		CsvMatrix.minValueX = new Double[list.size()];
+		CsvMatrix.minValueX = list.toArray(CsvMatrix.minValueX);
+	}
+	
+	public static void setMaxValueX(ArrayList<Double> list)
+	{
+		CsvMatrix.maxValueX = new Double[list.size()];
+		CsvMatrix.maxValueX = list.toArray(CsvMatrix.maxValueX);
+	}
+	
+	public static void setMinValueY(ArrayList<Double> list)
+	{
+		CsvMatrix.minValueY = new Double[list.size()];
+		CsvMatrix.minValueY = list.toArray(CsvMatrix.minValueY);
+	}
+	
+	public static void setMaxValueY(ArrayList<Double> list)
+	{
+		CsvMatrix.maxValueY = new Double[list.size()];
+		CsvMatrix.maxValueY = list.toArray(CsvMatrix.maxValueY);
+	}
 	
 	/**
 	 * @return the logger
@@ -91,7 +147,7 @@ public class CsvMatrix
 	public static void setHeader(String[] header) {
 		CsvMatrix.header = header;
 	}
-
+	
 	/**
 	 * @return the xmatrix
 	 * @author Wilson Melendez
@@ -231,8 +287,8 @@ public class CsvMatrix
 		header = rows.get(0);
 		
 		/* Remove the header line from the array list; header is row 0. */
-		rows.remove(0);
-		
+		rows.remove(0);        
+        
 		/* Close connection to CSV file, but throw exception if failure to close. */
 		try
 		{
@@ -247,6 +303,191 @@ public class CsvMatrix
 	}
 	
 	/**
+	 * This method determines the positional indices of the numeric 
+	 * data in the CSV file.  It also sets maximum and minimum values
+	 * for random generated data.
+	 * @author Wilson Melendez
+	 */
+	public static void selectNumericColumns()
+	{
+		/* Create ArrayLists to store positional indices, minimum, 
+		 * and maximum values of the X and Y matrices. */
+		ArrayList<Integer> listX = new ArrayList<Integer>();
+		ArrayList<Integer> listY = new ArrayList<Integer>();
+		ArrayList<Double> listMinX = new ArrayList<Double>();
+		ArrayList<Double> listMaxX = new ArrayList<Double>();
+		ArrayList<Double> listMinY = new ArrayList<Double>();
+		ArrayList<Double> listMaxY = new ArrayList<Double>();
+		List<String> listHeader = Arrays.asList(header);
+		
+		/* Store indices and minimum/maximum random values of X-matrix columns */
+		listX.add(listHeader.indexOf("CoatingAmount"));	
+		listMinX.add(10.0);  listMaxX.add(100.0);
+	    listX.add(listHeader.indexOf("Purity"));
+	    listMinX.add(10.0);  listMaxX.add(100.0);
+		listX.add(listHeader.indexOf("ContamAl")); 
+		listMinX.add(10.0);  listMaxX.add(1500.0); 
+		listX.add(listHeader.indexOf("ContamAs")); 
+		listMinX.add(10.0);  listMaxX.add(1500.0); 
+		listX.add(listHeader.indexOf("ContamBe"));	
+		listMinX.add(10.0);  listMaxX.add(1500.0); 
+        listX.add(listHeader.indexOf("ContamCa")); 
+        listMinX.add(10.0);  listMaxX.add(1500.0); 
+        listX.add(listHeader.indexOf("ContamCo")); 
+        listMinX.add(10.0);  listMaxX.add(1500.0); 
+        listX.add(listHeader.indexOf("ContamCr")); 
+        listMinX.add(10.0);  listMaxX.add(1500.0); 
+        listX.add(listHeader.indexOf("ContamFe")); 
+        listMinX.add(10.0);  listMaxX.add(1500.0); 
+        listX.add(listHeader.indexOf("ContamK"));  
+        listMinX.add(10.0);  listMaxX.add(1500.0); 
+        listX.add(listHeader.indexOf("ContamMg")); 
+        listMinX.add(10.0);  listMaxX.add(1500.0); 
+        listX.add(listHeader.indexOf("ContamNa")); 
+        listMinX.add(10.0);  listMaxX.add(1500.0); 
+        listX.add(listHeader.indexOf("ContamP"));  
+        listMinX.add(10.0);  listMaxX.add(1500.0); 
+        listX.add(listHeader.indexOf("ContamPb")); 
+        listMinX.add(10.0);  listMaxX.add(1500.0); 
+        listX.add(listHeader.indexOf("ContamSb")); 
+        listMinX.add(10.0);  listMaxX.add(1500.0); 
+        listX.add(listHeader.indexOf("ContamSe"));  
+        listMinX.add(10.0);  listMaxX.add(1500.0); 
+        listX.add(listHeader.indexOf("ContamSiO2"));
+        listMinX.add(10.0);  listMaxX.add(1500.0); 
+        listX.add(listHeader.indexOf("ContamSn")); 
+        listMinX.add(10.0);  listMaxX.add(1500.0); 
+        listX.add(listHeader.indexOf("ContamTl")); 
+        listMinX.add(10.0);  listMaxX.add(1500.0); 
+        listX.add(listHeader.indexOf("ContamV"));  
+        listMinX.add(10.0);  listMaxX.add(1500.0); 
+        listX.add(listHeader.indexOf("ParticleOuterDiamAvg")); 
+        listMinX.add(100.0);  listMaxX.add(250.0);
+        listX.add(listHeader.indexOf("ParticleOuterDiamLow")); 
+        listMinX.add(10.0);  listMaxX.add(100.0); 
+        listX.add(listHeader.indexOf("ParticleOuterDiamHigh")); 
+        listMinX.add(250.0);  listMaxX.add(400.0);
+        listX.add(listHeader.indexOf("ParticleInnerDiamAvg"));
+        listMinX.add(50.0);  listMaxX.add(100.0);        
+        listX.add(listHeader.indexOf("ParticleInnerDiamLow"));  
+        listMinX.add(0.0);  listMaxX.add(50.0);  
+        listX.add(listHeader.indexOf("ParticleInnerDiamHigh")); 
+        listMinX.add(100.0);  listMaxX.add(150.0); 
+        listX.add(listHeader.indexOf("ParticleLengthAvg"));
+        listMinX.add(50.0);  listMaxX.add(100.0);       
+        listX.add(listHeader.indexOf("ParticleLengthLow")); 
+        listMinX.add(10.0);  listMaxX.add(50.0); 
+        listX.add(listHeader.indexOf("ParticleLengthHigh")); 
+        listMinX.add(100.0);  listMaxX.add(150.0); 
+        listX.add(listHeader.indexOf("ParticleThicknessAvg"));
+        listMinX.add(50.0);  listMaxX.add(100.0); 
+        listX.add(listHeader.indexOf("ParticleThicknessLow")); 
+        listMinX.add(10.0);  listMaxX.add(50.0);  
+        listX.add(listHeader.indexOf("ParticleThicknessHigh")); 
+        listMinX.add(100.0);  listMaxX.add(150.0);  
+        listX.add(listHeader.indexOf("SurfaceAreaAvg")); 
+        listMinX.add(150.0);  listMaxX.add(300.0); 
+        listX.add(listHeader.indexOf("SurfaceAreaLow"));
+        listMinX.add(10.0);  listMaxX.add(150.0);  
+        listX.add(listHeader.indexOf("SurfaceAreaHigh")); 
+        listMinX.add(300.0);  listMaxX.add(450.0);     
+        listX.add(listHeader.indexOf("MC_TimeValue")); 
+        listMinX.add(10.0);  listMaxX.add(240.0);   
+        listX.add(listHeader.indexOf("MC_ParticleConcentration")); 
+        listMinX.add(10.0);  listMaxX.add(100.0);     
+        listX.add(listHeader.indexOf("MC_SerumConcentration"));   
+        listMinX.add(10.0);  listMaxX.add(100.0);     
+        listX.add(listHeader.indexOf("MC_AntibioticConcentration"));
+        listMinX.add(10.0);  listMaxX.add(100.0);     
+        listX.add(listHeader.indexOf("MC_DOMConcentration"));   
+        listMinX.add(10.0);  listMaxX.add(20.0); 
+        listX.add(listHeader.indexOf("MC_SalinityValue"));
+        listMinX.add(10.0);  listMaxX.add(35.0);  
+        listX.add(listHeader.indexOf("MC_pHAvg"));
+        listMinX.add(4.0);  listMaxX.add(10.0);   
+        listX.add(listHeader.indexOf("MC_pHLow"));  
+        listMinX.add(0.0);  listMaxX.add(4.0); 
+        listX.add(listHeader.indexOf("MC_pHHigh")); 
+        listMinX.add(10.0);  listMaxX.add(14.0); 
+        listX.add(listHeader.indexOf("MC_MediumTemp")); 
+        listMinX.add(10.0);  listMaxX.add(40.0);
+        listX.add(listHeader.indexOf("ZetaPotentialAvg"));
+        listMinX.add(-30.0);  listMaxX.add(-100.0);
+        listX.add(listHeader.indexOf("ZetaPotentialLow"));
+        listMinX.add(-10.0);  listMaxX.add(-30.0); 
+        listX.add(listHeader.indexOf("ZetaPotentialHigh")); 
+        listMinX.add(-100.0);  listMaxX.add(-150.0);    
+        listX.add(listHeader.indexOf("SizeDistribAvg"));
+        listMinX.add(1000.0);  listMaxX.add(2000.0);     
+        listX.add(listHeader.indexOf("SizeDistribLow")); 
+        listMinX.add(10.0);  listMaxX.add(1000.0); 
+        listX.add(listHeader.indexOf("SizeDistribHigh")); 
+        listMinX.add(2000.0);  listMaxX.add(3000.0);   
+        listX.add(listHeader.indexOf("SizeDistribAvg2")); 
+        listMinX.add(1000.0);  listMaxX.add(2000.0);    
+        listX.add(listHeader.indexOf("SizeDistribLow2")); 
+        listMinX.add(10.0);  listMaxX.add(1000.0);   
+        listX.add(listHeader.indexOf("SizeDistribHigh2"));
+        listMinX.add(2000.0);  listMaxX.add(3000.0);   
+        listX.add(listHeader.indexOf("SerumConcentration"));
+        listMinX.add(10.0);  listMaxX.add(100.0); 
+        listX.add(listHeader.indexOf("AntibioticConcentration"));  
+        listMinX.add(10.0);  listMaxX.add(100.0);  
+        listX.add(listHeader.indexOf("DOMConcentration")); 
+        listMinX.add(10.0);  listMaxX.add(20.0);   
+        listX.add(listHeader.indexOf("SalinityValue")); 
+        listMinX.add(10.0);  listMaxX.add(35.0);     
+        listX.add(listHeader.indexOf("pHAvg"));  
+        listMinX.add(4.0);  listMaxX.add(10.0);   
+        listX.add(listHeader.indexOf("pHLow")); 
+        listMinX.add(0.0);  listMaxX.add(4.0);  
+        listX.add(listHeader.indexOf("pHHigh")); 
+        listMinX.add(10.0);  listMaxX.add(14.0);
+        listX.add(listHeader.indexOf("MediumTemp"));
+        listMinX.add(10.0);  listMaxX.add(40.0); 
+        listX.add(listHeader.indexOf("TimeValue"));   
+        listMinX.add(48.0);  listMaxX.add(72.0);   
+        listX.add(listHeader.indexOf("ParticleConcentration")); 
+        listMinX.add(10.0);  listMaxX.add(100.0); 
+        listX.add(listHeader.indexOf("ParticleExposDuration"));
+        listMinX.add(48.0);  listMaxX.add(72.0);     
+        listX.add(listHeader.indexOf("UVADose")); 
+        listMinX.add(0.0);  listMaxX.add(10.0); 
+        listX.add(listHeader.indexOf("UVAExposDuration")); 
+        listMinX.add(1.0);  listMaxX.add(2.0); 
+        
+        /* Determine number of X columns. */
+        xcolumns = listX.size();
+        
+        /* Create arrays that will store indices, minimum, and 
+         * maximum values of the X columns. */
+        jcolX = new Integer[xcolumns];
+        minValueX = new Double[xcolumns];
+        maxValueX = new Double[xcolumns];
+        jcolX = listX.toArray(jcolX);        
+        minValueX = listMinX.toArray(minValueX);
+        maxValueX = listMaxX.toArray(maxValueX);
+        
+        /* Store indices and minimum/maximum random values of Y-matrix columns */
+        listY.add(listHeader.indexOf("ViabilityAvg"));        
+        listMinY.add(10.0);  listMaxY.add(100.0); 
+        listY.add(listHeader.indexOf("LC50"));
+        listMinY.add(10.0);  listMaxY.add(100.0);
+        
+        /* Determine number of Y columns. */
+        ycolumns = listY.size();
+        
+        /* Create arrays that will store indices, minimum, and 
+         * maximum values of the Y columns. */
+        jcolY = new Integer[ycolumns];
+        minValueY = new Double[ycolumns];
+        maxValueY = new Double[ycolumns];
+        jcolY = listY.toArray(jcolY);        
+        minValueY = listMinY.toArray(minValueY);
+        maxValueY = listMaxY.toArray(maxValueY);
+	}
+	
+	/**
 	 * This method builds the X and Y matrices needed by the PLS Regression algorithm.
 	 * Null values are converted to random values using the Math.randow() method.
 	 * @author Wilson Melendez
@@ -255,8 +496,8 @@ public class CsvMatrix
 	{		
 		boolean foundNulls = false;
 		rowsSize = rows.size();  // Number of rows in array list.
-		Xmatrix = new DoubleMatrix(rowsSize,xcolumns);   // X matrix
-		Ymatrix = new DoubleMatrix(rowsSize,ycolumns);   // Y matrix
+		Xmatrix = new DoubleMatrix(rowsSize, xcolumns);   // X matrix
+		Ymatrix = new DoubleMatrix(rowsSize, ycolumns);   // Y matrix
 		
 		/* Check whether data has any null values. */
 		for (String[] str : rows)
@@ -286,169 +527,18 @@ public class CsvMatrix
 	public static void buildMatricesContainingNulls(DoubleMatrix Xorig, DoubleMatrix Yorig)
 	{
 		String[] nextLine;
-		int[] jcolX = new int[xcolumns];  // Positional indices of X-matrix columns in CSV file.
-		int[] jcolY = new int[ycolumns];  // Positional indices of Y-matrix columns in CSV file.
-		double[] minValueX = new double[xcolumns];  // Minimum random values of columns in X matrix
-		double[] maxValueX = new double[xcolumns];  // Maximum random values of columns in X matrix
-		double[] minValueY = new double[ycolumns];  // Minimum random values of columns in Y matrix
-		double[] maxValueY = new double[ycolumns];  // Maximum random values of columns in Y matrix
-				
-		int j = 0, jy = 0;		
-		List<String> listHeader = Arrays.asList(header);
-		
-		/* Store indices and minimum/maximum random values of X-matrix columns */
-		jcolX[j] = listHeader.indexOf("CoatingAmount");	
-		minValueX[j] = 10.0;  maxValueX[j] = 100.0; j++;
-	    jcolX[j] = listHeader.indexOf("Purity");	
-	    minValueX[j] = 10.0;  maxValueX[j] = 100.0; j++;
-		jcolX[j] = listHeader.indexOf("ContamAl"); 
-		minValueX[j] = 10.0;  maxValueX[j] = 1500; j++;
-		jcolX[j] = listHeader.indexOf("ContamAs"); 
-		minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
-		jcolX[j] = listHeader.indexOf("ContamBe");	
-		minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
-        jcolX[j] = listHeader.indexOf("ContamCa"); 
-        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
-        jcolX[j] = listHeader.indexOf("ContamCo"); 
-        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
-        jcolX[j] = listHeader.indexOf("ContamCr"); 
-        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
-        jcolX[j] = listHeader.indexOf("ContamFe"); 
-        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
-        jcolX[j] = listHeader.indexOf("ContamK");  
-        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
-        jcolX[j] = listHeader.indexOf("ContamMg");     
-        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
-        jcolX[j] = listHeader.indexOf("ContamNa"); 
-        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
-        jcolX[j] = listHeader.indexOf("ContamP");  
-        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
-        jcolX[j] = listHeader.indexOf("ContamPb"); 
-        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
-        jcolX[j] = listHeader.indexOf("ContamSb"); 
-        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
-        jcolX[j] = listHeader.indexOf("ContamSe"); 
-        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
-        jcolX[j] = listHeader.indexOf("ContamSiO2");
-        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
-        jcolX[j] = listHeader.indexOf("ContamSn"); 
-        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
-        jcolX[j] = listHeader.indexOf("ContamTl"); 
-        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
-        jcolX[j] = listHeader.indexOf("ContamV");  
-        minValueX[j] = 10.0;  maxValueX[j] = 1500.0; j++;
-        jcolX[j] = listHeader.indexOf("ParticleOuterDiamAvg");  
-        minValueX[j] = 100.0;  maxValueX[j] = 250; j++;
-        jcolX[j] = listHeader.indexOf("ParticleOuterDiamLow"); 
-        minValueX[j] = 10.0;  maxValueX[j] = 100.0; j++;
-        jcolX[j] = listHeader.indexOf("ParticleOuterDiamHigh"); 
-        minValueX[j] = 250.0;  maxValueX[j] = 400; j++;
-        jcolX[j] = listHeader.indexOf("ParticleInnerDiamAvg"); 
-        minValueX[j] = 50.0;  maxValueX[j] = 100.0; j++;
-        jcolX[j] = listHeader.indexOf("ParticleInnerDiamLow");  
-        minValueX[j] = 0.0;  maxValueX[j] = 50; j++;
-        jcolX[j] = listHeader.indexOf("ParticleInnerDiamHigh"); 
-        minValueX[j] = 100.0;  maxValueX[j] = 150; j++;
-        jcolX[j] = listHeader.indexOf("ParticleLengthAvg");     
-        minValueX[j] = 50.0;  maxValueX[j] = 100.0; j++;
-        jcolX[j] = listHeader.indexOf("ParticleLengthLow");    
-        minValueX[j] = 10.0;  maxValueX[j] = 50; j++;
-        jcolX[j] = listHeader.indexOf("ParticleLengthHigh"); 
-        minValueX[j] = 100.0;  maxValueX[j] = 150; j++;
-        jcolX[j] = listHeader.indexOf("ParticleThicknessAvg"); 
-        minValueX[j] = 50.0;  maxValueX[j] = 100.0; j++;
-        jcolX[j] = listHeader.indexOf("ParticleThicknessLow");  
-        minValueX[j] = 10.0;  maxValueX[j] = 50; j++;
-        jcolX[j] = listHeader.indexOf("ParticleThicknessHigh");  
-        minValueX[j] = 100.0;  maxValueX[j] = 150; j++;
-        jcolX[j] = listHeader.indexOf("SurfaceAreaAvg");       
-        minValueX[j] = 150.0;  maxValueX[j] = 300; j++;
-        jcolX[j] = listHeader.indexOf("SurfaceAreaLow");  
-        minValueX[j] = 10.0;  maxValueX[j] = 150; j++;
-        jcolX[j] = listHeader.indexOf("SurfaceAreaHigh");  
-        minValueX[j] = 300.0;  maxValueX[j] = 450; j++;
-        jcolX[j] = listHeader.indexOf("MC_TimeValue");    
-        minValueX[j] = 10.0;  maxValueX[j] = 240; j++;
-        jcolX[j] = listHeader.indexOf("MC_ParticleConcentration"); 
-        minValueX[j] = 10.0;  maxValueX[j] = 100.0; j++;
-        jcolX[j] = listHeader.indexOf("MC_SerumConcentration");    
-        minValueX[j] = 10.0;  maxValueX[j] = 100.0; j++;
-        jcolX[j] = listHeader.indexOf("MC_AntibioticConcentration");   
-        minValueX[j] = 10.0;  maxValueX[j] = 100.0; j++;
-        jcolX[j] = listHeader.indexOf("MC_DOMConcentration");       
-        minValueX[j] = 10.0;  maxValueX[j] = 20.0; j++;
-        jcolX[j] = listHeader.indexOf("MC_SalinityValue");        	
-        minValueX[j] = 10.0;  maxValueX[j] = 35.0; j++;
-        jcolX[j] = listHeader.indexOf("MC_pHAvg");        	      
-        minValueX[j] = 4.0;  maxValueX[j] = 10.0; j++;
-        jcolX[j] = listHeader.indexOf("MC_pHLow");        	       
-        minValueX[j] = 0.0;  maxValueX[j] = 4.0; j++;
-        jcolX[j] = listHeader.indexOf("MC_pHHigh");        	       
-        minValueX[j] = 10.0;  maxValueX[j] = 14.0; j++;
-        jcolX[j] = listHeader.indexOf("MC_MediumTemp");        	   
-        minValueX[j] = 10.0;  maxValueX[j] = 40.0; j++;
-        jcolX[j] = listHeader.indexOf("ZetaPotentialAvg");        	
-        minValueX[j] = -30.0;  maxValueX[j] = -100.0; j++;
-        jcolX[j] = listHeader.indexOf("ZetaPotentialLow");     
-        minValueX[j] = -10.0;  maxValueX[j] = -30.0; j++;
-        jcolX[j] = listHeader.indexOf("ZetaPotentialHigh");    
-        minValueX[j] = -100.0;  maxValueX[j] = -150; j++;
-        jcolX[j] = listHeader.indexOf("SizeDistribAvg");        
-        minValueX[j] = 1000.0;  maxValueX[j] = 2000; j++;
-        jcolX[j] = listHeader.indexOf("SizeDistribLow");        
-        minValueX[j] = 10.0;  maxValueX[j] = 1000; j++;
-        jcolX[j] = listHeader.indexOf("SizeDistribHigh");        	
-        minValueX[j] = 2000.0;  maxValueX[j] = 3000; j++;
-        jcolX[j] = listHeader.indexOf("SizeDistribAvg2");        	
-        minValueX[j] = 1000.0;  maxValueX[j] = 2000; j++;
-        jcolX[j] = listHeader.indexOf("SizeDistribLow2");        
-        minValueX[j] = 10.0;  maxValueX[j] = 1000; j++;
-        jcolX[j] = listHeader.indexOf("SizeDistribHigh2");       
-        minValueX[j] = 2000.0;  maxValueX[j] = 3000; j++;
-        jcolX[j] = listHeader.indexOf("SerumConcentration");      
-        minValueX[j] = 10.0;  maxValueX[j] = 100.0; j++;
-        jcolX[j] = listHeader.indexOf("AntibioticConcentration");   
-        minValueX[j] = 10.0;  maxValueX[j] = 100.0; j++;
-        jcolX[j] = listHeader.indexOf("DOMConcentration");        
-        minValueX[j] = 10.0;  maxValueX[j] = 20.0; j++;
-        jcolX[j] = listHeader.indexOf("SalinityValue");      
-        minValueX[j] = 10.0;  maxValueX[j] = 35.0; j++;
-        jcolX[j] = listHeader.indexOf("pHAvg");        	      
-        minValueX[j] = 4.0;  maxValueX[j] = 10.0; j++;
-        jcolX[j] = listHeader.indexOf("pHLow");         	  
-        minValueX[j] = 0.0;  maxValueX[j] = 4.0; j++;
-        jcolX[j] = listHeader.indexOf("pHHigh");        	   
-        minValueX[j] = 10.0;  maxValueX[j] = 14.0; j++;
-        jcolX[j] = listHeader.indexOf("MediumTemp");        	 
-        minValueX[j] = 10.0;  maxValueX[j] = 40.0; j++;
-        jcolX[j] = listHeader.indexOf("TimeValue");        	         
-        minValueX[j] = 48.0;  maxValueX[j] = 72.0; j++;
-        jcolX[j] = listHeader.indexOf("ParticleConcentration");     
-        minValueX[j] = 10.0;  maxValueX[j] = 100.0; j++;
-        jcolX[j] = listHeader.indexOf("ParticleExposDuration");       
-        minValueX[j] = 48.0;  maxValueX[j] = 72.0; j++;
-        jcolX[j] = listHeader.indexOf("UVADose");        	          
-        minValueX[j] = 0.0;  maxValueX[j] = 10.0; j++;
-        jcolX[j] = listHeader.indexOf("UVAExposDuration");     
-        minValueX[j] = 1.0;  maxValueX[j] = 2.0; j++;
-        
-        /* Store indices and minimum/maximum random values of Y-matrix columns */
-        jcolY[jy]   = listHeader.indexOf("ViabilityAvg");        
-        minValueY[jy] = 10.0;  maxValueY[jy] = 100.0; jy++;
-        jcolY[jy]   = listHeader.indexOf("LC50");
-        minValueY[jy] = 10.0;  maxValueY[jy] = 100.0;
-           
+		           
 		/* Loop over the rows of the data */
 		for (int i = 0; i < Xorig.rows; i++)
 		{
 			nextLine = rows.get(i);	  // Get the ith row of the data
-			for (int k = 0; k < xcolumns; k++)   // Loop over the columns
+			for (int k = 0; k < Xorig.columns; k++)   // Loop over the columns
 			{
 				int jcol = jcolX[k];
 				Xorig.put(i,k,getValue(nextLine[jcol], minValueX[k], maxValueX[k]));
 			}
 			
-			for (int k = 0; k < ycolumns; k++)
+			for (int k = 0; k < Yorig.columns; k++)
 			{
 				int jcol = jcolY[k];
 				Yorig.put(i,k,getValue(nextLine[jcol], minValueY[k], maxValueY[k]));
@@ -464,97 +554,18 @@ public class CsvMatrix
 	public static void buildMatricesWithoutNulls(DoubleMatrix Xorig, DoubleMatrix Yorig)
 	{
 		String[] nextLine;
-		int[] jcolX = new int[xcolumns];  // Positional indices of X-matrix columns in CSV file.
-		int[] jcolY = new int[ycolumns];  // Positional indices of Y-matrix columns in CSV file.
-		
-		int j = 0, jy = 0;		
-		List<String> listHeader = Arrays.asList(header);
-		
-		/* Store indices and minimum/maximum random values of X-matrix columns */
-		jcolX[j++] = listHeader.indexOf("CoatingAmount");		
-	    jcolX[j++] = listHeader.indexOf("Purity");	   
-		jcolX[j++] = listHeader.indexOf("ContamAl"); 	
-		jcolX[j++] = listHeader.indexOf("ContamAs"); 		
-		jcolX[j++] = listHeader.indexOf("ContamBe");			
-        jcolX[j++] = listHeader.indexOf("ContamCa");        
-        jcolX[j++] = listHeader.indexOf("ContamCo");         
-        jcolX[j++] = listHeader.indexOf("ContamCr");        
-        jcolX[j++] = listHeader.indexOf("ContamFe");         
-        jcolX[j++] = listHeader.indexOf("ContamK");         
-        jcolX[j++] = listHeader.indexOf("ContamMg");            
-        jcolX[j++] = listHeader.indexOf("ContamNa");         
-        jcolX[j++] = listHeader.indexOf("ContamP");          
-        jcolX[j++] = listHeader.indexOf("ContamPb");         
-        jcolX[j++] = listHeader.indexOf("ContamSb");         
-        jcolX[j++] = listHeader.indexOf("ContamSe");         
-        jcolX[j++] = listHeader.indexOf("ContamSiO2");        
-        jcolX[j++] = listHeader.indexOf("ContamSn");        
-        jcolX[j++] = listHeader.indexOf("ContamTl");         
-        jcolX[j++] = listHeader.indexOf("ContamV");          
-        jcolX[j++] = listHeader.indexOf("ParticleOuterDiamAvg");         
-        jcolX[j++] = listHeader.indexOf("ParticleOuterDiamLow");        
-        jcolX[j++] = listHeader.indexOf("ParticleOuterDiamHigh");        
-        jcolX[j++] = listHeader.indexOf("ParticleInnerDiamAvg");         
-        jcolX[j++] = listHeader.indexOf("ParticleInnerDiamLow");         
-        jcolX[j++] = listHeader.indexOf("ParticleInnerDiamHigh");         
-        jcolX[j++] = listHeader.indexOf("ParticleLengthAvg");            
-        jcolX[j++] = listHeader.indexOf("ParticleLengthLow");            
-        jcolX[j++] = listHeader.indexOf("ParticleLengthHigh");        
-        jcolX[j++] = listHeader.indexOf("ParticleThicknessAvg");         
-        jcolX[j++] = listHeader.indexOf("ParticleThicknessLow");         
-        jcolX[j++] = listHeader.indexOf("ParticleThicknessHigh");          
-        jcolX[j++] = listHeader.indexOf("SurfaceAreaAvg");               
-        jcolX[j++] = listHeader.indexOf("SurfaceAreaLow");        
-        jcolX[j++] = listHeader.indexOf("SurfaceAreaHigh");       
-        jcolX[j++] = listHeader.indexOf("MC_TimeValue");           
-        jcolX[j++] = listHeader.indexOf("MC_ParticleConcentration");        
-        jcolX[j++] = listHeader.indexOf("MC_SerumConcentration");            
-        jcolX[j++] = listHeader.indexOf("MC_AntibioticConcentration");         
-        jcolX[j++] = listHeader.indexOf("MC_DOMConcentration");              
-        jcolX[j++] = listHeader.indexOf("MC_SalinityValue");        	     
-        jcolX[j++] = listHeader.indexOf("MC_pHAvg");        	              
-        jcolX[j++] = listHeader.indexOf("MC_pHLow");        	              
-        jcolX[j++] = listHeader.indexOf("MC_pHHigh");        	               
-        jcolX[j++] = listHeader.indexOf("MC_MediumTemp");        	          
-        jcolX[j++] = listHeader.indexOf("ZetaPotentialAvg");        	       
-        jcolX[j++] = listHeader.indexOf("ZetaPotentialLow");            
-        jcolX[j++] = listHeader.indexOf("ZetaPotentialHigh");           
-        jcolX[j++] = listHeader.indexOf("SizeDistribAvg");                
-        jcolX[j++] = listHeader.indexOf("SizeDistribLow");               
-        jcolX[j++] = listHeader.indexOf("SizeDistribHigh");        	        
-        jcolX[j++] = listHeader.indexOf("SizeDistribAvg2");        	       
-        jcolX[j++] = listHeader.indexOf("SizeDistribLow2");              
-        jcolX[j++] = listHeader.indexOf("SizeDistribHigh2");              
-        jcolX[j++] = listHeader.indexOf("SerumConcentration");             
-        jcolX[j++] = listHeader.indexOf("AntibioticConcentration");          
-        jcolX[j++] = listHeader.indexOf("DOMConcentration");               
-        jcolX[j++] = listHeader.indexOf("SalinityValue");            
-        jcolX[j++] = listHeader.indexOf("pHAvg");        	             
-        jcolX[j++] = listHeader.indexOf("pHLow");         	         
-        jcolX[j++] = listHeader.indexOf("pHHigh");        	          
-        jcolX[j++] = listHeader.indexOf("MediumTemp");        	        
-        jcolX[j++] = listHeader.indexOf("TimeValue");        	               
-        jcolX[j++] = listHeader.indexOf("ParticleConcentration");           
-        jcolX[j++] = listHeader.indexOf("ParticleExposDuration");             
-        jcolX[j++] = listHeader.indexOf("UVADose");        	                
-        jcolX[j++] = listHeader.indexOf("UVAExposDuration");     
-               
-        /* Store indices and minimum/maximum random values of Y-matrix columns */
-        jcolY[jy++]   = listHeader.indexOf("ViabilityAvg");                
-        jcolY[jy++]   = listHeader.indexOf("LC50");
-        
            
 		/* Loop over the rows of the data */
 		for (int i = 0; i < Xorig.rows; i++)
 		{
 			nextLine = rows.get(i);	  // Get the ith row of the data
-			for (int k = 0; k < xcolumns; k++)   // Loop over the columns
+			for (int k = 0; k < Xorig.columns; k++)   // Loop over the columns
 			{
 				int jcol = jcolX[k];
 				Xorig.put(i,k,Double.parseDouble(nextLine[jcol]));
 			}
 			
-			for (int k = 0; k < ycolumns; k++)
+			for (int k = 0; k < Yorig.columns; k++)
 			{
 				int jcol = jcolY[k];
 				Yorig.put(i,k,Double.parseDouble(nextLine[jcol]));
