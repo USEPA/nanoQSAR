@@ -53,12 +53,28 @@ public class CsvMatrix
 	private static double EPSILON_DEFLATION = 1.0e-6;
 	
 	/* Need this line to allow logging of error messages */
-	private final static Logger lOGGER = Logger.getLogger("nanoQSAR");
+	private Logger lOGGER = Logger.getLogger("nanoQSAR");
+	
+	
+	/**
+	 * @author Paul Harten
+	 * @param filename
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public CsvMatrix() throws Exception {
+		super();
+	}
+	
+	public CsvMatrix(String filename) throws Exception {
+		super();
+		readCsvFile(filename);
+	}
 	
 	/**
 	 * @return the logger
 	 */
-	public static Logger getLogger() {
+	public Logger getLogger() {
 		return lOGGER;
 	}
 
@@ -209,7 +225,7 @@ public class CsvMatrix
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static void readCsvFile(String filename) throws FileNotFoundException, IOException
+	public void readCsvFile(String filename) throws FileNotFoundException, IOException
 	{
 		FileReader fReader;
 		try
@@ -811,8 +827,9 @@ public class CsvMatrix
 	 * This method writes BPLS* to a CSV file.
 	 * @param Bstar
 	 * @author Wilson Melendez
+	 * @throws IOException 
 	 */
-	public static void writeBplsStarToCsv(DoubleMatrix Bstar)
+	public static void writeBplsStarToCsv(DoubleMatrix Bstar) throws IOException
 	{
 		String[] entries = new String[Bstar.rows];
 		String filename = System.getProperty("user.dir") + "\\nanoQSAR_BPLS.csv";
@@ -837,11 +854,12 @@ public class CsvMatrix
 			csvOutput.writeNext(entries);   
 			
 			/* Close the writer. */
-			   csvOutput.close();   
+			csvOutput.close();   
 		}
 		catch(IOException ex)
 		{
-			lOGGER.severe("FileWriter for " + filename + " could not be constructed." + ex);	
+			throw ex;
+//			lOGGER.severe("FileWriter for " + filename + " could not be constructed." + ex);	
 		}
 	}
 	
