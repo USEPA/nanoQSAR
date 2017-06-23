@@ -26,7 +26,7 @@ import nanoQSAR.NanoMaterials;
  */
 public class NanoMaterialsTest {
 	
-	static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
+	static String csvFilename = System.getProperty("user.dir") + "\\nanoQSAR.csv";
 
 	/**
 	 * Test method for {@link nanoQSAR.NanoMaterials#NanoMaterials()}.
@@ -44,22 +44,7 @@ public class NanoMaterialsTest {
 	 */
 	@Test
 	public final void testNanoMaterialsConstructor2() throws Exception {
-		/* Input database connection information and name of output file. */
-		DBUtil.loadProperties(propFilename);
-		NanoMaterials nanoMaterials = new NanoMaterials(new MySqlQuery());
-		Assert.assertNotNull("NanoMaterials Constructer failed", nanoMaterials);
-		Assert.assertFalse("NanoMaterials Constructor is zero size", nanoMaterials.size()==0);
-	}
-
-	/**
-	 * Test method for {@link nanoQSAR.NanoMaterials#mineNanoMaterials(datamine.MySqlQuery)}.
-	 * @throws Exception 
-	 */
-	@Test
-	public final void testMineNanoMaterials() throws Exception {
-		NanoMaterials nanoMaterials = new NanoMaterials();
-		DBUtil.loadProperties(propFilename);
-		nanoMaterials.mineNanoMaterials(new MySqlQuery());
+		NanoMaterials nanoMaterials = new NanoMaterials(csvFilename);
 		Assert.assertNotNull("NanoMaterials Constructer failed", nanoMaterials);
 		Assert.assertFalse("NanoMaterials Constructor is zero size", nanoMaterials.size()==0);
 	}

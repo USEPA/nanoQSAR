@@ -1,5 +1,6 @@
 package nanoQSAR;
 
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -11,6 +12,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
 import datamine.DBUtil;
@@ -26,6 +28,11 @@ public class NanoMaterials extends Vector<NanoMaterial> {
 	
 	public NanoMaterials() throws Exception {
 		super();
+	}
+	
+	public NanoMaterials(String filename) throws Exception {
+		super();
+		this.readCsvFile(filename);
 	}
 	
 	public NanoMaterials(MySqlQuery sqlQuery) throws Exception {
@@ -61,6 +68,42 @@ public class NanoMaterials extends Vector<NanoMaterial> {
 		} catch	(Exception ex) {
 			
 //			lOGGER.log(Level.SEVERE, "Exception was thrown: ending the execution of the program.");
+			throw ex;
+			
+		}
+		
+	}
+	
+	public void readCsvFile(String filename) throws Exception {
+
+		String[] entries;
+		CSVReader csvReader = null;
+		
+		try	{
+			
+			/* create a new CSVReader for the fileName */
+			csvReader = new CSVReader(new FileReader(filename));
+			
+			/* read the headers from the csv file */
+			this.setHeader(csvReader.readNext());  
+			
+			/* Loop over lines in the csv file */
+			while (csvReader.iterator().hasNext()) {
+				
+				/* Read next row of data */
+				String[] line = csvReader.readNext();
+				
+				/* convert the data into a new NanoMaterial */
+				this.add(new NanoMaterial(header, line));
+	
+			}
+			
+			/* Close the writer. */
+			csvReader.close();
+			
+		} catch(Exception ex)	{
+			
+//			lOGGER.log(Level.SEVERE, "FileWriter for " + filename + " could not be constructed.", ex);	
 			throw ex;
 			
 		}

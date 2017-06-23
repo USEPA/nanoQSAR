@@ -187,6 +187,8 @@ public class MySqlQueryTest {
 			"LC50ApproxSymbol", "LC50Unit"
 	};
 	
+	static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
+	
 	@BeforeClass
 	public static void setUp() throws IOException, GeneralSecurityException
 	{
@@ -238,6 +240,19 @@ public class MySqlQueryTest {
 			e.printStackTrace();
 		}
 		
+	}
+	
+	/**
+	 * Test method for {@link nanoQSAR.NanoMaterials#mineNanoMaterials(datamine.MySqlQuery)}.
+	 * @throws Exception 
+	 */
+	@Test
+	public final void testMineNanoMaterials() throws Exception {
+		NanoMaterials nanoMaterials = new NanoMaterials();
+		DBUtil.loadProperties(propFilename);
+		nanoMaterials.mineNanoMaterials(new MySqlQuery());
+		Assert.assertNotNull("NanoMaterials Constructer failed", nanoMaterials);
+		Assert.assertFalse("NanoMaterials Constructor is zero size", nanoMaterials.size()==0);
 	}
 
 	

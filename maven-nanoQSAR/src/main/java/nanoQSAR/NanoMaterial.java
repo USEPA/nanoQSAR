@@ -1,5 +1,9 @@
 package nanoQSAR;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 
 /**
@@ -198,6 +202,33 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 
 	public NanoMaterial() throws Exception {
 		super();
+	}
+	
+	public NanoMaterial(String[] header, String[] values) throws Exception {
+		super();
+		
+		/* execute set() on each property of NanoMaterial with fieldnames and values taken from cvs file */
+	    for (int i=0; i<header.length; i++) {
+	    	setProperty(header[i], values[i]);
+	    }
+	    
+	}
+	
+	private void setProperty(String fieldname, String value) throws Exception {
+		final BeanInfo beanInfo = Introspector.getBeanInfo(this.getClass());
+	    final PropertyDescriptor[] properties = beanInfo.getPropertyDescriptors();
+	    
+    	for (PropertyDescriptor property: properties) {
+    		if (property.getDisplayName().contentEquals(fieldname)) {
+    			if (value==null) {
+    				property.getWriteMethod().invoke(this, null);
+    			} else {
+    				property.getWriteMethod().invoke(this, value.valueOf(property.getPropertyType()));
+    			}
+    			break;
+    		}
+    	}
+		
 	}
 	
 	// Get and Set methods
