@@ -241,7 +241,7 @@ public class MySqlQuery
 			
 			/* create the connection statement */
 			stmt = conn.createStatement();
-//			rs = stmt.executeQuery("SHOW TABLES FROM NanKnowBase");
+//			rs = stmt.executeQuery("SHOW TABLES FROM NanKnowBase"); 
 //			rs = stmt.executeQuery("SHOW COLUMNS FROM link FROM NanKnowBase");
 			rs = stmt.executeQuery(getSqlQuery());
 			
