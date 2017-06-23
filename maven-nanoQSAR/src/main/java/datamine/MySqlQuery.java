@@ -1,5 +1,8 @@
 package datamine;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.junit.Assert;
 
 import nanoQSAR.LoggerInfo;
 import nanoQSAR.NanoMaterial;
@@ -236,6 +241,8 @@ public class MySqlQuery
 			
 			/* create the connection statement */
 			stmt = conn.createStatement();
+//			rs = stmt.executeQuery("SHOW TABLES FROM NanKnowBase");
+//			rs = stmt.executeQuery("SHOW COLUMNS FROM link FROM NanKnowBase");
 			rs = stmt.executeQuery(getSqlQuery());
 			
 			while (rs.next())  // Loop over the results received from the MySQL database server.
@@ -424,7 +431,14 @@ public class MySqlQuery
 				nanomaterial.setMc_domConcentration((Double)rs.getObject("Mc_DomConcentration"));
 				nanomaterial.setMc_domUnit((String)rs.getObject("Mc_DomUnit"));
 				nanomaterial.setMc_salinityValue((Double)rs.getObject("Mc_SalinityValue"));
-				nanomaterial.setMc_salinityUnit((String)rs.getObject("Mc_SalinityUnit"));		
+				nanomaterial.setMc_salinityUnit((String)rs.getObject("Mc_SalinityUnit"));
+				
+//				/* execute set() on each property of nanomaterial with values taken by SqlQuery */
+//				final BeanInfo beanInfo = Introspector.getBeanInfo(nanomaterial.getClass());
+//		        final PropertyDescriptor[] properties = beanInfo.getPropertyDescriptors();
+//		        for (PropertyDescriptor property : properties) {
+//		        	property.getWriteMethod().invoke(nanomaterial, rs.getObject(property.getDisplayName()));
+//		        }
 				
 				list.add(nanomaterial);  // Add object to list.
 				
