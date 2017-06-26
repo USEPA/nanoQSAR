@@ -16,6 +16,7 @@ import org.junit.Assert;
 
 import nanoQSAR.LoggerInfo;
 import nanoQSAR.NanoMaterial;
+import nanoQSAR.NanoMaterials;
 
 /**
 * This class gets a connection to the database, submits a SQL query to the database, 
@@ -226,9 +227,9 @@ public class MySqlQuery
 	 * @throws ClassNotFoundException  If no connection driver is available, throw exception.
 	 * @throws SQLException  An exception may be thrown if connection to database fails.
 	 */
-	public List<NanoMaterial> getNanoMaterials() throws Exception
+	public NanoMaterials getNanoMaterials() throws Exception
 	{		
-		ArrayList<NanoMaterial> list = new ArrayList<NanoMaterial>();
+		NanoMaterials nanoMaterials = new NanoMaterials();
 		NanoMaterial nanomaterial = null;
 		Statement stmt = null;
 		Connection conn = null;
@@ -440,23 +441,23 @@ public class MySqlQuery
 //		        	property.getWriteMethod().invoke(nanomaterial, rs.getObject(property.getDisplayName()));
 //		        }
 				
-				list.add(nanomaterial);  // Add object to list.
+				nanoMaterials.add(nanomaterial);  // Add object to list.
 				
 			}
+			
+			/* close everything */
+			rs.close();
+			stmt.close();
+			conn.close();
 			
 		}
 		catch(SQLException ex)
 		{
-			lOGGER.log(Level.SEVERE, "Statement or ResultSet failed.", ex);
+			lOGGER.log(Level.SEVERE, "SQL operation failed.", ex);
 			throw ex;
 		}
-		finally  // Close everything.
-		{
-			DBUtil.close(rs);
-			DBUtil.close(stmt);
-			DBUtil.close(conn);
-		}
-		return list;
+
+		return nanoMaterials;
 	}
 	
 	

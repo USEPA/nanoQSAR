@@ -232,7 +232,7 @@ public class MySqlQueryTest {
 		try {
 			MySqlQuery mySqlQuery = new MySqlQuery();
 			Assert.assertNotNull(mySqlQuery);
-			List<NanoMaterial> nanoMaterials = mySqlQuery.getNanoMaterials();
+			NanoMaterials nanoMaterials = mySqlQuery.getNanoMaterials();
 			Assert.assertNotNull(nanoMaterials);
 			Assert.assertFalse("Unexpected: nanoMaterials database is empty", nanoMaterials.isEmpty());
 		} catch (Exception e) {
@@ -241,19 +241,5 @@ public class MySqlQueryTest {
 		}
 		
 	}
-	
-	/**
-	 * Test method for {@link nanoQSAR.NanoMaterials#mineNanoMaterials(datamine.MySqlQuery)}.
-	 * @throws Exception 
-	 */
-	@Test
-	public final void testMineNanoMaterials() throws Exception {
-		NanoMaterials nanoMaterials = new NanoMaterials();
-		DBUtil.loadProperties(propFilename);
-		nanoMaterials.mineNanoMaterials(new MySqlQuery());
-		Assert.assertNotNull("NanoMaterials Constructer failed", nanoMaterials);
-		Assert.assertFalse("NanoMaterials Constructor is zero size", nanoMaterials.size()==0);
-	}
-
 	
 }
