@@ -242,4 +242,21 @@ public class MySqlQueryTest {
 		
 	}
 	
+	@Test
+	public void testWriteCsvFile() {
+
+		try {
+			MySqlQuery mySqlQuery = new MySqlQuery();
+			Assert.assertNotNull(mySqlQuery);
+			NanoMaterials nanoMaterials = new NanoMaterials(mySqlQuery);
+			Assert.assertNotNull(nanoMaterials);
+			Assert.assertFalse("Unexpected: nanoMaterials database is empty", nanoMaterials.isEmpty());
+			nanoMaterials.writeCsvFile(DBUtil.getCsvFileName());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 }
