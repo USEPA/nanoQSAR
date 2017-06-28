@@ -24,6 +24,8 @@ public class NanoQSAR {
 	static String plsFilename = System.getProperty("user.dir") + "\\nanoQSAR_pls.csv";
 	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR.log";
 	
+	static String helpString = "User options:\nnanoQSAR -h\nnanoQSAR\nnanoQSAR propFilename\n";
+	
 	/* Create an object of type Logger so we can log error or warning messages. */
 	protected static Logger LOGGER =  Logger.getLogger("nanoQSAR", null);
 	
@@ -37,10 +39,12 @@ public class NanoQSAR {
 
 			} else if (args.length == 1 && args[0].trim().matches("-h")) { // respond with user options
 
-				System.out.println("User options:");
-				System.out.println("nanoQSAR -h");
-				System.out.println("nanoQSAR");
-				System.out.println("nanoQSAR propFilename");
+//				System.out.println("User options:");
+//				System.out.println("nanoQSAR -h");
+//				System.out.println("nanoQSAR");
+//				System.out.println("nanoQSAR propFilename");
+				System.out.print(helpString);
+				return;
 
 			} else if (args.length == 1) { // Using command-line entered properties file
 
@@ -82,5 +86,10 @@ public class NanoQSAR {
 		}
 		
 	}
+	
+	public static String getHelpString() {
+		return helpString;
+	}
+
 	
 }
