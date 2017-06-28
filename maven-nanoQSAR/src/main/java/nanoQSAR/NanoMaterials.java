@@ -1,5 +1,9 @@
 package nanoQSAR;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -7,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -25,6 +30,7 @@ public class NanoMaterials extends Vector<NanoMaterial> {
 	 */
 	private static final long serialVersionUID = 9210392203321638729L;
 	private String[] header = null;
+	private int[] propertyIndex = null;
 	
 	public NanoMaterials() throws Exception {
 		super();
@@ -37,7 +43,11 @@ public class NanoMaterials extends Vector<NanoMaterial> {
 	
 	public NanoMaterials(MySqlQuery sqlQuery) throws Exception {
 		super();
-		this.mineNanoMaterials(sqlQuery);
+		String filename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
+		DBUtil.loadProperties(filename);
+		/* Read data from remote MySQL server and store them in a list.  */
+		this.addAll(sqlQuery.getNanoMaterials());
+		this.setHeader(sqlQuery.getHeader());
 	}
 	
 	/**
@@ -58,9 +68,6 @@ public class NanoMaterials extends Vector<NanoMaterial> {
 			
 			/* Read data from remote MySQL server and store them in a list.  */
 			this.addAll(sqlQuery.getNanoMaterials());
-			
-			/* Read header from remote MySQL server and store in a String array.  */
-			this.setHeader(sqlQuery.getHeader());
 			
 			/* Check default units and perform unit conversions if necessary. */
 			DefaultUnits.checkUnits(this);
@@ -85,16 +92,19 @@ public class NanoMaterials extends Vector<NanoMaterial> {
 			csvReader = new CSVReader(new FileReader(filename));
 			
 			/* read the headers from the csv file */
-			this.setHeader(csvReader.readNext());  
+			this.setHeader(csvReader.readNext());
 			
+			int[] fieldIndex = NanoMaterial.getFieldIndex(getHeader());
+			
+			String[] line = null;
 			/* Loop over lines in the csv file */
-			while (csvReader.iterator().hasNext()) {
+			while ((line = csvReader.readNext())!=null) {
 				
 				/* Read next row of data */
-				String[] line = csvReader.readNext();
+//				String[] line = csvReader.readNext();
 				
 				/* convert the data into a new NanoMaterial */
-				this.add(new NanoMaterial(header, line));
+				this.add(new NanoMaterial(fieldIndex, line));
 	
 			}
 			
@@ -148,12 +158,45 @@ public class NanoMaterials extends Vector<NanoMaterial> {
 		
 	}
 	
+	public boolean isSame(NanoMaterials other) throws Exception {
+		
+		if (this.getHeader().length != other.getHeader().length) return false;
+		if (this.size() != other.size()) return false;
+		
+		String[] thisHeader = this.getHeader();
+		String[] otherHeader = other.getHeader();
+		for (int i=0; i<thisHeader.length; i++) {
+			if (thisHeader[i].matches(otherHeader[i])) continue;
+			return false;
+		}
+		
+		if (this.size() != other.size()) return false;
+		for (int i=0; i<this.size(); i++) {
+			if (this.get(i).isSame(other.get(i))) continue;
+			return false;
+		}
+		
+		return true;
+	}
+	
 	public void setHeader(String[] header) {
 		this.header = header;
 	}
 	
 	public String[] getHeader() {
 		return this.header;
+	}
+
+	public int[] getPropertyIndex() {
+		return propertyIndex;
+	}
+
+	public void setPropertyIndex(int[] propertyIndex) {
+		this.propertyIndex = propertyIndex;
+	}
+	
+	public void setPropertyIndexFromHeader() {
+		this.propertyIndex = propertyIndex;
 	}
 
 }

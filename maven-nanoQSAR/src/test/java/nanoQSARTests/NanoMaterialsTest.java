@@ -85,12 +85,15 @@ public class NanoMaterialsTest {
 		n1.setSampleName("TiO2-I-142-NONE-0");
 		n1.setParticleConcentration(60.0);
 		n1.setParticleExposDuration(48.0);
-		n1.setLc50(null);
+		n1.setLc50(10.0);
 				
 		nanoMaterials.add(n1);		
 				
 		// act
 		nanoMaterials.writeCsvFile(output.getPath());
+		
+		// assert some header information
+		assertThat(contentOf(output)).contains("ORDMaterialID");
 		
 		// assert
 		assertThat(contentOf(output)).contains("cell viability");
@@ -99,6 +102,34 @@ public class NanoMaterialsTest {
 		assertThat(contentOf(output)).contains("60.0");
 		assertThat(contentOf(output)).contains("48.0");
 		assertThat(output).hasExtension("txt").hasParent(resolvePath("reports"));		
+	}
+	
+	/**
+	 * This method checks whether the contents of a CSV file was read correctly.
+	 * Test method for {@link CsvFileReader#readCsvFile(java.lang.String, java.util.List, java.lang.String[])}.
+	 * @author Paul Harten
+	 * @throws Exception 
+	 */
+	@Test
+	public void testReadCsvFile() throws Exception
+	{
+				
+		// Create NanoMaterials object */.
+		NanoMaterials nanoMaterials = new NanoMaterials();
+
+		/* read in nanomaterials from CVS file */
+		nanoMaterials.readCsvFile(csvFilename);
+
+		/* write nanoMaterials out to temporary output file */
+		String csvOutput  = temporaryFolder.newFolder("reports").toPath().resolve("output.csv").toString();
+	    nanoMaterials.writeCsvFile(csvOutput);
+	    
+		// Create NanoMaterials object */.
+		NanoMaterials nanoMaterials2 = new NanoMaterials();
+		nanoMaterials2.readCsvFile(csvOutput);
+	    
+	    Assert.assertTrue("nanoMateials are not the same", nanoMaterials.isSame(nanoMaterials2));
+		
 	}
 	
 	private String resolvePath(String folder)

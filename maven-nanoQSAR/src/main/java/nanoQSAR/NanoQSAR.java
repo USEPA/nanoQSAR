@@ -20,7 +20,7 @@ public class NanoQSAR {
 
 	/* Default filenames */
 	static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
-	static String outFilename = System.getProperty("user.dir") + "\\nanoQSAR_out.csv";
+	static String csvFilename = System.getProperty("user.dir") + "\\nanoQSAR.csv";
 	static String plsFilename = System.getProperty("user.dir") + "\\nanoQSAR_pls.csv";
 	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR.log";
 	
@@ -65,10 +65,10 @@ public class NanoQSAR {
 			DBUtil.loadProperties(propFilename);  
 
 			/* Data-mine MySQL database */
-			NanoMaterials nanoMaterial = new NanoMaterials(new MySqlQuery());
+			NanoMaterials nanoMaterials = new NanoMaterials(new MySqlQuery());
 
 			/* write data to CSV file. */
-//			nanoMats.writeCsvFile(DBUtil.getCsvFileName());
+			nanoMaterials.writeCsvFile(DBUtil.getCsvFileName());
 
 		} catch(Exception ex) {
 
