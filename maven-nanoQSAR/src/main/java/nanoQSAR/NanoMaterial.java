@@ -5,6 +5,9 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 
 /**
  * This class is used to handle the data pulled out of the database.
@@ -14,6 +17,8 @@ import java.io.Serializable;
 
 import java.sql.Date;
 import java.util.ArrayList;
+
+import org.junit.Assert;
 
 public class NanoMaterial extends Object implements Serializable, Cloneable {
 		
@@ -204,31 +209,57 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 		super();
 	}
 	
-	public NanoMaterial(String[] header, String[] values) throws Exception {
+	public NanoMaterial(int[] fieldIndex, String[] values) throws Exception {
 		super();
 		
+//		final BeanInfo beanInfo = Introspector.getBeanInfo(this.getClass());
+//	    final PropertyDescriptor[] properties = beanInfo.getPropertyDescriptors();
+	    
+		Field[] fields = NanoMaterial.class.getDeclaredFields();
 		/* execute set() on each property of NanoMaterial with fieldnames and values taken from cvs file */
-	    for (int i=0; i<header.length; i++) {
-	    	setProperty(header[i], values[i]);
+	    for (int i=0; i<values.length; i++) {
+
+	    	String value = values[i];
+	    	if (value.matches("null")) value=null;
+//	    	PropertyDescriptor property = properties[propertyIndex[i]];
+	    	Field field = fields[fieldIndex[i]];
+	    	System.out.println(field.toGenericString()+", "+field.getType()+", "+value);
+//	    	property.getWriteMethod().invoke(this, values[i].valueOf(property.getPropertyType()));
+//	    	property.getWriteMethod().invoke(this, property.getPropertyType().cast(values[i]));
+
+	    	if (field.getType()==String.class) {
+	    		field.set(this, value);
+	    	} else if (field.getType()==int.class) {
+	    		if (value!=null) field.setInt(this, Integer.parseInt(value));
+	    	} else if (field.getType()==double.class) {
+	    		if (value!=null) field.setDouble(this, Double.parseDouble(value));
+	    	} else {
+	    		throw new Error("Invalid NanoMaterial field class");
+	    	}
+	    		
 	    }
 	    
 	}
 	
-	private void setProperty(String fieldname, String value) throws Exception {
-		final BeanInfo beanInfo = Introspector.getBeanInfo(this.getClass());
-	    final PropertyDescriptor[] properties = beanInfo.getPropertyDescriptors();
-	    
-    	for (PropertyDescriptor property: properties) {
-    		if (property.getDisplayName().contentEquals(fieldname)) {
-    			if (value==null) {
-    				property.getWriteMethod().invoke(this, null);
-    			} else {
-    				property.getWriteMethod().invoke(this, value.valueOf(property.getPropertyType()));
-    			}
-    			break;
-    		}
-    	}
+	public static int[] getFieldIndex(String[] columnNames) throws Exception {
+//		final BeanInfo beanInfo = Introspector.getBeanInfo(NanoMaterial.class);.
+//	    final PropertyDescriptor[] properties = beanInfo.getPropertyDescriptors();
 		
+		Field[] fields = NanoMaterial.class.getDeclaredFields();
+	    int[] fieldIndex = new int[columnNames.length];
+	    for (int i=0; i<columnNames.length; i++) {
+	    	boolean notFound = true;
+	    	for (int j=0; j<fields.length; j++) {
+	    		if (fields[j].getName().equalsIgnoreCase(columnNames[i])) {
+	    			fieldIndex[i] = j;
+	    			notFound = false;
+	    			break;
+	    		}
+	    	}
+	    	if (notFound) throw new Error("NanoMatrial field associated with "+columnNames[i]+" not found");
+	    }
+	    
+	    return fieldIndex;
 	}
 	
 	// Get and Set methods
@@ -1483,191 +1514,229 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 		
 		NanoMaterial clone = (NanoMaterial)super.clone();
 
-		// Link table fields
-		clone.materialCharID = this.materialCharID; 
-		clone.measurementID = this.measurementID;
+//		// Link table fields
+//		clone.materialCharID = this.materialCharID; 
+//		clone.measurementID = this.measurementID;
+//		
+//		// Materialchar table fields
+//		clone.ordMaterialID = this.ordMaterialID;
+//		clone.dataSource = this.dataSource; 
+//		clone.lotNumber = this.lotNumber; 
+//		clone.coreComp = this.coreComp; 
+//		clone.shellComp = this.shellComp; 
+//		clone.coatingComp = this.coatingComp; 
+//		clone.coatingAmount = this.coatingAmount; 
+//		clone.coatingAmountUnit = this.coatingAmountUnit; 
+//		clone.functionalGroups = this.functionalGroups; 
+//		clone.functionalizationProtocol = this.functionalizationProtocol; 
+//		clone.purity = this.purity; 
+//		clone.purityApproxSymbol = this.purityApproxSymbol; 
+//		clone.purityUnit = this.purityUnit; 
+//		clone.purityMethod = this.purityMethod; 
+//		clone.purityRefChemical = this.purityRefChemical; 
+//		clone.contamUnit = this.contamUnit; 
+//		clone.contamAl = this.contamAl; 
+//		clone.contamAs = this.contamAs; 
+//		clone.contamBe = this.contamBe; 
+//		clone.contamCa = this.contamCa; 
+//		clone.contamCo = this.contamCo; 
+//		clone.contamCr = this.contamCr; 
+//		clone.contamFe = this.contamFe; 
+//		clone.contamK = this.contamK; 
+//		clone.contamMg = this.contamMg; 
+//		clone.contamNa = this.contamNa; 
+//		clone.contamP = this.contamP; 
+//		clone.contamPb = this.contamPb; 
+//		clone.contamSb = this.contamSb; 
+//		clone.contamSe = this.contamSe; 
+//		clone.contamSiO2 = this.contamSiO2; 
+//		clone.contamSn = this.contamSn; 
+//		clone.contamTl = this.contamTl; 
+//		clone.contamV = this.contamV; 
+//		clone.contamMethod = this.contamMethod; 
+//		clone.crystalStructure = this.crystalStructure; 
+//		clone.crystalStructureMethod = this.crystalStructureMethod; 
+//		clone.synthesisMethod = this.synthesisMethod; 
+//		clone.synthesisDate = this.synthesisDate; 
+//		clone.particleOuterDiamAvg = this.particleOuterDiamAvg; 
+//		clone.particleOuterDiamApproxSymbol = this.particleOuterDiamApproxSymbol; 
+//		clone.particleOuterDiamUnit = this.particleOuterDiamUnit; 
+//		clone.particleOuterDiamUncertain = this.particleOuterDiamUncertain; 
+//		clone.particleOuterDiamLow = this.particleOuterDiamLow; 
+//		clone.particleOuterDiamHigh = this.particleOuterDiamHigh; 
+//		clone.particleOuterDiamMethod = this.particleOuterDiamMethod; 
+//		clone.particleInnerDiamAvg = this.particleInnerDiamAvg; 
+//		clone.particleInnerDiamApproxSymbol = this.particleInnerDiamApproxSymbol; 
+//		clone.particleInnerDiamUnit = this.particleInnerDiamUnit; 
+//		clone.particleInnerDiamUncertain = this.particleInnerDiamUncertain; 
+//		clone.particleInnerDiamLow = this.particleInnerDiamLow; 
+//		clone.particleInnerDiamHigh = this.particleInnerDiamHigh; 
+//		clone.particleInnerDiamMethod = this.particleInnerDiamMethod; 
+//		clone.particleLengthAvg = this.particleLengthAvg; 
+//		clone.particleLengthApproxSymbol = this.particleLengthApproxSymbol; 
+//		clone.particleLengthUnit = this.particleLengthUnit; 
+//		clone.particleLengthUncertain = this.particleLengthUncertain; 
+//		clone.particleLengthLow = this.particleLengthLow; 
+//		clone.particleLengthHigh = this.particleLengthHigh; 
+//		clone.particleLengthMethod = this.particleLengthMethod; 
+//		clone.particleThicknessAvg = this.particleThicknessAvg; 
+//		clone.particleThicknessApproxSymbol = this.particleThicknessApproxSymbol; 
+//		clone.particleThicknessUnit = this.particleThicknessUnit; 
+//		clone.particleThicknessUncertain = this.particleThicknessUncertain; 
+//		clone.particleThicknessLow = this.particleThicknessLow; 
+//		clone.particleThicknessHigh = this.particleThicknessHigh; 
+//		clone.particleThicknessMethod = this.particleThicknessMethod; 
+//		clone.wallNumber = this.wallNumber; 
+//		clone.aspectRatio = this.aspectRatio; 
+//		clone.shape = this.shape; 
+//		clone.surfaceAreaAvg = this.surfaceAreaAvg; 
+//		clone.surfaceAreaApproxSymbol = this.surfaceAreaApproxSymbol; 
+//		clone.surfaceAreaUnit = this.surfaceAreaUnit; 
+//		clone.surfaceAreaUncertain = this.surfaceAreaUncertain; 
+//		clone.surfaceAreaLow = this.surfaceAreaLow; 
+//		clone.surfaceAreaHigh = this.surfaceAreaHigh; 
+//		clone.surfaceAreaMethod = this.surfaceAreaMethod; 
+//		clone.mc_timeValue = this.mc_timeValue; 
+//		clone.mc_timeValueUnit = this.mc_timeValueUnit; 
+//		clone.mc_particleConcentration = this.mc_particleConcentration; 
+//		clone.mc_particleConcentrationUnit = this.mc_particleConcentrationUnit; 
+//		clone.dispersionMediumID = this.dispersionMediumID; 
+//		clone.solubility = this.solubility; 
+//		clone.mc_pHAvg = this.mc_pHAvg; 
+//		clone.mc_pHApproxSymbol = this.mc_pHApproxSymbol; 
+//		clone.mc_pHUncertain = this.mc_pHUncertain; 
+//		clone.mc_pHLow = this.mc_pHLow; 
+//		clone.mc_pHHigh = this.mc_pHHigh; 
+//		clone.mc_mediumTemp = this.mc_mediumTemp; 
+//		clone.mc_mediumTempUnit = this.mc_mediumTempUnit; 
+//		clone.zetaPotentialAvg = this.zetaPotentialAvg; 
+//		clone.zetaPotentialApproxSymbol = this.zetaPotentialApproxSymbol; 
+//		clone.zetaPotentialUnit = this.zetaPotentialUnit; 
+//		clone.zetaPotentialUncertain = this.zetaPotentialUncertain; 
+//		clone.zetaPotentialLow = this.zetaPotentialLow; 
+//		clone.zetaPotentialHigh = this.zetaPotentialHigh; 
+//		clone.zetaPotentialMethod = this.zetaPotentialMethod; 
+//		clone.sizeDistribType = this.sizeDistribType; 
+//		clone.sizeDistribModality = this.sizeDistribModality; 
+//		clone.sizeDistribMethod = this.sizeDistribMethod; 
+//		clone.sizeDistribAvg = this.sizeDistribAvg; 
+//		clone.sizeDistribApproxSymbol = this.sizeDistribApproxSymbol; 
+//		clone.sizeDistribUnit = this.sizeDistribUnit; 
+//		clone.sizeDistribUncertain = this.sizeDistribUncertain; 
+//		clone.sizeDistribLow = this.sizeDistribLow; 
+//		clone.sizeDistribHigh = this.sizeDistribHigh; 
+//		clone.sizeDistribAvg2 = this.sizeDistribAvg2; 
+//		clone.sizeDistribApproxSymbol2 = this.sizeDistribApproxSymbol2; 
+//		clone.sizeDistribUnit2 = this.sizeDistribUnit2; 
+//		clone.sizeDistribUncertain2 = this.sizeDistribUncertain2; 
+//		clone.sizeDistribLow2 = this.sizeDistribLow2; 
+//		clone.sizeDistribHigh2 = this.sizeDistribHigh2;
+//		
+//		// Assay table fields
+//		clone.assayType = this.assayType; 
+//		clone.assayName = this.assayName; 
+//		clone.sampleName = this.sampleName; 
+//		clone.subjectSpecies = this.subjectSpecies; 
+//		clone.subjectID = this.subjectID;
+//		clone.cellType = this.cellType;
+//		clone.cellSource = this.cellSource; 
+//		clone.testMediumID = this.testMediumID; 
+//		clone.phAvg = this.phAvg;
+//		clone.phApproxSymbol = this.phApproxSymbol; 
+//		clone.phUncertain = this.phUncertain;
+//		clone.phLow = this.phLow;
+//		clone.phHigh = this.phHigh; 
+//		clone.mediumTemp = this.mediumTemp; 
+//		clone.mediumTempUnit = this.mediumTempUnit; 
+//		clone.timeValue = this.timeValue;
+//		clone.timeValueUnit = this.timeValueUnit; 
+//		clone.particleConcentration = this.particleConcentration; 
+//		clone.particleConcentrationUnit = this.particleConcentrationUnit; 
+//		clone.particleExposDuration = this.particleExposDuration;
+//		clone.particleExposDurationUnit = this.particleExposDurationUnit; 
+//		clone.uvaDose = this.uvaDose;
+//		clone.uvaDoseUnit = this.uvaDoseUnit; 
+//		clone.uvaExposDuration = this.uvaExposDuration; 
+//		clone.uvaExposDurationUnit = this.uvaExposDurationUnit; 
+//		clone.viabilityAvg = this.viabilityAvg;
+//		clone.viabilityApproxSymbol = this.viabilityApproxSymbol; 
+//		clone.viabilityUnit = this.viabilityUnit;
+//		clone.viabilityUncertain = this.viabilityUncertain; 
+//		clone.viabilityLow = this.viabilityLow;
+//		clone.viabilityHigh = this.viabilityHigh; 
+//		clone.viabilityMethod = this.viabilityMethod; 
+//		clone.lc50 = this.lc50; 
+//		clone.lc50ApproxSymbol = this.lc50ApproxSymbol; 
+//		clone.lc50Unit = this.lc50Unit;
+//		
+//		// Medium table fields
+//		clone.mediumID = this.mediumID;
+//		clone.mediumDescription = this.mediumDescription; 
+//		clone.serumAdditive = this.serumAdditive;
+//		clone.serumConcentration = this.serumConcentration; 
+//		clone.serumConcentrationUnit = this.serumConcentrationUnit; 
+//		clone.antibioticName = this.antibioticName;
+//		clone.antibioticConcentration = this.antibioticConcentration; 
+//		clone.antibioticConcentrationUnit = this.antibioticConcentrationUnit; 
+//		clone.domForm = this.domForm;
+//		clone.domConcentration = this.domConcentration; 
+//		clone.domUnit = this.domUnit;
+//		clone.salinityValue = this.salinityValue; 
+//		clone.salinityUnit = this.salinityUnit;
+//
+//		clone.mc_mediumDescription = this.mc_mediumDescription; 
+//		clone.mc_serumAdditive = this.mc_serumAdditive;
+//		clone.mc_serumConcentration = this.mc_serumConcentration; 
+//		clone.mc_serumConcentrationUnit = this.mc_serumConcentrationUnit; 
+//		clone.mc_antibioticName = this.mc_antibioticName;
+//		clone.mc_antibioticConcentration = this.mc_antibioticConcentration; 
+//		clone.mc_antibioticConcentrationUnit = this.mc_antibioticConcentrationUnit; 
+//		clone.mc_domForm = this.mc_domForm;
+//		clone.mc_domConcentration = this.mc_domConcentration; 
+//		clone.mc_domUnit = this.mc_domUnit;
+//		clone.mc_salinityValue = this.mc_salinityValue; 
+//		clone.mc_salinityUnit = this.mc_salinityUnit;
 		
-		// Materialchar table fields
-		clone.ordMaterialID = this.ordMaterialID;
-		clone.dataSource = this.dataSource; 
-		clone.lotNumber = this.lotNumber; 
-		clone.coreComp = this.coreComp; 
-		clone.shellComp = this.shellComp; 
-		clone.coatingComp = this.coatingComp; 
-		clone.coatingAmount = this.coatingAmount; 
-		clone.coatingAmountUnit = this.coatingAmountUnit; 
-		clone.functionalGroups = this.functionalGroups; 
-		clone.functionalizationProtocol = this.functionalizationProtocol; 
-		clone.purity = this.purity; 
-		clone.purityApproxSymbol = this.purityApproxSymbol; 
-		clone.purityUnit = this.purityUnit; 
-		clone.purityMethod = this.purityMethod; 
-		clone.purityRefChemical = this.purityRefChemical; 
-		clone.contamUnit = this.contamUnit; 
-		clone.contamAl = this.contamAl; 
-		clone.contamAs = this.contamAs; 
-		clone.contamBe = this.contamBe; 
-		clone.contamCa = this.contamCa; 
-		clone.contamCo = this.contamCo; 
-		clone.contamCr = this.contamCr; 
-		clone.contamFe = this.contamFe; 
-		clone.contamK = this.contamK; 
-		clone.contamMg = this.contamMg; 
-		clone.contamNa = this.contamNa; 
-		clone.contamP = this.contamP; 
-		clone.contamPb = this.contamPb; 
-		clone.contamSb = this.contamSb; 
-		clone.contamSe = this.contamSe; 
-		clone.contamSiO2 = this.contamSiO2; 
-		clone.contamSn = this.contamSn; 
-		clone.contamTl = this.contamTl; 
-		clone.contamV = this.contamV; 
-		clone.contamMethod = this.contamMethod; 
-		clone.crystalStructure = this.crystalStructure; 
-		clone.crystalStructureMethod = this.crystalStructureMethod; 
-		clone.synthesisMethod = this.synthesisMethod; 
-		clone.synthesisDate = this.synthesisDate; 
-		clone.particleOuterDiamAvg = this.particleOuterDiamAvg; 
-		clone.particleOuterDiamApproxSymbol = this.particleOuterDiamApproxSymbol; 
-		clone.particleOuterDiamUnit = this.particleOuterDiamUnit; 
-		clone.particleOuterDiamUncertain = this.particleOuterDiamUncertain; 
-		clone.particleOuterDiamLow = this.particleOuterDiamLow; 
-		clone.particleOuterDiamHigh = this.particleOuterDiamHigh; 
-		clone.particleOuterDiamMethod = this.particleOuterDiamMethod; 
-		clone.particleInnerDiamAvg = this.particleInnerDiamAvg; 
-		clone.particleInnerDiamApproxSymbol = this.particleInnerDiamApproxSymbol; 
-		clone.particleInnerDiamUnit = this.particleInnerDiamUnit; 
-		clone.particleInnerDiamUncertain = this.particleInnerDiamUncertain; 
-		clone.particleInnerDiamLow = this.particleInnerDiamLow; 
-		clone.particleInnerDiamHigh = this.particleInnerDiamHigh; 
-		clone.particleInnerDiamMethod = this.particleInnerDiamMethod; 
-		clone.particleLengthAvg = this.particleLengthAvg; 
-		clone.particleLengthApproxSymbol = this.particleLengthApproxSymbol; 
-		clone.particleLengthUnit = this.particleLengthUnit; 
-		clone.particleLengthUncertain = this.particleLengthUncertain; 
-		clone.particleLengthLow = this.particleLengthLow; 
-		clone.particleLengthHigh = this.particleLengthHigh; 
-		clone.particleLengthMethod = this.particleLengthMethod; 
-		clone.particleThicknessAvg = this.particleThicknessAvg; 
-		clone.particleThicknessApproxSymbol = this.particleThicknessApproxSymbol; 
-		clone.particleThicknessUnit = this.particleThicknessUnit; 
-		clone.particleThicknessUncertain = this.particleThicknessUncertain; 
-		clone.particleThicknessLow = this.particleThicknessLow; 
-		clone.particleThicknessHigh = this.particleThicknessHigh; 
-		clone.particleThicknessMethod = this.particleThicknessMethod; 
-		clone.wallNumber = this.wallNumber; 
-		clone.aspectRatio = this.aspectRatio; 
-		clone.shape = this.shape; 
-		clone.surfaceAreaAvg = this.surfaceAreaAvg; 
-		clone.surfaceAreaApproxSymbol = this.surfaceAreaApproxSymbol; 
-		clone.surfaceAreaUnit = this.surfaceAreaUnit; 
-		clone.surfaceAreaUncertain = this.surfaceAreaUncertain; 
-		clone.surfaceAreaLow = this.surfaceAreaLow; 
-		clone.surfaceAreaHigh = this.surfaceAreaHigh; 
-		clone.surfaceAreaMethod = this.surfaceAreaMethod; 
-		clone.mc_timeValue = this.mc_timeValue; 
-		clone.mc_timeValueUnit = this.mc_timeValueUnit; 
-		clone.mc_particleConcentration = this.mc_particleConcentration; 
-		clone.mc_particleConcentrationUnit = this.mc_particleConcentrationUnit; 
-		clone.dispersionMediumID = this.dispersionMediumID; 
-		clone.solubility = this.solubility; 
-		clone.mc_pHAvg = this.mc_pHAvg; 
-		clone.mc_pHApproxSymbol = this.mc_pHApproxSymbol; 
-		clone.mc_pHUncertain = this.mc_pHUncertain; 
-		clone.mc_pHLow = this.mc_pHLow; 
-		clone.mc_pHHigh = this.mc_pHHigh; 
-		clone.mc_mediumTemp = this.mc_mediumTemp; 
-		clone.mc_mediumTempUnit = this.mc_mediumTempUnit; 
-		clone.zetaPotentialAvg = this.zetaPotentialAvg; 
-		clone.zetaPotentialApproxSymbol = this.zetaPotentialApproxSymbol; 
-		clone.zetaPotentialUnit = this.zetaPotentialUnit; 
-		clone.zetaPotentialUncertain = this.zetaPotentialUncertain; 
-		clone.zetaPotentialLow = this.zetaPotentialLow; 
-		clone.zetaPotentialHigh = this.zetaPotentialHigh; 
-		clone.zetaPotentialMethod = this.zetaPotentialMethod; 
-		clone.sizeDistribType = this.sizeDistribType; 
-		clone.sizeDistribModality = this.sizeDistribModality; 
-		clone.sizeDistribMethod = this.sizeDistribMethod; 
-		clone.sizeDistribAvg = this.sizeDistribAvg; 
-		clone.sizeDistribApproxSymbol = this.sizeDistribApproxSymbol; 
-		clone.sizeDistribUnit = this.sizeDistribUnit; 
-		clone.sizeDistribUncertain = this.sizeDistribUncertain; 
-		clone.sizeDistribLow = this.sizeDistribLow; 
-		clone.sizeDistribHigh = this.sizeDistribHigh; 
-		clone.sizeDistribAvg2 = this.sizeDistribAvg2; 
-		clone.sizeDistribApproxSymbol2 = this.sizeDistribApproxSymbol2; 
-		clone.sizeDistribUnit2 = this.sizeDistribUnit2; 
-		clone.sizeDistribUncertain2 = this.sizeDistribUncertain2; 
-		clone.sizeDistribLow2 = this.sizeDistribLow2; 
-		clone.sizeDistribHigh2 = this.sizeDistribHigh2;
-		
-		// Assay table fields
-		clone.assayType = this.assayType; 
-		clone.assayName = this.assayName; 
-		clone.sampleName = this.sampleName; 
-		clone.subjectSpecies = this.subjectSpecies; 
-		clone.subjectID = this.subjectID;
-		clone.cellType = this.cellType;
-		clone.cellSource = this.cellSource; 
-		clone.testMediumID = this.testMediumID; 
-		clone.phAvg = this.phAvg;
-		clone.phApproxSymbol = this.phApproxSymbol; 
-		clone.phUncertain = this.phUncertain;
-		clone.phLow = this.phLow;
-		clone.phHigh = this.phHigh; 
-		clone.mediumTemp = this.mediumTemp; 
-		clone.mediumTempUnit = this.mediumTempUnit; 
-		clone.timeValue = this.timeValue;
-		clone.timeValueUnit = this.timeValueUnit; 
-		clone.particleConcentration = this.particleConcentration; 
-		clone.particleConcentrationUnit = this.particleConcentrationUnit; 
-		clone.particleExposDuration = this.particleExposDuration;
-		clone.particleExposDurationUnit = this.particleExposDurationUnit; 
-		clone.uvaDose = this.uvaDose;
-		clone.uvaDoseUnit = this.uvaDoseUnit; 
-		clone.uvaExposDuration = this.uvaExposDuration; 
-		clone.uvaExposDurationUnit = this.uvaExposDurationUnit; 
-		clone.viabilityAvg = this.viabilityAvg;
-		clone.viabilityApproxSymbol = this.viabilityApproxSymbol; 
-		clone.viabilityUnit = this.viabilityUnit;
-		clone.viabilityUncertain = this.viabilityUncertain; 
-		clone.viabilityLow = this.viabilityLow;
-		clone.viabilityHigh = this.viabilityHigh; 
-		clone.viabilityMethod = this.viabilityMethod; 
-		clone.lc50 = this.lc50; 
-		clone.lc50ApproxSymbol = this.lc50ApproxSymbol; 
-		clone.lc50Unit = this.lc50Unit;
-		
-		// Medium table fields
-		clone.mediumID = this.mediumID;
-		clone.mediumDescription = this.mediumDescription; 
-		clone.serumAdditive = this.serumAdditive;
-		clone.serumConcentration = this.serumConcentration; 
-		clone.serumConcentrationUnit = this.serumConcentrationUnit; 
-		clone.antibioticName = this.antibioticName;
-		clone.antibioticConcentration = this.antibioticConcentration; 
-		clone.antibioticConcentrationUnit = this.antibioticConcentrationUnit; 
-		clone.domForm = this.domForm;
-		clone.domConcentration = this.domConcentration; 
-		clone.domUnit = this.domUnit;
-		clone.salinityValue = this.salinityValue; 
-		clone.salinityUnit = this.salinityUnit;
-
-		clone.mc_mediumDescription = this.mc_mediumDescription; 
-		clone.mc_serumAdditive = this.mc_serumAdditive;
-		clone.mc_serumConcentration = this.mc_serumConcentration; 
-		clone.mc_serumConcentrationUnit = this.mc_serumConcentrationUnit; 
-		clone.mc_antibioticName = this.mc_antibioticName;
-		clone.mc_antibioticConcentration = this.mc_antibioticConcentration; 
-		clone.mc_antibioticConcentrationUnit = this.mc_antibioticConcentrationUnit; 
-		clone.mc_domForm = this.mc_domForm;
-		clone.mc_domConcentration = this.mc_domConcentration; 
-		clone.mc_domUnit = this.mc_domUnit;
-		clone.mc_salinityValue = this.mc_salinityValue; 
-		clone.mc_salinityUnit = this.mc_salinityUnit;
+		Object v1, v2;
+		try {
+			final BeanInfo beanInfo = Introspector.getBeanInfo(this.getClass());
+			final PropertyDescriptor[] properties = beanInfo.getPropertyDescriptors();
+			for (PropertyDescriptor property : properties) {
+				v1 = property.getReadMethod().invoke(this, (Object[])null);
+				if (v1==null || property.getWriteMethod()==null) continue;
+				v2 = property.getWriteMethod().invoke(clone, v1);
+			}
+		} catch (IntrospectionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 			
 		return clone;
 		
+	}
+	
+	public boolean isSame(NanoMaterial other) throws Exception {
+		/* return whether other nanomaterial is the sames as this one */
+		final BeanInfo beanInfo = Introspector.getBeanInfo(other.getClass());
+		final PropertyDescriptor[] properties = beanInfo.getPropertyDescriptors();
+		for (PropertyDescriptor property : properties) {
+			Object v1 = property.getReadMethod().invoke(this, (Object[])null);
+			Object v2 = property.getReadMethod().invoke(other, (Object[])null);
+			if (v1==v2) continue;  // if both are the same, continue (this includes both null)
+			if (v1==null || v2==null) return false;  // one is null, the other is not
+			if (v1.toString().matches(other.toString())) continue;
+			return false;
+		}
+		return true;
 	}
 	
 }
