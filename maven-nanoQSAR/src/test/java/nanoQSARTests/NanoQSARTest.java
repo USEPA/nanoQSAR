@@ -13,6 +13,8 @@ import junit.framework.Assert;
 import nanoQSAR.NanoQSAR;
 
 public class NanoQSARTest {
+	
+	static String helpString = "User options:\nnanoQSAR -h\nnanoQSAR\nnanoQSAR propFilename\n";
 
 	@Test
 	public final void testMain() {
@@ -120,7 +122,7 @@ public class NanoQSARTest {
 		/* Run the application. */
 		NanoQSAR.main(args);
 			
-		Assert.assertEquals(NanoQSAR.getHelpString(), outContent.toString());
+		Assert.assertEquals(helpString, outContent.toString());
 		
 	}
 	

@@ -66,10 +66,13 @@ public class NanoQSAR {
 //			LoggerInfo.init();
 
 			/* Input database connection information and name of output file. */
-			DBUtil.loadProperties(propFilename);  
+			DBUtil.loadProperties(propFilename);	
+			
+			/* Create the mySqlQuery connection */
+			MySqlQuery mySqlQuery = new MySqlQuery();
 
 			/* Data-mine MySQL database */
-			NanoMaterials nanoMaterials = new NanoMaterials(new MySqlQuery());
+			NanoMaterials nanoMaterials = new NanoMaterials(mySqlQuery);
 
 			/* write data to CSV file. */
 			nanoMaterials.writeCsvFile(DBUtil.getCsvFileName());
@@ -86,10 +89,5 @@ public class NanoQSAR {
 		}
 		
 	}
-	
-	public static String getHelpString() {
-		return helpString;
-	}
-
 	
 }
