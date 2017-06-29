@@ -33,112 +33,112 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	private String coreComp; 
 	private String shellComp; 
 	private String coatingComp; 
-	private double coatingAmount; 
+	private Double coatingAmount; 
 	private String coatingAmountUnit; 
 	private String functionalGroups; 
 	private String functionalizationProtocol; 
-	private double purity; 
+	private Double purity; 
 	private String purityApproxSymbol; 
 	private String purityUnit; 
 	private String purityMethod; 
 	private String purityRefChemical; 
 	private String contamUnit; 
-	private double contamAl; 
-	private double contamAs; 
-	private double contamBe; 
-	private double contamCa; 
-	private double contamCo; 
-	private double contamCr; 
-	private double contamFe; 
-	private double contamK; 
-	private double contamMg; 
-	private double contamNa; 
-	private double contamP; 
-	private double contamPb; 
-	private double contamSb; 
-	private double contamSe; 
-	private double contamSiO2; 
-	private double contamSn; 
-	private double contamTl; 
-	private double contamV; 
+	private Double contamAl; 
+	private Double contamAs; 
+	private Double contamBe; 
+	private Double contamCa; 
+	private Double contamCo; 
+	private Double contamCr; 
+	private Double contamFe; 
+	private Double contamK; 
+	private Double contamMg; 
+	private Double contamNa; 
+	private Double contamP; 
+	private Double contamPb; 
+	private Double contamSb; 
+	private Double contamSe; 
+	private Double contamSiO2; 
+	private Double contamSn; 
+	private Double contamTl; 
+	private Double contamV; 
 	private String contamMethod; 
 	private String crystalStructure; 
 	private String crystalStructureMethod; 
 	private String synthesisMethod; 
-	private int synthesisDate; 
-	private double particleOuterDiamAvg; 
+	private Integer synthesisDate; 
+	private Double particleOuterDiamAvg; 
 	private String particleOuterDiamApproxSymbol; 
 	private String particleOuterDiamUnit; 
 	private String particleOuterDiamUncertain; 
-	private double particleOuterDiamLow; 
-	private double particleOuterDiamHigh; 
+	private Double particleOuterDiamLow; 
+	private Double particleOuterDiamHigh; 
 	private String particleOuterDiamMethod; 
-	private double particleInnerDiamAvg; 
+	private Double particleInnerDiamAvg; 
 	private String particleInnerDiamApproxSymbol; 
 	private String particleInnerDiamUnit; 
 	private String particleInnerDiamUncertain; 
-	private double particleInnerDiamLow; 
-	private double particleInnerDiamHigh; 
+	private Double particleInnerDiamLow; 
+	private Double particleInnerDiamHigh; 
 	private String particleInnerDiamMethod; 
-	private double particleLengthAvg; 
+	private Double particleLengthAvg; 
 	private String particleLengthApproxSymbol; 
 	private String particleLengthUnit; 
 	private String particleLengthUncertain; 
-	private double particleLengthLow; 
-	private double particleLengthHigh; 
+	private Double particleLengthLow; 
+	private Double particleLengthHigh; 
 	private String particleLengthMethod; 
-	private double particleThicknessAvg; 
+	private Double particleThicknessAvg; 
 	private String particleThicknessApproxSymbol; 
 	private String particleThicknessUnit; 
 	private String particleThicknessUncertain; 
-	private double particleThicknessLow; 
-	private double particleThicknessHigh; 
+	private Double particleThicknessLow; 
+	private Double particleThicknessHigh; 
 	private String particleThicknessMethod; 
 	private String wallNumber; 
-	private double aspectRatio; 
+	private Double aspectRatio; 
 	private String shape; 
-	private double surfaceAreaAvg; 
+	private Double surfaceAreaAvg; 
 	private String surfaceAreaApproxSymbol; 
 	private String surfaceAreaUnit; 
 	private String surfaceAreaUncertain; 
-	private double surfaceAreaLow; 
-	private double surfaceAreaHigh; 
+	private Double surfaceAreaLow; 
+	private Double surfaceAreaHigh; 
 	private String surfaceAreaMethod; 
-	private int mc_timeValue; 
+	private Integer mc_timeValue; 
 	private String mc_timeValueUnit; 
-	private double mc_particleConcentration; 
+	private Double mc_particleConcentration; 
 	private String mc_particleConcentrationUnit; 
 	private int dispersionMediumID; 
 	private String solubility; 
-	private double mc_pHAvg; 
+	private Double mc_pHAvg; 
 	private String mc_pHApproxSymbol; 
 	private String mc_pHUncertain; 
-	private double mc_pHLow; 
-	private double mc_pHHigh; 
-	private double mc_mediumTemp; 
+	private Double mc_pHLow; 
+	private Double mc_pHHigh; 
+	private Double mc_mediumTemp; 
 	private String mc_mediumTempUnit; 
-	private double zetaPotentialAvg; 
+	private Double zetaPotentialAvg; 
 	private String zetaPotentialApproxSymbol; 
 	private String zetaPotentialUnit; 
 	private String zetaPotentialUncertain; 
-	private double zetaPotentialLow; 
-	private double zetaPotentialHigh; 
+	private Double zetaPotentialLow; 
+	private Double zetaPotentialHigh; 
 	private String zetaPotentialMethod; 
 	private String sizeDistribType; 
 	private String sizeDistribModality; 
 	private String sizeDistribMethod; 
-	private double sizeDistribAvg; 
+	private Double sizeDistribAvg; 
 	private String sizeDistribApproxSymbol; 
 	private String sizeDistribUnit; 
 	private String sizeDistribUncertain; 
-	private double sizeDistribLow; 
-	private double sizeDistribHigh; 
-	private double sizeDistribAvg2; 
+	private Double sizeDistribLow; 
+	private Double sizeDistribHigh; 
+	private Double sizeDistribAvg2; 
 	private String sizeDistribApproxSymbol2; 
 	private String sizeDistribUnit2; 
 	private String sizeDistribUncertain2; 
-	private double sizeDistribLow2; 
-	private double sizeDistribHigh2;
+	private Double sizeDistribLow2; 
+	private Double sizeDistribHigh2;
 	
 	// Assay table fields
 	private String assayType; 
@@ -149,31 +149,31 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	private String cellType;
 	private String cellSource; 
 	private int testMediumID; 
-	private double phAvg;
+	private Double phAvg;
 	private String phApproxSymbol; 
 	private String phUncertain;
-	private double phLow;
-	private double phHigh; 
-	private double mediumTemp; 
+	private Double phLow;
+	private Double phHigh; 
+	private Double mediumTemp; 
 	private String mediumTempUnit; 
-	private double timeValue;
+	private Double timeValue;
 	private String timeValueUnit; 
-	private double particleConcentration; 
+	private Double particleConcentration; 
 	private String particleConcentrationUnit; 
-	private double particleExposDuration;
+	private Double particleExposDuration;
 	private String particleExposDurationUnit; 
-	private double uvaDose;
+	private Double uvaDose;
 	private String uvaDoseUnit; 
-	private double uvaExposDuration; 
+	private Double uvaExposDuration; 
 	private String uvaExposDurationUnit; 
-	private double viabilityAvg;
+	private Double viabilityAvg;
 	private String viabilityApproxSymbol; 
 	private String viabilityUnit;
 	private String viabilityUncertain; 
-	private double viabilityLow;
-	private double viabilityHigh; 
+	private Double viabilityLow;
+	private Double viabilityHigh; 
 	private String viabilityMethod; 
-	private double lc50; 
+	private Double lc50; 
 	private String lc50ApproxSymbol; 
 	private String lc50Unit;
 	
@@ -181,28 +181,28 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	private int mediumID;
 	private String mediumDescription; 
 	private String serumAdditive;
-	private double serumConcentration; 
+	private Double serumConcentration; 
 	private String serumConcentrationUnit; 
 	private String antibioticName;
-	private double antibioticConcentration; 
+	private Double antibioticConcentration; 
 	private String antibioticConcentrationUnit; 
 	private String domForm;
-	private double domConcentration; 
+	private Double domConcentration; 
 	private String domUnit;
-	private double salinityValue; 
+	private Double salinityValue; 
 	private String salinityUnit;
 
 	private String mc_mediumDescription; 
 	private String mc_serumAdditive;
-	private double mc_serumConcentration; 
+	private Double mc_serumConcentration; 
 	private String mc_serumConcentrationUnit; 
 	private String mc_antibioticName;
-	private double mc_antibioticConcentration; 
+	private Double mc_antibioticConcentration; 
 	private String mc_antibioticConcentrationUnit; 
 	private String mc_domForm;
-	private double mc_domConcentration; 
+	private Double mc_domConcentration; 
 	private String mc_domUnit;
-	private double mc_salinityValue; 
+	private Double mc_salinityValue; 
 	private String mc_salinityUnit;
 
 	public NanoMaterial() throws Exception {
@@ -218,15 +218,18 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	    for (int i=0; i<values.length; i++) {
 
 	    	String value = values[i];
-	    	if (value.matches("null")) value=null;
 	    	
 	    	Field field = fields[fieldIndex[i]];
 	    	if (field.getType()==String.class) {
 	    		field.set(this, value);
-	    	} else if (field.getType()==double.class) {
-	    		if (value!=null) field.setDouble(this, Double.parseDouble(value));
+	    	} else if (field.getType()==Double.class) {
+	    		if (value.matches("null")) field.set(this, null);
+	    		else field.set(this, Double.valueOf(value));
 	    	} else if (field.getType()==int.class) {
 	    		if (value!=null) field.setInt(this, Integer.parseInt(value));
+	    	} else if (field.getType()==Integer.class) {
+	    		if (value.matches("null")) field.set(this, null);
+	    		else field.set(this, Integer.valueOf(value));
 	    	} else {
 	    		throw new Error("Invalid NanoMaterial field class");
 	    	}
@@ -297,10 +300,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setCoatingComp(String coatingComp) {
 		this.coatingComp = coatingComp;
 	}
-	public double getCoatingAmount() {
+	public Double getCoatingAmount() {
 		return coatingAmount;
 	}
-	public void setCoatingAmount(double coatingAmount) {
+	public void setCoatingAmount(Double coatingAmount) {
 		this.coatingAmount = coatingAmount;
 	}
 	public String getCoatingAmountUnit() {
@@ -321,10 +324,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setFunctionalizationProtocol(String functionalizationProtocol) {
 		this.functionalizationProtocol = functionalizationProtocol;
 	}
-	public double getPurity() {
+	public Double getPurity() {
 		return purity;
 	}
-	public void setPurity(double purity) {
+	public void setPurity(Double purity) {
 		this.purity = purity;
 	}
 	public String getPurityApproxSymbol() {
@@ -357,112 +360,112 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setContamUnit(String contamUnit) {
 		this.contamUnit = contamUnit;
 	}
-	public double getContamAl() {
+	public Double getContamAl() {
 		return contamAl;
 	}
-	public void setContamAl(double contamAl) {
+	public void setContamAl(Double contamAl) {
 		this.contamAl = contamAl;
 	}
-	public double getContamAs() {
+	public Double getContamAs() {
 		return contamAs;
 	}
-	public void setContamAs(double contamAs) {
+	public void setContamAs(Double contamAs) {
 		this.contamAs = contamAs;
 	}
-	public double getContamBe() {
+	public Double getContamBe() {
 		return contamBe;
 	}
-	public void setContamBe(double contamBe) {
+	public void setContamBe(Double contamBe) {
 		this.contamBe = contamBe;
 	}
-	public double getContamCa() {
+	public Double getContamCa() {
 		return contamCa;
 	}
-	public void setContamCa(double contamCa) {
+	public void setContamCa(Double contamCa) {
 		this.contamCa = contamCa;
 	}
-	public double getContamCo() {
+	public Double getContamCo() {
 		return contamCo;
 	}
-	public void setContamCo(double contamCo) {
+	public void setContamCo(Double contamCo) {
 		this.contamCo = contamCo;
 	}
-	public double getContamCr() {
+	public Double getContamCr() {
 		return contamCr;
 	}
-	public void setContamCr(double contamCr) {
+	public void setContamCr(Double contamCr) {
 		this.contamCr = contamCr;
 	}
-	public double getContamFe() {
+	public Double getContamFe() {
 		return contamFe;
 	}
-	public void setContamFe(double contamFe) {
+	public void setContamFe(Double contamFe) {
 		this.contamFe = contamFe;
 	}
-	public double getContamK() {
+	public Double getContamK() {
 		return contamK;
 	}
-	public void setContamK(double contamK) {
+	public void setContamK(Double contamK) {
 		this.contamK = contamK;
 	}
-	public double getContamMg() {
+	public Double getContamMg() {
 		return contamMg;
 	}
-	public void setContamMg(double contamMg) {
+	public void setContamMg(Double contamMg) {
 		this.contamMg = contamMg;
 	}
-	public double getContamNa() {
+	public Double getContamNa() {
 		return contamNa;
 	}
-	public void setContamNa(double contamNa) {
+	public void setContamNa(Double contamNa) {
 		this.contamNa = contamNa;
 	}
-	public double getContamP() {
+	public Double getContamP() {
 		return contamP;
 	}
-	public void setContamP(double contamP) {
+	public void setContamP(Double contamP) {
 		this.contamP = contamP;
 	}
-	public double getContamPb() {
+	public Double getContamPb() {
 		return contamPb;
 	}
-	public void setContamPb(double contamPb) {
+	public void setContamPb(Double contamPb) {
 		this.contamPb = contamPb;
 	}
-	public double getContamSb() {
+	public Double getContamSb() {
 		return contamSb;
 	}
-	public void setContamSb(double contamSb) {
+	public void setContamSb(Double contamSb) {
 		this.contamSb = contamSb;
 	}
-	public double getContamSe() {
+	public Double getContamSe() {
 		return contamSe;
 	}
-	public void setContamSe(double contamSe) {
+	public void setContamSe(Double contamSe) {
 		this.contamSe = contamSe;
 	}
-	public double getContamSiO2() {
+	public Double getContamSiO2() {
 		return contamSiO2;
 	}
-	public void setContamSiO2(double contamSiO2) {
+	public void setContamSiO2(Double contamSiO2) {
 		this.contamSiO2 = contamSiO2;
 	}
-	public double getContamSn() {
+	public Double getContamSn() {
 		return contamSn;
 	}
-	public void setContamSn(double contamSn) {
+	public void setContamSn(Double contamSn) {
 		this.contamSn = contamSn;
 	}
-	public double getContamTl() {
+	public Double getContamTl() {
 		return contamTl;
 	}
-	public void setContamTl(double contamTl) {
+	public void setContamTl(Double contamTl) {
 		this.contamTl = contamTl;
 	}
-	public double getContamV() {
+	public Double getContamV() {
 		return contamV;
 	}
-	public void setContamV(double contamV) {
+	public void setContamV(Double contamV) {
 		this.contamV = contamV;
 	}
 	public String getContamMethod() {
@@ -489,16 +492,16 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setSynthesisMethod(String synthesisMethod) {
 		this.synthesisMethod = synthesisMethod;
 	}
-	public int getSynthesisDate() {
+	public Integer getSynthesisDate() {
 		return synthesisDate;
 	}
-	public void setSynthesisDate(int synthesisDate) {
+	public void setSynthesisDate(Integer synthesisDate) {
 		this.synthesisDate = synthesisDate; // millesconds since January 1, 1970 00:00:00.000 GMT
 	}
-	public double getParticleOuterDiamAvg() {
+	public Double getParticleOuterDiamAvg() {
 		return particleOuterDiamAvg;
 	}
-	public void setParticleOuterDiamAvg(double particleOuterDiamAvg) {
+	public void setParticleOuterDiamAvg(Double particleOuterDiamAvg) {
 		this.particleOuterDiamAvg = particleOuterDiamAvg;
 	}
 	public String getParticleOuterDiamApproxSymbol() {
@@ -520,16 +523,16 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setParticleOuterDiamUncertain(String particleOuterDiamUncertain) {
 		this.particleOuterDiamUncertain = particleOuterDiamUncertain;
 	}
-	public double getParticleOuterDiamLow() {
+	public Double getParticleOuterDiamLow() {
 		return particleOuterDiamLow;
 	}
-	public void setParticleOuterDiamLow(double particleOuterDiamLow) {
+	public void setParticleOuterDiamLow(Double particleOuterDiamLow) {
 		this.particleOuterDiamLow = particleOuterDiamLow;
 	}
-	public double getParticleOuterDiamHigh() {
+	public Double getParticleOuterDiamHigh() {
 		return particleOuterDiamHigh;
 	}
-	public void setParticleOuterDiamHigh(double particleOuterDiamHigh) {
+	public void setParticleOuterDiamHigh(Double particleOuterDiamHigh) {
 		this.particleOuterDiamHigh = particleOuterDiamHigh;
 	}
 	public String getParticleOuterDiamMethod() {
@@ -538,10 +541,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setParticleOuterDiamMethod(String particleOuterDiamMethod) {
 		this.particleOuterDiamMethod = particleOuterDiamMethod;
 	}
-	public double getParticleInnerDiamAvg() {
+	public Double getParticleInnerDiamAvg() {
 		return particleInnerDiamAvg;
 	}
-	public void setParticleInnerDiamAvg(double particleInnerDiamAvg) {
+	public void setParticleInnerDiamAvg(Double particleInnerDiamAvg) {
 		this.particleInnerDiamAvg = particleInnerDiamAvg;
 	}
 	public String getParticleInnerDiamApproxSymbol() {
@@ -563,16 +566,16 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setParticleInnerDiamUncertain(String particleInnerDiamUncertain) {
 		this.particleInnerDiamUncertain = particleInnerDiamUncertain;
 	}
-	public double getParticleInnerDiamLow() {
+	public Double getParticleInnerDiamLow() {
 		return particleInnerDiamLow;
 	}
-	public void setParticleInnerDiamLow(double particleInnerDiamLow) {
+	public void setParticleInnerDiamLow(Double particleInnerDiamLow) {
 		this.particleInnerDiamLow = particleInnerDiamLow;
 	}
-	public double getParticleInnerDiamHigh() {
+	public Double getParticleInnerDiamHigh() {
 		return particleInnerDiamHigh;
 	}
-	public void setParticleInnerDiamHigh(double particleInnerDiamHigh) {
+	public void setParticleInnerDiamHigh(Double particleInnerDiamHigh) {
 		this.particleInnerDiamHigh = particleInnerDiamHigh;
 	}
 	public String getParticleInnerDiamMethod() {
@@ -581,10 +584,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setParticleInnerDiamMethod(String particleInnerDiamMethod) {
 		this.particleInnerDiamMethod = particleInnerDiamMethod;
 	}
-	public double getParticleLengthAvg() {
+	public Double getParticleLengthAvg() {
 		return particleLengthAvg;
 	}
-	public void setParticleLengthAvg(double particleLengthAvg) {
+	public void setParticleLengthAvg(Double particleLengthAvg) {
 		this.particleLengthAvg = particleLengthAvg;
 	}
 	public String getParticleLengthApproxSymbol() {
@@ -605,16 +608,16 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setParticleLengthUncertain(String particleLengthUncertain) {
 		this.particleLengthUncertain = particleLengthUncertain;
 	}
-	public double getParticleLengthLow() {
+	public Double getParticleLengthLow() {
 		return particleLengthLow;
 	}
-	public void setParticleLengthLow(double particleLengthLow) {
+	public void setParticleLengthLow(Double particleLengthLow) {
 		this.particleLengthLow = particleLengthLow;
 	}
-	public double getParticleLengthHigh() {
+	public Double getParticleLengthHigh() {
 		return particleLengthHigh;
 	}
-	public void setParticleLengthHigh(double particleLengthHigh) {
+	public void setParticleLengthHigh(Double particleLengthHigh) {
 		this.particleLengthHigh = particleLengthHigh;
 	}
 	public String getParticleLengthMethod() {
@@ -623,10 +626,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setParticleLengthMethod(String particleLengthMethod) {
 		this.particleLengthMethod = particleLengthMethod;
 	}
-	public double getParticleThicknessAvg() {
+	public Double getParticleThicknessAvg() {
 		return particleThicknessAvg;
 	}
-	public void setParticleThicknessAvg(double particleThicknessAvg) {
+	public void setParticleThicknessAvg(Double particleThicknessAvg) {
 		this.particleThicknessAvg = particleThicknessAvg;
 	}
 	public String getParticleThicknessApproxSymbol() {
@@ -648,16 +651,16 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setParticleThicknessUncertain(String particleThicknessUncertain) {
 		this.particleThicknessUncertain = particleThicknessUncertain;
 	}
-	public double getParticleThicknessLow() {
+	public Double getParticleThicknessLow() {
 		return particleThicknessLow;
 	}
-	public void setParticleThicknessLow(double particleThicknessLow) {
+	public void setParticleThicknessLow(Double particleThicknessLow) {
 		this.particleThicknessLow = particleThicknessLow;
 	}
-	public double getParticleThicknessHigh() {
+	public Double getParticleThicknessHigh() {
 		return particleThicknessHigh;
 	}
-	public void setParticleThicknessHigh(double particleThicknessHigh) {
+	public void setParticleThicknessHigh(Double particleThicknessHigh) {
 		this.particleThicknessHigh = particleThicknessHigh;
 	}
 	public String getParticleThicknessMethod() {
@@ -672,10 +675,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setWallNumber(String wallNumber) {
 		this.wallNumber = wallNumber;
 	}
-	public double getAspectRatio() {
+	public Double getAspectRatio() {
 		return aspectRatio;
 	}
-	public void setAspectRatio(double aspectRatio) {
+	public void setAspectRatio(Double aspectRatio) {
 		this.aspectRatio = aspectRatio;
 	}
 	public String getShape() {
@@ -684,10 +687,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setShape(String shape) {
 		this.shape = shape;
 	}
-	public double getSurfaceAreaAvg() {
+	public Double getSurfaceAreaAvg() {
 		return surfaceAreaAvg;
 	}
-	public void setSurfaceAreaAvg(double surfaceAreaAvg) {
+	public void setSurfaceAreaAvg(Double surfaceAreaAvg) {
 		this.surfaceAreaAvg = surfaceAreaAvg;
 	}
 	public String getSurfaceAreaApproxSymbol() {
@@ -708,16 +711,16 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setSurfaceAreaUncertain(String surfaceAreaUncertain) {
 		this.surfaceAreaUncertain = surfaceAreaUncertain;
 	}
-	public double getSurfaceAreaLow() {
+	public Double getSurfaceAreaLow() {
 		return surfaceAreaLow;
 	}
-	public void setSurfaceAreaLow(double surfaceAreaLow) {
+	public void setSurfaceAreaLow(Double surfaceAreaLow) {
 		this.surfaceAreaLow = surfaceAreaLow;
 	}
-	public double getSurfaceAreaHigh() {
+	public Double getSurfaceAreaHigh() {
 		return surfaceAreaHigh;
 	}
-	public void setSurfaceAreaHigh(double surfaceAreaHigh) {
+	public void setSurfaceAreaHigh(Double surfaceAreaHigh) {
 		this.surfaceAreaHigh = surfaceAreaHigh;
 	}
 	public String getSurfaceAreaMethod() {
@@ -726,10 +729,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setSurfaceAreaMethod(String surfaceAreaMethod) {
 		this.surfaceAreaMethod = surfaceAreaMethod;
 	}
-	public int getMc_timeValue() {
+	public Integer getMc_timeValue() {
 		return mc_timeValue;
 	}
-	public void setMc_timeValue(int mc_timeValue) {
+	public void setMc_timeValue(Integer mc_timeValue) {
 		this.mc_timeValue = mc_timeValue;
 	}
 	public String getMc_timeValueUnit() {
@@ -738,10 +741,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setMc_timeValueUnit(String mc_timeValueUnit) {
 		this.mc_timeValueUnit = mc_timeValueUnit;
 	}
-	public double getMc_particleConcentration() {
+	public Double getMc_particleConcentration() {
 		return mc_particleConcentration;
 	}
-	public void setMc_particleConcentration(double mc_particleConcentration) {
+	public void setMc_particleConcentration(Double mc_particleConcentration) {
 		this.mc_particleConcentration = mc_particleConcentration;
 	}
 	public String getMc_particleConcentrationUnit() {
@@ -762,10 +765,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setSolubility(String solubility) {
 		this.solubility = solubility;
 	}
-	public double getMc_pHAvg() {
+	public Double getMc_pHAvg() {
 		return mc_pHAvg;
 	}
-	public void setMc_pHAvg(double mc_pHAvg) {
+	public void setMc_pHAvg(Double mc_pHAvg) {
 		this.mc_pHAvg = mc_pHAvg;
 	}
 	public String getMc_pHApproxSymbol() {
@@ -780,22 +783,22 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setMc_pHUncertain(String mc_pHUncertain) {
 		this.mc_pHUncertain = mc_pHUncertain;
 	}
-	public double getMc_pHLow() {
+	public Double getMc_pHLow() {
 		return mc_pHLow;
 	}
-	public void setMc_pHLow(double mc_pHLow) {
+	public void setMc_pHLow(Double mc_pHLow) {
 		this.mc_pHLow = mc_pHLow;
 	}
-	public double getMc_pHHigh() {
+	public Double getMc_pHHigh() {
 		return mc_pHHigh;
 	}
-	public void setMc_pHHigh(double mc_pHHigh) {
+	public void setMc_pHHigh(Double mc_pHHigh) {
 		this.mc_pHHigh = mc_pHHigh;
 	}
-	public double getMc_mediumTemp() {
+	public Double getMc_mediumTemp() {
 		return mc_mediumTemp;
 	}
-	public void setMc_mediumTemp(double mc_mediumTemp) {
+	public void setMc_mediumTemp(Double mc_mediumTemp) {
 		this.mc_mediumTemp = mc_mediumTemp;
 	}
 	public String getMc_mediumTempUnit() {
@@ -804,10 +807,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setMc_mediumTempUnit(String mc_mediumTempUnit) {
 		this.mc_mediumTempUnit = mc_mediumTempUnit;
 	}
-	public double getZetaPotentialAvg() {
+	public Double getZetaPotentialAvg() {
 		return zetaPotentialAvg;
 	}
-	public void setZetaPotentialAvg(double zetaPotentialAvg) {
+	public void setZetaPotentialAvg(Double zetaPotentialAvg) {
 		this.zetaPotentialAvg = zetaPotentialAvg;
 	}
 	public String getZetaPotentialApproxSymbol() {
@@ -828,16 +831,16 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setZetaPotentialUncertain(String zetaPotentialUncertain) {
 		this.zetaPotentialUncertain = zetaPotentialUncertain;
 	}
-	public double getZetaPotentialLow() {
+	public Double getZetaPotentialLow() {
 		return zetaPotentialLow;
 	}
-	public void setZetaPotentialLow(double zetaPotentialLow) {
+	public void setZetaPotentialLow(Double zetaPotentialLow) {
 		this.zetaPotentialLow = zetaPotentialLow;
 	}
-	public double getZetaPotentialHigh() {
+	public Double getZetaPotentialHigh() {
 		return zetaPotentialHigh;
 	}
-	public void setZetaPotentialHigh(double zetaPotentialHigh) {
+	public void setZetaPotentialHigh(Double zetaPotentialHigh) {
 		this.zetaPotentialHigh = zetaPotentialHigh;
 	}
 	public String getZetaPotentialMethod() {
@@ -864,10 +867,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setSizeDistribMethod(String sizeDistribMethod) {
 		this.sizeDistribMethod = sizeDistribMethod;
 	}
-	public double getSizeDistribAvg() {
+	public Double getSizeDistribAvg() {
 		return sizeDistribAvg;
 	}
-	public void setSizeDistribAvg(double sizeDistribAvg) {
+	public void setSizeDistribAvg(Double sizeDistribAvg) {
 		this.sizeDistribAvg = sizeDistribAvg;
 	}
 	public String getSizeDistribApproxSymbol() {
@@ -888,22 +891,22 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setSizeDistribUncertain(String sizeDistribUncertain) {
 		this.sizeDistribUncertain = sizeDistribUncertain;
 	}
-	public double getSizeDistribLow() {
+	public Double getSizeDistribLow() {
 		return sizeDistribLow;
 	}
-	public void setSizeDistribLow(double sizeDistribLow) {
+	public void setSizeDistribLow(Double sizeDistribLow) {
 		this.sizeDistribLow = sizeDistribLow;
 	}
-	public double getSizeDistribHigh() {
+	public Double getSizeDistribHigh() {
 		return sizeDistribHigh;
 	}
-	public void setSizeDistribHigh(double sizeDistribHigh) {
+	public void setSizeDistribHigh(Double sizeDistribHigh) {
 		this.sizeDistribHigh = sizeDistribHigh;
 	}
-	public double getSizeDistribAvg2() {
+	public Double getSizeDistribAvg2() {
 		return sizeDistribAvg2;
 	}
-	public void setSizeDistribAvg2(double sizeDistribAvg2) {
+	public void setSizeDistribAvg2(Double sizeDistribAvg2) {
 		this.sizeDistribAvg2 = sizeDistribAvg2;
 	}
 	public String getSizeDistribApproxSymbol2() {
@@ -924,16 +927,16 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setSizeDistribUncertain2(String sizeDistribUncertain2) {
 		this.sizeDistribUncertain2 = sizeDistribUncertain2;
 	}
-	public double getSizeDistribLow2() {
+	public Double getSizeDistribLow2() {
 		return sizeDistribLow2;
 	}
-	public void setSizeDistribLow2(double sizeDistribLow2) {
+	public void setSizeDistribLow2(Double sizeDistribLow2) {
 		this.sizeDistribLow2 = sizeDistribLow2;
 	}
-	public double getSizeDistribHigh2() {
+	public Double getSizeDistribHigh2() {
 		return sizeDistribHigh2;
 	}
-	public void setSizeDistribHigh2(double sizeDistribHigh2) {
+	public void setSizeDistribHigh2(Double sizeDistribHigh2) {
 		this.sizeDistribHigh2 = sizeDistribHigh2;
 	}
 	public String getAssayType() {
@@ -966,10 +969,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setTestMediumID(int testMediumID) {
 		this.testMediumID = testMediumID;
 	}
-	public double getPhAvg() {
+	public Double getPhAvg() {
 		return phAvg;
 	}
-	public void setPhAvg(double pHAvg) {
+	public void setPhAvg(Double pHAvg) {
 		this.phAvg = pHAvg;
 	}
 	public String getPhApproxSymbol() {
@@ -984,22 +987,22 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setPhUncertain(String phUncertain) {
 		this.phUncertain = phUncertain;
 	}	
-	public double getPhLow() {
+	public Double getPhLow() {
 		return phLow;
 	}
-	public void setPhLow(double pHLow) {
+	public void setPhLow(Double pHLow) {
 		this.phLow = pHLow;
 	}
-	public double getPhHigh() {
+	public Double getPhHigh() {
 		return phHigh;
 	}
-	public void setPhHigh(double phHigh) {
+	public void setPhHigh(Double phHigh) {
 		this.phHigh = phHigh;
 	}
-	public double getMediumTemp() {
+	public Double getMediumTemp() {
 		return mediumTemp;
 	}
-	public void setMediumTemp(double mediumTemp) {
+	public void setMediumTemp(Double mediumTemp) {
 		this.mediumTemp = mediumTemp;
 	}
 	public String getMediumTempUnit() {
@@ -1008,10 +1011,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setMediumTempUnit(String mediumTempUnit) {
 		this.mediumTempUnit = mediumTempUnit;
 	}
-	public double getTimeValue() {
+	public Double getTimeValue() {
 		return timeValue;
 	}
-	public void setTimeValue(double timeValue) {
+	public void setTimeValue(Double timeValue) {
 		this.timeValue = timeValue;
 	}
 	public String getTimeValueUnit() {
@@ -1026,10 +1029,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setParticleConcentrationUnit(String particleConcentrationUnit) {
 		this.particleConcentrationUnit = particleConcentrationUnit;
 	}
-	public double getParticleExposDuration() {
+	public Double getParticleExposDuration() {
 		return particleExposDuration;
 	}
-	public void setParticleExposDuration(double particleExposDuration) {
+	public void setParticleExposDuration(Double particleExposDuration) {
 		this.particleExposDuration = particleExposDuration;
 	}
 	public String getParticleExposDurationUnit() {
@@ -1038,10 +1041,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setParticleExposDurationUnit(String particleExposDurationUnit) {
 		this.particleExposDurationUnit = particleExposDurationUnit;
 	}
-	public double getUvaDose() {
+	public Double getUvaDose() {
 		return uvaDose;
 	}
-	public void setUvaDose(double uvaDose) {
+	public void setUvaDose(Double uvaDose) {
 		this.uvaDose = uvaDose;
 	}
 	public String getUvaDoseUnit() {
@@ -1050,10 +1053,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setUvaDoseUnit(String uvaDoseUnit) {
 		this.uvaDoseUnit = uvaDoseUnit;
 	}
-	public double getUvaExposDuration() {
+	public Double getUvaExposDuration() {
 		return uvaExposDuration;
 	}
-	public void setUvaExposDuration(double uvaExposDuration) {
+	public void setUvaExposDuration(Double uvaExposDuration) {
 		this.uvaExposDuration = uvaExposDuration;
 	}
 	public String getUvaExposDurationUnit() {
@@ -1062,10 +1065,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setUvaExposDurationUnit(String uvaExposDurationUnit) {
 		this.uvaExposDurationUnit = uvaExposDurationUnit;
 	}
-	public double getViabilityAvg() {
+	public Double getViabilityAvg() {
 		return viabilityAvg;
 	}
-	public void setViabilityAvg(double viabilityAvg) {
+	public void setViabilityAvg(Double viabilityAvg) {
 		this.viabilityAvg = viabilityAvg;
 	}
 	public String getViabilityApproxSymbol() {
@@ -1086,16 +1089,16 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setViabilityUncertain(String viabilityUncertain) {
 		this.viabilityUncertain = viabilityUncertain;
 	}
-	public double getViabilityLow() {
+	public Double getViabilityLow() {
 		return viabilityLow;
 	}
-	public void setViabilityLow(double viabilityLow) {
+	public void setViabilityLow(Double viabilityLow) {
 		this.viabilityLow = viabilityLow;
 	}
-	public double getViabilityHigh() {
+	public Double getViabilityHigh() {
 		return viabilityHigh;
 	}
-	public void setViabilityHigh(double viabilityHigh) {
+	public void setViabilityHigh(Double viabilityHigh) {
 		this.viabilityHigh = viabilityHigh;
 	}
 	public String getViabilityMethod() {
@@ -1134,10 +1137,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setSerumAdditive(String serumAdditive) {
 		this.serumAdditive = serumAdditive;
 	}
-	public double getSerumConcentration() {
+	public Double getSerumConcentration() {
 		return serumConcentration;
 	}
-	public void setSerumConcentration(double serumConcentration) {
+	public void setSerumConcentration(Double serumConcentration) {
 		this.serumConcentration = serumConcentration;
 	}
 	public String getSerumConcentrationUnit() {
@@ -1152,10 +1155,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setAntibioticName(String antibioticName) {
 		this.antibioticName = antibioticName;
 	}
-	public double getAntibioticConcentration() {
+	public Double getAntibioticConcentration() {
 		return antibioticConcentration;
 	}
-	public void setAntibioticConcentration(double antibioticConcentration) {
+	public void setAntibioticConcentration(Double antibioticConcentration) {
 		this.antibioticConcentration = antibioticConcentration;
 	}
 	public String getAntibioticConcentrationUnit() {
@@ -1170,10 +1173,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setDomForm(String domForm) {
 		this.domForm = domForm;
 	}
-	public double getDomConcentration() {
+	public Double getDomConcentration() {
 		return domConcentration;
 	}
-	public void setDomConcentration(double domConcentration) {
+	public void setDomConcentration(Double domConcentration) {
 		this.domConcentration = domConcentration;
 	}
 	public String getDomUnit() {
@@ -1182,10 +1185,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setDomUnit(String domUnit) {
 		this.domUnit = domUnit;
 	}
-	public double getSalinityValue() {
+	public Double getSalinityValue() {
 		return salinityValue;
 	}
-	public void setSalinityValue(double salinityValue) {
+	public void setSalinityValue(Double salinityValue) {
 		this.salinityValue = salinityValue;
 	}
 	public String getSalinityUnit() {
@@ -1218,16 +1221,16 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setCellType(String cellType) {
 		this.cellType = cellType;
 	}
-	public double getParticleConcentration() {
+	public Double getParticleConcentration() {
 		return particleConcentration;
 	}
-	public void setParticleConcentration(double particleConcentration) {
+	public void setParticleConcentration(Double particleConcentration) {
 		this.particleConcentration = particleConcentration;
 	}
-	public double getLc50() {
+	public Double getLc50() {
 		return lc50;
 	}
-	public void setLc50(double lc50) {
+	public void setLc50(Double lc50) {
 		this.lc50 = lc50;
 	}	
 	public String getMc_mediumDescription() {
@@ -1242,10 +1245,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setMc_serumAdditive(String mc_serumAdditive) {
 		this.mc_serumAdditive = mc_serumAdditive;
 	}
-	public double getMc_serumConcentration() {
+	public Double getMc_serumConcentration() {
 		return mc_serumConcentration;
 	}
-	public void setMc_serumConcentration(double mc_serumConcentration) {
+	public void setMc_serumConcentration(Double mc_serumConcentration) {
 		this.mc_serumConcentration = mc_serumConcentration;
 	}
 	public String getMc_serumConcentrationUnit() {
@@ -1260,10 +1263,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setMc_antibioticName(String mc_antibioticName) {
 		this.mc_antibioticName = mc_antibioticName;
 	}
-	public double getMc_antibioticConcentration() {
+	public Double getMc_antibioticConcentration() {
 		return mc_antibioticConcentration;
 	}
-	public void setMc_antibioticConcentration(double mc_antibioticConcentration) {
+	public void setMc_antibioticConcentration(Double mc_antibioticConcentration) {
 		this.mc_antibioticConcentration = mc_antibioticConcentration;
 	}
 	public String getMc_antibioticConcentrationUnit() {
@@ -1279,10 +1282,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setMc_domForm(String mc_domForm) {
 		this.mc_domForm = mc_domForm;
 	}
-	public double getMc_domConcentration() {
+	public Double getMc_domConcentration() {
 		return mc_domConcentration;
 	}
-	public void setMc_domConcentration(double mc_domConcentration) {
+	public void setMc_domConcentration(Double mc_domConcentration) {
 		this.mc_domConcentration = mc_domConcentration;
 	}
 	public String getMc_domUnit() {
@@ -1291,10 +1294,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setMc_domUnit(String mc_domUnit) {
 		this.mc_domUnit = mc_domUnit;
 	}
-	public double getMc_salinityValue() {
+	public Double getMc_salinityValue() {
 		return mc_salinityValue;
 	}
-	public void setMc_salinityValue(double mc_salinityValue) {
+	public void setMc_salinityValue(Double mc_salinityValue) {
 		this.mc_salinityValue = mc_salinityValue;
 	}
 	public String getMc_salinityUnit() {
