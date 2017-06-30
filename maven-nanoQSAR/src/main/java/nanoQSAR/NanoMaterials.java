@@ -1,18 +1,8 @@
 package nanoQSAR;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.GeneralSecurityException;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +13,7 @@ import com.opencsv.CSVWriter;
 import datamine.DBUtil;
 import datamine.MySqlQuery;
 
-public class NanoMaterials extends Vector<NanoMaterial> {
+public class NanoMaterials extends Vector<NanoMaterial> implements Serializable, Cloneable {
 	
 	/**
 	 * 
@@ -83,7 +73,6 @@ public class NanoMaterials extends Vector<NanoMaterial> {
 	
 	public void readCsvFile(String filename) throws Exception {
 
-		String[] entries;
 		CSVReader csvReader = null;
 		
 		try	{
@@ -157,17 +146,37 @@ public class NanoMaterials extends Vector<NanoMaterial> {
 		}
 		
 	}
-	
+
+public NanoMaterials clone() {
+		
+		NanoMaterials clone = null;
+		try {
+			clone = new NanoMaterials();
+			clone.setHeader(this.getHeader());
+			for (int i=0; i<this.size(); i++) {
+				clone.add(this.get(i).clone());
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return clone;
+	}
+
 	public boolean isSame(NanoMaterials other) throws Exception {
 		
 		if (this.getHeader().length != other.getHeader().length) return false;
 		if (this.size() != other.size()) return false;
 		
-		String[] thisHeader = this.getHeader();
-		String[] otherHeader = other.getHeader();
-		for (int i=0; i<thisHeader.length; i++) {
-			if (thisHeader[i].matches(otherHeader[i])) continue;
-			return false;
+		if (this.header.equals(other.header)) {
+		} else {
+			String[] thisHeader = this.getHeader();
+			String[] otherHeader = other.getHeader();
+			for (int i=0; i<thisHeader.length; i++) {
+				if (thisHeader[i].matches(otherHeader[i])) continue;
+				return false;
+			}
 		}
 		
 		if (this.size() != other.size()) return false;
@@ -194,7 +203,7 @@ public class NanoMaterials extends Vector<NanoMaterial> {
 	public void setPropertyIndex(int[] propertyIndex) {
 		this.propertyIndex = propertyIndex;
 	}
-	
+
 	public void setPropertyIndexFromHeader() {
 		this.propertyIndex = propertyIndex;
 	}

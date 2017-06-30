@@ -7,7 +7,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.contentOf;
 import static org.junit.Assert.*;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -136,6 +143,53 @@ public class NanoMaterialsTest {
 	{
 		return temporaryFolder.getRoot().toPath().resolve(folder).toString();
 	}
+	
+	@Test
+	public void testSerialize() throws Exception
+	{
+				
+		// Create NanoMaterials object */.
+		NanoMaterials nanoMaterials = new NanoMaterials();
+
+		/* read in nanomaterials from CVS file */
+		nanoMaterials.readCsvFile(csvFilename);
+
+		/* write nanoMaterials out to temporary output file */
+		String serOutput  = temporaryFolder.newFolder("reports").toPath().resolve("nanoMaterials.ser").toString();
+		FileOutputStream fileOut = new FileOutputStream(serOutput);
+		ObjectOutputStream out = new ObjectOutputStream(fileOut);
+		out.writeObject(nanoMaterials);
+		out.close();
+		fileOut.close();
+		
+        FileInputStream fileIn = new FileInputStream(serOutput);
+        ObjectInputStream in = new ObjectInputStream(fileIn);
+        NanoMaterials nanoMaterials2 = (NanoMaterials)in.readObject();
+        in.close();
+        fileIn.close();
+	    
+	    Assert.assertTrue("nanoMateials are not the same", nanoMaterials.isSame(nanoMaterials2));
+		
+	}
+	
+	@Test
+	public final void testClone() throws Exception {
+		
+		// Create NanoMaterials object */.
+		NanoMaterials nanoMaterials = new NanoMaterials();
+
+		/* read in nanomaterials from CVS file */
+		nanoMaterials.readCsvFile(csvFilename);
+		
+		NanoMaterials clone = nanoMaterials.clone();
+		
+		Assert.assertNotNull("NanoMaterials clone is null", clone);
+		Assert.assertNotSame("NanoMaterials clone is same object", (Object)nanoMaterials, (Object)clone);
+		
+		Assert.assertTrue("NanoMaterials clone isSame as nanoMaterial", nanoMaterials.isSame(clone));
+		
+	}
+
 
 
 }

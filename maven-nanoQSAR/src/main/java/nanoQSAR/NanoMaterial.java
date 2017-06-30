@@ -7,7 +7,6 @@ import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
 
 /**
  * This class is used to handle the data pulled out of the database.
@@ -1713,7 +1712,6 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 		}
 			
 		return clone;
-		
 	}
 	
 	public boolean isSame(NanoMaterial other) throws Exception {
@@ -1738,12 +1736,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	    	if (v1==null || v2==null) return false;  // one is null, the other is not
 	    	if (field.get(this).equals(field.get(other))) continue;
 	    	if (v1.toString().compareTo(v2.toString())==0) continue;
-	    	System.out.println(field.toString()+": "+v1+", and "+v2+" are not the same");
 	    	return false;
 	    }
 	    
-
 		return true;
 	}
-	
+
 }
