@@ -445,18 +445,20 @@ public class MySqlQuery
 				
 			}
 			
-			/* close everything */
-			rs.close();
-			stmt.close();
-			conn.close();
-			
 		}
 		catch(SQLException ex)
 		{
 			lOGGER.log(Level.SEVERE, "SQL operation failed.", ex);
 			throw ex;
 		}
-
+		finally
+		{
+			/* close everything */
+			DBUtil.close(rs);
+			DBUtil.close(stmt);
+			DBUtil.close(conn);
+		}
+		
 		return nanoMaterials;
 	}
 	
