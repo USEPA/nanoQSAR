@@ -21,7 +21,7 @@ import java.sql.SQLException;
 public class ConnectionManagerTest {
 		
 	Connection conn = null;
-	ConnectionManager connManager = new ConnectionManager();
+//	ConnectionManager connManager = new ConnectionManager();
 	
 	@BeforeClass
 	public static void setUpProperties() throws IOException, GeneralSecurityException
@@ -45,7 +45,7 @@ public class ConnectionManagerTest {
 	public void testGetDriver() {		
 		try
 		{
-			connManager.getDriver();
+			ConnectionManager.getDriver();
 		}
 		catch(ClassNotFoundException ex)
 		{
@@ -62,12 +62,11 @@ public class ConnectionManagerTest {
 	public void testCreateConnection() {
 		try
 		{		
-			conn = connManager.createConnection();		
+			conn = ConnectionManager.createConnection();		
 		}
 		catch(SQLException ex)
 		{
-			System.out.println(ex.getMessage());
-			assertFalse(conn == null);
+			Assert.assertNotNull(ex.getMessage(), conn);
 		}
 				
 		assertTrue(conn != null);	

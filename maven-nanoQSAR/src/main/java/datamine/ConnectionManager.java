@@ -26,7 +26,7 @@ public class ConnectionManager
 	 * @return Nothing.
 	 * @throws ClassNotFoundException  If driver could not be found, throw exception.
 	 */
-	public void getDriver() throws ClassNotFoundException
+	public static void getDriver() throws ClassNotFoundException
 	{
 		try
 		{
@@ -34,7 +34,6 @@ public class ConnectionManager
 		}
 		catch(ClassNotFoundException ex)
 		{
-			System.out.println("getDriver error: driver class " + DBUtil.getDriverName() + " was not found.");
 			lOGGER.log(Level.SEVERE, "getDriver error: driver class " + DBUtil.getDriverName() + " was not found.", ex);
 			throw ex;
 		}
@@ -48,7 +47,7 @@ public class ConnectionManager
 	 * @return  Connection
 	 * @throws SQLException
 	 */
-	public Connection createConnection() throws SQLException
+	public static Connection createConnection() throws SQLException
 	{
 		Connection conn = null;
 		try
@@ -57,7 +56,6 @@ public class ConnectionManager
 		}
 		catch(SQLException ex)
 		{
-			System.out.println("Connection error: a connection to the database was not established.");
 			lOGGER.log(Level.SEVERE, "Connection error: a connection to the database was not established.", ex);	
 			throw ex;
 		}
@@ -76,14 +74,14 @@ public class ConnectionManager
 	 */
 	public static Connection getConnection() throws ClassNotFoundException, SQLException
 	{	
-		ConnectionManager connManager = new ConnectionManager();
+//		ConnectionManager connManager = new ConnectionManager();
 		Connection conn = null;
 		try
 		{
-			connManager.getDriver();		
-			conn = connManager.createConnection();
+			ConnectionManager.getDriver();		
+			conn = ConnectionManager.createConnection();
 		}
-		catch(ClassNotFoundException | SQLException ex)
+		catch(SQLException ex)
 		{
 			throw ex;
 		}
