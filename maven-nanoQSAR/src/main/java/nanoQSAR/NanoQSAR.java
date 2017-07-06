@@ -5,6 +5,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import datamine.ConnectionManager;
 import datamine.DBUtil;
 import datamine.MySqlQuery;
 
@@ -68,14 +69,17 @@ public class NanoQSAR {
 			/* Input database connection information and name of output file. */
 			DBUtil.loadProperties(propFilename);	
 			
-			/* Create the mySqlQuery connection */
-			MySqlQuery mySqlQuery = new MySqlQuery();
+			/* Test for connection to database */			
+			if (ConnectionManager.getConnection() != null) {
+				/* Data-mine MySQL database */
+				NanoMaterials nanoMaterials = new NanoMaterials(new MySqlQuery());
+				/* write data to CSV file. */
+				nanoMaterials.writeCsvFile(DBUtil.getCsvFileName());
+			} else {
+				/* get data from CSV file */
+				NanoMaterials nanoMaterials = new NanoMaterials(DBUtil.getCsvFileName());
+			}
 
-			/* Data-mine MySQL database */
-			NanoMaterials nanoMaterials = new NanoMaterials(mySqlQuery);
-
-			/* write data to CSV file. */
-			nanoMaterials.writeCsvFile(DBUtil.getCsvFileName());
 
 		} catch(Exception ex) {
 
