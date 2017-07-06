@@ -123,8 +123,11 @@ public class DBUtil
 			setCsvFileName(prop.getProperty("CsvFileName").trim());
 			setPasswordKey(prop.getProperty("Key").trim());
 			
+//			encryptPassword();
+//			System.out.println(getPassword());
 			/* Decrypt password using the key. */
 			decryptPassword();
+//			System.out.println(getPassword());
 		}
 		catch(IOException ex)
 		{
@@ -171,6 +174,20 @@ public class DBUtil
             b[i] = (byte) v;
         }
         return b;
+    }
+	
+	public static String byteArrayToHexString(byte[] b) 
+    {
+		final char[] hexArray = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+		char[] hexChars = new char[b.length * 2]; // Each byte has two hex characters
+		int v;
+        for (int i = 0; i < b.length; i++) 
+        {
+        	v = b[i] & 0xFF;
+        	hexChars[i*2] = hexArray[v >>> 4];
+        	hexChars[i*2+1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
     }
 	
 	/**
@@ -221,6 +238,54 @@ public class DBUtil
         setPassword(OriginalPassword);
 	}
 	
+	/**
+	 * This method encrypts the password using a key.
+	 * @author Paul Harten
+	 * @throws GeneralSecurityException
+	 */
+	public static void encryptPassword() throws GeneralSecurityException
+	{
+		String tempkey = getPasswordKey();                
+        byte[] encrypted;
+        String OriginalPassword = "OriginalPassword";
+        Cipher cipher = null;
+        byte[] bytekey = hexStringToByteArray(tempkey);
+        SecretKeySpec sks = new SecretKeySpec(bytekey, DBUtil.AES);
+        
+        try 
+        {
+			cipher = Cipher.getInstance(DBUtil.AES);
+		} 
+        catch (NoSuchAlgorithmException | NoSuchPaddingException ex) 
+        {			
+			lOGGER.log(Level.SEVERE,"Attempt to create cipher object failed.",ex);
+			throw ex;
+		}
+		
+        try 
+        {
+			cipher.init(Cipher.ENCRYPT_MODE, sks);
+		} 
+        catch (InvalidKeyException ex) 
+        {			
+			lOGGER.log(Level.SEVERE,"Initialization of cipher failed.",ex);
+			throw ex;
+		}
+        
+		try 
+		{
+			encrypted = cipher.doFinal(OriginalPassword.getBytes());
+		} 
+		catch (IllegalBlockSizeException | BadPaddingException ex) 
+		{			
+			lOGGER.log(Level.SEVERE,"Encryption of password failed.",ex);
+			throw ex;
+		}
+		
+		String encryptedPassword = new String(byteArrayToHexString(encrypted));
+        setPassword(encryptedPassword);
+        
+	}
 	
 	/**
 	 * @author Wilson Melendez

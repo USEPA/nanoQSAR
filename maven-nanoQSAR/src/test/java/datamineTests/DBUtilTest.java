@@ -2,19 +2,11 @@ package datamineTests;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.logging.Level;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
 
 import org.junit.Test;
 
@@ -23,21 +15,32 @@ import junit.framework.Assert;
 
 public class DBUtilTest {
 	
-	String filename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
+	String filename = System.getProperty("user.dir") + "\\nanoQSAR.properties2";
 	
 	/* default file values */
 	String csvFileName  = "nanoQSAR.csv";
 	String databaseURL = "jdbc:mysql://au.epa.gov:3306/dev_naknowbase_v1";
 	String DriverName = "com.mysql.jdbc.Driver";
 	String Username = "app_naknowbase";
-	String Password = "4324C7A7ADFE01BFD11E516F7A07BC2819437790E4FCDDF7C72444536FFA77AA";
-	String OriginalPassword = "WgeV8hN938eDJsZX";
+	String Password = "CFC5350886746A0B4B09F0AE27E86DDE19437790E4FCDDF7C72444536FFA77AA";
+	String OriginalPassword = "OriginalPassword";
 	String Key = "38A4AAABA01D0662F19CF52000852BF9";
 	
 	@Test
 	public final void testLoadProperties() {
 		
 		try {
+			
+
+			FileWriter out = new FileWriter(new File(filename));
+			
+			out.write("CsvFileName = "+csvFileName+"\n");
+			out.write("databaseURL = "+databaseURL+"\n");
+			out.write("DriverName = "+DriverName+"\n");
+			out.write("Username = "+Username+"\n");
+			out.write("Password = "+Password+"\n");
+			out.write("Key = "+Key+"\n");
+			out.close();
 			
 			DBUtil.loadProperties(filename);
 			
