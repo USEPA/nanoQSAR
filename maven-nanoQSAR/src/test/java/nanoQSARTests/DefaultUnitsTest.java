@@ -24,19 +24,20 @@ public class DefaultUnitsTest {
 	
 	private static Double DELTA = 1.0E-15;
 
-	Double nullValue = null;
-	static NanoMaterial nanoM = null;	
-	int i = 0;  // This is just a dummy index from the  point of this test.
+	static NanoMaterial nanoM = null;
+	static NanoMaterials nanoMaterials = null;
+	static int i;  // This is just a dummy index from the  point of this test.
 	
 	@BeforeClass
 	public static void setUp() throws Exception
 	{
-		/* Input database connection information and name of output file. */
+		/* Input name of input file. */
 		try
 		{
-			nanoM = new NanoMaterial();
-			String filename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
-			DBUtil.loadProperties(filename);
+			String filename = System.getProperty("user.dir") + "\\nanoQSAR.csv";
+			nanoMaterials = new NanoMaterials(filename);		// get all nanomaterials in above CSV file
+			i = (int) (Math.random()*nanoMaterials.size());		// generate a random integer in range [0, size-1]
+			nanoM = nanoMaterials.get(i);						// choose a row randomly	
 		}
 		catch(IOException | GeneralSecurityException ex)
 		{
@@ -55,10 +56,10 @@ public class DefaultUnitsTest {
 
 		try
 		{	
-			NanoMaterials nanomaterials = new NanoMaterials(new MySqlQuery());
+//			NanoMaterials nanomaterials = new NanoMaterials(new MySqlQuery());
 			String strU;
 			
-			for (NanoMaterial nanoM : nanomaterials)
+			for (NanoMaterial nanoM : nanoMaterials)
 			{				
 				strU = String.valueOf(nanoM.getCoatingAmountUnit()).trim();
 				if (!strU.equals("ug") && !strU.equals("null") && !strU.equals("mg"))
@@ -257,13 +258,13 @@ public class DefaultUnitsTest {
 	{
 		try
 		{
-			NanoMaterials nanomaterials = new NanoMaterials(new MySqlQuery());
+//			NanoMaterials nanomaterials = new NanoMaterials(new MySqlQuery());
 			String strU;
 			
 			/* Check default units and perform unit conversions if necessary. */
-			DefaultUnits.checkUnits(nanomaterials);
+			DefaultUnits.checkUnits(nanoMaterials);
 			
-			for (NanoMaterial nanoM : nanomaterials)
+			for (NanoMaterial nanoM : nanoMaterials)
 			{				
 				strU = String.valueOf(nanoM.getCoatingAmountUnit()).trim();
 				if (!strU.equals("ug") && !strU.equals("null"))
