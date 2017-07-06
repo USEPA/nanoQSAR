@@ -1,4 +1,4 @@
-package nanoQSARTests;
+package datamineTests;
 
 import static org.junit.Assert.*;
 
@@ -12,7 +12,7 @@ import org.junit.Test;
 import junit.framework.Assert;
 import nanoQSAR.NanoQSAR;
 
-public class NanoQSARTest {
+public class Datamine_NanoQSARTest {
 	
 	static String helpString = "User options:\nnanoQSAR -h\nnanoQSAR\nnanoQSAR propFilename\n";
 
@@ -33,6 +33,9 @@ public class NanoQSARTest {
 	public void testMainProgram1()
 	{
 		String csvFile = System.getProperty("user.dir") + "\\nanoQSAR.csv";
+		File file = new File(csvFile);
+		
+		if (file.exists()) Assert.assertTrue(csvFile+" was not able to be deleted.",file.delete());
 		
 		String[] args = null;
 		
@@ -41,7 +44,7 @@ public class NanoQSARTest {
 		
 		/* Verify that the CSV file was created and that it's not
 		 * empty. */
-		File file = new File(csvFile);
+		file = new File(csvFile);
 		Assert.assertTrue("CSV file exists.", file.exists());
 		Assert.assertTrue("CSV file is not empty.", file.length() > 0);		
 	}
@@ -57,6 +60,9 @@ public class NanoQSARTest {
 	public void testMainProgram2()
 	{
 		String csvFile = System.getProperty("user.dir") + "\\nanoQSAR.csv";
+		File file = new File(csvFile);
+		
+		if (file.exists()) Assert.assertTrue(csvFile+" was not able to be deleted.",file.delete());
 		
 		String[] args = new String[0];
 		
@@ -65,7 +71,7 @@ public class NanoQSARTest {
 		
 		/* Verify that the CSV file was created and that it's not
 		 * empty. */
-		File file = new File(csvFile);
+		file = new File(csvFile);
 		assertTrue("CSV file exists.", file.exists());
 		assertTrue("CSV file is not empty.", file.length() > 0);		
 	}
@@ -81,6 +87,9 @@ public class NanoQSARTest {
 	public void testMainProgram3()
 	{
 		String csvFile = System.getProperty("user.dir") + "\\nanoQSAR.csv";
+		File file = new File(csvFile);
+		
+		if (file.exists()) Assert.assertTrue(csvFile+" was not able to be deleted.",file.delete());
 		
 		String[] args = {System.getProperty("user.dir") + "\\nanoQSAR.properties"};
 		
@@ -89,7 +98,7 @@ public class NanoQSARTest {
 		
 		/* Verify that the CSV file was created and that it's not
 		 * empty. */	
-		File file = new File(csvFile);
+		file = new File(csvFile);
 		assertTrue("CSV file exists.", file.exists());
 		assertTrue("CSV file is not empty.", file.length() > 0);		
 	}
