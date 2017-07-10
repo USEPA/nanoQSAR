@@ -26,15 +26,15 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
 		super();
 	}
 	
+//	get nanoMaterials by reading from a CSV file
 	public NanoMaterials(String filename) throws Exception {
 		super();
 		this.readCsvFile(filename);
 	}
 	
+//	get nanoMaterials by querying a database server
 	public NanoMaterials(MySqlQuery sqlQuery) throws Exception {
 		super();
-		String filename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
-		DBUtil.loadProperties(filename);
 		/* Read data from remote MySQL server and store them in a list.  */
 		this.addAll(sqlQuery.getNanoMaterials());
 		this.setHeader(sqlQuery.getHeader());
