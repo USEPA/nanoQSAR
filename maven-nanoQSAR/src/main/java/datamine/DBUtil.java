@@ -1,7 +1,7 @@
 package datamine;
 
 /**
- * @author Wmelende
+ * @author Wmelende & Paul Harten
  *
  */
 import java.nio.file.Paths;
@@ -30,7 +30,7 @@ import javax.crypto.spec.SecretKeySpec;
  * This class is used to call static methods that perform general purpose tasks such as
  * closing Java connector related objects, printing out selected items to the screen, and
  * opening and reading a properties file.
- * @author Wilson Melendez
+ * @author Wilson Melendez & Paul Harten
  * 
  */
 public class DBUtil 
@@ -176,18 +176,19 @@ public class DBUtil
         return b;
     }
 	
-	public static String byteArrayToHexString(byte[] b) 
+    public static String byteArrayToHexString(byte[] b) 
     {
-		final char[] hexArray = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-		char[] hexChars = new char[b.length * 2]; // Each byte has two hex characters
-		int v;
+        StringBuffer sb = new StringBuffer(b.length * 2);
         for (int i = 0; i < b.length; i++) 
         {
-        	v = b[i] & 0xFF;
-        	hexChars[i*2] = hexArray[v >>> 4];
-        	hexChars[i*2+1] = hexArray[v & 0x0F];
+            int v = b[i] & 0xff;
+            if (v < 16) 
+            {
+                sb.append('0');
+            }
+            sb.append(Integer.toHexString(v));
         }
-        return new String(hexChars);
+        return sb.toString().toUpperCase();
     }
 	
 	/**
