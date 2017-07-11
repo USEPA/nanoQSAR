@@ -1,20 +1,12 @@
 package datamine;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.junit.Assert;
-
-import nanoQSAR.LoggerInfo;
 import nanoQSAR.NanoMaterial;
 import nanoQSAR.NanoMaterials;
 
@@ -28,7 +20,7 @@ import nanoQSAR.NanoMaterials;
 public class MySqlQuery 
 {
 	/* Need this line to allow logging of error messages */
-	private final static Logger lOGGER = Logger.getLogger( LoggerInfo.class.getName() );
+	private final static Logger LOGGER = Logger.getLogger("nanoQSAR");
 	
 	public MySqlQuery()
 	{
@@ -448,7 +440,7 @@ public class MySqlQuery
 		}
 		catch(SQLException ex)
 		{
-			lOGGER.log(Level.SEVERE, "SQL operation failed.", ex);
+			LOGGER.log(Level.SEVERE, "SQL operation failed.", ex);
 			throw ex;
 		}
 		finally

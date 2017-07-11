@@ -53,7 +53,7 @@ public class CsvMatrix
 	private static double EPSILON_DEFLATION = 1.0e-6;
 	
 	/* Need this line to allow logging of error messages */
-	private Logger lOGGER = Logger.getLogger("nanoQSAR");
+	private Logger LOGGER = Logger.getLogger("nanoQSAR");
 	
 	
 	/**
@@ -69,13 +69,6 @@ public class CsvMatrix
 	public CsvMatrix(String filename) throws Exception {
 		super();
 		readCsvFile(filename);
-	}
-	
-	/**
-	 * @return the logger
-	 */
-	public Logger getLogger() {
-		return lOGGER;
 	}
 
 	/**
@@ -234,7 +227,7 @@ public class CsvMatrix
 		}
 		catch(FileNotFoundException ex)
 		{
-			lOGGER.severe("CSV file was not found.");	
+			LOGGER.severe("CSV file was not found.");	
 			throw ex;
 		}
 		
@@ -258,7 +251,7 @@ public class CsvMatrix
 		}
 		catch(IOException ex)
 		{
-			lOGGER.severe("Attempt to close CSV reader failed.");	
+			LOGGER.severe("Attempt to close CSV reader failed.");	
 			throw ex;
 		}
 	}
