@@ -1,12 +1,7 @@
 package nanoQSAR;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * This class is used to handle the data pulled out of the database.
@@ -14,13 +9,10 @@ import java.lang.reflect.InvocationTargetException;
  *
  */
 
-import java.sql.Date;
 import java.util.ArrayList;
 
-import org.junit.Assert;
-
 public class NanoMaterial extends Object implements Serializable, Cloneable {
-		
+	
 	// Link table fields
 	private int materialCharID; 
 	private int measurementID;
@@ -254,6 +246,240 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	    }
 	    
 	    return fieldIndex;
+	}
+	
+
+	
+	/**
+	 * This method store the fields into an array of strings and returns the array.
+	 * The array of strings is used only when writing data to a CSV file.
+	 * @author Wilson Melendez
+	 * @param None.
+	 * @return String[]
+	 */
+	public String[] storeDataAsStringArray()
+	{			
+		ArrayList<String> list = new ArrayList<String>();
+		
+		// MaterialChar Table		
+		list.add(String.valueOf(getMaterialCharID()));		
+		list.add(String.valueOf(getOrdMaterialID()));		
+		list.add(String.valueOf(getDataSource()));
+		list.add(String.valueOf(getLotNumber()));
+		list.add(String.valueOf(getCoreComp()));
+		list.add(String.valueOf(getShellComp()));
+		list.add(String.valueOf(getCoatingComp()));
+		list.add(String.valueOf(getCoatingAmount()));
+		list.add(String.valueOf(getCoatingAmountUnit()));
+	    list.add(String.valueOf(getFunctionalGroups()));
+		list.add(String.valueOf(getFunctionalizationProtocol()));
+		list.add(String.valueOf(getPurity()));
+		list.add(String.valueOf(getPurityApproxSymbol()));
+		list.add(String.valueOf(getPurityUnit()));
+		list.add(String.valueOf(getPurityMethod()));
+		list.add(String.valueOf(getPurityRefChemical()));
+		list.add(String.valueOf(getContamUnit()));
+		list.add(String.valueOf(getContamAl()));
+		list.add(String.valueOf(getContamAs()));
+		list.add(String.valueOf(getContamBe()));
+		list.add(String.valueOf(getContamCa()));
+		list.add(String.valueOf(getContamCo()));
+		list.add(String.valueOf(getContamCr()));
+		list.add(String.valueOf(getContamFe()));
+		list.add(String.valueOf(getContamK()));
+		list.add(String.valueOf(getContamMg()));
+		list.add(String.valueOf(getContamNa()));
+		list.add(String.valueOf(getContamP()));
+		list.add(String.valueOf(getContamPb()));
+		list.add(String.valueOf(getContamSb()));
+		list.add(String.valueOf(getContamSe()));
+		list.add(String.valueOf(getContamSiO2()));
+		list.add(String.valueOf(getContamSn()));
+		list.add(String.valueOf(getContamTl()));
+		list.add(String.valueOf(getContamV()));
+	    list.add(String.valueOf(getContamMethod()));
+		list.add(String.valueOf(getCrystalStructure()));
+		list.add(String.valueOf(getCrystalStructureMethod()));
+		list.add(String.valueOf(getSynthesisMethod()));
+		list.add(String.valueOf(getSynthesisDate()));
+		list.add(String.valueOf(getParticleOuterDiamAvg()));
+		list.add(String.valueOf(getParticleOuterDiamApproxSymbol()));
+		list.add(String.valueOf(getParticleOuterDiamUnit()));
+		list.add(String.valueOf(getParticleOuterDiamUncertain()));
+		list.add(String.valueOf(getParticleOuterDiamLow()));
+		list.add(String.valueOf(getParticleOuterDiamHigh()));
+		list.add(String.valueOf(getParticleOuterDiamMethod()));
+		list.add(String.valueOf(getParticleInnerDiamAvg()));
+		list.add(String.valueOf(getParticleInnerDiamApproxSymbol()));
+		list.add(String.valueOf(getParticleInnerDiamUnit()));
+		list.add(String.valueOf(getParticleInnerDiamUncertain()));
+		list.add(String.valueOf(getParticleInnerDiamLow()));
+		list.add(String.valueOf(getParticleInnerDiamHigh()));
+		list.add(String.valueOf(getParticleInnerDiamMethod()));
+		list.add(String.valueOf(getParticleLengthAvg()));
+		list.add(String.valueOf(getParticleLengthApproxSymbol()));
+		list.add(String.valueOf(getParticleLengthUnit()));
+		list.add(String.valueOf(getParticleLengthUncertain()));
+		list.add(String.valueOf(getParticleLengthLow()));
+		list.add(String.valueOf(getParticleLengthHigh()));
+	    list.add(String.valueOf(getParticleLengthMethod()));
+		list.add(String.valueOf(getParticleThicknessAvg()));
+		list.add(String.valueOf(getParticleThicknessApproxSymbol()));
+		list.add(String.valueOf(getParticleThicknessUnit()));
+		list.add(String.valueOf(getParticleThicknessUncertain()));
+		list.add(String.valueOf(getParticleThicknessLow()));
+		list.add(String.valueOf(getParticleThicknessHigh()));
+		list.add(String.valueOf(getParticleThicknessMethod()));
+		list.add(String.valueOf(getWallNumber()));
+		list.add(String.valueOf(getAspectRatio()));
+		list.add(String.valueOf(getShape()));
+		list.add(String.valueOf(getSurfaceAreaAvg()));
+		list.add(String.valueOf(getSurfaceAreaApproxSymbol()));
+		list.add(String.valueOf(getSurfaceAreaUnit()));
+		list.add(String.valueOf(getSurfaceAreaUncertain()));
+		list.add(String.valueOf(getSurfaceAreaLow()));
+		list.add(String.valueOf(getSurfaceAreaHigh()));
+		list.add(String.valueOf(getSurfaceAreaMethod()));
+		list.add(String.valueOf(getMc_timeValue()));
+		list.add(String.valueOf(getMc_timeValueUnit()));
+		list.add(String.valueOf(getMc_particleConcentration()));
+		list.add(String.valueOf(getMc_particleConcentrationUnit()));
+		list.add(String.valueOf(getDispersionMediumID()));
+		list.add(String.valueOf(getMc_mediumDescription()));
+		list.add(String.valueOf(getMc_serumAdditive()));
+		list.add(String.valueOf(getMc_serumConcentration()));
+		list.add(String.valueOf(getMc_serumConcentrationUnit()));
+		list.add(String.valueOf(getMc_antibioticName()));
+		list.add(String.valueOf(getMc_antibioticConcentration()));
+		list.add(String.valueOf(getMc_antibioticConcentrationUnit()));
+		list.add(String.valueOf(getMc_domForm()));
+		list.add(String.valueOf(getMc_domConcentration()));
+		list.add(String.valueOf(getMc_domUnit()));
+		list.add(String.valueOf(getMc_salinityValue()));
+		list.add(String.valueOf(getMc_salinityUnit()));
+		list.add(String.valueOf(getSolubility()));
+		list.add(String.valueOf(getMc_pHAvg()));
+		list.add(String.valueOf(getMc_pHApproxSymbol()));
+	    list.add(String.valueOf(getMc_pHUncertain()));
+		list.add(String.valueOf(getMc_pHLow()));
+		list.add(String.valueOf(getMc_pHHigh()));
+		list.add(String.valueOf(getMc_mediumTemp()));
+		list.add(String.valueOf(getMc_mediumTempUnit()));
+		list.add(String.valueOf(getZetaPotentialAvg()));
+		list.add(String.valueOf(getZetaPotentialApproxSymbol()));
+		list.add(String.valueOf(getZetaPotentialUnit()));
+		list.add(String.valueOf(getZetaPotentialUncertain()));
+		list.add(String.valueOf(getZetaPotentialLow()));
+		list.add(String.valueOf(getZetaPotentialHigh()));
+		list.add(String.valueOf(getZetaPotentialMethod()));
+		list.add(String.valueOf(getSizeDistribType()));
+		list.add(String.valueOf(getSizeDistribModality()));
+		list.add(String.valueOf(getSizeDistribMethod()));
+		list.add(String.valueOf(getSizeDistribAvg()));
+		list.add(String.valueOf(getSizeDistribApproxSymbol()));
+		list.add(String.valueOf(getSizeDistribUnit()));
+		list.add(String.valueOf(getSizeDistribUncertain()));
+		list.add(String.valueOf(getSizeDistribLow()));
+		list.add(String.valueOf(getSizeDistribHigh()));
+		list.add(String.valueOf(getSizeDistribAvg2()));
+		list.add(String.valueOf(getSizeDistribApproxSymbol2()));
+		list.add(String.valueOf(getSizeDistribUnit2()));
+		list.add(String.valueOf(getSizeDistribUncertain2()));
+	    list.add(String.valueOf(getSizeDistribLow2()));
+		list.add(String.valueOf(getSizeDistribHigh2()));
+		
+		// Assay table
+		list.add(String.valueOf(getMeasurementID()));
+		list.add(String.valueOf(getAssayType()));
+		list.add(String.valueOf(getAssayName()));
+		list.add(String.valueOf(getSampleName()));
+		list.add(String.valueOf(getSubjectSpecies()));
+		list.add(String.valueOf(getSubjectID()));
+		list.add(String.valueOf(getCellType()));
+		list.add(String.valueOf(getCellSource()));
+		list.add(String.valueOf(getTestMediumID()));
+		list.add(String.valueOf(getMediumDescription()));
+		list.add(String.valueOf(getSerumAdditive()));
+		list.add(String.valueOf(getSerumConcentration()));
+		list.add(String.valueOf(getSerumConcentrationUnit()));
+		list.add(String.valueOf(getAntibioticName()));
+		list.add(String.valueOf(getAntibioticConcentration()));
+		list.add(String.valueOf(getAntibioticConcentrationUnit()));
+		list.add(String.valueOf(getDomForm()));
+		list.add(String.valueOf(getDomConcentration()));
+		list.add(String.valueOf(getDomUnit()));
+		list.add(String.valueOf(getSalinityValue()));
+		list.add(String.valueOf(getSalinityUnit()));
+		list.add(String.valueOf(getPhAvg()));
+		list.add(String.valueOf(getPhApproxSymbol()));
+	    list.add(String.valueOf(getPhUncertain()));
+		list.add(String.valueOf(getPhLow()));
+		list.add(String.valueOf(getPhHigh()));
+		list.add(String.valueOf(getMediumTemp()));
+		list.add(String.valueOf(getMediumTempUnit()));
+		list.add(String.valueOf(getTimeValue()));
+		list.add(String.valueOf(getTimeValueUnit()));
+		list.add(String.valueOf(getParticleConcentration()));
+		list.add(String.valueOf(getParticleConcentrationUnit()));
+		list.add(String.valueOf(getParticleExposDuration()));
+		list.add(String.valueOf(getParticleExposDurationUnit()));
+		list.add(String.valueOf(getUvaDose()));
+		list.add(String.valueOf(getUvaDoseUnit()));
+		list.add(String.valueOf(getUvaExposDuration()));
+		list.add(String.valueOf(getUvaExposDurationUnit()));
+		list.add(String.valueOf(getViabilityAvg()));
+		list.add(String.valueOf(getViabilityApproxSymbol()));
+		list.add(String.valueOf(getViabilityUnit()));
+		list.add(String.valueOf(getViabilityUncertain()));
+		list.add(String.valueOf(getViabilityLow()));
+		list.add(String.valueOf(getViabilityHigh()));
+		list.add(String.valueOf(getViabilityMethod()));
+		list.add(String.valueOf(getLc50()));
+		list.add(String.valueOf(getLc50ApproxSymbol()));
+		list.add(String.valueOf(getLc50Unit()));
+		
+		String[] strNano = new String[list.size()];
+		strNano = list.toArray(strNano);
+		
+		return strNano;
+	}
+	
+	@Override
+	public NanoMaterial clone() {
+		
+		NanoMaterial clone = null;
+		
+		try {
+			clone = (NanoMaterial)super.clone();
+			
+			Field[] fields = NanoMaterial.class.getDeclaredFields();
+		    for (int i=0; i<fields.length; i++) {
+		    	Field field = fields[i];
+		    	field.set(clone, field.get(this));
+		    }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+			
+		return clone;
+	}
+	
+	/* Return whether other nanoMaterial is the same as this one */
+	public boolean isSame(NanoMaterial other) throws Exception {
+
+		Field[] fields = NanoMaterial.class.getDeclaredFields();
+	    for (int i=0; i<fields.length; i++) {
+	    	Field field = fields[i];
+	    	Object v1 = field.get(this);
+	    	Object v2 = field.get(this);
+	    	if (v1==v2) continue;  // if both are the same, continue (this includes both null)
+	    	if (v1==null || v2==null) return false;  // one is null, the other is not
+	    	if (field.get(this).equals(field.get(other))) continue;
+	    	if (v1.toString().compareTo(v2.toString())==0) continue;
+	    	return false;
+	    }
+	    
+		return true;
 	}
 	
 	// Get and Set methods
@@ -1304,442 +1530,6 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	}
 	public void setMc_salinityUnit(String mc_salinityUnit) {
 		this.mc_salinityUnit = mc_salinityUnit;
-	}
-	
-	/**
-	 * This method store the fields into an array of strings and returns the array.
-	 * The array of strings is used only when writing data to a CSV file.
-	 * @author Wilson Melendez
-	 * @param None.
-	 * @return String[]
-	 */
-	public String[] storeDataAsStringArray()
-	{			
-		ArrayList<String> list = new ArrayList<String>();
-		
-		// MaterialChar Table		
-		list.add(String.valueOf(getMaterialCharID()));		
-		list.add(String.valueOf(getOrdMaterialID()));		
-		list.add(String.valueOf(getDataSource()));
-		list.add(String.valueOf(getLotNumber()));
-		list.add(String.valueOf(getCoreComp()));
-		list.add(String.valueOf(getShellComp()));
-		list.add(String.valueOf(getCoatingComp()));
-		list.add(String.valueOf(getCoatingAmount()));
-		list.add(String.valueOf(getCoatingAmountUnit()));
-	    list.add(String.valueOf(getFunctionalGroups()));
-		list.add(String.valueOf(getFunctionalizationProtocol()));
-		list.add(String.valueOf(getPurity()));
-		list.add(String.valueOf(getPurityApproxSymbol()));
-		list.add(String.valueOf(getPurityUnit()));
-		list.add(String.valueOf(getPurityMethod()));
-		list.add(String.valueOf(getPurityRefChemical()));
-		list.add(String.valueOf(getContamUnit()));
-		list.add(String.valueOf(getContamAl()));
-		list.add(String.valueOf(getContamAs()));
-		list.add(String.valueOf(getContamBe()));
-		list.add(String.valueOf(getContamCa()));
-		list.add(String.valueOf(getContamCo()));
-		list.add(String.valueOf(getContamCr()));
-		list.add(String.valueOf(getContamFe()));
-		list.add(String.valueOf(getContamK()));
-		list.add(String.valueOf(getContamMg()));
-		list.add(String.valueOf(getContamNa()));
-		list.add(String.valueOf(getContamP()));
-		list.add(String.valueOf(getContamPb()));
-		list.add(String.valueOf(getContamSb()));
-		list.add(String.valueOf(getContamSe()));
-		list.add(String.valueOf(getContamSiO2()));
-		list.add(String.valueOf(getContamSn()));
-		list.add(String.valueOf(getContamTl()));
-		list.add(String.valueOf(getContamV()));
-	    list.add(String.valueOf(getContamMethod()));
-		list.add(String.valueOf(getCrystalStructure()));
-		list.add(String.valueOf(getCrystalStructureMethod()));
-		list.add(String.valueOf(getSynthesisMethod()));
-		list.add(String.valueOf(getSynthesisDate()));
-		list.add(String.valueOf(getParticleOuterDiamAvg()));
-		list.add(String.valueOf(getParticleOuterDiamApproxSymbol()));
-		list.add(String.valueOf(getParticleOuterDiamUnit()));
-		list.add(String.valueOf(getParticleOuterDiamUncertain()));
-		list.add(String.valueOf(getParticleOuterDiamLow()));
-		list.add(String.valueOf(getParticleOuterDiamHigh()));
-		list.add(String.valueOf(getParticleOuterDiamMethod()));
-		list.add(String.valueOf(getParticleInnerDiamAvg()));
-		list.add(String.valueOf(getParticleInnerDiamApproxSymbol()));
-		list.add(String.valueOf(getParticleInnerDiamUnit()));
-		list.add(String.valueOf(getParticleInnerDiamUncertain()));
-		list.add(String.valueOf(getParticleInnerDiamLow()));
-		list.add(String.valueOf(getParticleInnerDiamHigh()));
-		list.add(String.valueOf(getParticleInnerDiamMethod()));
-		list.add(String.valueOf(getParticleLengthAvg()));
-		list.add(String.valueOf(getParticleLengthApproxSymbol()));
-		list.add(String.valueOf(getParticleLengthUnit()));
-		list.add(String.valueOf(getParticleLengthUncertain()));
-		list.add(String.valueOf(getParticleLengthLow()));
-		list.add(String.valueOf(getParticleLengthHigh()));
-	    list.add(String.valueOf(getParticleLengthMethod()));
-		list.add(String.valueOf(getParticleThicknessAvg()));
-		list.add(String.valueOf(getParticleThicknessApproxSymbol()));
-		list.add(String.valueOf(getParticleThicknessUnit()));
-		list.add(String.valueOf(getParticleThicknessUncertain()));
-		list.add(String.valueOf(getParticleThicknessLow()));
-		list.add(String.valueOf(getParticleThicknessHigh()));
-		list.add(String.valueOf(getParticleThicknessMethod()));
-		list.add(String.valueOf(getWallNumber()));
-		list.add(String.valueOf(getAspectRatio()));
-		list.add(String.valueOf(getShape()));
-		list.add(String.valueOf(getSurfaceAreaAvg()));
-		list.add(String.valueOf(getSurfaceAreaApproxSymbol()));
-		list.add(String.valueOf(getSurfaceAreaUnit()));
-		list.add(String.valueOf(getSurfaceAreaUncertain()));
-		list.add(String.valueOf(getSurfaceAreaLow()));
-		list.add(String.valueOf(getSurfaceAreaHigh()));
-		list.add(String.valueOf(getSurfaceAreaMethod()));
-		list.add(String.valueOf(getMc_timeValue()));
-		list.add(String.valueOf(getMc_timeValueUnit()));
-		list.add(String.valueOf(getMc_particleConcentration()));
-		list.add(String.valueOf(getMc_particleConcentrationUnit()));
-		list.add(String.valueOf(getDispersionMediumID()));
-		list.add(String.valueOf(getMc_mediumDescription()));
-		list.add(String.valueOf(getMc_serumAdditive()));
-		list.add(String.valueOf(getMc_serumConcentration()));
-		list.add(String.valueOf(getMc_serumConcentrationUnit()));
-		list.add(String.valueOf(getMc_antibioticName()));
-		list.add(String.valueOf(getMc_antibioticConcentration()));
-		list.add(String.valueOf(getMc_antibioticConcentrationUnit()));
-		list.add(String.valueOf(getMc_domForm()));
-		list.add(String.valueOf(getMc_domConcentration()));
-		list.add(String.valueOf(getMc_domUnit()));
-		list.add(String.valueOf(getMc_salinityValue()));
-		list.add(String.valueOf(getMc_salinityUnit()));
-		list.add(String.valueOf(getSolubility()));
-		list.add(String.valueOf(getMc_pHAvg()));
-		list.add(String.valueOf(getMc_pHApproxSymbol()));
-	    list.add(String.valueOf(getMc_pHUncertain()));
-		list.add(String.valueOf(getMc_pHLow()));
-		list.add(String.valueOf(getMc_pHHigh()));
-		list.add(String.valueOf(getMc_mediumTemp()));
-		list.add(String.valueOf(getMc_mediumTempUnit()));
-		list.add(String.valueOf(getZetaPotentialAvg()));
-		list.add(String.valueOf(getZetaPotentialApproxSymbol()));
-		list.add(String.valueOf(getZetaPotentialUnit()));
-		list.add(String.valueOf(getZetaPotentialUncertain()));
-		list.add(String.valueOf(getZetaPotentialLow()));
-		list.add(String.valueOf(getZetaPotentialHigh()));
-		list.add(String.valueOf(getZetaPotentialMethod()));
-		list.add(String.valueOf(getSizeDistribType()));
-		list.add(String.valueOf(getSizeDistribModality()));
-		list.add(String.valueOf(getSizeDistribMethod()));
-		list.add(String.valueOf(getSizeDistribAvg()));
-		list.add(String.valueOf(getSizeDistribApproxSymbol()));
-		list.add(String.valueOf(getSizeDistribUnit()));
-		list.add(String.valueOf(getSizeDistribUncertain()));
-		list.add(String.valueOf(getSizeDistribLow()));
-		list.add(String.valueOf(getSizeDistribHigh()));
-		list.add(String.valueOf(getSizeDistribAvg2()));
-		list.add(String.valueOf(getSizeDistribApproxSymbol2()));
-		list.add(String.valueOf(getSizeDistribUnit2()));
-		list.add(String.valueOf(getSizeDistribUncertain2()));
-	    list.add(String.valueOf(getSizeDistribLow2()));
-		list.add(String.valueOf(getSizeDistribHigh2()));
-		
-		// Assay table
-		list.add(String.valueOf(getMeasurementID()));
-		list.add(String.valueOf(getAssayType()));
-		list.add(String.valueOf(getAssayName()));
-		list.add(String.valueOf(getSampleName()));
-		list.add(String.valueOf(getSubjectSpecies()));
-		list.add(String.valueOf(getSubjectID()));
-		list.add(String.valueOf(getCellType()));
-		list.add(String.valueOf(getCellSource()));
-		list.add(String.valueOf(getTestMediumID()));
-		list.add(String.valueOf(getMediumDescription()));
-		list.add(String.valueOf(getSerumAdditive()));
-		list.add(String.valueOf(getSerumConcentration()));
-		list.add(String.valueOf(getSerumConcentrationUnit()));
-		list.add(String.valueOf(getAntibioticName()));
-		list.add(String.valueOf(getAntibioticConcentration()));
-		list.add(String.valueOf(getAntibioticConcentrationUnit()));
-		list.add(String.valueOf(getDomForm()));
-		list.add(String.valueOf(getDomConcentration()));
-		list.add(String.valueOf(getDomUnit()));
-		list.add(String.valueOf(getSalinityValue()));
-		list.add(String.valueOf(getSalinityUnit()));
-		list.add(String.valueOf(getPhAvg()));
-		list.add(String.valueOf(getPhApproxSymbol()));
-	    list.add(String.valueOf(getPhUncertain()));
-		list.add(String.valueOf(getPhLow()));
-		list.add(String.valueOf(getPhHigh()));
-		list.add(String.valueOf(getMediumTemp()));
-		list.add(String.valueOf(getMediumTempUnit()));
-		list.add(String.valueOf(getTimeValue()));
-		list.add(String.valueOf(getTimeValueUnit()));
-		list.add(String.valueOf(getParticleConcentration()));
-		list.add(String.valueOf(getParticleConcentrationUnit()));
-		list.add(String.valueOf(getParticleExposDuration()));
-		list.add(String.valueOf(getParticleExposDurationUnit()));
-		list.add(String.valueOf(getUvaDose()));
-		list.add(String.valueOf(getUvaDoseUnit()));
-		list.add(String.valueOf(getUvaExposDuration()));
-		list.add(String.valueOf(getUvaExposDurationUnit()));
-		list.add(String.valueOf(getViabilityAvg()));
-		list.add(String.valueOf(getViabilityApproxSymbol()));
-		list.add(String.valueOf(getViabilityUnit()));
-		list.add(String.valueOf(getViabilityUncertain()));
-		list.add(String.valueOf(getViabilityLow()));
-		list.add(String.valueOf(getViabilityHigh()));
-		list.add(String.valueOf(getViabilityMethod()));
-		list.add(String.valueOf(getLc50()));
-		list.add(String.valueOf(getLc50ApproxSymbol()));
-		list.add(String.valueOf(getLc50Unit()));
-		
-		String[] strNano = new String[list.size()];
-		strNano = list.toArray(strNano);
-		
-		return strNano;
-	}
-	
-	@Override
-	public NanoMaterial clone() throws CloneNotSupportedException {
-		
-		NanoMaterial clone = (NanoMaterial)super.clone();
-
-//		// Link table fields
-//		clone.materialCharID = this.materialCharID; 
-//		clone.measurementID = this.measurementID;
-//		
-//		// Materialchar table fields
-//		clone.ordMaterialID = this.ordMaterialID;
-//		clone.dataSource = this.dataSource; 
-//		clone.lotNumber = this.lotNumber; 
-//		clone.coreComp = this.coreComp; 
-//		clone.shellComp = this.shellComp; 
-//		clone.coatingComp = this.coatingComp; 
-//		clone.coatingAmount = this.coatingAmount; 
-//		clone.coatingAmountUnit = this.coatingAmountUnit; 
-//		clone.functionalGroups = this.functionalGroups; 
-//		clone.functionalizationProtocol = this.functionalizationProtocol; 
-//		clone.purity = this.purity; 
-//		clone.purityApproxSymbol = this.purityApproxSymbol; 
-//		clone.purityUnit = this.purityUnit; 
-//		clone.purityMethod = this.purityMethod; 
-//		clone.purityRefChemical = this.purityRefChemical; 
-//		clone.contamUnit = this.contamUnit; 
-//		clone.contamAl = this.contamAl; 
-//		clone.contamAs = this.contamAs; 
-//		clone.contamBe = this.contamBe; 
-//		clone.contamCa = this.contamCa; 
-//		clone.contamCo = this.contamCo; 
-//		clone.contamCr = this.contamCr; 
-//		clone.contamFe = this.contamFe; 
-//		clone.contamK = this.contamK; 
-//		clone.contamMg = this.contamMg; 
-//		clone.contamNa = this.contamNa; 
-//		clone.contamP = this.contamP; 
-//		clone.contamPb = this.contamPb; 
-//		clone.contamSb = this.contamSb; 
-//		clone.contamSe = this.contamSe; 
-//		clone.contamSiO2 = this.contamSiO2; 
-//		clone.contamSn = this.contamSn; 
-//		clone.contamTl = this.contamTl; 
-//		clone.contamV = this.contamV; 
-//		clone.contamMethod = this.contamMethod; 
-//		clone.crystalStructure = this.crystalStructure; 
-//		clone.crystalStructureMethod = this.crystalStructureMethod; 
-//		clone.synthesisMethod = this.synthesisMethod; 
-//		clone.synthesisDate = this.synthesisDate; 
-//		clone.particleOuterDiamAvg = this.particleOuterDiamAvg; 
-//		clone.particleOuterDiamApproxSymbol = this.particleOuterDiamApproxSymbol; 
-//		clone.particleOuterDiamUnit = this.particleOuterDiamUnit; 
-//		clone.particleOuterDiamUncertain = this.particleOuterDiamUncertain; 
-//		clone.particleOuterDiamLow = this.particleOuterDiamLow; 
-//		clone.particleOuterDiamHigh = this.particleOuterDiamHigh; 
-//		clone.particleOuterDiamMethod = this.particleOuterDiamMethod; 
-//		clone.particleInnerDiamAvg = this.particleInnerDiamAvg; 
-//		clone.particleInnerDiamApproxSymbol = this.particleInnerDiamApproxSymbol; 
-//		clone.particleInnerDiamUnit = this.particleInnerDiamUnit; 
-//		clone.particleInnerDiamUncertain = this.particleInnerDiamUncertain; 
-//		clone.particleInnerDiamLow = this.particleInnerDiamLow; 
-//		clone.particleInnerDiamHigh = this.particleInnerDiamHigh; 
-//		clone.particleInnerDiamMethod = this.particleInnerDiamMethod; 
-//		clone.particleLengthAvg = this.particleLengthAvg; 
-//		clone.particleLengthApproxSymbol = this.particleLengthApproxSymbol; 
-//		clone.particleLengthUnit = this.particleLengthUnit; 
-//		clone.particleLengthUncertain = this.particleLengthUncertain; 
-//		clone.particleLengthLow = this.particleLengthLow; 
-//		clone.particleLengthHigh = this.particleLengthHigh; 
-//		clone.particleLengthMethod = this.particleLengthMethod; 
-//		clone.particleThicknessAvg = this.particleThicknessAvg; 
-//		clone.particleThicknessApproxSymbol = this.particleThicknessApproxSymbol; 
-//		clone.particleThicknessUnit = this.particleThicknessUnit; 
-//		clone.particleThicknessUncertain = this.particleThicknessUncertain; 
-//		clone.particleThicknessLow = this.particleThicknessLow; 
-//		clone.particleThicknessHigh = this.particleThicknessHigh; 
-//		clone.particleThicknessMethod = this.particleThicknessMethod; 
-//		clone.wallNumber = this.wallNumber; 
-//		clone.aspectRatio = this.aspectRatio; 
-//		clone.shape = this.shape; 
-//		clone.surfaceAreaAvg = this.surfaceAreaAvg; 
-//		clone.surfaceAreaApproxSymbol = this.surfaceAreaApproxSymbol; 
-//		clone.surfaceAreaUnit = this.surfaceAreaUnit; 
-//		clone.surfaceAreaUncertain = this.surfaceAreaUncertain; 
-//		clone.surfaceAreaLow = this.surfaceAreaLow; 
-//		clone.surfaceAreaHigh = this.surfaceAreaHigh; 
-//		clone.surfaceAreaMethod = this.surfaceAreaMethod; 
-//		clone.mc_timeValue = this.mc_timeValue; 
-//		clone.mc_timeValueUnit = this.mc_timeValueUnit; 
-//		clone.mc_particleConcentration = this.mc_particleConcentration; 
-//		clone.mc_particleConcentrationUnit = this.mc_particleConcentrationUnit; 
-//		clone.dispersionMediumID = this.dispersionMediumID; 
-//		clone.solubility = this.solubility; 
-//		clone.mc_pHAvg = this.mc_pHAvg; 
-//		clone.mc_pHApproxSymbol = this.mc_pHApproxSymbol; 
-//		clone.mc_pHUncertain = this.mc_pHUncertain; 
-//		clone.mc_pHLow = this.mc_pHLow; 
-//		clone.mc_pHHigh = this.mc_pHHigh; 
-//		clone.mc_mediumTemp = this.mc_mediumTemp; 
-//		clone.mc_mediumTempUnit = this.mc_mediumTempUnit; 
-//		clone.zetaPotentialAvg = this.zetaPotentialAvg; 
-//		clone.zetaPotentialApproxSymbol = this.zetaPotentialApproxSymbol; 
-//		clone.zetaPotentialUnit = this.zetaPotentialUnit; 
-//		clone.zetaPotentialUncertain = this.zetaPotentialUncertain; 
-//		clone.zetaPotentialLow = this.zetaPotentialLow; 
-//		clone.zetaPotentialHigh = this.zetaPotentialHigh; 
-//		clone.zetaPotentialMethod = this.zetaPotentialMethod; 
-//		clone.sizeDistribType = this.sizeDistribType; 
-//		clone.sizeDistribModality = this.sizeDistribModality; 
-//		clone.sizeDistribMethod = this.sizeDistribMethod; 
-//		clone.sizeDistribAvg = this.sizeDistribAvg; 
-//		clone.sizeDistribApproxSymbol = this.sizeDistribApproxSymbol; 
-//		clone.sizeDistribUnit = this.sizeDistribUnit; 
-//		clone.sizeDistribUncertain = this.sizeDistribUncertain; 
-//		clone.sizeDistribLow = this.sizeDistribLow; 
-//		clone.sizeDistribHigh = this.sizeDistribHigh; 
-//		clone.sizeDistribAvg2 = this.sizeDistribAvg2; 
-//		clone.sizeDistribApproxSymbol2 = this.sizeDistribApproxSymbol2; 
-//		clone.sizeDistribUnit2 = this.sizeDistribUnit2; 
-//		clone.sizeDistribUncertain2 = this.sizeDistribUncertain2; 
-//		clone.sizeDistribLow2 = this.sizeDistribLow2; 
-//		clone.sizeDistribHigh2 = this.sizeDistribHigh2;
-//		
-//		// Assay table fields
-//		clone.assayType = this.assayType; 
-//		clone.assayName = this.assayName; 
-//		clone.sampleName = this.sampleName; 
-//		clone.subjectSpecies = this.subjectSpecies; 
-//		clone.subjectID = this.subjectID;
-//		clone.cellType = this.cellType;
-//		clone.cellSource = this.cellSource; 
-//		clone.testMediumID = this.testMediumID; 
-//		clone.phAvg = this.phAvg;
-//		clone.phApproxSymbol = this.phApproxSymbol; 
-//		clone.phUncertain = this.phUncertain;
-//		clone.phLow = this.phLow;
-//		clone.phHigh = this.phHigh; 
-//		clone.mediumTemp = this.mediumTemp; 
-//		clone.mediumTempUnit = this.mediumTempUnit; 
-//		clone.timeValue = this.timeValue;
-//		clone.timeValueUnit = this.timeValueUnit; 
-//		clone.particleConcentration = this.particleConcentration; 
-//		clone.particleConcentrationUnit = this.particleConcentrationUnit; 
-//		clone.particleExposDuration = this.particleExposDuration;
-//		clone.particleExposDurationUnit = this.particleExposDurationUnit; 
-//		clone.uvaDose = this.uvaDose;
-//		clone.uvaDoseUnit = this.uvaDoseUnit; 
-//		clone.uvaExposDuration = this.uvaExposDuration; 
-//		clone.uvaExposDurationUnit = this.uvaExposDurationUnit; 
-//		clone.viabilityAvg = this.viabilityAvg;
-//		clone.viabilityApproxSymbol = this.viabilityApproxSymbol; 
-//		clone.viabilityUnit = this.viabilityUnit;
-//		clone.viabilityUncertain = this.viabilityUncertain; 
-//		clone.viabilityLow = this.viabilityLow;
-//		clone.viabilityHigh = this.viabilityHigh; 
-//		clone.viabilityMethod = this.viabilityMethod; 
-//		clone.lc50 = this.lc50; 
-//		clone.lc50ApproxSymbol = this.lc50ApproxSymbol; 
-//		clone.lc50Unit = this.lc50Unit;
-//		
-//		// Medium table fields
-//		clone.mediumID = this.mediumID;
-//		clone.mediumDescription = this.mediumDescription; 
-//		clone.serumAdditive = this.serumAdditive;
-//		clone.serumConcentration = this.serumConcentration; 
-//		clone.serumConcentrationUnit = this.serumConcentrationUnit; 
-//		clone.antibioticName = this.antibioticName;
-//		clone.antibioticConcentration = this.antibioticConcentration; 
-//		clone.antibioticConcentrationUnit = this.antibioticConcentrationUnit; 
-//		clone.domForm = this.domForm;
-//		clone.domConcentration = this.domConcentration; 
-//		clone.domUnit = this.domUnit;
-//		clone.salinityValue = this.salinityValue; 
-//		clone.salinityUnit = this.salinityUnit;
-//
-//		clone.mc_mediumDescription = this.mc_mediumDescription; 
-//		clone.mc_serumAdditive = this.mc_serumAdditive;
-//		clone.mc_serumConcentration = this.mc_serumConcentration; 
-//		clone.mc_serumConcentrationUnit = this.mc_serumConcentrationUnit; 
-//		clone.mc_antibioticName = this.mc_antibioticName;
-//		clone.mc_antibioticConcentration = this.mc_antibioticConcentration; 
-//		clone.mc_antibioticConcentrationUnit = this.mc_antibioticConcentrationUnit; 
-//		clone.mc_domForm = this.mc_domForm;
-//		clone.mc_domConcentration = this.mc_domConcentration; 
-//		clone.mc_domUnit = this.mc_domUnit;
-//		clone.mc_salinityValue = this.mc_salinityValue; 
-//		clone.mc_salinityUnit = this.mc_salinityUnit;
-		
-		Object v1, v2;
-		try {
-			final BeanInfo beanInfo = Introspector.getBeanInfo(this.getClass());
-			final PropertyDescriptor[] properties = beanInfo.getPropertyDescriptors();
-			for (PropertyDescriptor property : properties) {
-				v1 = property.getReadMethod().invoke(this, (Object[])null);
-				if (v1==null || property.getWriteMethod()==null) continue;
-				v2 = property.getWriteMethod().invoke(clone, v1);
-			}
-		} catch (IntrospectionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-			
-		return clone;
-	}
-	
-	public boolean isSame(NanoMaterial other) throws Exception {
-		/* return whether other nanomaterial is the sames as this one */
-//		final BeanInfo beanInfo = Introspector.getBeanInfo(other.getClass());
-//		final PropertyDescriptor[] properties = beanInfo.getPropertyDescriptors();
-//		for (PropertyDescriptor property : properties) {
-//			Object v1 = property.getReadMethod().invoke(this, (Object[])null);
-//			Object v2 = property.getReadMethod().invoke(other, (Object[])null);
-//			if (v1==v2) continue;  // if both are the same, continue (this includes both null)
-//			if (v1==null || v2==null) return false;  // one is null, the other is not
-//			if (v1.toString().compareTo(v2.toString())==0) continue;
-//			return false;
-//		}
-		
-		Field[] fields = NanoMaterial.class.getDeclaredFields();
-	    for (int i=0; i<fields.length; i++) {
-	    	Field field = fields[i];
-	    	Object v1 = field.get(this);
-	    	Object v2 = field.get(this);
-	    	if (v1==v2) continue;  // if both are the same, continue (this includes both null)
-	    	if (v1==null || v2==null) return false;  // one is null, the other is not
-	    	if (field.get(this).equals(field.get(other))) continue;
-	    	if (v1.toString().compareTo(v2.toString())==0) continue;
-	    	return false;
-	    }
-	    
-		return true;
 	}
 
 }
