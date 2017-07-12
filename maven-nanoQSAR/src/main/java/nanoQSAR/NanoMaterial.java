@@ -231,6 +231,7 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	
 	public static int[] getFieldIndex(String[] columnNames) throws Exception {
 		
+		// all columnNames of the CSV header are fields of this class, but in different order */
 		Field[] fields = NanoMaterial.class.getDeclaredFields();
 	    int[] fieldIndex = new int[columnNames.length];
 	    for (int i=0; i<columnNames.length; i++) {
@@ -444,6 +445,28 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 		return strNano;
 	}
 	
+	/**
+	 * This method store the fields into an array of strings and returns the array.
+	 * The array of strings is used only when writing data to a CSV file.
+	 * @author Paul Harten
+	 * @param None.
+	 * @return String[]
+	 */
+	public String[] storeDataAsStringArray(int[] fieldIndex) throws Exception {
+	
+		Field[] fields = NanoMaterial.class.getDeclaredFields();
+		
+		// all columns of the CSV header are fields of this class */
+		String[] strNano = new String[fieldIndex.length];
+
+		for (int i=0; i<strNano.length; i++) {
+			Field field = fields[fieldIndex[i]];
+			strNano[i] = String.valueOf(field.get(this));
+		}
+		
+		return strNano;
+	}
+	
 	@Override
 	public NanoMaterial clone() {
 		
@@ -471,10 +494,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	    for (int i=0; i<fields.length; i++) {
 	    	Field field = fields[i];
 	    	Object v1 = field.get(this);
-	    	Object v2 = field.get(this);
+	    	Object v2 = field.get(other);
 	    	if (v1==v2) continue;  // if both are the same, continue (this includes both null)
 	    	if (v1==null || v2==null) return false;  // one is null, the other is not
-	    	if (field.get(this).equals(field.get(other))) continue;
+	    	if (v1.equals(v2)) continue;
 	    	if (v1.toString().compareTo(v2.toString())==0) continue;
 	    	return false;
 	    }
