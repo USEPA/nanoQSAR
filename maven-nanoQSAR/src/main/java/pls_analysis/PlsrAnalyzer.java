@@ -4,12 +4,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.jblas.DoubleMatrix;
 
-import nanoQSAR.LoggerInfo;
+import nanoQSAR.NanoMaterials;
 
 
 /**
@@ -24,7 +27,8 @@ import nanoQSAR.LoggerInfo;
 public class PlsrAnalyzer 
 {	
 	/* Need this line to allow logging of error messages */
-	private static Logger logger = Logger.getLogger("nanoQSAR");
+	private static Logger LOGGER = Logger.getLogger("nanoQSAR");
+	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR.log";
 	
 	/**
 	 * This is the main method.
@@ -39,12 +43,12 @@ public class PlsrAnalyzer
 		if (args == null || args.length == 0)  // Use default CSV file.
 		{
 			filename = System.getProperty("user.dir") + "\\nanoQSAR.csv";
-			System.out.println("Using default CSV file: " + filename);
+//			System.out.println("Using default CSV file: " + filename);
 		}
 		else  // Use command-line specified CSV file.
 		{
 			filename = args[0].trim();
-			System.out.println("Using command-line entered CSV file: " + args[0]);
+//			System.out.println("Using command-line entered CSV file: " + args[0]);
 		}
 		
 		/* Initialize logger. */
@@ -52,25 +56,29 @@ public class PlsrAnalyzer
 		{
 			/* Initialize log file information. Throw IOException and/or SecurityException 
 			 * if creation of file handler was not successful. */
-			LoggerInfo.init(); 
+			LOGGER.setLevel(Level.INFO);
+			if (!LOGGER.getUseParentHandlers()) {
+				LOGGER.addHandler(new FileHandler(logFilename));
+				LOGGER.addHandler(new ConsoleHandler());
+			}
 		}
-		catch(IOException | SecurityException ex)
+		catch(Exception ex)
 		{
-			System.out.println("Creation of file handler for log file failed.");
-			LoggerInfo.close();
+			LOGGER.severe("Creation of file handler for log file failed.");
 			ex.printStackTrace();  // This is the only case when the stack trace is sent to the console.
 			System.exit(1);  // End the execution of the program.
-		}
-		
-		/* Get the logger. */
-//		Logger logger = CsvMatrix.getLogger(); 
+		} 
 		
 		try
 		{
+			NanoMaterials nanoMaterials = new NanoMaterials(filename);
+			
+//			DoubleMatrix Xorig = nanoMaterials.getSelectDescriptors();
+//			DoubleMatrix Yorig = nanoMaterials.getSelectResults();
+			
 			/* create csvMatrix from filename */
 			CsvMatrix csvMatrix = new CsvMatrix(filename);
 			
-
 			/* Build X and Y matrices. */
 			csvMatrix.buildMatrices();
 			
@@ -78,6 +86,8 @@ public class PlsrAnalyzer
 			 * the Y matrix. */
 			DoubleMatrix Xorig = csvMatrix.getXmatrix();
 			DoubleMatrix Yorig = csvMatrix.getYmatrix();
+			
+			
 			DoubleMatrix Yorig1 = new DoubleMatrix(Yorig.rows, 1);
 			Yorig1 = Yorig.getColumn(1);  // Use LC50 as the effect variable.
 			
@@ -99,7 +109,6 @@ public class PlsrAnalyzer
 			double meanY = stats.getMean();
 			
 			
-			
 			/* Calculate R2. R^2 = || Y - Ypredicted||^2  */
 			double R2 = 0.0;
 			DoubleMatrix Ydiff = Yorig1.sub(Ypredicted);
@@ -108,7 +117,7 @@ public class PlsrAnalyzer
 			R2 = 1.0 - (sum1 / sum2);
 			
 			/* Store R2 in the logger file. */
-			logger.info("R2 = " + R2);
+			LOGGER.info("R2 = " + R2);
 			
 			/* Split original data into 5 subsets that will be used for a 5-fold
 			 * cross-validation analysis. */
@@ -132,24 +141,18 @@ public class PlsrAnalyzer
 			Q2 = 1.0 - (sum1 / sum2);
 			
 			/* Store Q2 in the logger file. */
-			logger.info("Q2 = " + Q2);
+			LOGGER.info("Q2 = " + Q2);
 			
-			/* Close logger file. */
-			LoggerInfo.close();
 		}
 		catch(FileNotFoundException ex)
 		{
-			logger.severe("Exception was thrown: ending the execution of the program. \n" + ex);	
+			LOGGER.severe("Exception was thrown: ending the execution of the program. \n" + ex);	
 		}
 		catch(IOException ex)
 		{
-			logger.severe("Exception was thrown: ending the execution of the program. \n" + ex);	
+			LOGGER.severe("Exception was thrown: ending the execution of the program. \n" + ex);	
 		}		
 		
-	}
-
-	public static Logger getLogger() {
-		return logger;
 	}
 
 }
