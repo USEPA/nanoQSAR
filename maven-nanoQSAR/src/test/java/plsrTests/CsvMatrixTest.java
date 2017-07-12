@@ -20,7 +20,6 @@ import org.jblas.DoubleMatrix;
 
 import static org.junit.Assert.*;
 
-import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -74,44 +73,31 @@ public class CsvMatrixTest {
 	@Test(expected=FileNotFoundException.class)
 	public void testReadCsvFile() throws Exception
 	{		
-		/* Get the logger associated with the CsvMatrix class. */
-//		Logger logTest = CsvMatrix.getLogger();
+		/* Create CsvMatrix object. */
+		CsvMatrix csvMatrix = new CsvMatrix();
 		
 		try
-		{
-			/* Initialize log file information. Throw IOException and/or SecurityException 
-			 * if creation of file handler was not successful. */
-//			LoggerInfo.init(); 
-			
+		{		
 			/* Get the level state of the logger. */
-//			Level level = logTest.getLevel();
-//			String strLevel = level.toString();
+			String strLevel = LOGGER.getLevel().toString();
 			
 			/* If the logger's level is on, set it to OFF. */
-//			if (!strLevel.equals("OFF")) logTest.setLevel(Level.OFF);
+			if (!strLevel.equals("OFF")) LOGGER.setLevel(Level.OFF);
 			
 			/* Pass the name of a non-existing CSV file to the 
 			 * readCsvFile method. This will throw a file-not-found 
 			 * exception. */
-			String filename = "FileDoesNotExist.csv";
-			
-			/* Create CsvMatrix object. */
-			CsvMatrix csvMatrix = new CsvMatrix(filename);
-			
-			/* Should be null */
-			Assert.assertNull("Should be null",csvMatrix);
-
+			String filename = "FileDoesNotExist.csv";	
+			csvMatrix.readCsvFile(filename);
 		}
 		catch(FileNotFoundException ex)
 		{
-//			logTest.setLevel(Level.CONFIG);  // Restore logger's level to its original state.
-//			LoggerInfo.close();
+			LOGGER.setLevel(Level.CONFIG);  // Restore logger's level to its original state.
 			throw ex;
 		}
-		catch(Exception ex)
+		catch(IOException ex)
 		{
-//			logTest.setLevel(Level.CONFIG);  // Restore logger's level to its original state.
-//			LoggerInfo.close();
+			LOGGER.setLevel(Level.CONFIG);  // Restore logger's level to its original state.
 			throw ex;
 		}
 	}
@@ -185,19 +171,22 @@ public class CsvMatrixTest {
 	               "LC50ApproxSymbol", "LC50Unit",          
 	                };
 		CsvMatrix.setHeader(expectedCsvHeader);
-		String[] values = new String[173];
+		CsvMatrix.selectNumericColumns();
+		int xcols = CsvMatrix.getXcolumns();
+		int ycols = CsvMatrix.getYcolumns();
+		String[] values = new String[expectedCsvHeader.length];
 		List<String[]> rowsTest = new ArrayList<String[]>();
-		DoubleMatrix X = new DoubleMatrix(1,67);
-		DoubleMatrix Y = new DoubleMatrix(1,2);
+		DoubleMatrix X = new DoubleMatrix(1,xcols);
+		DoubleMatrix Y = new DoubleMatrix(1,ycols);
 		
-		for (int i = 0; i < 173; i++)
+		for (int i = 0; i < expectedCsvHeader.length; i++)
 		{
 			values[i] = "0.2";
 		}
 		values[7] = "2.3";
 		values[11] = "98.4";
 		
-		for (int i = 0; i < 67; i++)
+		for (int i = 0; i < xcols; i++)
 		{
 			X.put(0,i,0.2);
 		}
@@ -208,15 +197,15 @@ public class CsvMatrixTest {
 		
 		rowsTest.add(values);
 		CsvMatrix.setRows(rowsTest);
-	    DoubleMatrix Xtest = new DoubleMatrix(1,67);
-	    DoubleMatrix Ytest = new DoubleMatrix(1,2);
+	    DoubleMatrix Xtest = new DoubleMatrix(1,xcols);
+	    DoubleMatrix Ytest = new DoubleMatrix(1,ycols);
 		CsvMatrix.buildMatricesContainingNulls(Xtest, Ytest);
 		
 		DoubleMatrix Xsame, Ysame;
 		Xsame = (X.eq(Xtest));  
 		Ysame = (Y.eq(Ytest));
 		
-		for (int i = 0; i < 67; i++)
+		for (int i = 0; i < xcols; i++)
 		{
 			assertEquals(1.0,Xsame.get(0,i),1.0e-15);
 		}
@@ -290,19 +279,22 @@ public class CsvMatrixTest {
 	               "LC50ApproxSymbol", "LC50Unit",          
 	                };
 		CsvMatrix.setHeader(expectedCsvHeader);
-		String[] values = new String[173];
+		CsvMatrix.selectNumericColumns();
+		int xcols = CsvMatrix.getXcolumns();
+		int ycols = CsvMatrix.getYcolumns();
+		String[] values = new String[expectedCsvHeader.length];
 		List<String[]> rowsTest = new ArrayList<String[]>();
-		DoubleMatrix X = new DoubleMatrix(1,67);
-		DoubleMatrix Y = new DoubleMatrix(1,2);
+		DoubleMatrix X = new DoubleMatrix(1,xcols);
+		DoubleMatrix Y = new DoubleMatrix(1,ycols);
 		
-		for (int i = 0; i < 173; i++)
+		for (int i = 0; i < expectedCsvHeader.length; i++)
 		{
 			values[i] = "0.2";
 		}
 		values[7] = "2.3";
 		values[11] = "98.4";
 		
-		for (int i = 0; i < 67; i++)
+		for (int i = 0; i < xcols; i++)
 		{
 			X.put(0,i,0.2);
 		}
@@ -313,15 +305,15 @@ public class CsvMatrixTest {
 		
 		rowsTest.add(values);
 		CsvMatrix.setRows(rowsTest);	
-		DoubleMatrix Xtest = new DoubleMatrix(1,67);
-	    DoubleMatrix Ytest = new DoubleMatrix(1,2);
+		DoubleMatrix Xtest = new DoubleMatrix(1,xcols);
+	    DoubleMatrix Ytest = new DoubleMatrix(1,ycols);
 		CsvMatrix.buildMatricesWithoutNulls(Xtest, Ytest);
 		
 		DoubleMatrix Xsame, Ysame;
 		Xsame = (X.eq(Xtest));  
 		Ysame = (Y.eq(Ytest));
 		
-		for (int i = 0; i < 67; i++)
+		for (int i = 0; i < xcols; i++)
 		{
 			assertEquals(1.0,Xsame.get(0,i),1.0e-15);
 		}
@@ -747,18 +739,21 @@ public class CsvMatrixTest {
 	 * 2) It checks whether the log file was created.
 	 * 3) it checks whether the log file is empty or not.
 	 * @author Wilson Melendez
+	 * @throws Exception 
 	 */
 	@Test
 	public void testMainProgram() throws Exception
 	{
 		String[] args = null;
-		/* Run the main application */
+		/* Run the application. */
 		PlsrAnalyzer.main(args);
 		
-		/* Verify that the log file was created and that it's not empty. */
-		File file = new File(LOGGER.getName());
-		assertTrue("Log file does not exist.", file.exists());
-		assertTrue("Log file is empty.", file.length() > 0);		
+		/* Verify that the log file was created and that it's not
+		 * empty. */
+		String logFile = System.getProperty("user.dir") + "\\nanoQSAR.log";		
+		File file = new File(logFile);
+		assertTrue("Log file exists.", file.exists());
+		assertTrue("Log file is not empty.", file.length() > 0);		
 	}
 	
 	/**
@@ -766,11 +761,12 @@ public class CsvMatrixTest {
 	 * recognizes a CSV file with a name other than the default one. 
 	 * If the CSV file cannot be found, an exception will be thrown and
 	 * the test will fail.
+	 * @throws FileNotFoundException
+	 * @throws IOException
 	 * @author Wilson Melendez
-	 * @throws Exception 
 	 */
 	@Test
-	public void testNonDefaultCsvFile() throws Exception
+	public void testNonDefaultCsvFile() throws FileNotFoundException, IOException
 	{
 		/* Create a temporary file and write data to it. */
 		String filename = System.getProperty("user.dir") + "\\nanoQSAR1.csv";
@@ -784,7 +780,7 @@ public class CsvMatrixTest {
 		 * for processing. If the file is found, no exception will be
 		 * thrown and the test will succeed.  If the file is not found, 
 		 * an exception will be thrown and the test will fail. */
-		CsvMatrix csvMatrix = new CsvMatrix(filename);
+		CsvMatrix.readCsvFile(filename);
 		
 		/* Delete the temporary file. */
 		File file = new File(filename);
