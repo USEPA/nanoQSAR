@@ -69,15 +69,20 @@ public class NanoQSAR {
 			/* Input database connection information and name of output file. */
 			DBUtil.loadProperties(propFilename);	
 			
+			NanoMaterials nanoMaterials = null;
+			
 			/* Test for connection to database */			
 			if (ConnectionManager.getConnection() != null) {
+				
 				/* Data-mine MySQL database */
-				NanoMaterials nanoMaterials = new NanoMaterials(new MySqlQuery());
+				nanoMaterials = new NanoMaterials(new MySqlQuery());
 				/* write data to CSV file. */
 				nanoMaterials.writeCsvFile(DBUtil.getCsvFileName());
-			} else {
-				/* get data from CSV file */
-				NanoMaterials nanoMaterials = new NanoMaterials(DBUtil.getCsvFileName());
+				
+			} else { /* Connectio to database is not avaialable */
+				
+				/* Get data from CSV file */
+				nanoMaterials = new NanoMaterials(DBUtil.getCsvFileName());
 			}
 
 
@@ -85,10 +90,6 @@ public class NanoQSAR {
 
 			System.out.println(ex.getMessage());
 			ex.printStackTrace();  // This is the only case when the stack trace is sent to the console.
-
-		} finally {
-
-			LoggerInfo.close();
 
 		}
 		
