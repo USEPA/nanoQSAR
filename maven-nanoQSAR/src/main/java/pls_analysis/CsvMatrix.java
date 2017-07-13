@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,12 +24,16 @@ import org.jblas.Solve;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
+import nanoQSAR.NanoMaterial;
+import nanoQSAR.NanoMaterials;
+
 /**
  * @author Wilson Melendez
  *
  */
 public class CsvMatrix
 {
+	private static NanoMaterials nanoMaterials;
 	private static int xcolumns;
 	private static int ycolumns;
 	private static int rowsSize;
@@ -37,8 +42,8 @@ public class CsvMatrix
 	
 	private static List<String[]> rows;
 	private static String[] header;
-	private static Integer[] jcolX; // Positional indices of X-matrix columns in CSV file. 
-	private static Integer[] jcolY; // Positional indices of Y-matrix columns in CSV file.
+	private static int[] jcolX; // Positional indices of X-matrix columns in CSV file. 
+	private static int[] jcolY; // Positional indices of Y-matrix columns in CSV file.
 	private static Double[] minValueX;
 	private static Double[] minValueY;
 	private static Double[] maxValueX;
@@ -71,30 +76,23 @@ public class CsvMatrix
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public CsvMatrix() throws Exception {
-		super();
-		
-		/* Initialize log file information. Throw IOException and/or SecurityException 
-		 * if creation of file handler was not successful. */
-		LOGGER.setLevel(Level.INFO);
-		if (!LOGGER.getUseParentHandlers()) {
-			LOGGER.addHandler(new FileHandler(logFilename));
-			LOGGER.addHandler(new ConsoleHandler());
-		}
-	}
+//	public CsvMatrix() throws Exception {
+//		super();
+//	}
 	
-	public CsvMatrix(String filename) throws Exception {
+	public CsvMatrix(NanoMaterials nanoMaterials) throws Exception {
 		super();
 		
-		/* Initialize log file information. Throw IOException and/or SecurityException 
-		 * if creation of file handler was not successful. */
-		LOGGER.setLevel(Level.INFO);
-		if (!LOGGER.getUseParentHandlers()) {
-			LOGGER.addHandler(new FileHandler(logFilename));
-			LOGGER.addHandler(new ConsoleHandler());
-		}
+		this.nanoMaterials = nanoMaterials;
+		nanoMaterials.selectNumericColumns();
+		rowsSize = nanoMaterials.size();
+		jcolX = nanoMaterials.getDescriptorIndex();
+		jcolY = nanoMaterials.getResultIndex();
+		xcolumns = jcolX.length;
+		ycolumns = jcolY.length;
+
+		buildMatrices();
 		
-		readCsvFile(filename);
 	}
 	
 	public static void setMaxValueX(ArrayList<Double> list)
@@ -466,10 +464,8 @@ public class CsvMatrix
         
         /* Create arrays that will store indices, minimum, and 
          * maximum values of the X columns. */
-        jcolX = new Integer[xcolumns];
         minValueX = new Double[xcolumns];
-        maxValueX = new Double[xcolumns];
-        jcolX = listX.toArray(jcolX);        
+        maxValueX = new Double[xcolumns];      
         minValueX = listMinX.toArray(minValueX);
         maxValueX = listMaxX.toArray(maxValueX);
         
@@ -484,10 +480,8 @@ public class CsvMatrix
         
         /* Create arrays that will store indices, minimum, and 
          * maximum values of the Y columns. */
-        jcolY = new Integer[ycolumns];
         minValueY = new Double[ycolumns];
-        maxValueY = new Double[ycolumns];
-        jcolY = listY.toArray(jcolY);        
+        maxValueY = new Double[ycolumns];       
         minValueY = listMinY.toArray(minValueY);
         maxValueY = listMaxY.toArray(maxValueY);
 	}
@@ -496,32 +490,42 @@ public class CsvMatrix
 	 * This method builds the X and Y matrices needed by the PLS Regression algorithm.
 	 * Null values are converted to random values using the Math.randow() method.
 	 * @author Wilson Melendez
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
 	 */
-	public static void buildMatrices()
+	public static void buildMatrices() throws IllegalArgumentException, IllegalAccessException
 	{		
-		boolean foundNulls = false;
-		rowsSize = rows.size();  // Number of rows in array list.
+
 		Xmatrix = new DoubleMatrix(rowsSize, xcolumns);   // X matrix
 		Ymatrix = new DoubleMatrix(rowsSize, ycolumns);   // Y matrix
 		
+		Field[] fields = NanoMaterial.class.getDeclaredFields();
+		
 		/* Check whether data has any null values. */
-		for (String[] str : rows)
-		{
-			if (Arrays.asList(str).contains("null"))
-			{
-				foundNulls = true;
-				break;
+		for (int i=0; i<nanoMaterials.size(); i++) {
+			
+			NanoMaterial nanoMaterial = nanoMaterials.get(i);
+			for (int j=0; j<jcolX.length; j++) {
+				Field field = fields[jcolX[j]];
+				Object v1 = field.get(nanoMaterial);
+				if (v1!=null) {
+					Xmatrix.put(i,j,(double)v1);
+				} else {
+					Xmatrix.put(i,j,1.0);
+				}
 			}
+			for (int j=0; j<jcolY.length; j++) {
+				Field field = fields[jcolY[j]];
+				Object v1 = field.get(nanoMaterial);
+				if (v1!=null) {
+					Ymatrix.put(i,j,(double)v1);
+				} else {
+					Ymatrix.put(i,j,1.0);
+				}
+			}
+			
 		}
 		
-		if (foundNulls)		
-		{
-			buildMatricesContainingNulls(Xmatrix, Ymatrix);  // Handle case with null values.
-		}
-		else
-		{
-			buildMatricesWithoutNulls(Xmatrix, Ymatrix);  // Handle case with no null values.
-		}		
 	}
 	
 	/**
@@ -563,17 +567,19 @@ public class CsvMatrix
 		/* Loop over the rows of the data */
 		for (int i = 0; i < Xorig.rows; i++)
 		{
-			nextLine = rows.get(i);	  // Get the ith row of the data
+			NanoMaterial nanoMaterial = nanoMaterials.get(i);	  // Get the ith row of the data
 			for (int k = 0; k < Xorig.columns; k++)   // Loop over the columns
 			{
 				int jcol = jcolX[k];
-				Xorig.put(i,k,Double.parseDouble(nextLine[jcol]));
+//				Xorig.put(i,k,Double.parseDouble(nextLine[jcol]));
+				Xorig.put(i,k,1.0);
 			}
 			
 			for (int k = 0; k < Yorig.columns; k++)
 			{
 				int jcol = jcolY[k];
-				Yorig.put(i,k,Double.parseDouble(nextLine[jcol]));
+//				Yorig.put(i,k,Double.parseDouble(nextLine[jcol]));
+				Yorig.put(i,k,1.0);
 			}	
 				
 		}

@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.jblas.DoubleMatrix;
 
+import nanoQSAR.NanoMaterial;
 import nanoQSAR.NanoMaterials;
 
 
@@ -73,14 +74,11 @@ public class PlsrAnalyzer
 		{
 			NanoMaterials nanoMaterials = new NanoMaterials(filename);
 			
-//			DoubleMatrix Xorig = nanoMaterials.getSelectDescriptors();
-//			DoubleMatrix Yorig = nanoMaterials.getSelectResults();
-			
 			/* create csvMatrix from filename */
-			CsvMatrix csvMatrix = new CsvMatrix(filename);
+			CsvMatrix csvMatrix = new CsvMatrix(nanoMaterials);
 			
 			/* Build X and Y matrices. */
-			csvMatrix.buildMatrices();
+//			csvMatrix.buildMatrices();
 			
 			/* Get the X and Y matrices.  Use a single column for 
 			 * the Y matrix. */

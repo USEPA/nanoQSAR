@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
+import nanoQSAR.NanoMaterials;
 import pls_analysis.CsvMatrix;
 import pls_analysis.PlsrAnalyzer;
 
@@ -37,6 +38,7 @@ public class CsvMatrixTest {
 	
 	/* Need this line to allow logging of error messages */
 	private static Logger LOGGER = Logger.getLogger("nanoQSAR");
+	String logFilename = System.getProperty("user.dir") + "\\nanoQSAR.log";	
 	
 	@Test
 	public void testMatrices() throws FileNotFoundException, IOException
@@ -74,7 +76,8 @@ public class CsvMatrixTest {
 	public void testReadCsvFile() throws Exception
 	{		
 		/* Create CsvMatrix object. */
-		CsvMatrix csvMatrix = new CsvMatrix();
+//		CsvMatrix csvMatrix = new CsvMatrix();
+		NanoMaterials nanoMaterials = new NanoMaterials();
 		
 		try
 		{		
@@ -88,7 +91,7 @@ public class CsvMatrixTest {
 			 * readCsvFile method. This will throw a file-not-found 
 			 * exception. */
 			String filename = "FileDoesNotExist.csv";	
-			csvMatrix.readCsvFile(filename);
+			nanoMaterials.readCsvFile(filename);
 		}
 		catch(FileNotFoundException ex)
 		{
@@ -750,8 +753,8 @@ public class CsvMatrixTest {
 		
 		/* Verify that the log file was created and that it's not
 		 * empty. */
-		String logFile = System.getProperty("user.dir") + "\\nanoQSAR.log";		
-		File file = new File(logFile);
+	
+		File file = new File(logFilename);
 		assertTrue("Log file exists.", file.exists());
 		assertTrue("Log file is not empty.", file.length() > 0);		
 	}
