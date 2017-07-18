@@ -44,12 +44,10 @@ public class PlsrAnalyzer
 		if (args == null || args.length == 0)  // Use default CSV file.
 		{
 			filename = System.getProperty("user.dir") + "\\nanoQSAR.csv";
-//			System.out.println("Using default CSV file: " + filename);
 		}
 		else  // Use command-line specified CSV file.
 		{
 			filename = args[0].trim();
-//			System.out.println("Using command-line entered CSV file: " + args[0]);
 		}
 		
 		/* Initialize logger. */
@@ -57,11 +55,9 @@ public class PlsrAnalyzer
 		{
 			/* Initialize log file information. Throw IOException and/or SecurityException 
 			 * if creation of file handler was not successful. */
+			LOGGER.addHandler(new FileHandler(logFilename));
 			LOGGER.setLevel(Level.INFO);
-			if (!LOGGER.getUseParentHandlers()) {
-				LOGGER.addHandler(new FileHandler(logFilename));
-				LOGGER.addHandler(new ConsoleHandler());
-			}
+
 		}
 		catch(Exception ex)
 		{

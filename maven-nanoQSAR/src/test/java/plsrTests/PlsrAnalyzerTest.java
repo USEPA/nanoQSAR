@@ -34,7 +34,7 @@ import pls_analysis.PlsrAnalyzer;
  * @author Wilson Melendez
  *
  */
-public class CsvMatrixTest {
+public class PlsrAnalyzerTest {
 	
 	/* Need this line to allow logging of error messages */
 	private static Logger LOGGER = Logger.getLogger("nanoQSAR");
@@ -75,32 +75,21 @@ public class CsvMatrixTest {
 	@Test(expected=FileNotFoundException.class)
 	public void testReadCsvFile() throws Exception
 	{		
-		/* Create CsvMatrix object. */
-//		CsvMatrix csvMatrix = new CsvMatrix();
-		NanoMaterials nanoMaterials = new NanoMaterials();
-		
 		try
 		{		
-			/* Get the level state of the logger. */
-			String strLevel = LOGGER.getLevel().toString();
-			
-			/* If the logger's level is on, set it to OFF. */
-			if (!strLevel.equals("OFF")) LOGGER.setLevel(Level.OFF);
-			
 			/* Pass the name of a non-existing CSV file to the 
-			 * readCsvFile method. This will throw a file-not-found 
-			 * exception. */
-			String filename = "FileDoesNotExist.csv";	
-			nanoMaterials.readCsvFile(filename);
+			 * readCsvFile method. This will not throw a file-not-found 
+			 * exception since that error is expected*/
+			String filename = "FileDoesNotExist.csv";
+			NanoMaterials nanoMaterials = new NanoMaterials(filename);
 		}
 		catch(FileNotFoundException ex)
 		{
-			LOGGER.setLevel(Level.CONFIG);  // Restore logger's level to its original state.
 			throw ex;
 		}
 		catch(IOException ex)
 		{
-			LOGGER.setLevel(Level.CONFIG);  // Restore logger's level to its original state.
+			/* catch and throw any other error found */
 			throw ex;
 		}
 	}
@@ -755,8 +744,8 @@ public class CsvMatrixTest {
 		 * empty. */
 	
 		File file = new File(logFilename);
-		assertTrue("Log file exists.", file.exists());
-		assertTrue("Log file is not empty.", file.length() > 0);		
+		assertTrue("Log file does not exists.", file.exists());
+		assertTrue("Log file is empty.", file.length() > 0);
 	}
 	
 	/**
