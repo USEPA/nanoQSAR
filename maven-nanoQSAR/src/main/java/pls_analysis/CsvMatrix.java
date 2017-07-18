@@ -42,8 +42,10 @@ public class CsvMatrix
 	
 	private static List<String[]> rows;
 	private static String[] header;
-	private static int[] jcolX; // Positional indices of X-matrix columns in CSV file. 
-	private static int[] jcolY; // Positional indices of Y-matrix columns in CSV file.
+	private static Integer[] jcolX; // Positional indices of X-matrix columns in CSV file. 
+	private static Integer[] jcolY; // Positional indices of Y-matrix columns in CSV file.
+	private static int[] jcX; // Positional indices of X-matrix columns. 
+	private static int[] jcY; // Positional indices of Y-matrix columns.
 	private static Double[] minValueX;
 	private static Double[] minValueY;
 	private static Double[] maxValueX;
@@ -86,10 +88,10 @@ public class CsvMatrix
 		this.nanoMaterials = nanoMaterials;
 		nanoMaterials.selectNumericColumns();
 		rowsSize = nanoMaterials.size();
-		jcolX = nanoMaterials.getDescriptorIndex();
-		jcolY = nanoMaterials.getResultIndex();
-		xcolumns = jcolX.length;
-		ycolumns = jcolY.length;
+		jcX = nanoMaterials.getDescriptorIndex();
+		jcY = nanoMaterials.getResultIndex();
+		xcolumns = jcX.length;
+		ycolumns = jcY.length;
 
 		buildMatrices();
 		
@@ -464,8 +466,10 @@ public class CsvMatrix
         
         /* Create arrays that will store indices, minimum, and 
          * maximum values of the X columns. */
+        jcolX = new Integer[xcolumns];
         minValueX = new Double[xcolumns];
-        maxValueX = new Double[xcolumns];      
+        maxValueX = new Double[xcolumns];
+        jcolX = listX.toArray(jcolX); 
         minValueX = listMinX.toArray(minValueX);
         maxValueX = listMaxX.toArray(maxValueX);
         
@@ -480,8 +484,10 @@ public class CsvMatrix
         
         /* Create arrays that will store indices, minimum, and 
          * maximum values of the Y columns. */
+        jcolY = new Integer[ycolumns];
         minValueY = new Double[ycolumns];
-        maxValueY = new Double[ycolumns];       
+        maxValueY = new Double[ycolumns];
+        jcolY = listY.toArray(jcolY); 
         minValueY = listMinY.toArray(minValueY);
         maxValueY = listMaxY.toArray(maxValueY);
 	}
@@ -489,7 +495,7 @@ public class CsvMatrix
 	/**
 	 * This method builds the X and Y matrices needed by the PLS Regression algorithm.
 	 * Null values are converted to random values using the Math.randow() method.
-	 * @author Wilson Melendez
+	 * @author Wilson Melendez & Paul Harten
 	 * @throws Exception 
 	 */
 	public static void buildMatrices() throws Exception
@@ -499,27 +505,33 @@ public class CsvMatrix
 		Ymatrix = new DoubleMatrix(rowsSize, ycolumns);   // Y matrix
 		
 		Field[] fields = NanoMaterial.class.getDeclaredFields();
+		for (Field field: fields) field.setAccessible(true);
+		
 		
 		/* Check whether data has any null values. */
 		for (int i=0; i<nanoMaterials.size(); i++) {
 			
 			NanoMaterial nanoMaterial = nanoMaterials.get(i);
-			for (int j=0; j<jcolX.length; j++) {
-				Field field = fields[jcolX[j]];
+			
+			for (int j=0; j<jcX.length; j++) {
+				Field field = fields[jcX[j]];
 				Object v1 = field.get(nanoMaterial);
 				if (v1!=null) {
-					Xmatrix.put(i,j,(double)v1);
+					double value = ((Double)v1).doubleValue();
+					Xmatrix.put(i,j,value);
 				} else {
-					Xmatrix.put(i,j,1.0);
+					Xmatrix.put(i,j,0.0);
 				}
 			}
-			for (int j=0; j<jcolY.length; j++) {
-				Field field = fields[jcolY[j]];
+			
+			for (int j=0; j<jcY.length; j++) {
+				Field field = fields[jcY[j]];
 				Object v1 = field.get(nanoMaterial);
 				if (v1!=null) {
-					Ymatrix.put(i,j,(double)v1);
+					double value = ((Double)v1).doubleValue();
+					Ymatrix.put(i,j,value);
 				} else {
-					Ymatrix.put(i,j,1.0);
+					Ymatrix.put(i,j,0.0);
 				}
 			}
 			
@@ -527,6 +539,39 @@ public class CsvMatrix
 		
 	}
 	
+
+	/**
+	 * This method finds min/max data for each numerical field.
+	 * @param strValue
+	 * @param minValue
+	 * @param maxValue
+	 * @return
+	 * @author Paul Harten
+	 * @throws Exception 
+	 */
+	private static void minMaxValues(NanoMaterials nanoMaterials, Field[] fields, int[] jCols, double[] minValue, double[] maxValue) throws Exception {
+
+		double mnValue = Double.MAX_VALUE;
+		double mxValue = -Double.MAX_VALUE;
+		double value;
+		
+		for (int i=0; i<nanoMaterials.size(); i++) {
+			
+			NanoMaterial nanoMaterial = nanoMaterials.get(i);
+			
+			for (int j=0; j<jCols.length; j++) {
+				Field field = fields[jCols[j]];
+				Object v1 = field.get(nanoMaterial);
+				if (v1!=null) {
+					value = ((Double)v1).doubleValue();
+					if (value<mnValue) mnValue = value;
+					if (value<mxValue) mxValue = value;
+				}
+			}
+		}
+
+	}
+
 	/**
 	 * This routine builds the X and Y matrices for the case of the original data 
 	 * containing null values.
@@ -566,19 +611,19 @@ public class CsvMatrix
 		/* Loop over the rows of the data */
 		for (int i = 0; i < Xorig.rows; i++)
 		{
-			NanoMaterial nanoMaterial = nanoMaterials.get(i);	  // Get the ith row of the data
+			nextLine = rows.get(i);	  // Get the ith row of the data
 			for (int k = 0; k < Xorig.columns; k++)   // Loop over the columns
 			{
 				int jcol = jcolX[k];
-//				Xorig.put(i,k,Double.parseDouble(nextLine[jcol]));
-				Xorig.put(i,k,1.0);
+				Xorig.put(i,k,Double.parseDouble(nextLine[jcol]));
+//				Xorig.put(i,k,1.0);
 			}
 			
 			for (int k = 0; k < Yorig.columns; k++)
 			{
 				int jcol = jcolY[k];
-//				Yorig.put(i,k,Double.parseDouble(nextLine[jcol]));
-				Yorig.put(i,k,1.0);
+				Yorig.put(i,k,Double.parseDouble(nextLine[jcol]));
+//				Yorig.put(i,k,1.0);
 			}	
 				
 		}

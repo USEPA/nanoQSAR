@@ -4,7 +4,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ CsvMatrixTest.class })
+@SuiteClasses({ PlsrAnalyzerTest.class })
 public class AllPLSRTests {
 
 }

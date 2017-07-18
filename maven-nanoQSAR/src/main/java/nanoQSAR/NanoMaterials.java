@@ -278,7 +278,7 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
         
         /* Create arrays that will store indices, minimum, and 
          * maximum values of the X columns. */
-        String[] desArray = null;
+        String[] desArray = new String[descriptors.size()];
         desArray = descriptors.toArray(desArray);
         setDescriptorIndex(NanoMaterial.getFieldIndex(desArray));        
         
@@ -290,8 +290,8 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
         
         /* Create arrays that will store indices, minimum, and 
          * maximum values of the Y columns. */
-        String[] resArray = null;
-        resArray = descriptors.toArray(resArray);
+        String[] resArray = new String[results.size()];
+        resArray = results.toArray(resArray);
         setResultIndex(NanoMaterial.getFieldIndex(resArray));        
 
 	}
