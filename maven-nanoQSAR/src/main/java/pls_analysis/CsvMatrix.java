@@ -490,10 +490,9 @@ public class CsvMatrix
 	 * This method builds the X and Y matrices needed by the PLS Regression algorithm.
 	 * Null values are converted to random values using the Math.randow() method.
 	 * @author Wilson Melendez
-	 * @throws IllegalAccessException 
-	 * @throws IllegalArgumentException 
+	 * @throws Exception 
 	 */
-	public static void buildMatrices() throws IllegalArgumentException, IllegalAccessException
+	public static void buildMatrices() throws Exception
 	{		
 
 		Xmatrix = new DoubleMatrix(rowsSize, xcolumns);   // X matrix
