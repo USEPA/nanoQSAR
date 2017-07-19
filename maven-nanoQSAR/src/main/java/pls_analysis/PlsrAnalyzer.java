@@ -9,7 +9,6 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.jblas.DoubleMatrix;
 
 import nanoQSAR.NanoMaterial;
@@ -68,13 +67,11 @@ public class PlsrAnalyzer
 		
 		try
 		{
+			/* create nanoMaterials from filename */
 			NanoMaterials nanoMaterials = new NanoMaterials(filename);
 			
-			/* create csvMatrix from filename */
+			/* Build X and Y matrices from nanoMaterials. */
 			CsvMatrix csvMatrix = new CsvMatrix(nanoMaterials);
-			
-			/* Build X and Y matrices. */
-//			csvMatrix.buildMatrices();
 			
 			/* Get the X and Y matrices.  Use a single column for 
 			 * the Y matrix. */
@@ -91,24 +88,18 @@ public class PlsrAnalyzer
 			/* Write BPLS* vector to a CSV file. */
 			csvMatrix.writeBplsStarToCsv(BplsS);
 			
+			/* Calculate average of observed values. */
+			double meanY = Yorig1.mean();			
+			
 			/* Predict the Y values. */
 			DoubleMatrix Ypredicted = csvMatrix.predictResults(Xorig, BplsS);
 			
-			/* Calculate average of observed values. */
-			DescriptiveStatistics stats = new DescriptiveStatistics();
-		    for (int i = 0; i < Yorig1.rows; i++)
-		    {
-				stats.addValue(Yorig1.get(i));
-			}
-			double meanY = stats.getMean();
-			
-			
-			/* Calculate R2. R^2 = || Y - Ypredicted||^2  */
-			double R2 = 0.0;
+			/* Calculate R2 = 1.0 - ||Yobs-Ypred||^2 / ||Yobs-Ymean||^2  */
 			DoubleMatrix Ydiff = Yorig1.sub(Ypredicted);
-			double sum1 = Math.pow(Ydiff.norm2(), 2.0);
-			double sum2 = Math.pow(Yorig1.sub(meanY).norm2(), 2.0);
-			R2 = 1.0 - (sum1 / sum2);
+			double sum1 = Ydiff.dot(Ydiff);
+			Ydiff = Yorig1.sub(meanY);
+			double sum2 = Ydiff.dot(Ydiff);
+			double R2 = 1.0 - (sum1 / sum2);
 			
 			/* Store R2 in the logger file. */
 			LOGGER.info("R2 = " + R2);
@@ -127,12 +118,13 @@ public class PlsrAnalyzer
 				Yshuffled.put(i, Yorig1.get(index));
 			}
 			
-			/* Perform a 5-fold cross-validation and compute Q2. */
+			/* Perform 5-fold cross-validation. */
 			DoubleMatrix Ytilde = csvMatrix.performFiveFoldCrossValidation();
-			double Q2 = 0.0;
-			DoubleMatrix Ydiff1 = Yshuffled.sub(Ytilde);
-			sum1 = Math.pow(Ydiff1.norm2(), 2.0);
-			Q2 = 1.0 - (sum1 / sum2);
+			
+			/* Calculate Q2 = 1.0 - ||Yobs-Ytilda||^2 / ||Yobs-Ymean||^2  */
+			Ydiff = Yshuffled.sub(Ytilde);
+			sum1 = Ydiff.dot(Ydiff);
+			double Q2 = 1.0 - (sum1 / sum2);
 			
 			/* Store Q2 in the logger file. */
 			LOGGER.info("Q2 = " + Q2);
