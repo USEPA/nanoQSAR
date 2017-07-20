@@ -104,25 +104,11 @@ public class PlsrAnalyzer
 			/* Store R2 in the logger file. */
 			LOGGER.info("R2 = " + R2);
 			
-			/* Split original data into 5 subsets that will be used for a 5-fold
-			 * cross-validation analysis. */
-			List<Integer> list = new ArrayList<Integer>();
-			csvMatrix.splitDataIntoSets(Xorig, Yorig1, list);
+			/* Perform 5-fold cross-validation prediction. */
+			DoubleMatrix Ytilde = csvMatrix.performFiveFoldCrossValidation(Xorig, Yorig1);
 			
-			/* Use the list containing the re-shuffled indices to 
-			 * obtain the re-shuffled Y vector. */
-			DoubleMatrix Yshuffled = new DoubleMatrix(Yorig1.rows);
-			for (int i = 0; i < Yorig1.rows; i++)
-			{
-				int index = list.get(i);
-				Yshuffled.put(i, Yorig1.get(index));
-			}
-			
-			/* Perform 5-fold cross-validation. */
-			DoubleMatrix Ytilde = csvMatrix.performFiveFoldCrossValidation();
-			
-			/* Calculate Q2 = 1.0 - ||Yobs-Ytilda||^2 / ||Yobs-Ymean||^2  */
-			Ydiff = Yshuffled.sub(Ytilde);
+			/* Calculate Q2 = 1.0 - ||Yobs-Ytilde||^2 / ||Yobs-Ymean||^2  */
+			Ydiff = Yorig1.sub(Ytilde);
 			sum1 = Ydiff.dot(Ydiff);
 			double Q2 = 1.0 - (sum1 / sum2);
 			

@@ -1190,6 +1190,78 @@ public class CsvMatrix
 		
 		return Ytilde;
 	}
+	/**
+	 * This method implements the 5-fold cross-validation algorithm.
+	 * @author Wilson Melendez
+	 */
+	public static DoubleMatrix performFiveFoldCrossValidation(DoubleMatrix Xorig, DoubleMatrix Yorig1)
+	{
+		
+		/* Split original data into 5 subsets that will be used for a 5-fold
+		 * cross-validation analysis. */
+		List<Integer> list = new ArrayList<Integer>();
+		splitDataIntoSets(Xorig, Yorig1, list);
+		
+		DoubleMatrix[] Yhat = new DoubleMatrix[numDataSets];
+		DoubleMatrix Ytilde = new DoubleMatrix();
+		
+		for (int ifold = 0; ifold < numDataSets; ifold++)
+		{
+			/* Leave one set out and use remaining sets to build model. */
+			DoubleMatrix Xtraining = null;
+			DoubleMatrix Ytraining = null;
+			Yhat[ifold] = null;
+			Integer[] ind = new Integer[numDataSets-1];
+			
+			/* Store the indices of the sets that are going to be used for the model and
+			 * exclude the one that is going to be predicted. */
+			int j = 0;
+			for (int i = 0; i < numDataSets; i++)
+			{
+				if (i != ifold)
+				{
+					ind[j] = i;	
+					j++;
+				}				
+			}
+						
+			/* Build the X and Y matrices for the model. */
+			Xtraining = DoubleMatrix.concatVertically(XmatrixSet[ind[0]], XmatrixSet[ind[1]]);
+			Ytraining = DoubleMatrix.concatVertically(YmatrixSet[ind[0]], YmatrixSet[ind[1]]);
+			for (int i = 2; i < ind.length; i++)
+			{
+				Xtraining = DoubleMatrix.concatVertically(Xtraining, XmatrixSet[ind[i]]);
+				Ytraining = DoubleMatrix.concatVertically(Ytraining, YmatrixSet[ind[i]]);
+			}
+			
+			/* Perform the PLS regression analysis. */
+			DoubleMatrix BplsS = performPLSR(Xtraining, Ytraining);
+			
+			/* Predict the Y values that were left out. */
+			Yhat[ifold] = predictResults(XmatrixSet[ifold], BplsS);			
+			
+			/* Build the predicted Y's into a single matrix. */
+			if (ifold == 0) 
+			{
+				Ytilde.copy(Yhat[ifold]);							
+			}
+			else
+			{
+				Ytilde = DoubleMatrix.concatVertically(Ytilde, Yhat[ifold]);	
+			}
+		}
+		
+		/* Use the list containing the shuffled indices to 
+		 * obtain the unshuffled Ytilde vector. */
+		DoubleMatrix Yunshuffled = new DoubleMatrix(Ytilde.rows);
+		for (int i = 0; i < Ytilde.rows; i++)
+		{
+			int index = list.get(i);
+			Yunshuffled.put(index, Ytilde.get(i));
+		}
+		
+		return Yunshuffled;
+	}
 	
 	/**
 	 * This method prints a matrix to standard output.
