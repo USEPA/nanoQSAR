@@ -78,27 +78,30 @@ public class PlsrAnalyzer
 			DoubleMatrix Xorig = csvMatrix.getXmatrix();
 			DoubleMatrix Yorig = csvMatrix.getYmatrix();
 			
+			DoubleMatrix Yorig1 = Yorig.getColumn(1);	// Use LC50 as the effect variable.
 			
-			DoubleMatrix Yorig1 = new DoubleMatrix(Yorig.rows, 1);
-			Yorig1 = Yorig.getColumn(1);  // Use LC50 as the effect variable.
+			/* Calculate average of observed values. */
+			double meanY = Yorig1.mean();
+			
+			/* Calculate denominator */
+			DoubleMatrix Ydiff = Yorig1.sub(meanY);
+			double sum2 = Ydiff.dot(Ydiff);
 			
 			/* Perform PLS regression and return the BPLS* vector. */
 			DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig,Yorig1);  
 			
 			/* Write BPLS* vector to a CSV file. */
-			csvMatrix.writeBplsStarToCsv(BplsS);
-			
-			/* Calculate average of observed values. */
-			double meanY = Yorig1.mean();			
+			csvMatrix.writeBplsStarToCsv(BplsS);			
 			
 			/* Predict the Y values. */
 			DoubleMatrix Ypredicted = csvMatrix.predictResults(Xorig, BplsS);
+//			for (int i=0; i<Yorig1.rows; i++) {
+//				System.out.println("i = "+i+": orig = "+Yorig1.get(i)+", pred = "+Ypredicted.get(i));
+//			}
 			
-			/* Calculate R2 = 1.0 - ||Yobs-Ypred||^2 / ||Yobs-Ymean||^2  */
-			DoubleMatrix Ydiff = Yorig1.sub(Ypredicted);
+			/* Calculate R2 = 1.0 - ||Yobs-Ypred||^2 / ||Yobs-Ymean||^2 */
+			Ydiff = Yorig1.sub(Ypredicted);
 			double sum1 = Ydiff.dot(Ydiff);
-			Ydiff = Yorig1.sub(meanY);
-			double sum2 = Ydiff.dot(Ydiff);
 			double R2 = 1.0 - (sum1 / sum2);
 			
 			/* Store R2 in the logger file. */
@@ -106,8 +109,11 @@ public class PlsrAnalyzer
 			
 			/* Perform 5-fold cross-validation prediction. */
 			DoubleMatrix Ytilde = csvMatrix.performFiveFoldCrossValidation(Xorig, Yorig1);
+//			for (int i=0; i<Ytilde.rows; i++) {
+//				System.out.println("i = "+i+": orig = "+Yorig1.get(i)+", pred = "+Ytilde.get(i));
+//			}
 			
-			/* Calculate Q2 = 1.0 - ||Yobs-Ytilde||^2 / ||Yobs-Ymean||^2  */
+			/* Calculate Q2 = 1.0 - ||Yobs-Ytilde||^2 / ||Yobs-Ymean||^2 */
 			Ydiff = Yorig1.sub(Ytilde);
 			sum1 = Ydiff.dot(Ydiff);
 			double Q2 = 1.0 - (sum1 / sum2);
