@@ -50,6 +50,8 @@ public class CsvMatrix
 	private static Double[] minValueY;
 	private static Double[] maxValueX;
 	private static Double[] maxValueY;
+	private static DoubleMatrix xMatrix;
+	private static DoubleMatrix yMatrix;
 	private static DoubleMatrix Xmatrix;
 	private static DoubleMatrix Ymatrix;
 	private static DoubleMatrix Umatrix;
@@ -93,7 +95,11 @@ public class CsvMatrix
 		xcolumns = jcX.length;
 		ycolumns = jcY.length;
 
+		/* build Matrices from experimental data */
 		buildMatrices();
+		
+		/* get rid of NaN elements */
+		resizeMatrices();
 		
 	}
 	
@@ -501,8 +507,8 @@ public class CsvMatrix
 	public static void buildMatrices() throws Exception
 	{		
 
-		Xmatrix = new DoubleMatrix(rowsSize, xcolumns);   // X matrix
-		Ymatrix = new DoubleMatrix(rowsSize, ycolumns);   // Y matrix
+		xMatrix = new DoubleMatrix(rowsSize, xcolumns);   // full descriptor matrix
+		yMatrix = new DoubleMatrix(rowsSize, ycolumns);   // full result matrix
 		
 		Field[] fields = NanoMaterial.class.getDeclaredFields();
 		for (Field field: fields) field.setAccessible(true);
@@ -518,9 +524,9 @@ public class CsvMatrix
 				Object v1 = field.get(nanoMaterial);
 				if (v1!=null) {
 					double value = ((Double)v1).doubleValue();
-					Xmatrix.put(i,j,value);
+					xMatrix.put(i,j,value);
 				} else {
-					Xmatrix.put(i,j,0.0);
+					xMatrix.put(i,j,Double.NaN);
 				}
 			}
 			
@@ -529,9 +535,9 @@ public class CsvMatrix
 				Object v1 = field.get(nanoMaterial);
 				if (v1!=null) {
 					double value = ((Double)v1).doubleValue();
-					Ymatrix.put(i,j,value);
+					yMatrix.put(i,j,value);
 				} else {
-					Ymatrix.put(i,j,0.0);
+					yMatrix.put(i,j,Double.NaN);
 				}
 			}
 			
@@ -539,37 +545,117 @@ public class CsvMatrix
 		
 	}
 	
-
 	/**
-	 * This method finds min/max data for each numerical field.
-	 * @param strValue
-	 * @param minValue
-	 * @param maxValue
-	 * @return
+	 * This method resizes the X and Y matrices needed by the PLS Regression algorithm.
+	 * Any rows with Ymatrix NaN results is deleted. Any Xmatrix columns with only NaN
+	 * values is deleted.  Xmatrix columns NaN values are replaced with descriptor average.
 	 * @author Paul Harten
 	 * @throws Exception 
 	 */
-	private static void minMaxValues(NanoMaterials nanoMaterials, Field[] fields, int[] jCols, double[] minValue, double[] maxValue) throws Exception {
+	public static void resizeMatrices() throws Exception
+	{		
 
-		double mnValue = Double.MAX_VALUE;
-		double mxValue = -Double.MAX_VALUE;
-		double value;
+		Xmatrix = new DoubleMatrix(0, ycolumns);   // X matrix
+		Ymatrix = new DoubleMatrix(0, xcolumns);   // Y matrix
 		
-		for (int i=0; i<nanoMaterials.size(); i++) {
-			
-			NanoMaterial nanoMaterial = nanoMaterials.get(i);
-			
-			for (int j=0; j<jCols.length; j++) {
-				Field field = fields[jCols[j]];
-				Object v1 = field.get(nanoMaterial);
-				if (v1!=null) {
-					value = ((Double)v1).doubleValue();
-					if (value<mnValue) mnValue = value;
-					if (value<mxValue) mxValue = value;
+		DoubleMatrix yRow, xColumn;
+		Boolean foundNaN;
+		double avg, numNaN;
+		
+		/* check whether result data has NaN values */
+		for (int i=0; i<rowsSize; i++) {
+			yRow = yMatrix.getRow(i);
+			foundNaN = false;
+			for (int j=0; j<ycolumns; j++) {
+				if (Double.isNaN(yRow.get(j))) {
+					foundNaN = true;
+					break;
+				}
+			}
+			if (!foundNaN) {
+				if (Ymatrix.rows==0) {
+					Ymatrix.copy(yRow);
+					Xmatrix.copy(xMatrix.getRow(i)); 
+				} else {
+					Ymatrix = DoubleMatrix.concatVertically(Ymatrix, yRow);
+					Xmatrix = DoubleMatrix.concatVertically(Xmatrix, xMatrix.getRow(i)); 
 				}
 			}
 		}
+		ycolumns = Ymatrix.columns;
+		rowsSize = Ymatrix.rows;
+		if (rowsSize==0) throw new Exception("No rows of data remain");
+		
+		xMatrix.copy(Xmatrix);
+		Xmatrix = new DoubleMatrix(xMatrix.rows,0);
+		/* if descriptor data had null values, replace with avg of that descriptor */
+		for (int j=0; j<xcolumns; j++) {
+			xColumn = xMatrix.getColumn(j);
+			avg = 0.0;
+			numNaN = 0;
+			for (int i=0; i<rowsSize; i++) {
+				Double value = xColumn.get(i);
+				if (!Double.isNaN(value)) {
+					numNaN++;
+					avg += value;
+				}
+			}
+			if (numNaN>0) {
+				avg /= numNaN;
+				for (int i=0; i<rowsSize; i++) {
+					if (Double.isNaN(xColumn.get(i))) {
+						xColumn.put(i, avg);
+					}
+				}
+				if (Xmatrix.columns==0) {
+					Xmatrix.copy(xColumn);
+				} else {
+					Xmatrix = DoubleMatrix.concatHorizontally(Xmatrix, xColumn);
+				}
+			}
+		}
+		xcolumns = Xmatrix.columns;
+		if (xcolumns==0) throw new Exception("No columns of descriptor data remain");
+		
+//		System.out.println("rowsSize = "+rowsSize+", xcolumns = "+xcolumns+", ycolumns = "+ycolumns);
+		
+	}
+	
 
+	/**
+	 * This method returns result column as the log of the result column
+	 * @return
+	 * @author Paul Harten
+	 * @return 
+	 * @throws Exception 
+	 */
+	public static DoubleMatrix log(DoubleMatrix Yorig) {
+
+		DoubleMatrix yLn = new DoubleMatrix(Yorig.rows,1);
+		
+		for (int i=0; i<yLn.rows; i++) {
+			yLn.put(i, Math.log(Yorig.get(i)));
+		}
+		
+		return yLn;
+	}
+	
+	/**
+	 * This method returns the result column as the exp of the result column
+	 * @return
+	 * @author Paul Harten
+	 * @return 
+	 * @throws Exception 
+	 */
+	public static DoubleMatrix exp(DoubleMatrix Yorig) {
+
+		DoubleMatrix yExp = new DoubleMatrix(Yorig.rows,1);
+		
+		for (int i=0; i<yExp.rows; i++) {
+			yExp.put(i, Math.exp(Yorig.get(i)));
+		}
+		
+		return yExp;
 	}
 
 	/**
