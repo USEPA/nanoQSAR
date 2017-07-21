@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
+
 /**
  * This class is used to handle connections to the MySQL database server.
  * @author Wilson Melendez
@@ -49,18 +51,9 @@ public class ConnectionManager
 	 */
 	public static Connection createConnection() throws SQLException
 	{
-		Connection conn = null;
-		try
-		{
-			conn = DriverManager.getConnection(DBUtil.getDatabaseUrl(), DBUtil.getUsername(), DBUtil.getPassword());					
-		}
-		catch(SQLException ex)
-		{
-			lOGGER.log(Level.SEVERE, "Connection error: a connection to the database was not established.", ex);	
-			throw ex;
-		}
-		
-		return conn;
+
+		return DriverManager.getConnection(DBUtil.getDatabaseUrl(), DBUtil.getUsername(), DBUtil.getPassword());
+
 	}
 
 	/**
@@ -72,20 +65,37 @@ public class ConnectionManager
 	 * @throws ClassNotFoundException  It is thrown if not driver could be found.
 	 * @throws SQLException  It is thrown whenever a connection to the server fails.
 	 */
-	public static Connection getConnection() throws ClassNotFoundException, SQLException
+	public static Connection getConnection() throws SQLException, ClassNotFoundException
 	{	
-//		ConnectionManager connManager = new ConnectionManager();
-		Connection conn = null;
-		try
-		{
+			
+		ConnectionManager.getDriver();		
+		return ConnectionManager.createConnection();
+		
+	}
+	
+	/**
+	 * This method instantiates a object of this class.  It then calls the getDriver and 
+	 * createConnection methods of the class to get a driver and create a connection to the
+	 * remote database server.  
+	 * @author Wilson Melendez & Paul Harten
+	 * @return  Connection
+	 * @throws ClassNotFoundException  It is thrown if not driver could be found.
+	 * @throws SQLException  It is thrown whenever a connection to the server fails.
+	 */
+	public static Boolean testConnection() throws SQLException, ClassNotFoundException
+	{	
+		
+		try	{
+			
 			ConnectionManager.getDriver();		
-			conn = ConnectionManager.createConnection();
-		}
-		catch(SQLException ex)
-		{
-			throw ex;
+			Connection conn = DriverManager.getConnection(DBUtil.getDatabaseUrl(), DBUtil.getUsername(), DBUtil.getPassword());
+			
+		} catch(CommunicationsException ex) {
+			
+			return false;
+			
 		}
 		
-		return conn;
+		return true;
 	}
 }

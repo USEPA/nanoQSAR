@@ -5,6 +5,8 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
+
 import datamine.ConnectionManager;
 import datamine.DBUtil;
 import datamine.MySqlQuery;
@@ -72,7 +74,7 @@ public class NanoQSAR {
 			NanoMaterials nanoMaterials = null;
 			
 			/* Test for connection to database */			
-			if (ConnectionManager.getConnection() != null) {
+			if (ConnectionManager.testConnection()) {
 				
 				/* Data-mine MySQL database */
 				nanoMaterials = new NanoMaterials(new MySqlQuery());
@@ -85,10 +87,8 @@ public class NanoQSAR {
 				nanoMaterials = new NanoMaterials(DBUtil.getCsvFileName());
 			}
 
-
 		} catch(Exception ex) {
 
-			System.out.println(ex.getMessage());
 			ex.printStackTrace();  // This is the only case when the stack trace is sent to the console.
 
 		}
