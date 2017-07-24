@@ -547,8 +547,8 @@ public class CsvMatrix
 	
 	/**
 	 * This method resizes the X and Y matrices needed by the PLS Regression algorithm.
-	 * Any rows with Ymatrix NaN results is deleted. Any Xmatrix columns with only NaN
-	 * values is deleted.  Xmatrix columns NaN values are replaced with descriptor average.
+	 * Any rows with Ymatrix NaN results is deleted. Xmatrix columns with NaN values are
+	 * replaced with descriptor average or 0.0.
 	 * @author Paul Harten
 	 * @throws Exception 
 	 */
@@ -560,9 +560,9 @@ public class CsvMatrix
 		
 		DoubleMatrix yRow, xColumn;
 		Boolean foundNaN;
-		double avg, numNaN;
+		double avg, num;
 		
-		/* check whether result data has NaN values */
+		/* if result data has NaN values, leave row out of calculations */
 		for (int i=0; i<rowsSize; i++) {
 			yRow = yMatrix.getRow(i);
 			foundNaN = false;
@@ -586,33 +586,31 @@ public class CsvMatrix
 		rowsSize = Ymatrix.rows;
 		if (rowsSize==0) throw new Exception("No rows of data remain");
 		
-		xMatrix.copy(Xmatrix);
-		Xmatrix = new DoubleMatrix(xMatrix.rows,0);
-		/* if descriptor data had null values, replace with avg of that descriptor */
+		/* if descriptor data has NaN values, replace with avg of that descriptor */
 		for (int j=0; j<xcolumns; j++) {
-			xColumn = xMatrix.getColumn(j);
+			xColumn = Xmatrix.getColumn(j);
 			avg = 0.0;
-			numNaN = 0;
+			num = 0;
 			for (int i=0; i<rowsSize; i++) {
 				Double value = xColumn.get(i);
 				if (!Double.isNaN(value)) {
-					numNaN++;
+					num++;
 					avg += value;
 				}
 			}
-			if (numNaN>0) {
-				avg /= numNaN;
+			if (num>0) {	/* fill the NaN values with avg */
+				avg /= num;
 				for (int i=0; i<rowsSize; i++) {
 					if (Double.isNaN(xColumn.get(i))) {
 						xColumn.put(i, avg);
 					}
 				}
-				if (Xmatrix.columns==0) {
-					Xmatrix.copy(xColumn);
-				} else {
-					Xmatrix = DoubleMatrix.concatHorizontally(Xmatrix, xColumn);
+			} else { /* fill the whole column up with 0.0 */
+				for (int i=0; i<rowsSize; i++) {
+					xColumn.put(i, 0.0);
 				}
 			}
+			Xmatrix.putColumn(j, xColumn);	
 		}
 		xcolumns = Xmatrix.columns;
 		if (xcolumns==0) throw new Exception("No columns of descriptor data remain");
