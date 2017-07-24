@@ -4,8 +4,11 @@ import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.channels.FileChannel;
 
 import org.junit.Test;
 
@@ -136,19 +139,48 @@ public class Datamine_NanoQSARTest {
 	@Test
 	public void testMainProgram5()
 	{
-		String[] args = {System.getProperty("user.dir") + "\\nanoQSAR.properties"};
+		File file1 = new File(System.getProperty("user.dir") + "\\nanoQSAR.properties");
+		File file2 = new File(System.getProperty("java.io.tmpdir"), "\\nanoQSAR.properties");
+		
+		try {
+			copyFile(file1, file2);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+		String[] args = {file2.getPath()};
 		
 		/* Run the application. */
 		NanoQSAR.main(args);
 		
-		/* Verify that the CSV file was created and that it's not
-		 * empty. */
+		/* Verify that the CSV file was created and that it's not empty. */
 		String csvFile = System.getProperty("user.dir") + "\\nanoQSAR.csv";		
-		File file = new File(csvFile);
-		assertTrue("CSV file exists.", file.exists());
-		assertTrue("CSV file is not empty.", file.length() > 0);		
+		File file3 = new File(csvFile);
+		assertTrue("CSV file exists.", file3.exists());
+		assertTrue("CSV file is not empty.", file3.length() > 0);
+		
+		file2.deleteOnExit();
 	}
+	
+	private static void copyFile(File sourceFile, File destFile) throws IOException {
 
+	    if(!destFile.exists()) destFile.createNewFile();
+	    
+	    FileChannel origin = null;
+	    FileChannel destination = null;
 
+	    try {
+	        origin = new FileInputStream(sourceFile).getChannel();
+	        destination = new FileOutputStream(destFile).getChannel();
+	        long count = 0;
+	        long size = origin.size();              
+	        while((count += destination.transferFrom(origin, count, size-count))<size);
+	    } finally {
+            origin.close();
+            destination.close();
+	    }
+
+	}
 
 }

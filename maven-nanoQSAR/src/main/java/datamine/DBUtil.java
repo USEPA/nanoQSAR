@@ -46,7 +46,7 @@ public class DBUtil
 	private static String passwordKey;
 	
 	/* Need this line to allow logging of error messages */
-	private static Logger lOGGER = Logger.getLogger("nanoQSAR");
+	private static Logger LOGGER = Logger.getLogger("nanoQSAR");
 	
 	public static String getDriverName() {
 		return driverName;
@@ -124,21 +124,18 @@ public class DBUtil
 			setPasswordKey(prop.getProperty("Key").trim());
 			
 //			encryptPassword();
-//			System.out.println(getPassword());
+
 			/* Decrypt password using the key. */
 			decryptPassword();
-//			System.out.println(getPassword());
 		}
 		catch(IOException ex)
 		{
-//			System.out.println("Properties file, " + filename + ", was not found.");
-			lOGGER.log(Level.SEVERE, "Properties file, " + filename + ", was not found.", ex);
+			LOGGER.log(Level.SEVERE, "Properties file, " + filename + ", was not found.", ex);
 			throw ex;
 		}
 		catch(GeneralSecurityException ex)
 		{
-			// System.out.println("Password de-encryption failed: check log file.");
-			lOGGER.log(Level.SEVERE, "Password de-encryption failed.", ex);
+			LOGGER.log(Level.SEVERE, "Password de-encryption failed.", ex);
 			throw ex;
 		}
 		finally
@@ -151,8 +148,7 @@ public class DBUtil
 				}
 				catch(IOException ex)
 				{
-					// System.out.println("InputStream variable, input, could not be closed.");
-					lOGGER.log(Level.SEVERE, "InputStream variable, input, could not be closed.", ex);
+					LOGGER.log(Level.SEVERE, "InputStream variable, input, could not be closed.", ex);
 					throw ex;
 				}				
 			}
@@ -211,7 +207,7 @@ public class DBUtil
 		} 
         catch (NoSuchAlgorithmException | NoSuchPaddingException ex) 
         {			
-			lOGGER.log(Level.SEVERE,"Attempt to create cipher object failed.",ex);
+			LOGGER.log(Level.SEVERE,"Attempt to create cipher object failed.",ex);
 			throw ex;
 		}
 		
@@ -221,7 +217,7 @@ public class DBUtil
 		} 
         catch (InvalidKeyException ex) 
         {			
-			lOGGER.log(Level.SEVERE,"Initialization of cipher failed.",ex);
+			LOGGER.log(Level.SEVERE,"Initialization of cipher failed.",ex);
 			throw ex;
 		}
         
@@ -231,7 +227,7 @@ public class DBUtil
 		} 
 		catch (IllegalBlockSizeException | BadPaddingException ex) 
 		{			
-			lOGGER.log(Level.SEVERE,"Decryption of password failed.",ex);
+			LOGGER.log(Level.SEVERE,"Decryption of password failed.",ex);
 			throw ex;
 		}
 		
@@ -259,7 +255,7 @@ public class DBUtil
 		} 
         catch (NoSuchAlgorithmException | NoSuchPaddingException ex) 
         {			
-			lOGGER.log(Level.SEVERE,"Attempt to create cipher object failed.",ex);
+			LOGGER.log(Level.SEVERE,"Attempt to create cipher object failed.",ex);
 			throw ex;
 		}
 		
@@ -269,7 +265,7 @@ public class DBUtil
 		} 
         catch (InvalidKeyException ex) 
         {			
-			lOGGER.log(Level.SEVERE,"Initialization of cipher failed.",ex);
+			LOGGER.log(Level.SEVERE,"Initialization of cipher failed.",ex);
 			throw ex;
 		}
         
@@ -279,7 +275,7 @@ public class DBUtil
 		} 
 		catch (IllegalBlockSizeException | BadPaddingException ex) 
 		{			
-			lOGGER.log(Level.SEVERE,"Encryption of password failed.",ex);
+			LOGGER.log(Level.SEVERE,"Encryption of password failed.",ex);
 			throw ex;
 		}
 		
@@ -302,8 +298,7 @@ public class DBUtil
 			}
 			catch(SQLException ex)
 			{
-				// System.out.println("Error: " + ex.getMessage());
-				lOGGER.log(Level.SEVERE, "Connection could not be closed.", ex);
+				LOGGER.log(Level.SEVERE, "Connection could not be closed.", ex);
 				throw ex;
 			}
 		}
@@ -323,8 +318,7 @@ public class DBUtil
 			}
 			catch(SQLException ex)
 			{
-				// System.out.println("Error: " + ex.getMessage());
-				lOGGER.log(Level.SEVERE, "Statement could not be closed.", ex);
+				LOGGER.log(Level.SEVERE, "Statement could not be closed.", ex);
 				throw ex;
 			}
 		}
@@ -344,8 +338,7 @@ public class DBUtil
 			}
 			catch(SQLException ex)
 			{
-				// System.out.println("Error: " + ex.getMessage());
-				lOGGER.log(Level.SEVERE, "ResultSet could not be closed.", ex);
+				LOGGER.log(Level.SEVERE, "ResultSet could not be closed.", ex);
 				throw ex;
 			}
 		}
