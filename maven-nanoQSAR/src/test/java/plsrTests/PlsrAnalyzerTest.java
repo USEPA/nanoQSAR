@@ -370,7 +370,8 @@ public class PlsrAnalyzerTest {
 		DoubleMatrix X = new DoubleMatrix(xMatrix);
 		DoubleMatrix Y = new DoubleMatrix(yMatrix);
 		
-		DoubleMatrix BplsStar = CsvMatrix.performPLSR(X,Y);
+		/* Perform the PLS regression analysis. */
+		DoubleMatrix BplsStar = CsvMatrix.performResultsIndependentPLSR(X, Y);	
 		
 		/* Predict the Y values using X and BPLS*. */
 		DoubleMatrix Ypredicted = CsvMatrix.predictResults(X, BplsStar);
@@ -430,41 +431,40 @@ public class PlsrAnalyzerTest {
 		/* Split original data into 5 subsets that will be used for a 5-fold
 		 * cross-validation analysis. 
 		 */
-		List<Integer> list = new ArrayList<Integer>();
-		CsvMatrix.splitDataIntoSets(X, Y, list);
-				
-		/* Use the list containing the re-shuffled indices to 
-		 * obtain the re-shuffled Y vector. 
-		 */
-		DoubleMatrix Yshuffled = new DoubleMatrix(5,3);
-		for (int j = 0; j < 3; j++)
-		{
-			for (int i = 0; i < 5; i++)
-			{
-			    int index = list.get(i);
-				Yshuffled.put(i, j, Y.get(index, j));
-			}
-		}
+//		List<Integer> list = new ArrayList<Integer>();
+//		CsvMatrix.splitDataIntoSets(X, Y, list);
+//				
+//		/* Use the list containing the re-shuffled indices to 
+//		 * obtain the re-shuffled Y vector. 
+//		 */
+//		DoubleMatrix Yshuffled = new DoubleMatrix(5,3);
+//		for (int j = 0; j < 3; j++)
+//		{
+//			for (int i = 0; i < 5; i++)
+//			{
+//			    int index = list.get(i);
+//				Yshuffled.put(i, j, Y.get(index, j));
+//			}
+//		}
 		
-		/* Perform a 5-fold cross-validation and compute Q2. */		
-		DoubleMatrix Ytilde = CsvMatrix.performFiveFoldCrossValidation();
+		/* Perform a 5-fold cross-validation and compute Q2. */	
+		DoubleMatrix Ytilde = CsvMatrix.performFiveFoldCrossValidation(X, Y);
 		double sum1 = 0.0;
 		double sum2 = 0.0;
-		DoubleMatrix YdiffMean1 = Yshuffled.sub(meanY);
-		DoubleMatrix YdiffShuffledTilde = Yshuffled.sub(Ytilde);
-		sum1 = Math.pow(YdiffShuffledTilde.norm2(), 2.0);
+		DoubleMatrix YdiffMean1 = Y.sub(meanY);
+		DoubleMatrix YdiffTilde = Y.sub(Ytilde);
+		sum1 = Math.pow(YdiffTilde.norm2(), 2.0);
 		sum2 = Math.pow(YdiffMean1.norm2(), 2.0);
 		
 		sumYmean1 = Math.pow(YdiffMean1.getColumn(0).norm2(), 2.0);
 		sumYmean2 = Math.pow(YdiffMean1.getColumn(1).norm2(), 2.0);
 		sumYmean3 = Math.pow(YdiffMean1.getColumn(2).norm2(), 2.0);
-		ress1 = Math.pow(YdiffShuffledTilde.getColumn(0).norm2(), 2.0);
-		ress2 = Math.pow(YdiffShuffledTilde.getColumn(1).norm2(), 2.0);
-		ress3 = Math.pow(YdiffShuffledTilde.getColumn(2).norm2(), 2.0);
+		ress1 = Math.pow(YdiffTilde.getColumn(0).norm2(), 2.0);
+		ress2 = Math.pow(YdiffTilde.getColumn(1).norm2(), 2.0);
+		ress3 = Math.pow(YdiffTilde.getColumn(2).norm2(), 2.0);
 		
 		double Q2 = 1.0 - sum1/sum2;
 		assertTrue("Q2 < R2", Q2 < R2);
-		
 		double Q2Col1 = 1.0 - (ress1 / sumYmean1);
 		assertTrue("Q2Col1 > 0.9", Q2Col1 > 0.9);
 		double Q2Col2 = 1.0 - (ress2 / sumYmean2);
