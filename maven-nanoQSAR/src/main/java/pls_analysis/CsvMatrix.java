@@ -836,6 +836,24 @@ public class CsvMatrix
 	}
 	
 	/**
+	 * This method performs the PLS regression algorithm one result Column at a time.
+	 * It can be done more efficiently because of the multiple normalizations done.
+	 * @param Xorig
+	 * @param Yorig
+	 * @return
+	 * @author Paul Harten
+	 * @throws IOException 
+	 */
+	public static DoubleMatrix performResultsIndependentPLSR(DoubleMatrix X, DoubleMatrix Y)
+	{
+		DoubleMatrix BplsStar = new DoubleMatrix(X.columns+1, Y.columns);
+		for (int j=0; j<Y.columns; j++) {
+			BplsStar.putColumn(j, performPLSR(X,Y.getColumn(j)));
+		}
+		return BplsStar;
+	}
+	
+	/**
 	 * This method performs the PLS regression algorithm.
 	 * @param Xorig
 	 * @param Yorig
@@ -1278,13 +1296,13 @@ public class CsvMatrix
 	 * This method implements the 5-fold cross-validation algorithm.
 	 * @author Wilson Melendez
 	 */
-	public static DoubleMatrix performFiveFoldCrossValidation(DoubleMatrix Xorig, DoubleMatrix Yorig1)
+	public static DoubleMatrix performFiveFoldCrossValidation(DoubleMatrix Xorig, DoubleMatrix Yorig)
 	{
 		
 		/* Split original data into 5 subsets that will be used for a 5-fold
 		 * cross-validation analysis. */
 		List<Integer> list = new ArrayList<Integer>();
-		splitDataIntoSets(Xorig, Yorig1, list);
+		splitDataIntoSets(Xorig, Yorig, list);
 		
 		DoubleMatrix[] Yhat = new DoubleMatrix[numDataSets];
 		DoubleMatrix Ytilde = new DoubleMatrix();
@@ -1319,7 +1337,7 @@ public class CsvMatrix
 			}
 			
 			/* Perform the PLS regression analysis. */
-			DoubleMatrix BplsS = performPLSR(Xtraining, Ytraining);
+			DoubleMatrix BplsS = performResultsIndependentPLSR(Xtraining, Ytraining);			
 			
 			/* Predict the Y values that were left out. */
 			Yhat[ifold] = predictResults(XmatrixSet[ifold], BplsS);			
@@ -1337,11 +1355,11 @@ public class CsvMatrix
 		
 		/* Use the list containing the shuffled indices to 
 		 * obtain the unshuffled Ytilde vector. */
-		DoubleMatrix Yunshuffled = new DoubleMatrix(Ytilde.rows);
+		DoubleMatrix Yunshuffled = new DoubleMatrix(Ytilde.rows, Ytilde.columns);
 		for (int i = 0; i < Ytilde.rows; i++)
 		{
 			int index = list.get(i);
-			Yunshuffled.put(index, Ytilde.get(i));
+			Yunshuffled.putRow(index, Ytilde.getRow(i));
 		}
 		
 		return Yunshuffled;
