@@ -24,7 +24,7 @@ import nanoQSAR.NanoMaterials;
  */
 
 
-public class PlsrAnalyzer 
+public class NanoQSAR_PLS 
 {	
 	/* Need this line to allow logging of error messages */
 	private static Logger LOGGER = Logger.getLogger("nanoQSAR");

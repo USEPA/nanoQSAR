@@ -4,7 +4,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ PlsrAnalyzerTest.class })
+@SuiteClasses({ NanoQSAR_PLSTest.class })
 public class AllPLSRTests {
 
 }

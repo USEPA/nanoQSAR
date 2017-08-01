@@ -27,14 +27,14 @@ import org.junit.rules.TemporaryFolder;
 
 import nanoQSAR.NanoMaterials;
 import pls_analysis.CsvMatrix;
-import pls_analysis.PlsrAnalyzer;
+import pls_analysis.NanoQSAR_PLS;
 
 
 /**
  * @author Wilson Melendez
  *
  */
-public class PlsrAnalyzerTest {
+public class NanoQSAR_PLSTest {
 	
 	/* Need this line to allow logging of error messages */
 	private static Logger LOGGER = Logger.getLogger("nanoQSAR");
@@ -757,7 +757,7 @@ public class PlsrAnalyzerTest {
 	{
 		String[] args = null;
 		/* Run the application. */
-		PlsrAnalyzer.main(args);
+		NanoQSAR_PLS.main(args);
 		
 		/* Verify that the log file was created and that it's not
 		 * empty. */
