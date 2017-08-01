@@ -41,7 +41,7 @@ public class PlsrAnalyzerTest {
 	String logFilename = System.getProperty("user.dir") + "\\nanoQSAR.log";	
 	
 	@Test
-	public void testMatrices() throws FileNotFoundException, IOException
+	public void testMatrices() throws Exception
 	{
 		int num_rows = 250;
 	    int num_cols = 67;
@@ -50,8 +50,11 @@ public class PlsrAnalyzerTest {
 			
 		Xorig = DoubleMatrix.rand(num_rows, num_cols);
 		Yorig = DoubleMatrix.rand(num_rows, 1);
+		
+		/* create an instance of CsvMatrix */
+		CsvMatrix csvMatrix = new CsvMatrix();
 			
-		DoubleMatrix Bstar = CsvMatrix.performPLSR(Xorig,Yorig);
+		DoubleMatrix Bstar = csvMatrix.performPLSR(Xorig,Yorig);
 			
 		DoubleMatrix T = CsvMatrix.getTmatrix();
 		DoubleMatrix Imatrix = T.transpose().mmul(T);
@@ -338,9 +341,10 @@ public class PlsrAnalyzerTest {
 	 * Wiley Interdisciplinary Reviews: Computational Statistics, 
 	 * 2, 97-106.
 	 * @author Wilson Melendez
+	 * @throws Exception 
 	 */
 	@Test
-	public void testPLSalgorithm()
+	public void testPLSalgorithm() throws Exception
 	{
 		double[][] yMatrix = {{14.0,7.0,8.0}, 
 				              {10.0,7.0,6.0},
@@ -370,8 +374,11 @@ public class PlsrAnalyzerTest {
 		DoubleMatrix X = new DoubleMatrix(xMatrix);
 		DoubleMatrix Y = new DoubleMatrix(yMatrix);
 		
+		/* create an instance of CsvMatrix */
+		CsvMatrix csvMatrix = new CsvMatrix();
+		
 		/* Perform the PLS regression analysis. */
-		DoubleMatrix BplsStar = CsvMatrix.performResultsIndependentPLSR(X, Y);	
+		DoubleMatrix BplsStar = csvMatrix.performResultsIndependentPLSR(X, Y);	
 		
 		/* Predict the Y values using X and BPLS*. */
 		DoubleMatrix Ypredicted = CsvMatrix.predictResults(X, BplsStar);
@@ -448,7 +455,7 @@ public class PlsrAnalyzerTest {
 //		}
 		
 		/* Perform a 5-fold cross-validation and compute Q2. */	
-		DoubleMatrix Ytilde = CsvMatrix.performFiveFoldCrossValidation(X, Y);
+		DoubleMatrix Ytilde = csvMatrix.performFiveFoldCrossValidation(X, Y);
 		double sum1 = 0.0;
 		double sum2 = 0.0;
 		DoubleMatrix YdiffMean1 = Y.sub(meanY);
@@ -482,9 +489,10 @@ public class PlsrAnalyzerTest {
 	 * d) Confirm there are 5 dimensions in the latent space.
 	 *    
 	 * @author Wilson Melendez
+	 * @throws Exception 
 	 */
 	@Test 
-	public void testPLS_v1()
+	public void testPLS_v1() throws Exception
 	{ 
 		int nrows = 10;
 		int ncols = 6;
@@ -522,8 +530,11 @@ public class PlsrAnalyzerTest {
 			X1.put(i, 3, v);
 		}
 		
+		/* create an instance of CsvMatrix */
+		CsvMatrix csvMatrix = new CsvMatrix();
+		
 		/* Perform the PLS algorithm.*/
-		DoubleMatrix Bpls1 = CsvMatrix.performPLSR(X1,Y1);
+		DoubleMatrix Bpls1 = csvMatrix.performPLSR(X1,Y1);
 		
 		DoubleMatrix T1 = CsvMatrix.getTmatrix();
 		
@@ -538,9 +549,10 @@ public class PlsrAnalyzerTest {
 	 * c) Perform a PLS transformation; 
 	 * d) Confirm the latent space has only 1 dimension.
 	 * @author Wilson Melendez
+	 * @throws Exception 
 	 */
 	@Test 
-	public void testPLS_v2()
+	public void testPLS_v2() throws Exception
 	{ 
 		int nrows = 10;
 		int ncols = 6;
@@ -574,8 +586,11 @@ public class PlsrAnalyzerTest {
 			X2.put(i, colXY, v);
 		}
 		
+		/* create an instance of CsvMatrix */
+		CsvMatrix csvMatrix = new CsvMatrix();
+		
 		/* Perform the PLS algorithm and calculate BPLS* */
-		DoubleMatrix Bpls1 = CsvMatrix.performPLSR(X2,Y2);
+		DoubleMatrix Bpls1 = csvMatrix.performPLSR(X2,Y2);
 		
 		/* Confirm the latent space has only 1 dimension. 
 		 * Loop over the rows of BPLS* and verify that only one
@@ -609,9 +624,10 @@ public class PlsrAnalyzerTest {
 	 *    submatrices of X and Ypred, calculate and confirm Q2.
 	 *    
 	 *   @author Wilson Melendez
+	 * @throws Exception 
 	 */
 	@Test
-	public void testPLS_v3()
+	public void testPLS_v3() throws Exception
 	{
 		/* Number of rows */
 		int n = 100;
@@ -676,10 +692,13 @@ public class PlsrAnalyzerTest {
 		}
 		double meanY = stats.getMean();
 		
+		/* create an instance of CsvMatrix */
+		CsvMatrix csvMatrix = new CsvMatrix();
+		
 		/* Perform the PLS regression algorithm and return the 
 		 * BPLS matrix.
 		 */
-		DoubleMatrix BPLSS = CsvMatrix.performPLSR(X,Yobs);	
+		DoubleMatrix BPLSS = csvMatrix.performPLSR(X,Yobs);	
 		
 		/* Predict the results using X and BPLS*. */
 		DoubleMatrix Ypred = CsvMatrix.predictResults(X, BPLSS);
@@ -699,7 +718,7 @@ public class PlsrAnalyzerTest {
 		/* Split original data into 5 subsets that will be used for a 5-fold
 		 * cross-validation analysis. */
 		List<Integer> list = new ArrayList<Integer>();
-		CsvMatrix.splitDataIntoSets(X, Yobs, list);
+		csvMatrix.splitDataIntoSets(X, Yobs, list);
 				
 		/* Use the list containing the re-shuffled indices to 
 		 * obtain the re-shuffled Y vector. */
@@ -711,7 +730,7 @@ public class PlsrAnalyzerTest {
 		}
 		
 		/* Perform a 5-fold cross-validation and compute Q2. */		
-		DoubleMatrix Ytilde = CsvMatrix.performFiveFoldCrossValidation();
+		DoubleMatrix Ytilde = csvMatrix.performFiveFoldCrossValidation();
 		sum1 = 0.0;
 		sum2 = 0.0;
 		for (int i = 0; i < n; i++)

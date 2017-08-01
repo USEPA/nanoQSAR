@@ -80,9 +80,9 @@ public class CsvMatrix
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-//	public CsvMatrix() throws Exception {
-//		super();
-//	}
+	public CsvMatrix() throws Exception {
+		super();
+	}
 	
 	public CsvMatrix(NanoMaterials nanoMaterials) throws Exception {
 		super();
@@ -844,7 +844,7 @@ public class CsvMatrix
 	 * @author Paul Harten
 	 * @throws IOException 
 	 */
-	public static DoubleMatrix performResultsIndependentPLSR(DoubleMatrix X, DoubleMatrix Y)
+	public DoubleMatrix performResultsIndependentPLSR(DoubleMatrix X, DoubleMatrix Y)
 	{
 		DoubleMatrix BplsStar = new DoubleMatrix(X.columns+1, Y.columns);
 		for (int j=0; j<Y.columns; j++) {
@@ -861,7 +861,7 @@ public class CsvMatrix
 	 * @author Wilson Melendez
 	 * @throws IOException 
 	 */
-	public static DoubleMatrix performPLSR(DoubleMatrix Xorig, DoubleMatrix Yorig)
+	public DoubleMatrix performPLSR(DoubleMatrix Xorig, DoubleMatrix Yorig)
 	{	
 		Pmatrix = null;
 		Umatrix = null;
@@ -979,10 +979,9 @@ public class CsvMatrix
 	 * @param Bstar
 	 * @author Wilson Melendez
 	 */
-	public static void writeBplsStarToCsv(DoubleMatrix Bstar)
+	public static void writeBplsStarToCsv(DoubleMatrix Bstar, String filename)
 	{
 		String[] entries = new String[Bstar.rows];
-		String filename = System.getProperty("user.dir") + "\\nanoQSAR_BPLS.csv";
 		
 		try
 		{	
@@ -992,16 +991,16 @@ public class CsvMatrix
 			 * default separator. Default quote character is double quote. */ 
 			CSVWriter csvOutput = new CSVWriter(file,CSVWriter.DEFAULT_SEPARATOR);
 					
-			/* Write header line to CSV file. */
-			//csvOutput.writeNext(headerLine);   
-					
-			for (int i = 0; i < Bstar.rows; i++)
-			{
-				entries[i] = String.valueOf(Bstar.get(i));
+			/* allow for multiple columns of Bstar */
+			for (int j=0; j<Bstar.columns; j++) {
+
+				for (int i=0; i<Bstar.rows; i++) {
+					entries[i] = String.valueOf(Bstar.get(i));
+				}
+
+				/* Write row of data to output using the writeNext method. */
+				csvOutput.writeNext(entries); 
 			}
-						
-			/* Write row of data to output using the writeNext method. */
-			csvOutput.writeNext(entries);   
 			
 			/* Close the writer. */
 			   csvOutput.close();   
@@ -1239,7 +1238,7 @@ public class CsvMatrix
 	 * This method implements the 5-fold cross-validation algorithm.
 	 * @author Wilson Melendez
 	 */
-	public static DoubleMatrix performFiveFoldCrossValidation()
+	public DoubleMatrix performFiveFoldCrossValidation()
 	{
 		DoubleMatrix[] Yhat = new DoubleMatrix[numDataSets];
 		DoubleMatrix Ytilde = new DoubleMatrix();
@@ -1296,7 +1295,7 @@ public class CsvMatrix
 	 * This method implements the 5-fold cross-validation algorithm.
 	 * @author Wilson Melendez
 	 */
-	public static DoubleMatrix performFiveFoldCrossValidation(DoubleMatrix Xorig, DoubleMatrix Yorig)
+	public DoubleMatrix performFiveFoldCrossValidation(DoubleMatrix Xorig, DoubleMatrix Yorig)
 	{
 		
 		/* Split original data into 5 subsets that will be used for a 5-fold

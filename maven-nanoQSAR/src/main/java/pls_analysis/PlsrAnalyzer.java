@@ -29,6 +29,7 @@ public class PlsrAnalyzer
 	/* Need this line to allow logging of error messages */
 	private static Logger LOGGER = Logger.getLogger("nanoQSAR");
 	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR.log";
+	static String filename = System.getProperty("user.dir") + "\\nanoQSAR_BPLS.csv";
 	
 	/**
 	 * This is the main method.
@@ -91,13 +92,10 @@ public class PlsrAnalyzer
 			DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig,Yorig1);  
 			
 			/* Write BPLS* vector to a CSV file. */
-			csvMatrix.writeBplsStarToCsv(BplsS);			
+			CsvMatrix.writeBplsStarToCsv(BplsS, filename);			
 			
 			/* Predict the Y values. */
-			DoubleMatrix Ypredicted = csvMatrix.predictResults(Xorig, BplsS);
-//			for (int i=0; i<Yorig1.rows; i++) {
-//				System.out.println("i = "+i+": orig = "+Yorig1.get(i)+", pred = "+Ypredicted.get(i));
-//			}
+			DoubleMatrix Ypredicted = CsvMatrix.predictResults(Xorig, BplsS);
 			
 			/* Calculate R2 = 1.0 - ||Yobs-Ypred||^2 / ||Yobs-Ymean||^2 */
 			Ydiff = Yorig1.sub(Ypredicted);
@@ -109,9 +107,6 @@ public class PlsrAnalyzer
 			
 			/* Perform 5-fold cross-validation prediction. */
 			DoubleMatrix Ytilde = csvMatrix.performFiveFoldCrossValidation(Xorig, Yorig1);
-//			for (int i=0; i<Ytilde.rows; i++) {
-//				System.out.println("i = "+i+": orig = "+Yorig1.get(i)+", pred = "+Ytilde.get(i));
-//			}
 			
 			/* Calculate Q2 = 1.0 - ||Yobs-Ytilde||^2 / ||Yobs-Ymean||^2 */
 			Ydiff = Yorig1.sub(Ytilde);
