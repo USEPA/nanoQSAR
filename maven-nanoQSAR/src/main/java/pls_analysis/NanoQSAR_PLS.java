@@ -29,7 +29,7 @@ public class NanoQSAR_PLS
 	/* Need this line to allow logging of error messages */
 	private static Logger LOGGER = Logger.getLogger("nanoQSAR");
 	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR.log";
-	static String filename = System.getProperty("user.dir") + "\\nanoQSAR_BPLS.csv";
+	static String filename_BPLS = System.getProperty("user.dir") + "\\nanoQSAR_BPLS.csv";
 	
 	/**
 	 * This is the main method.
@@ -92,7 +92,7 @@ public class NanoQSAR_PLS
 			DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig,Yorig1);  
 			
 			/* Write BPLS* vector to a CSV file. */
-			CsvMatrix.writeBplsStarToCsv(BplsS, filename);			
+			CsvMatrix.writeBplsStarToCsv(BplsS, filename_BPLS);			
 			
 			/* Predict the Y values. */
 			DoubleMatrix Ypredicted = CsvMatrix.predictResults(Xorig, BplsS);

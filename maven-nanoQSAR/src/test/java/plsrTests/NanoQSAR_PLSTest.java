@@ -56,13 +56,13 @@ public class NanoQSAR_PLSTest {
 			
 		DoubleMatrix Bstar = csvMatrix.performPLSR(Xorig,Yorig);
 			
-		DoubleMatrix T = CsvMatrix.getTmatrix();
+		DoubleMatrix T = csvMatrix.getTmatrix();
 		DoubleMatrix Imatrix = T.transpose().mmul(T);
 		double normI = Math.pow(Imatrix.norm2(), 2);
 		double nrows = Imatrix.rows;
 		assertEquals(nrows, normI, 1.0e-02);
 			
-		DoubleMatrix W = CsvMatrix.getWmatrix();
+		DoubleMatrix W = csvMatrix.getWmatrix();
 		DoubleMatrix Imatrix1 = W.transpose().mmul(W);
 		double normI1 = Math.pow(Imatrix1.norm2(), 2);
 		double nrows1 = Imatrix1.rows;
@@ -536,10 +536,10 @@ public class NanoQSAR_PLSTest {
 		/* Perform the PLS algorithm.*/
 		DoubleMatrix Bpls1 = csvMatrix.performPLSR(X1,Y1);
 		
-		DoubleMatrix T1 = CsvMatrix.getTmatrix();
+		DoubleMatrix T1 = csvMatrix.getTmatrix();
 		
 		/* Verify that the dimensionality of the latent space is 5. */
-		assertTrue("Latent space dimensionality is equal to 5.", T1.columns == 5);
+		assertTrue("Latent space dimensionality is wrongly equal to "+T1.columns, T1.columns == 5);
 	}
 	
 	/**
@@ -556,7 +556,7 @@ public class NanoQSAR_PLSTest {
 	{ 
 		int nrows = 10;
 		int ncols = 6;
-		int colXY = 0;
+		int colXY = 2;
 		double maxNumber = 10.0;
 		double delta = 1.0E-06;
 		DoubleMatrix X2 = new DoubleMatrix(nrows,ncols);
@@ -637,7 +637,7 @@ public class NanoQSAR_PLSTest {
 		
 		/* Maximum values for the data and errors. */
 		double maxNumber = 20.0;
-		double maxError = 10.0;
+		double maxError = 400.0;
 		
 		/* Vector of Coefficients  */
 		DoubleMatrix B = new DoubleMatrix(m + 1);
@@ -678,7 +678,7 @@ public class NanoQSAR_PLSTest {
 		Y = Xb.mmul(B);
 		
 		/* Add a small error to Y and store the new values in Yobs. */
-		for (int i = 0; i < n; i++)
+		for (int i = 0; i < Y.rows; i++)
 		{
 			double rValue = Y.get(i) + (2.0 * Math.random() - 1.0) * maxError;
 			Yobs.put(i, rValue);
@@ -711,36 +711,22 @@ public class NanoQSAR_PLSTest {
 			sum2 = sum2 + (Yobs.get(i) - meanY) * (Yobs.get(i) - meanY);
 		}
 		
-		double r2 = 1.0 - sum1/sum2;
+		double R2 = 1.0 - sum1/sum2;
 		
-		assertEquals(1.0, r2, 1.0E-02);
-		
-		/* Split original data into 5 subsets that will be used for a 5-fold
-		 * cross-validation analysis. */
-		List<Integer> list = new ArrayList<Integer>();
-		csvMatrix.splitDataIntoSets(X, Yobs, list);
-				
-		/* Use the list containing the re-shuffled indices to 
-		 * obtain the re-shuffled Y vector. */
-		DoubleMatrix Yshuffled = new DoubleMatrix(n);
-		for (int i = 0; i < n; i++)
-		{
-			int index = list.get(i);
-			Yshuffled.put(i, Yobs.get(index));
-		}
+		assertTrue("R2 = "+R2+" should be less that 1.0, but not too much", 1.0>=R2 && R2>=0.80);
 		
 		/* Perform a 5-fold cross-validation and compute Q2. */		
-		DoubleMatrix Ytilde = csvMatrix.performFiveFoldCrossValidation();
+		DoubleMatrix Ytilde = csvMatrix.performFiveFoldCrossValidation(X, Yobs);
 		sum1 = 0.0;
 		sum2 = 0.0;
 		for (int i = 0; i < n; i++)
 		{
-			sum1 = sum1 + (Yshuffled.get(i) - Ytilde.get(i)) * (Yshuffled.get(i) - Ytilde.get(i));
-			sum2 = sum2 + (Yshuffled.get(i) - meanY) * (Yshuffled.get(i) - meanY);
+			sum1 = sum1 + (Yobs.get(i) - Ytilde.get(i)) * (Yobs.get(i) - Ytilde.get(i));
+			sum2 = sum2 + (Yobs.get(i) - meanY) * (Yobs.get(i) - meanY);
 		}
 		
 		double Q2 = 1.0 - sum1/sum2;
-		assertEquals(r2, Q2, 1.0E-02);
+		assertTrue("Q2 = "+Q2+" should be less than R2 = "+R2+", but not too much", R2>=Q2 && Q2>=R2-0.2);
 		
 	}
 	
