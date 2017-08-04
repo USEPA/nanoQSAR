@@ -67,8 +67,8 @@ public class CsvMatrix
 	private static double ssx;
 	private static double ssy;
 	
-	private static double EPSILON = 1.0e-6;
-	private static double EPSILON_DEFLATION = 1.0e-6;
+	private static double EPSILON = 1.0e-12;
+	private static double EPSILON_DEFLATION = 1.0e-12;
 	
 	/* Need this line to allow logging of error messages */
 	private final static Logger LOGGER = Logger.getLogger("nanoQSAR");
@@ -1046,7 +1046,7 @@ public class CsvMatrix
 		DoubleMatrix udiff = new DoubleMatrix(rowsMatrix);
 		DoubleMatrix w = new DoubleMatrix(colsMatrix);		
 		DoubleMatrix t = new DoubleMatrix(rowsMatrix);
-		DoubleMatrix t1 = new DoubleMatrix(rowsMatrix);		
+		DoubleMatrix t0 = new DoubleMatrix(rowsMatrix);		
 		DoubleMatrix c;		
 		DoubleMatrix Xtu;
 		DoubleMatrix Xw;
@@ -1056,61 +1056,62 @@ public class CsvMatrix
 		DoubleMatrix tpt, tct;	
 		
 		boolean IsFirstDeflation;
-		double normX, normY0, normY1, deltaU, deltaY;
-		int numDeflations = 0;
+		double normX, normY0, normY1, deltaT, deltaY;
+
 		X = X0;
 		Y = Y0;
 		
 		/* Calculate the rank of X */
-		DoubleMatrix[] fullSVD = Singular.fullSVD(X0);
-		DoubleMatrix singularValuesDM = fullSVD[1];
-		double rank = rank(X0, singularValuesDM);
+//		DoubleMatrix[] fullSVD = Singular.fullSVD(X0);
+//		DoubleMatrix singularValuesDM = fullSVD[1];
+//		double rank = rank(X0, singularValuesDM);
 		
 		/* Set the maximum number of latent variables/structures 
 		 * to the rank of the X matrix.
 		 */
-		int maxNumLS = (int) rank;
+//		int maxNumLS = (int) rank;
 		
 		/* Initialize parameters */
 		IsFirstDeflation = true;
-		normY0 = Y.norm2();
+//		normY0 = Y.norm2();
 		
 		do
 		{		
-			/* Initialize u with one of the Y columns. */
-			u0 = Y.getColumn(0);
-						
-			numDeflations = numDeflations + 1;
-			if (numDeflations > maxNumLS) break; 
+			/* Initialize u with random values. */
+			u = DoubleMatrix.rand(Y.rows);
+			
+			/* Calculate w = X'u, and normalize the result. */
+			w = X.transpose().mmul(u);				
+			w = w.div(w.norm2());
+			
+			/* Calculate X-scores = t, and normalize the result. */
+			t0 = X.mmul(w);				
+			t0 = t0.div(t0.norm2());
 			
 			do
 			{
+
+				/* Calculate Y-weights, c, and normalize the result. */
+				c = Y.transpose().mmul(t0);
+				c = c.div(c.norm2());
+				
+				/* Calculate an updated set of Y-scores, u */ 
+				u = Y.mmul(c);
+					
 				/* Calculate w and normalize the result. */
-				Xtu = X.transpose().mmul(u0);				
-				w = Xtu.div(Xtu.norm2());
+				w = X.transpose().mmul(u);				
+				w = w.div(w.norm2());
 				
 				/* Calculate X-scores, t, and normalize the result. */
-				Xw = X.mmul(w);				
-				t1 = Xw.div(Xw.norm2());
+				t = X.mmul(w);				
+				t = t.div(t.norm2());
 				
-				/* Calculate Y-weights, c, and normalize the result. */
-				Ytt = Y.transpose().mmul(t1);
-				c = Ytt.div(Ytt.norm2());
+				/* Continue while t is still changing */
+				tdiff = t.sub(t0);
+				deltaT = tdiff.norm2();
+				t0 = t;
 				
-				/* Calculate an updated set of Y-scores, u */
-				u1 = Y.mmul(c);
-					
-				/* Calculate the change in u and check whether it is
-				 * less than a small number.
-				 */
-				udiff = u1.sub(u0);
-				deltaU = udiff.norm2();
-				u0 = u1;
-				
-			} while (deltaU > EPSILON);
-			
-			u = u1;
-			t = t1;
+			} while (deltaT > EPSILON);
 			
 			double b = t.transpose().dot(u);
 			bValues.add(b);
@@ -1120,9 +1121,9 @@ public class CsvMatrix
 			
 			/* Deflate the X and Y matrices. */
 			tpt = t.mmul(p.transpose());
-			tct = t.mmul(c.transpose());
+			tct = t.mmul(c.transpose()).muli(b);
 			X = X.sub(tpt);
-			Y = Y.sub(tct.muli(b));
+			Y = Y.sub(tct);
 			
 			/* Store t, u, p, c, and w in their corresponding matrices. */
 			if (IsFirstDeflation)
@@ -1143,13 +1144,11 @@ public class CsvMatrix
 				Wmatrix = DoubleMatrix.concatHorizontally(Wmatrix,w);				
 			}
 			
-			/* Calculate the norms of X and Y, and the change in Y. */
+//			numDeflations = numDeflations + 1;
+//			if (numDeflations >= maxNumLS) break;
 			normX = X.norm2();
-			normY1 = Y.norm2();
-			deltaY = Math.abs(normY1 - normY0);
-			normY0 = normY1;
 			
-		} while (normX > EPSILON_DEFLATION && deltaY > EPSILON);		
+		} while (normX > EPSILON_DEFLATION);
 	
 	}
 	
