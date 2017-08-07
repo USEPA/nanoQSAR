@@ -378,7 +378,7 @@ public class NanoQSAR_PLSTest {
 		CsvMatrix csvMatrix = new CsvMatrix();
 		
 		/* Perform the PLS regression analysis. */
-		DoubleMatrix BplsStar = csvMatrix.performResultsIndependentPLSR(X, Y);	
+		DoubleMatrix BplsStar = csvMatrix.performPLSR(X, Y);	
 		
 		/* Predict the Y values using X and BPLS*. */
 		DoubleMatrix Ypredicted = CsvMatrix.predictResults(X, BplsStar);
