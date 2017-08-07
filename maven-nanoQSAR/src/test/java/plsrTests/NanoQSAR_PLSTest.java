@@ -57,16 +57,16 @@ public class NanoQSAR_PLSTest {
 		DoubleMatrix Bstar = csvMatrix.performPLSR(Xorig,Yorig);
 			
 		DoubleMatrix T = csvMatrix.getTmatrix();
-		DoubleMatrix Imatrix = T.transpose().mmul(T);
-		double normI = Math.pow(Imatrix.norm2(), 2);
-		double nrows = Imatrix.rows;
-		assertEquals(nrows, normI, 1.0e-02);
+		DoubleMatrix diffMat = T.transpose().mmul(T);
+		diffMat.subi(DoubleMatrix.diag(DoubleMatrix.ones(diffMat.rows)));
+		double norm = diffMat.norm1()/(diffMat.rows*diffMat.columns);
+		assertEquals(0.0, norm, 1.0e-15);
 			
 		DoubleMatrix W = csvMatrix.getWmatrix();
-		DoubleMatrix Imatrix1 = W.transpose().mmul(W);
-		double normI1 = Math.pow(Imatrix1.norm2(), 2);
-		double nrows1 = Imatrix1.rows;
-		assertEquals(nrows1, normI1, 1.0e-02);
+		diffMat = W.transpose().mmul(W);
+		diffMat.subi(DoubleMatrix.diag(DoubleMatrix.ones(diffMat.rows)));
+		norm = diffMat.norm1()/(diffMat.rows*diffMat.columns);
+		assertEquals(0.0, norm, 1.0e-2);
 	        				
 	} 
 

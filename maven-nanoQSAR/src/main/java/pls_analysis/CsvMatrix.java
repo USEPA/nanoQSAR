@@ -54,12 +54,12 @@ public class CsvMatrix
 	private static DoubleMatrix yMatrix;
 	private static DoubleMatrix Xmatrix;
 	private static DoubleMatrix Ymatrix;
-	private static DoubleMatrix Umatrix;
-	private static DoubleMatrix Tmatrix;
-	private static DoubleMatrix Wmatrix;		
-	private static DoubleMatrix Cmatrix;
-	private static DoubleMatrix Pmatrix;
-	private static DoubleMatrix Bmatrix;
+	private DoubleMatrix Umatrix = null;
+	private DoubleMatrix Tmatrix = null;
+	private DoubleMatrix Wmatrix = null;		
+	private DoubleMatrix Cmatrix = null;
+	private DoubleMatrix Pmatrix = null;
+	private DoubleMatrix Bmatrix = null;
 	
 	private static DoubleMatrix[] XmatrixSet = new DoubleMatrix[numDataSets];
 	private static DoubleMatrix[] YmatrixSet = new DoubleMatrix[numDataSets];
@@ -203,7 +203,7 @@ public class CsvMatrix
 	 * @return the tmatrix
 	 * @author Wilson Melendez
 	 */
-	public static DoubleMatrix getTmatrix() {
+	public DoubleMatrix getTmatrix() {
 		return Tmatrix;
 	}
 
@@ -211,7 +211,7 @@ public class CsvMatrix
 	 * @return the wmatrix
 	 * @author Wilson Melendez
 	 */
-	public static DoubleMatrix getWmatrix() {
+	public DoubleMatrix getWmatrix() {
 		return Wmatrix;
 	}
 
@@ -219,7 +219,7 @@ public class CsvMatrix
 	 * @return the cmatrix
 	 * @author Wilson Melendez
 	 */
-	public static DoubleMatrix getCmatrix() {
+	public DoubleMatrix getCmatrix() {
 		return Cmatrix;
 	}
 
@@ -227,7 +227,7 @@ public class CsvMatrix
 	 * @return the pmatrix
 	 * @author Wilson Melendez
 	 */
-	public static DoubleMatrix getPmatrix() {
+	public DoubleMatrix getPmatrix() {
 		return Pmatrix;
 	}
 	
@@ -236,7 +236,7 @@ public class CsvMatrix
 	 * @return the umatrix
 	 * @author Wilson Melendez
 	 */
-	public static DoubleMatrix getUmatrix(){
+	public DoubleMatrix getUmatrix(){
 		return Umatrix;
 	}
 
@@ -245,7 +245,7 @@ public class CsvMatrix
 	 * @return the Bmatrix
 	 * @author Wilson Melendez
 	 */
-	public static DoubleMatrix getBmatrix(){
+	public DoubleMatrix getBmatrix(){
 		return Bmatrix;
 	}
 	
@@ -1034,30 +1034,25 @@ public class CsvMatrix
 	 * NIPALS.
 	 * @author Wilson Melendez
 	 */
-	public static void performNIPALS(DoubleMatrix X0, DoubleMatrix Y0, List<Double> bValues)
+	public void performNIPALS(DoubleMatrix X0, DoubleMatrix Y0, List<Double> bValues)
 	{
 		int rowsMatrix = X0.rows;
 		int colsMatrix = X0.columns;
 		DoubleMatrix X = new DoubleMatrix();
 		DoubleMatrix Y = new DoubleMatrix();
 		DoubleMatrix u = new DoubleMatrix(rowsMatrix);
-		DoubleMatrix u0 = new DoubleMatrix(rowsMatrix);
-		DoubleMatrix u1 = new DoubleMatrix(rowsMatrix);
-		DoubleMatrix udiff = new DoubleMatrix(rowsMatrix);
 		DoubleMatrix w = new DoubleMatrix(colsMatrix);		
 		DoubleMatrix t = new DoubleMatrix(rowsMatrix);
 		DoubleMatrix t0 = new DoubleMatrix(rowsMatrix);		
 		DoubleMatrix c;		
-		DoubleMatrix Xtu;
-		DoubleMatrix Xw;
-		DoubleMatrix Ytt;
 		DoubleMatrix tdiff;
 		DoubleMatrix p;		
 		DoubleMatrix tpt, tct;	
 		
 		boolean IsFirstDeflation;
-		double normX, normY0, normY1, deltaT, deltaY;
-
+		double normX, deltaT;
+		int numDeflations = 0;
+		
 		X = X0;
 		Y = Y0;
 		
@@ -1075,11 +1070,12 @@ public class CsvMatrix
 		IsFirstDeflation = true;
 //		normY0 = Y.norm2();
 		
+		/* Initialize u with random values. */
+		u = DoubleMatrix.rand(Y.rows);
+		
 		do
 		{		
-			/* Initialize u with random values. */
-			u = DoubleMatrix.rand(Y.rows);
-			
+
 			/* Calculate w = X'u, and normalize the result. */
 			w = X.transpose().mmul(u);				
 			w = w.div(w.norm2());
@@ -1107,8 +1103,7 @@ public class CsvMatrix
 				t = t.div(t.norm2());
 				
 				/* Continue while t is still changing */
-				tdiff = t.sub(t0);
-				deltaT = tdiff.norm2();
+				deltaT = (t.sub(t0).norm1())/t.rows;
 				t0 = t;
 				
 			} while (deltaT > EPSILON);
@@ -1121,22 +1116,26 @@ public class CsvMatrix
 			
 			/* Deflate the X and Y matrices. */
 			tpt = t.mmul(p.transpose());
-			tct = t.mmul(c.transpose()).muli(b);
+			tct = (t.mmul(c.transpose())).muli(b);
 			X = X.sub(tpt);
 			Y = Y.sub(tct);
 			
 			/* Store t, u, p, c, and w in their corresponding matrices. */
 			if (IsFirstDeflation)
 			{
-				Tmatrix = t;
-				Umatrix = u;
-				Pmatrix = p;
-				Cmatrix = c;				
-				Wmatrix = w;
+				Tmatrix = t.dup();
+				Umatrix = u.dup();
+				Pmatrix = p.dup();
+				Cmatrix = c.dup();				
+				Wmatrix = w.dup();
 				IsFirstDeflation = false;
 			}
 			else
 			{
+				/* Make t orthonormal to the rest of its cumulative matrix */
+				t = t.sub(Tmatrix.mmul((Tmatrix.transpose()).mmul(t)));
+				t = t.div(t.norm2());
+				
 				Tmatrix = DoubleMatrix.concatHorizontally(Tmatrix,t);
 				Umatrix = DoubleMatrix.concatHorizontally(Umatrix,u);
 				Pmatrix = DoubleMatrix.concatHorizontally(Pmatrix,p);
@@ -1144,11 +1143,13 @@ public class CsvMatrix
 				Wmatrix = DoubleMatrix.concatHorizontally(Wmatrix,w);				
 			}
 			
-//			numDeflations = numDeflations + 1;
+			numDeflations = numDeflations + 1;
 //			if (numDeflations >= maxNumLS) break;
-			normX = X.norm2();
+			normX = X.norm1()/(X.rows*X.columns);
 			
-		} while (normX > EPSILON_DEFLATION);
+		} while (normX > EPSILON_DEFLATION && numDeflations < X.columns);
+		
+		return;
 	
 	}
 	
