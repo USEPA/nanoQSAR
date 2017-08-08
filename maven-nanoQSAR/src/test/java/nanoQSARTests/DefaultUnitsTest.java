@@ -847,7 +847,7 @@ public class DefaultUnitsTest {
 		try
 		{
 			nanoM.setMc_timeValueUnit("hours");
-			nanoM.setMc_timeValue(15);
+			nanoM.setMc_timeValue(15.0);
 			DefaultUnits.checkDefaultMcTimeValueUnit(nanoM, i);
 			assertEquals("hours", nanoM.getMc_timeValueUnit());	
 			assertEquals(15, nanoM.getMc_timeValue(), DELTA);	
@@ -857,7 +857,7 @@ public class DefaultUnitsTest {
 			assertEquals("null", nanoM.getMc_timeValueUnit());	
 			
 			nanoM.setMc_timeValueUnit("minutes");
-			nanoM.setMc_timeValue(60);
+			nanoM.setMc_timeValue(60.0);
 			DefaultUnits.checkDefaultMcTimeValueUnit(nanoM, i);
 			assertEquals("hours", nanoM.getMc_timeValueUnit());	
 			assertEquals(1, nanoM.getMc_timeValue(), DELTA);

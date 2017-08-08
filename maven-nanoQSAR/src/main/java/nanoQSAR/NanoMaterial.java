@@ -95,7 +95,7 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	private Double surfaceAreaLow; 
 	private Double surfaceAreaHigh; 
 	private String surfaceAreaMethod; 
-	private Integer mc_timeValue; 
+	private Double mc_timeValue; 
 	private String mc_timeValueUnit; 
 	private Double mc_particleConcentration; 
 	private String mc_particleConcentrationUnit; 
@@ -977,10 +977,10 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public void setSurfaceAreaMethod(String surfaceAreaMethod) {
 		this.surfaceAreaMethod = surfaceAreaMethod;
 	}
-	public Integer getMc_timeValue() {
+	public Double getMc_timeValue() {
 		return mc_timeValue;
 	}
-	public void setMc_timeValue(Integer mc_timeValue) {
+	public void setMc_timeValue(Double mc_timeValue) {
 		this.mc_timeValue = mc_timeValue;
 	}
 	public String getMc_timeValueUnit() {

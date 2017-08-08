@@ -362,7 +362,7 @@ public class MySqlQuery
 				nanomaterial.setSurfaceAreaLow((Double)rs.getObject("SurfaceAreaLow"));
 				nanomaterial.setSurfaceAreaHigh((Double)rs.getObject("SurfaceAreaHigh"));
 				nanomaterial.setSurfaceAreaMethod((String)rs.getObject("SurfaceAreaMethod"));
-				nanomaterial.setMc_timeValue((Integer)rs.getObject("Mc_timeValue"));
+				nanomaterial.setMc_timeValue((Double)rs.getObject("Mc_timeValue"));
 				nanomaterial.setMc_timeValueUnit((String)rs.getObject("Mc_timeValueUnit"));
 				nanomaterial.setMc_particleConcentration((Double)rs.getObject("Mc_particleConcentration"));
 				nanomaterial.setMc_particleConcentrationUnit((String)rs.getObject("Mc_particleConcentrationUnit"));
