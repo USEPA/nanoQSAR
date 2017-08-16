@@ -67,7 +67,7 @@ public class CsvMatrix
 	private static double ssx;
 	private static double ssy;
 	
-	private static double EPSILON = 1.0e-9;
+	private static double EPSILON = 1.0e-12;
 	private static double EPSILON_DEFLATION = 1.0e-12;
 	
 	/* Need this line to allow logging of error messages */
@@ -1140,9 +1140,10 @@ public class CsvMatrix
 			
 			numDeflations = numDeflations + 1;
 //			if (numDeflations >= maxNumLS) break;
-			normX = X.norm1()/(X.rows*X.columns);
+//			normX = X.norm1()/(X.rows*X.columns);
+			normX = X.norm2();
 			
-		} while (normX > EPSILON_DEFLATION && numDeflations < X.columns);
+		} while (normX > EPSILON_DEFLATION && numDeflations < X.columns && numDeflations < X.rows);
 		
 		return;
 	
