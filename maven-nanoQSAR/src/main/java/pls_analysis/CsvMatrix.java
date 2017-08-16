@@ -67,7 +67,7 @@ public class CsvMatrix
 	private static double ssx;
 	private static double ssy;
 	
-	private static double EPSILON = 1.0e-12;
+	private static double EPSILON = 1.0e-9;
 	private static double EPSILON_DEFLATION = 1.0e-12;
 	
 	/* Need this line to allow logging of error messages */
@@ -1036,16 +1036,13 @@ public class CsvMatrix
 	 */
 	public void performNIPALS(DoubleMatrix X0, DoubleMatrix Y0, List<Double> bValues)
 	{
-		int rowsMatrix = X0.rows;
-		int colsMatrix = X0.columns;
 		DoubleMatrix X = new DoubleMatrix();
 		DoubleMatrix Y = new DoubleMatrix();
-		DoubleMatrix u = new DoubleMatrix(rowsMatrix);
-		DoubleMatrix w = new DoubleMatrix(colsMatrix);		
-		DoubleMatrix t = new DoubleMatrix(rowsMatrix);
-		DoubleMatrix t0 = new DoubleMatrix(rowsMatrix);		
+		DoubleMatrix u;
+		DoubleMatrix w;		
+		DoubleMatrix t;
+		DoubleMatrix t0;		
 		DoubleMatrix c;		
-		DoubleMatrix tdiff;
 		DoubleMatrix p;		
 		DoubleMatrix tpt, tct;	
 		
@@ -1071,11 +1068,10 @@ public class CsvMatrix
 //		normY0 = Y.norm2();
 		
 		/* Initialize u with random values. */
-		u = DoubleMatrix.rand(Y.rows);
+		u = Y.getColumn(0);
 		
-		do
-		{		
-
+		do {
+			
 			/* Calculate w = X'u, and normalize the result. */
 			w = X.transpose().mmul(u);				
 			w = w.div(w.norm2());
@@ -1084,8 +1080,7 @@ public class CsvMatrix
 			t0 = X.mmul(w);				
 			t0 = t0.div(t0.norm2());
 			
-			do
-			{
+			do {
 
 				/* Calculate Y-weights, c, and normalize the result. */
 				c = Y.transpose().mmul(t0);
@@ -1102,8 +1097,8 @@ public class CsvMatrix
 				t = X.mmul(w);				
 				t = t.div(t.norm2());
 				
-				/* Continue while t is still changing */
-				deltaT = (t.sub(t0).norm1())/t.rows;
+				/* Determine if t is still changing */
+				deltaT = t.sub(t0).norm2();
 				t0 = t;
 				
 			} while (deltaT > EPSILON);
