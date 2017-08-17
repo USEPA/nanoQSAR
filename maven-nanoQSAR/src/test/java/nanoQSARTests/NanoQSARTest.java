@@ -17,7 +17,7 @@ import nanoQSAR.NanoQSAR;
 
 public class NanoQSARTest {
 	
-	static String helpString = "User options:\nnanoQSAR -h\nnanoQSAR\nnanoQSAR propFilename\n";
+	static String helpString = "User options:\njava -jar nanoQSAR -h\njava -jar nanoQSAR\njava -jar nanoQSAR propFilename\n";
 
 	@Test
 	public final void testMain() {
