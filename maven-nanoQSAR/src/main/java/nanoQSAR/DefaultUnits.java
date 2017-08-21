@@ -478,7 +478,7 @@ public class DefaultUnits
 	{
 		String strU = String.valueOf(nanoM.getMc_timeValueUnit()).trim();
 		String strValue = String.valueOf(nanoM.getMc_timeValue()).trim();
-		Integer value;
+		Double value;
 		
 		if (strU.equals("hours") || strU.equals("null") || strU.equals("minutes"))
 		{
@@ -487,7 +487,7 @@ public class DefaultUnits
 				nanoM.setMc_timeValueUnit("hours");
 				if (!strValue.equals("null"))
 				{
-					value = nanoM.getMc_timeValue() / 60;
+					value = nanoM.getMc_timeValue() / 60.0;
 					nanoM.setMc_timeValue(value);
 				}
 			}
