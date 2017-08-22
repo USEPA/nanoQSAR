@@ -500,8 +500,8 @@ public class CsvMatrix
 	
 	/**
 	 * This method builds the X and Y matrices needed by the PLS Regression algorithm.
-	 * Null values are converted to random values using the Math.randow() method.
-	 * @author Wilson Melendez & Paul Harten
+	 * Null values are converted to NaN values.
+	 * @author Paul Harten
 	 * @throws Exception 
 	 */
 	public static void buildMatrices() throws Exception
@@ -763,6 +763,8 @@ public class CsvMatrix
 			
 			double mean = stats.getMean();
 			double std = stats.getStandardDeviation();
+			if (std < Math.abs(mean*EPSILON)) std = 0.0;
+			
 			meanA.put(j, mean);
 			stdA.put(j, std);
 			
