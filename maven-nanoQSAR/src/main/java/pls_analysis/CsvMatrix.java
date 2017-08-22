@@ -60,6 +60,10 @@ public class CsvMatrix
 	private DoubleMatrix Cmatrix = null;
 	private DoubleMatrix Pmatrix = null;
 	private DoubleMatrix Bmatrix = null;
+	private DoubleMatrix meanX = null;
+	private DoubleMatrix stdX = null;
+	private DoubleMatrix meanY = null;
+	private DoubleMatrix stdY = null;
 	
 	private static DoubleMatrix[] XmatrixSet = new DoubleMatrix[numDataSets];
 	private static DoubleMatrix[] YmatrixSet = new DoubleMatrix[numDataSets];
@@ -877,17 +881,19 @@ public class CsvMatrix
 		 */
 		DoubleMatrix X0 = new DoubleMatrix(Xorig.rows,Xorig.columns);
 		X0.copy(Xorig);
-		DoubleMatrix meanX = new DoubleMatrix(Xorig.columns);
-		DoubleMatrix stdX = new DoubleMatrix(Xorig.columns);
+		
+		meanX = new DoubleMatrix(Xorig.columns);
+		stdX = new DoubleMatrix(Xorig.columns);
         normalizeMatrix(X0, meanX, stdX);
         
         /* Normalize the Ymatrix by turning each element of the 
 		 * matrix into Z-scores.
 		 */        
         DoubleMatrix Y0 = new DoubleMatrix(Yorig.rows,Yorig.columns);
-        Y0.copy(Yorig);	
-		DoubleMatrix meanY = new DoubleMatrix(Yorig.columns);
-		DoubleMatrix stdY = new DoubleMatrix(Yorig.columns);		
+        Y0.copy(Yorig);
+        
+		meanY = new DoubleMatrix(Yorig.columns);
+		stdY = new DoubleMatrix(Yorig.columns);		
 	    normalizeMatrix(Y0, meanY, stdY);
         
 		/* Calculate the sum of squares for Y0. */
@@ -902,6 +908,13 @@ public class CsvMatrix
 		 * algorithm. 
 		 */
 		performNIPALS(X0, Y0, bValues);
+		
+		DoubleMatrix BplsStar = determineCoefficients(bValues);
+			
+		return BplsStar;				
+	}
+
+	private DoubleMatrix determineCoefficients(List<Double> bValues) {
 		
 		DoubleMatrix Bpls = null;
 		DoubleMatrix BplsStar = null;
@@ -942,7 +955,6 @@ public class CsvMatrix
 			}
 		}
 		
-		
 		/* Calculate intercepts. */
 		for (int j = 0; j < Bpls.columns; j++)
 		{
@@ -954,8 +966,8 @@ public class CsvMatrix
 			double intercept = meanY.get(j) - sum;
 			BplsStar.put(0, j, intercept);
 		}
-			
-		return BplsStar;				
+		return BplsStar;
+		
 	}
 	
 	/**
@@ -1301,54 +1313,67 @@ public class CsvMatrix
 		List<Integer> list = new ArrayList<Integer>();
 		splitDataIntoSets(Xorig, Yorig, list);
 		
-		DoubleMatrix[] Yhat = new DoubleMatrix[numDataSets];
-		DoubleMatrix Ytilde = new DoubleMatrix();
+		DoubleMatrix Ytilde = new DoubleMatrix(0,Yorig.columns);
+		
+		double q2foldavg[] = new double[Yorig.columns];
+		for (int j=0; j<q2foldavg.length; j++) q2foldavg[j]=0.0;
 		
 		for (int ifold = 0; ifold < numDataSets; ifold++)
 		{
 			/* Leave one set out and use remaining sets to build model. */
-			DoubleMatrix Xtraining = null;
-			DoubleMatrix Ytraining = null;
-			Yhat[ifold] = null;
-			Integer[] ind = new Integer[numDataSets-1];
+			DoubleMatrix Xtraining = new DoubleMatrix(0, Xorig.columns);
+			DoubleMatrix Ytraining = new DoubleMatrix(0, Yorig.columns);
+			DoubleMatrix Xtesting = new DoubleMatrix(0, Xorig.columns);
+			DoubleMatrix Ytesting = new DoubleMatrix(0, Yorig.columns);
+			DoubleMatrix Yhat = null;
 			
-			/* Store the indices of the sets that are going to be used for the model and
-			 * exclude the one that is going to be predicted. */
-			int j = 0;
+			/* Build the X and Y training and testing matrices for the model. */
 			for (int i = 0; i < numDataSets; i++)
 			{
-				if (i != ifold)
-				{
-					ind[j] = i;	
-					j++;
-				}				
+				if (i==ifold) {
+					Xtesting = XmatrixSet[i];
+					Ytesting = YmatrixSet[i];
+				} else {
+					Xtraining = DoubleMatrix.concatVertically(Xtraining, XmatrixSet[i]);
+					Ytraining = DoubleMatrix.concatVertically(Ytraining, YmatrixSet[i]);
+				}
 			}
 						
-			/* Build the X and Y matrices for the model. */
-			Xtraining = DoubleMatrix.concatVertically(XmatrixSet[ind[0]], XmatrixSet[ind[1]]);
-			Ytraining = DoubleMatrix.concatVertically(YmatrixSet[ind[0]], YmatrixSet[ind[1]]);
-			for (int i = 2; i < ind.length; i++)
-			{
-				Xtraining = DoubleMatrix.concatVertically(Xtraining, XmatrixSet[ind[i]]);
-				Ytraining = DoubleMatrix.concatVertically(Ytraining, YmatrixSet[ind[i]]);
-			}
-			
 			/* Perform the PLS regression analysis. */
 			DoubleMatrix BplsS = performResultsIndependentPLSR(Xtraining, Ytraining);			
 			
 			/* Predict the Y values that were left out. */
-			Yhat[ifold] = predictResults(XmatrixSet[ifold], BplsS);			
+			Yhat = predictResults(Xtesting, BplsS);			
 			
-			/* Build the predicted Y's into a single matrix. */
-			if (ifold == 0) 
-			{
-				Ytilde.copy(Yhat[ifold]);							
+			Ytilde = DoubleMatrix.concatVertically(Ytilde, Yhat);	
+			
+			double[] q2 = new double[Ytesting.columns];
+			
+			for (int jcol=0; jcol<Ytesting.columns; jcol++) {
+				double ymean = 0.0;
+				for (int i = 0; i<Ytesting.rows; i++) {
+					ymean += Ytesting.get(i,jcol);
+				}
+				ymean /= Ytesting.rows;
+				double ress = 0.0;
+				double press = 0.0;
+				double diff = 0.0;
+				for (int i = 0; i<Yhat.rows; i++) {
+					diff = Ytesting.get(i,jcol)-ymean;
+					ress += diff*diff;
+					diff = Ytesting.get(i,jcol)-Yhat.get(i,jcol);
+					press += diff*diff;
+				}
+				q2[jcol]= 1.0-(press/ress);
+				
+				q2foldavg[jcol] += q2[jcol];
+				
 			}
-			else
-			{
-				Ytilde = DoubleMatrix.concatVertically(Ytilde, Yhat[ifold]);	
-			}
+			
 		}
+		
+		for (int j=0;j<q2foldavg.length;j++) q2foldavg[j] /= numDataSets;
+		 
 		
 		/* Use the list containing the shuffled indices to 
 		 * obtain the unshuffled Ytilde vector. */
