@@ -60,6 +60,16 @@ public class CsvMatrix
 	private DoubleMatrix Cmatrix = null;
 	private DoubleMatrix Pmatrix = null;
 	private DoubleMatrix Bmatrix = null;
+	private DoubleMatrix meanX = null;
+	private DoubleMatrix stdX = null;
+	private DoubleMatrix meanY = null;
+	private DoubleMatrix stdY = null;
+	private DoubleMatrix Xtraining = null;
+	private DoubleMatrix Ytraining = null;
+	private DoubleMatrix Xtesting = null;
+	private DoubleMatrix Ytesting = null;
+	private double[] q2avg = null;
+	private int numberOfParameters = 0;
 	
 	private static DoubleMatrix[] XmatrixSet = new DoubleMatrix[numDataSets];
 	private static DoubleMatrix[] YmatrixSet = new DoubleMatrix[numDataSets];
@@ -163,7 +173,7 @@ public class CsvMatrix
 	 * @return the xmatrix
 	 * @author Wilson Melendez
 	 */
-	public static DoubleMatrix getXmatrix() {
+	public DoubleMatrix getXmatrix() {
 		return Xmatrix;
 	}
 
@@ -171,7 +181,7 @@ public class CsvMatrix
 	 * @return the ymatrix
 	 * @author Wilson Melendez
 	 */
-	public static DoubleMatrix getYmatrix() {
+	public DoubleMatrix getYmatrix() {
 		return Ymatrix;
 	}
 	
@@ -500,8 +510,8 @@ public class CsvMatrix
 	
 	/**
 	 * This method builds the X and Y matrices needed by the PLS Regression algorithm.
-	 * Null values are converted to random values using the Math.randow() method.
-	 * @author Wilson Melendez & Paul Harten
+	 * Null values are converted to NaN values.
+	 * @author Paul Harten
 	 * @throws Exception 
 	 */
 	public static void buildMatrices() throws Exception
@@ -555,8 +565,8 @@ public class CsvMatrix
 	public static void resizeMatrices() throws Exception
 	{		
 
-		Xmatrix = new DoubleMatrix(0, ycolumns);   // X matrix
-		Ymatrix = new DoubleMatrix(0, xcolumns);   // Y matrix
+		Xmatrix = new DoubleMatrix(0, xcolumns);   // X matrix
+		Ymatrix = new DoubleMatrix(0, ycolumns);   // Y matrix
 		
 		DoubleMatrix yRow, xColumn;
 		Boolean foundNaN;
@@ -573,13 +583,8 @@ public class CsvMatrix
 				}
 			}
 			if (!foundNaN) {
-				if (Ymatrix.rows==0) {
-					Ymatrix.copy(yRow);
-					Xmatrix.copy(xMatrix.getRow(i)); 
-				} else {
-					Ymatrix = DoubleMatrix.concatVertically(Ymatrix, yRow);
-					Xmatrix = DoubleMatrix.concatVertically(Xmatrix, xMatrix.getRow(i)); 
-				}
+				Ymatrix = DoubleMatrix.concatVertically(Ymatrix, yRow);
+				Xmatrix = DoubleMatrix.concatVertically(Xmatrix, xMatrix.getRow(i)); 
 			}
 		}
 		ycolumns = Ymatrix.columns;
@@ -763,6 +768,8 @@ public class CsvMatrix
 			
 			double mean = stats.getMean();
 			double std = stats.getStandardDeviation();
+			if (std < Math.abs(mean*EPSILON)) std = 0.0;
+			
 			meanA.put(j, mean);
 			stdA.put(j, std);
 			
@@ -875,17 +882,19 @@ public class CsvMatrix
 		 */
 		DoubleMatrix X0 = new DoubleMatrix(Xorig.rows,Xorig.columns);
 		X0.copy(Xorig);
-		DoubleMatrix meanX = new DoubleMatrix(Xorig.columns);
-		DoubleMatrix stdX = new DoubleMatrix(Xorig.columns);
+		
+		meanX = new DoubleMatrix(Xorig.columns);
+		stdX = new DoubleMatrix(Xorig.columns);
         normalizeMatrix(X0, meanX, stdX);
         
         /* Normalize the Ymatrix by turning each element of the 
 		 * matrix into Z-scores.
 		 */        
         DoubleMatrix Y0 = new DoubleMatrix(Yorig.rows,Yorig.columns);
-        Y0.copy(Yorig);	
-		DoubleMatrix meanY = new DoubleMatrix(Yorig.columns);
-		DoubleMatrix stdY = new DoubleMatrix(Yorig.columns);		
+        Y0.copy(Yorig);
+        
+		meanY = new DoubleMatrix(Yorig.columns);
+		stdY = new DoubleMatrix(Yorig.columns);		
 	    normalizeMatrix(Y0, meanY, stdY);
         
 		/* Calculate the sum of squares for Y0. */
@@ -899,7 +908,15 @@ public class CsvMatrix
 		/* Perform the NIPALS algorithm. NIPALS is a PLS regression 
 		 * algorithm. 
 		 */
-		performNIPALS(X0, Y0, bValues);
+		bValues = performNIPALS(X0, Y0);
+		numberOfParameters = bValues.size();
+		
+		DoubleMatrix BplsStar = determineCoefficients(bValues);
+			
+		return BplsStar;				
+	}
+
+	private DoubleMatrix determineCoefficients(List<Double> bValues) {
 		
 		DoubleMatrix Bpls = null;
 		DoubleMatrix BplsStar = null;
@@ -940,7 +957,6 @@ public class CsvMatrix
 			}
 		}
 		
-		
 		/* Calculate intercepts. */
 		for (int j = 0; j < Bpls.columns; j++)
 		{
@@ -952,8 +968,8 @@ public class CsvMatrix
 			double intercept = meanY.get(j) - sum;
 			BplsStar.put(0, j, intercept);
 		}
-			
-		return BplsStar;				
+		return BplsStar;
+		
 	}
 	
 	/**
@@ -1034,8 +1050,9 @@ public class CsvMatrix
 	 * NIPALS.
 	 * @author Wilson Melendez
 	 */
-	public void performNIPALS(DoubleMatrix X0, DoubleMatrix Y0, List<Double> bValues)
+	public List<Double> performNIPALS(DoubleMatrix X0, DoubleMatrix Y0)
 	{
+		List<Double> bValues = new ArrayList();
 		DoubleMatrix X = new DoubleMatrix();
 		DoubleMatrix Y = new DoubleMatrix();
 		DoubleMatrix u;
@@ -1049,6 +1066,8 @@ public class CsvMatrix
 		boolean IsFirstDeflation;
 		double normX, deltaT;
 		int numDeflations = 0;
+//		double press0 = sumOfSquares(Ytesting);
+//		double press = 0;
 		
 		X = X0;
 		Y = Y0;
@@ -1138,6 +1157,11 @@ public class CsvMatrix
 				Wmatrix = DoubleMatrix.concatHorizontally(Wmatrix,w);				
 			}
 			
+//			/* predict effect of additional latent space vector */
+//			press = calculatePredictedResidual(bValues);
+//			if (press > press0) break;
+//			press0 = press;
+			
 			numDeflations = numDeflations + 1;
 //			if (numDeflations >= maxNumLS) break;
 //			normX = X.norm1()/(X.rows*X.columns);
@@ -1145,8 +1169,15 @@ public class CsvMatrix
 			
 		} while (normX > EPSILON_DEFLATION && numDeflations < X.columns && numDeflations < X.rows);
 		
-		return;
+		return bValues;
 	
+	}
+
+	private double calculatePredictedResidual(List<Double> bValues) {
+		DoubleMatrix BplsStar = determineCoefficients(bValues);
+		DoubleMatrix Yhat = predictResults(Xtesting, BplsStar);	
+		double press = sumOfSquares(Yhat.sub(Ytesting));
+		return press;
 	}
 	
 	/**
@@ -1232,64 +1263,49 @@ public class CsvMatrix
 	
 	/**
 	 * This method implements the 5-fold cross-validation algorithm.
-	 * @author Wilson Melendez
+	 * @author Wilson Melendez & Paul Harten
 	 */
 	public DoubleMatrix performFiveFoldCrossValidation()
 	{
-		DoubleMatrix[] Yhat = new DoubleMatrix[numDataSets];
 		DoubleMatrix Ytilde = new DoubleMatrix();
 		
 		for (int ifold = 0; ifold < numDataSets; ifold++)
 		{
 			/* Leave one set out and use remaining sets to build model. */
-			DoubleMatrix Xtraining = null;
-			DoubleMatrix Ytraining = null;
-			Yhat[ifold] = null;
-			Integer[] ind = new Integer[numDataSets-1];
+			Xtraining = new DoubleMatrix(0, XmatrixSet[0].columns);
+			Ytraining = new DoubleMatrix(0, YmatrixSet[0].columns);
+			Xtesting = new DoubleMatrix(0, XmatrixSet[0].columns);
+			Ytesting = new DoubleMatrix(0, YmatrixSet[0].columns);
+			DoubleMatrix Yhat = null;
 			
-			/* Store the indices of the sets that are going to be used for the model and
-			 * exclude the one that is going to be predicted. */
-			int j = 0;
+			/* Build the X and Y training and testing matrices for the model. */
 			for (int i = 0; i < numDataSets; i++)
 			{
-				if (i != ifold)
-				{
-					ind[j] = i;	
-					j++;
-				}				
-			}
-						
-			/* Build the X and Y matrices for the model. */
-			Xtraining = DoubleMatrix.concatVertically(XmatrixSet[ind[0]], XmatrixSet[ind[1]]);
-			Ytraining = DoubleMatrix.concatVertically(YmatrixSet[ind[0]], YmatrixSet[ind[1]]);
-			for (int i = 2; i < ind.length; i++)
-			{
-				Xtraining = DoubleMatrix.concatVertically(Xtraining, XmatrixSet[ind[i]]);
-				Ytraining = DoubleMatrix.concatVertically(Ytraining, YmatrixSet[ind[i]]);
+				if (i==ifold) {
+					Xtesting = XmatrixSet[i];
+					Ytesting = YmatrixSet[i];
+				} else {
+					Xtraining = DoubleMatrix.concatVertically(Xtraining, XmatrixSet[i]);
+					Ytraining = DoubleMatrix.concatVertically(Ytraining, YmatrixSet[i]);
+				}
 			}
 			
 			/* Perform the PLS regression analysis. */
 			DoubleMatrix BplsS = performPLSR(Xtraining, Ytraining);
 			
 			/* Predict the Y values that were left out. */
-			Yhat[ifold] = predictResults(XmatrixSet[ifold], BplsS);			
+			Yhat = predictResults(Xtesting, BplsS);			
 			
 			/* Build the predicted Y's into a single matrix. */
-			if (ifold == 0) 
-			{
-				Ytilde.copy(Yhat[ifold]);							
-			}
-			else
-			{
-				Ytilde = DoubleMatrix.concatVertically(Ytilde, Yhat[ifold]);	
-			}
+			Ytilde = DoubleMatrix.concatVertically(Ytilde, Yhat);
+
 		}
 		
 		return Ytilde;
 	}
 	/**
 	 * This method implements the 5-fold cross-validation algorithm.
-	 * @author Wilson Melendez
+	 * @author Wilson Melendez & Paul Harten
 	 */
 	public DoubleMatrix performFiveFoldCrossValidation(DoubleMatrix Xorig, DoubleMatrix Yorig)
 	{
@@ -1299,55 +1315,70 @@ public class CsvMatrix
 		List<Integer> list = new ArrayList<Integer>();
 		splitDataIntoSets(Xorig, Yorig, list);
 		
-		DoubleMatrix[] Yhat = new DoubleMatrix[numDataSets];
-		DoubleMatrix Ytilde = new DoubleMatrix();
+		DoubleMatrix Ytilde = new DoubleMatrix(0,Yorig.columns);
+		
+		q2avg = new double[Yorig.columns];
+		for (int j=0; j<q2avg.length; j++) q2avg[j]=0.0;
 		
 		for (int ifold = 0; ifold < numDataSets; ifold++)
 		{
 			/* Leave one set out and use remaining sets to build model. */
-			DoubleMatrix Xtraining = null;
-			DoubleMatrix Ytraining = null;
-			Yhat[ifold] = null;
-			Integer[] ind = new Integer[numDataSets-1];
+			Xtraining = new DoubleMatrix(0, Xorig.columns);
+			Ytraining = new DoubleMatrix(0, Yorig.columns);
+			Xtesting = new DoubleMatrix(0, Xorig.columns);
+			Ytesting = new DoubleMatrix(0, Yorig.columns);
+			DoubleMatrix Yhat = null;
 			
-			/* Store the indices of the sets that are going to be used for the model and
-			 * exclude the one that is going to be predicted. */
-			int j = 0;
+			/* Build the X and Y training and testing matrices for the model. */
 			for (int i = 0; i < numDataSets; i++)
 			{
-				if (i != ifold)
-				{
-					ind[j] = i;	
-					j++;
-				}				
+				if (i==ifold) {
+					Xtesting = XmatrixSet[i];
+					Ytesting = YmatrixSet[i];
+				} else {
+					Xtraining = DoubleMatrix.concatVertically(Xtraining, XmatrixSet[i]);
+					Ytraining = DoubleMatrix.concatVertically(Ytraining, YmatrixSet[i]);
+				}
 			}
 						
-			/* Build the X and Y matrices for the model. */
-			Xtraining = DoubleMatrix.concatVertically(XmatrixSet[ind[0]], XmatrixSet[ind[1]]);
-			Ytraining = DoubleMatrix.concatVertically(YmatrixSet[ind[0]], YmatrixSet[ind[1]]);
-			for (int i = 2; i < ind.length; i++)
-			{
-				Xtraining = DoubleMatrix.concatVertically(Xtraining, XmatrixSet[ind[i]]);
-				Ytraining = DoubleMatrix.concatVertically(Ytraining, YmatrixSet[ind[i]]);
-			}
-			
 			/* Perform the PLS regression analysis. */
 			DoubleMatrix BplsS = performResultsIndependentPLSR(Xtraining, Ytraining);			
 			
 			/* Predict the Y values that were left out. */
-			Yhat[ifold] = predictResults(XmatrixSet[ifold], BplsS);			
-			
+			Yhat = predictResults(Xtesting, BplsS);			
+
 			/* Build the predicted Y's into a single matrix. */
-			if (ifold == 0) 
-			{
-				Ytilde.copy(Yhat[ifold]);							
+			Ytilde = DoubleMatrix.concatVertically(Ytilde, Yhat);	
+			
+			DoubleMatrix Ycol = null;
+			DoubleMatrix Ydiff = null;
+			double var = 0;
+			double press = 0;
+			double q2 = 0;
+			
+			for (int jcol=0; jcol<Ytesting.columns; jcol++) {
+				
+				Ycol = Ytesting.getColumn(jcol);
+				double ymean = 0.0;
+				for (int i = 0; i<Ycol.rows; i++) {
+					ymean += Ycol.get(i);
+				}
+				ymean /= Ycol.rows;
+				
+				Ydiff = Ycol.sub(ymean);
+				var = Ydiff.dot(Ydiff)/(Ydiff.rows-1);
+
+				Ydiff = Ycol.sub(Yhat.getColumn(jcol));
+				press = Ydiff.dot(Ydiff)/(Ydiff.rows-numberOfParameters-1);
+
+				q2 = 1.0-(press/var);
+				q2avg[jcol] += q2;
 			}
-			else
-			{
-				Ytilde = DoubleMatrix.concatVertically(Ytilde, Yhat[ifold]);	
-			}
+			
 		}
 		
+		for (int j=0;j<q2avg.length;j++) q2avg[j] /= numDataSets;
+		 
 		/* Use the list containing the shuffled indices to 
 		 * obtain the unshuffled Ytilde vector. */
 		DoubleMatrix Yunshuffled = new DoubleMatrix(Ytilde.rows, Ytilde.columns);
@@ -1388,5 +1419,22 @@ public class CsvMatrix
 			System.out.printf("%11.6f ", Ymatrix.get(i)); 	
 			System.out.println();
 		 }
-	 }
+	}
+
+	protected void setXtesting(DoubleMatrix xtesting) {
+		Xtesting = xtesting;
+	}
+
+	protected void setYtesting(DoubleMatrix ytesting) {
+		Ytesting = ytesting;
+	}
+
+	protected int getNumberOfParameters() {
+		return numberOfParameters;
+	}
+	
+	protected double[] getQ2avg() {
+		return q2avg;
+	}
+	
 }
