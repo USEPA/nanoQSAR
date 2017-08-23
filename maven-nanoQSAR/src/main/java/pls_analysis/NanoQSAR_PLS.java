@@ -89,6 +89,8 @@ public class NanoQSAR_PLS
 			double sum2 = Ydiff.dot(Ydiff);
 			
 			/* Perform PLS regression and return the BPLS* vector. */
+//			csvMatrix.setXtesting(Xorig.dup());
+//			csvMatrix.setYtesting(Yorig1.dup());
 			DoubleMatrix BplsS = csvMatrix.performResultsIndependentPLSR(Xorig,Yorig1);  
 			
 			/* Write BPLS* vector to a CSV file. */
