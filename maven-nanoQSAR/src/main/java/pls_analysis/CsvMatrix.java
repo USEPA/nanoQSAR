@@ -68,6 +68,8 @@ public class CsvMatrix
 	private DoubleMatrix Ytraining = null;
 	private DoubleMatrix Xtesting = null;
 	private DoubleMatrix Ytesting = null;
+	private double[] q2avg = null;
+	private int numberOfParameters = 0;
 	
 	private static DoubleMatrix[] XmatrixSet = new DoubleMatrix[numDataSets];
 	private static DoubleMatrix[] YmatrixSet = new DoubleMatrix[numDataSets];
@@ -906,7 +908,8 @@ public class CsvMatrix
 		/* Perform the NIPALS algorithm. NIPALS is a PLS regression 
 		 * algorithm. 
 		 */
-		performNIPALS(X0, Y0, bValues);
+		bValues = performNIPALS(X0, Y0);
+		numberOfParameters = bValues.size();
 		
 		DoubleMatrix BplsStar = determineCoefficients(bValues);
 			
@@ -1047,8 +1050,9 @@ public class CsvMatrix
 	 * NIPALS.
 	 * @author Wilson Melendez
 	 */
-	public void performNIPALS(DoubleMatrix X0, DoubleMatrix Y0, List<Double> bValues)
+	public List<Double> performNIPALS(DoubleMatrix X0, DoubleMatrix Y0)
 	{
+		List<Double> bValues = new ArrayList();
 		DoubleMatrix X = new DoubleMatrix();
 		DoubleMatrix Y = new DoubleMatrix();
 		DoubleMatrix u;
@@ -1165,7 +1169,7 @@ public class CsvMatrix
 			
 		} while (normX > EPSILON_DEFLATION && numDeflations < X.columns && numDeflations < X.rows);
 		
-		return;
+		return bValues;
 	
 	}
 
@@ -1313,8 +1317,8 @@ public class CsvMatrix
 		
 		DoubleMatrix Ytilde = new DoubleMatrix(0,Yorig.columns);
 		
-		double q2foldavg[] = new double[Yorig.columns];
-		for (int j=0; j<q2foldavg.length; j++) q2foldavg[j]=0.0;
+		q2avg = new double[Yorig.columns];
+		for (int j=0; j<q2avg.length; j++) q2avg[j]=0.0;
 		
 		for (int ifold = 0; ifold < numDataSets; ifold++)
 		{
@@ -1346,32 +1350,34 @@ public class CsvMatrix
 			/* Build the predicted Y's into a single matrix. */
 			Ytilde = DoubleMatrix.concatVertically(Ytilde, Yhat);	
 			
-			double[] q2 = new double[Ytesting.columns];
+			DoubleMatrix Ycol = null;
+			DoubleMatrix Ydiff = null;
+			double var = 0;
+			double press = 0;
+			double q2 = 0;
 			
 			for (int jcol=0; jcol<Ytesting.columns; jcol++) {
+				
+				Ycol = Ytesting.getColumn(jcol);
 				double ymean = 0.0;
-				for (int i = 0; i<Ytesting.rows; i++) {
-					ymean += Ytesting.get(i,jcol);
+				for (int i = 0; i<Ycol.rows; i++) {
+					ymean += Ycol.get(i);
 				}
-				ymean /= Ytesting.rows;
-				double ress = 0.0;
-				double press = 0.0;
-				double diff = 0.0;
-				for (int i = 0; i<Yhat.rows; i++) {
-					diff = Ytesting.get(i,jcol)-ymean;
-					ress += diff*diff;
-					diff = Ytesting.get(i,jcol)-Yhat.get(i,jcol);
-					press += diff*diff;
-				}
-				q2[jcol]= 1.0-(press/ress);
+				ymean /= Ycol.rows;
 				
-				q2foldavg[jcol] += q2[jcol];
-				
+				Ydiff = Ycol.sub(ymean);
+				var = Ydiff.dot(Ydiff)/(Ydiff.rows-1);
+
+				Ydiff = Ycol.sub(Yhat.getColumn(jcol));
+				press = Ydiff.dot(Ydiff)/(Ydiff.rows-numberOfParameters-1);
+
+				q2 = 1.0-(press/var);
+				q2avg[jcol] += q2;
 			}
 			
 		}
 		
-		for (int j=0;j<q2foldavg.length;j++) q2foldavg[j] /= numDataSets;
+		for (int j=0;j<q2avg.length;j++) q2avg[j] /= numDataSets;
 		 
 		/* Use the list containing the shuffled indices to 
 		 * obtain the unshuffled Ytilde vector. */
@@ -1421,6 +1427,14 @@ public class CsvMatrix
 
 	protected void setYtesting(DoubleMatrix ytesting) {
 		Ytesting = ytesting;
+	}
+
+	protected int getNumberOfParameters() {
+		return numberOfParameters;
+	}
+	
+	protected double[] getQ2avg() {
+		return q2avg;
 	}
 	
 }
