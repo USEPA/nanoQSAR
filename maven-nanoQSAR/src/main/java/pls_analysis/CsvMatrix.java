@@ -877,6 +877,9 @@ public class CsvMatrix
 		Wmatrix = null;
 		Bmatrix = null;
 		
+//		Xmatrix = Xorig;
+//		Ymatrix = Yorig;
+		
 		/* Normalize the Xmatrix by turning each element of the 
 		 * matrix into Z-scores. 
 		 */
@@ -1086,10 +1089,13 @@ public class CsvMatrix
 		IsFirstDeflation = true;
 //		normY0 = Y.norm2();
 		
-		/* Initialize u with random values. */
-		u = Y.getColumn(0);
+//		/* Initialize u with random values. */
+//		u = Y.getColumn(0);
 		
 		do {
+			
+			/* Initialize u with first column of Y. */
+			u = Y.getColumn(0);
 			
 			/* Calculate w = X'u, and normalize the result. */
 			w = X.transpose().mmul(u);				
@@ -1133,6 +1139,13 @@ public class CsvMatrix
 			tct = (t.mmul(c.transpose())).muli(b);
 			X = X.sub(tpt);
 			Y = Y.sub(tct);
+			
+
+			/* Deflate the Normalized Test matrix */
+//			double press = calculatePredictedResidual(bValues);
+//			if (press > press0) break;
+//			press0 = press;
+//			double ress = Y.dot(Y);
 			
 			/* Store t, u, p, c, and w in their corresponding matrices. */
 			if (IsFirstDeflation)
@@ -1262,6 +1275,28 @@ public class CsvMatrix
 	}
 	
 	/**
+	 * This method creates a list of set indices and then randomly shuffles.  The indices
+	 * to cross-validate the original data using the 5-fold cross-validation method.
+	 * @author Paul Harten
+	 */
+	private List<Integer> createSetIndexListAndShuffle()
+	{
+
+		List<Integer> list = new ArrayList<Integer>();
+		
+		/* Generate list of indices. */
+		for (int i = 0; i < Xmatrix.rows; i++)
+		{
+			list.add(i % numDataSets);
+		}
+		
+		/* Randomly shuffle the list of indices. */
+		Collections.shuffle(list);
+				
+		return list;
+	}
+	
+	/**
 	 * This method implements the 5-fold cross-validation algorithm.
 	 * @author Wilson Melendez & Paul Harten
 	 */
@@ -1309,11 +1344,13 @@ public class CsvMatrix
 	 */
 	public DoubleMatrix performFiveFoldCrossValidation(DoubleMatrix Xorig, DoubleMatrix Yorig)
 	{
-		
+		Xmatrix = Xorig;
+		Ymatrix = Yorig;
+		xcolumns = Xorig.columns;
+		ycolumns = Yorig.columns;
 		/* Split original data into 5 subsets that will be used for a 5-fold
 		 * cross-validation analysis. */
-		List<Integer> list = new ArrayList<Integer>();
-		splitDataIntoSets(Xorig, Yorig, list);
+		List<Integer> list = createSetIndexListAndShuffle();
 		
 		DoubleMatrix Ytilde = new DoubleMatrix(0,Yorig.columns);
 		
@@ -1322,24 +1359,9 @@ public class CsvMatrix
 		
 		for (int ifold = 0; ifold < numDataSets; ifold++)
 		{
-			/* Leave one set out and use remaining sets to build model. */
-			Xtraining = new DoubleMatrix(0, Xorig.columns);
-			Ytraining = new DoubleMatrix(0, Yorig.columns);
-			Xtesting = new DoubleMatrix(0, Xorig.columns);
-			Ytesting = new DoubleMatrix(0, Yorig.columns);
-			DoubleMatrix Yhat = null;
-			
-			/* Build the X and Y training and testing matrices for the model. */
-			for (int i = 0; i < numDataSets; i++)
-			{
-				if (i==ifold) {
-					Xtesting = XmatrixSet[i];
-					Ytesting = YmatrixSet[i];
-				} else {
-					Xtraining = DoubleMatrix.concatVertically(Xtraining, XmatrixSet[i]);
-					Ytraining = DoubleMatrix.concatVertically(Ytraining, YmatrixSet[i]);
-				}
-			}
+			DoubleMatrix Yhat;
+
+			separateTrainingFromTesting(ifold, list);
 						
 			/* Perform the PLS regression analysis. */
 			DoubleMatrix BplsS = performResultsIndependentPLSR(Xtraining, Ytraining);			
@@ -1366,10 +1388,12 @@ public class CsvMatrix
 				ymean /= Ycol.rows;
 				
 				Ydiff = Ycol.sub(ymean);
-				var = Ydiff.dot(Ydiff)/(Ydiff.rows-1);
+//				var = Ydiff.dot(Ydiff)/(Ydiff.rows-1);
+				var = Ydiff.dot(Ydiff);
 
 				Ydiff = Ycol.sub(Yhat.getColumn(jcol));
-				press = Ydiff.dot(Ydiff)/(Ydiff.rows-numberOfParameters-1);
+//				press = Ydiff.dot(Ydiff)/(Ydiff.rows-numberOfParameters-1);
+				press = Ydiff.dot(Ydiff);
 
 				q2 = 1.0-(press/var);
 				q2avg[jcol] += q2;
@@ -1389,6 +1413,27 @@ public class CsvMatrix
 		}
 		
 		return Yunshuffled;
+	}
+
+	private void separateTrainingFromTesting(int ifold, List<Integer> list) {
+		
+		/* Leave one set out for testing and use remaining sets for training. */
+		Xtraining = new DoubleMatrix(0, xcolumns);
+		Ytraining = new DoubleMatrix(0, ycolumns);
+		Xtesting = new DoubleMatrix(0, xcolumns);
+		Ytesting = new DoubleMatrix(0, ycolumns);
+		
+		/* Build the X and Y training and testing matrices for the model. */
+		for (int i = 0; i < list.size(); i++)
+		{
+			if (list.get(i)==ifold) {
+				Xtesting = DoubleMatrix.concatVertically(Xtesting, Xmatrix.getRow(i));
+				Ytesting = DoubleMatrix.concatVertically(Ytesting, Ymatrix.getRow(i));
+			} else {
+				Xtraining = DoubleMatrix.concatVertically(Xtraining, Xmatrix.getRow(i));
+				Ytraining = DoubleMatrix.concatVertically(Ytraining, Ymatrix.getRow(i));
+			}
+		}
 	}
 	
 	/**
