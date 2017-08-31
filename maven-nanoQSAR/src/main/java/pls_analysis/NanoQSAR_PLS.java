@@ -81,45 +81,36 @@ public class NanoQSAR_PLS
 			
 			DoubleMatrix Yorig1 = Yorig.getColumn(1);	// Use LC50 as the effect variable.
 			
+			/* Perform 5-fold cross-validation prediction. */
+			DoubleMatrix Ytilde = csvMatrix.performFiveFoldCrossValidation(Xorig, Yorig1);
+			double[] q2Avg = csvMatrix.getQ2avg();
+			
+			/* Store Q2 in the logger file. */
+			LOGGER.info("Q2avg = " + q2Avg[0]);
+			
 			/* Calculate average of observed values. */
 			double meanY = Yorig1.mean();
 			
 			/* Calculate denominator */
 			DoubleMatrix Ydiff = Yorig1.sub(meanY);
-//			double sum2 = (Ydiff.dot(Ydiff))/(Ydiff.rows-1);
 			double sum2 = Ydiff.dot(Ydiff);
 			
 			/* Perform PLS regression and return the BPLS* vector. */
-//			csvMatrix.setXtesting(Xorig.dup());
-//			csvMatrix.setYtesting(Yorig1.dup());
-//			DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig,Yorig1);  
+			DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig,Yorig1,csvMatrix.getNumDeflationsAvg());  
 			
 			/* Write BPLS* vector to a CSV file. */
-//			CsvMatrix.writeBplsStarToCsv(BplsS, filename_BPLS);			
+			CsvMatrix.writeBplsStarToCsv(BplsS, filename_BPLS);			
 			
 			/* Predict the Y values. */
-//			DoubleMatrix Ypredicted = CsvMatrix.predictResults(Xorig, BplsS);
+			DoubleMatrix Ypredicted = CsvMatrix.predictResults(Xorig, BplsS);
 			
 			/* Calculate R2 = 1.0 - ||Yobs-Ypred||^2 / ||Yobs-Ymean||^2 */
-//			Ydiff = Yorig1.sub(Ypredicted);
-//			double sum1 = (Ydiff.dot(Ydiff))/(Ydiff.rows-csvMatrix.getNumberOfParameters()-1);
+			Ydiff = Yorig1.sub(Ypredicted);
 			double sum1 = Ydiff.dot(Ydiff);
 			double R2 = 1.0 - (sum1 / sum2);
 			
 			/* Store R2 in the logger file. */
 			LOGGER.info("R2 = " + R2);
-			
-			/* Perform 5-fold cross-validation prediction. */
-			DoubleMatrix Ytilde = csvMatrix.performFiveFoldCrossValidation(Xorig, Yorig1);
-			double[] q2Avg = csvMatrix.getQ2avg();
-			
-			/* Calculate Q2 = 1.0 - ||Yobs-Ytilde||^2 / ||Yobs-Ymean||^2 */
-//			Ydiff = Yorig1.sub(Ytilde);
-//			sum1 = (Ydiff.dot(Ydiff))/(Ydiff.rows-csvMatrix.getNumberOfParameters()-1);
-//			double Q2 = 1.0 - (sum1 / sum2);
-			
-			/* Store Q2 in the logger file. */
-			LOGGER.info("Q2avg = " + q2Avg[0]);
 			
 		}
 		catch(FileNotFoundException ex)

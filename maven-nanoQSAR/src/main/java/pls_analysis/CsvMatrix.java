@@ -69,7 +69,8 @@ public class CsvMatrix
 	private DoubleMatrix Xtesting = null;
 	private DoubleMatrix Ytesting = null;
 	private double[] q2avg = null;
-	private int numberOfParameters = 0;
+	private int numOfDeflations = 0;
+	private int numDeflationsAvg = 0;
 	
 	private static DoubleMatrix[] XmatrixSet = new DoubleMatrix[numDataSets];
 	private static DoubleMatrix[] YmatrixSet = new DoubleMatrix[numDataSets];
@@ -851,11 +852,11 @@ public class CsvMatrix
 	 * @author Paul Harten
 	 * @throws IOException 
 	 */
-	public DoubleMatrix performResultsIndependentPLSR(DoubleMatrix X, DoubleMatrix Y)
+	public DoubleMatrix performResultsIndependentPLSR(DoubleMatrix X, DoubleMatrix Y, int maxNumDeflations)
 	{
 		DoubleMatrix BplsStar = new DoubleMatrix(X.columns+1, Y.columns);
 		for (int j=0; j<Y.columns; j++) {
-			BplsStar.putColumn(j, performPLSR(X,Y.getColumn(j)));
+			BplsStar.putColumn(j, performPLSR(X,Y.getColumn(j), maxNumDeflations));
 		}
 		return BplsStar;
 	}
@@ -868,7 +869,7 @@ public class CsvMatrix
 	 * @author Wilson Melendez
 	 * @throws IOException 
 	 */
-	public DoubleMatrix performPLSR(DoubleMatrix Xorig, DoubleMatrix Yorig)
+	public DoubleMatrix performPLSR(DoubleMatrix Xorig, DoubleMatrix Yorig, int maxNumDeflations)
 	{	
 		Pmatrix = null;
 		Umatrix = null;
@@ -911,8 +912,8 @@ public class CsvMatrix
 		/* Perform the NIPALS algorithm. NIPALS is a PLS regression 
 		 * algorithm. 
 		 */
-		bValues = performNIPALS(X0, Y0);
-		numberOfParameters = bValues.size();
+		bValues = performNIPALS(X0, Y0, maxNumDeflations);
+		numOfDeflations = bValues.size();
 		
 		DoubleMatrix BplsStar = determineCoefficients(bValues);
 			
@@ -1054,7 +1055,7 @@ public class CsvMatrix
 	 * NIPALS.
 	 * @author Wilson Melendez
 	 */
-	public List<Double> performNIPALS(DoubleMatrix X0, DoubleMatrix Y0)
+	public List<Double> performNIPALS(DoubleMatrix X0, DoubleMatrix Y0, int maxNumDeflations)
 	{
 		List<Double> bValues = new ArrayList();
 		DoubleMatrix X = new DoubleMatrix();
@@ -1068,9 +1069,9 @@ public class CsvMatrix
 		DoubleMatrix tpt, tct;	
 		
 		boolean IsFirstDeflation;
-		double normX, deltaT;
+		double deltaT;
 		int numDeflations = 0;
-		double press0 = sumOfSquares(Ytesting);
+		double press0 = 0;
 		double press = 0;
 		
 		X = X0;
@@ -1170,17 +1171,19 @@ public class CsvMatrix
 				Wmatrix = DoubleMatrix.concatHorizontally(Wmatrix,w);				
 			}
 			
-			/* predict effect of additional latent space vector */
-			press = calculatePredictedResidual(bValues, Xtesting, Ytesting);
-			if (press > press0) break;
-			
 			numDeflations = numDeflations + 1;
-			press0 = press;
-//			if (numDeflations >= maxNumLS) break;
-//			normX = X.norm1()/(X.rows*X.columns);
-			normX = X.norm2();
 			
-		} while (normX > EPSILON_DEFLATION && numDeflations < X.columns && numDeflations < X.rows);
+			if (maxNumDeflations==0) {
+				if (numDeflations==1) press0 = sumOfSquares(Ytesting);
+				/* still testing, predict effect of additional latent space vector */
+				press = calculatePredictedResidual(bValues, Xtesting, Ytesting);
+				if (press > press0) break;
+				press0 = press;
+			} else {
+				if (numDeflations>=maxNumDeflations) break;
+			}
+			
+		} while (X.norm2() > EPSILON_DEFLATION);
 		
 		return bValues;
 	
@@ -1326,7 +1329,7 @@ public class CsvMatrix
 			}
 			
 			/* Perform the PLS regression analysis. */
-			DoubleMatrix BplsS = performPLSR(Xtraining, Ytraining);
+			DoubleMatrix BplsS = performPLSR(Xtraining, Ytraining, 0);
 			
 			/* Predict the Y values that were left out. */
 			Yhat = predictResults(Xtesting, BplsS);			
@@ -1352,25 +1355,35 @@ public class CsvMatrix
 		 * cross-validation analysis. */
 		List<Integer> list = createSetIndexListAndShuffle();
 		
-		DoubleMatrix Ytilde = new DoubleMatrix(0,Yorig.columns);
+		DoubleMatrix Ytilde = new DoubleMatrix(Yorig.rows,Yorig.columns);
 		
+		numDeflationsAvg = 0;
 		q2avg = new double[Yorig.columns];
 		for (int j=0; j<q2avg.length; j++) q2avg[j]=0.0;
 		
-		for (int ifold = 0; ifold < numDataSets; ifold++)
+		int nfolds = numDataSets;
+		
+		for (int ifold = 0; ifold < nfolds; ifold++)
 		{
 			DoubleMatrix Yhat;
 
 			separateTrainingFromTesting(ifold, list);
 						
 			/* Perform the PLS regression analysis. */
-			DoubleMatrix BplsS = performResultsIndependentPLSR(Xtraining, Ytraining);			
+			DoubleMatrix BplsS = performPLSR(Xtraining, Ytraining, 0);
+			
+			numDeflationsAvg += numOfDeflations;
 			
 			/* Predict the Y values that were left out. */
-			Yhat = predictResults(Xtesting, BplsS);			
+			Yhat = predictResults(Xtesting, BplsS);	
 
+			int index = 0;
 			/* Build the predicted Y's into a single matrix. */
-			Ytilde = DoubleMatrix.concatVertically(Ytilde, Yhat);	
+			for (int i=0; i<list.size(); i++) {
+				if (list.get(i)==ifold) {
+					Ytilde.putRow(i, Yhat.getRow(index++));
+				}
+			}
 			
 			DoubleMatrix Ycol = null;
 			DoubleMatrix Ydiff = null;
@@ -1388,31 +1401,32 @@ public class CsvMatrix
 				ymean /= Ycol.rows;
 				
 				Ydiff = Ycol.sub(ymean);
-//				var = Ydiff.dot(Ydiff)/(Ydiff.rows-1);
 				var = Ydiff.dot(Ydiff);
 
 				Ydiff = Ycol.sub(Yhat.getColumn(jcol));
-//				press = Ydiff.dot(Ydiff)/(Ydiff.rows-numberOfParameters-1);
 				press = Ydiff.dot(Ydiff);
 
-				q2 = 1.0-(press/var);
+				if (var==0) q2 = 1.0;
+				else q2 = 1.0-(press/var);
+				
 				q2avg[jcol] += q2;
 			}
 			
 		}
 		
-		for (int j=0;j<q2avg.length;j++) q2avg[j] /= numDataSets;
+		for (int j=0;j<q2avg.length;j++) q2avg[j] /= nfolds;
+		numDeflationsAvg /= nfolds;
 		 
 		/* Use the list containing the shuffled indices to 
 		 * obtain the unshuffled Ytilde vector. */
-		DoubleMatrix Yunshuffled = new DoubleMatrix(Ytilde.rows, Ytilde.columns);
-		for (int i = 0; i < Ytilde.rows; i++)
-		{
-			int index = list.get(i);
-			Yunshuffled.putRow(index, Ytilde.getRow(i));
-		}
+//		DoubleMatrix Yunshuffled = new DoubleMatrix(Ytilde.rows, Ytilde.columns);
+//		for (int i = 0; i < Ytilde.rows; i++)
+//		{
+//			int index = list.get(i);
+//			Yunshuffled.putRow(index, Ytilde.getRow(i));
+//		}
 		
-		return Yunshuffled;
+		return Ytilde;
 	}
 
 	private void separateTrainingFromTesting(int ifold, List<Integer> list) {
@@ -1474,12 +1488,16 @@ public class CsvMatrix
 		Ytesting = ytesting;
 	}
 
-	protected int getNumberOfParameters() {
-		return numberOfParameters;
+	protected int getNumOfDeflations() {
+		return numOfDeflations;
 	}
 	
-	protected double[] getQ2avg() {
+	public double[] getQ2avg() {
 		return q2avg;
+	}
+
+	public int getNumDeflationsAvg() {
+		return numDeflationsAvg;
 	}
 	
 }
