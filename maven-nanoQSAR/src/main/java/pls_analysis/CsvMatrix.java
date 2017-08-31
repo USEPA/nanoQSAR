@@ -942,7 +942,8 @@ public class CsvMatrix
 		/* Calculate the PLS regression weights. This is also known as 
 		 * the BPLS vector. 
 		 */
-		Bpls = ptInv.mmul(Bmatrix).mmul(Cmatrix.transpose());
+		Bpls = ptInv.mmul((Cmatrix.transpose()).mulColumnVector(mB));
+//		Bpls = ptInv.mmul(Bmatrix).mmul(Cmatrix.transpose());
         
 		/* Re-introduce units into the BPLS vector. */
 		BplsStar = new DoubleMatrix(Bpls.rows + 1, Bpls.columns);
@@ -1069,8 +1070,8 @@ public class CsvMatrix
 		boolean IsFirstDeflation;
 		double normX, deltaT;
 		int numDeflations = 0;
-//		double press0 = sumOfSquares(Ytesting);
-//		double press = 0;
+		double press0 = sumOfSquares(Ytesting);
+		double press = 0;
 		
 		X = X0;
 		Y = Y0;
@@ -1123,7 +1124,7 @@ public class CsvMatrix
 				t = t.div(t.norm2());
 				
 				/* Determine if t is still changing */
-				deltaT = t.sub(t0).norm2();
+				deltaT = (t.sub(t0)).norm2();
 				t0 = t;
 				
 			} while (deltaT > EPSILON);
@@ -1139,7 +1140,6 @@ public class CsvMatrix
 			tct = (t.mmul(c.transpose())).muli(b);
 			X = X.sub(tpt);
 			Y = Y.sub(tct);
-			
 
 			/* Deflate the Normalized Test matrix */
 //			double press = calculatePredictedResidual(bValues);
@@ -1170,12 +1170,12 @@ public class CsvMatrix
 				Wmatrix = DoubleMatrix.concatHorizontally(Wmatrix,w);				
 			}
 			
-//			/* predict effect of additional latent space vector */
-//			press = calculatePredictedResidual(bValues);
-//			if (press > press0) break;
-//			press0 = press;
+			/* predict effect of additional latent space vector */
+			press = calculatePredictedResidual(bValues, Xtesting, Ytesting);
+			if (press > press0) break;
 			
 			numDeflations = numDeflations + 1;
+			press0 = press;
 //			if (numDeflations >= maxNumLS) break;
 //			normX = X.norm1()/(X.rows*X.columns);
 			normX = X.norm2();
@@ -1186,10 +1186,10 @@ public class CsvMatrix
 	
 	}
 
-	private double calculatePredictedResidual(List<Double> bValues) {
+	private double calculatePredictedResidual(List<Double> bValues, DoubleMatrix X, DoubleMatrix Y) {
 		DoubleMatrix BplsStar = determineCoefficients(bValues);
-		DoubleMatrix Yhat = predictResults(Xtesting, BplsStar);	
-		double press = sumOfSquares(Yhat.sub(Ytesting));
+		DoubleMatrix Yhat = predictResults(X, BplsStar);
+		double press = sumOfSquares(Yhat.sub(Y));
 		return press;
 	}
 	

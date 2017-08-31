@@ -92,16 +92,16 @@ public class NanoQSAR_PLS
 			/* Perform PLS regression and return the BPLS* vector. */
 //			csvMatrix.setXtesting(Xorig.dup());
 //			csvMatrix.setYtesting(Yorig1.dup());
-			DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig,Yorig1);  
+//			DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig,Yorig1);  
 			
 			/* Write BPLS* vector to a CSV file. */
-			CsvMatrix.writeBplsStarToCsv(BplsS, filename_BPLS);			
+//			CsvMatrix.writeBplsStarToCsv(BplsS, filename_BPLS);			
 			
 			/* Predict the Y values. */
-			DoubleMatrix Ypredicted = CsvMatrix.predictResults(Xorig, BplsS);
+//			DoubleMatrix Ypredicted = CsvMatrix.predictResults(Xorig, BplsS);
 			
 			/* Calculate R2 = 1.0 - ||Yobs-Ypred||^2 / ||Yobs-Ymean||^2 */
-			Ydiff = Yorig1.sub(Ypredicted);
+//			Ydiff = Yorig1.sub(Ypredicted);
 //			double sum1 = (Ydiff.dot(Ydiff))/(Ydiff.rows-csvMatrix.getNumberOfParameters()-1);
 			double sum1 = Ydiff.dot(Ydiff);
 			double R2 = 1.0 - (sum1 / sum2);
