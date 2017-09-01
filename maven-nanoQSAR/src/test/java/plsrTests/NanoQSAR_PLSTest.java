@@ -54,7 +54,7 @@ public class NanoQSAR_PLSTest {
 		/* create an instance of CsvMatrix */
 		CsvMatrix csvMatrix = new CsvMatrix();
 			
-		DoubleMatrix Bstar = csvMatrix.performPLSR(Xorig,Yorig);
+		DoubleMatrix Bstar = csvMatrix.performPLSR(Xorig,Yorig,false);
 			
 		DoubleMatrix T = csvMatrix.getTmatrix();
 		DoubleMatrix diffMat = T.transpose().mmul(T);
@@ -378,7 +378,7 @@ public class NanoQSAR_PLSTest {
 		CsvMatrix csvMatrix = new CsvMatrix();
 		
 		/* Perform the PLS regression analysis. */
-		DoubleMatrix BplsStar = csvMatrix.performPLSR(X, Y);	
+		DoubleMatrix BplsStar = csvMatrix.performPLSR(X, Y, false);	
 		
 		/* Predict the Y values using X and BPLS*. */
 		DoubleMatrix Ypredicted = CsvMatrix.predictResults(X, BplsStar);
@@ -470,14 +470,16 @@ public class NanoQSAR_PLSTest {
 		ress2 = Math.pow(YdiffTilde.getColumn(1).norm2(), 2.0);
 		ress3 = Math.pow(YdiffTilde.getColumn(2).norm2(), 2.0);
 		
+		double[] Q2avg = csvMatrix.getQ2avg();
+		
 		double Q2 = 1.0 - sum1/sum2;
 		assertTrue("Q2 < R2", Q2 < R2);
 		double Q2Col1 = 1.0 - (ress1 / sumYmean1);
-		assertTrue("Q2Col1 > 0.9", Q2Col1 > 0.9);
+		assertTrue("Q2avg[0] > 0.9", Q2avg[0] > 0.9);
 		double Q2Col2 = 1.0 - (ress2 / sumYmean2);
-		assertTrue("Q2Col2 > 0.9", Q2Col2 > 0.9);
+		assertTrue("Q2avg[1] > 0.9", Q2avg[1] > 0.9);
 		double Q2Col3 = 1.0 - (ress3 / sumYmean3);
-		assertTrue("Q2Col3 < 0.0", Q2Col3 < 0.0);
+		assertTrue("Q2avg[2] < 0.0", Q2avg[2] > 0.9);
 		
 	}
 	
@@ -534,7 +536,7 @@ public class NanoQSAR_PLSTest {
 		CsvMatrix csvMatrix = new CsvMatrix();
 		
 		/* Perform the PLS algorithm.*/
-		DoubleMatrix Bpls1 = csvMatrix.performPLSR(X1,Y1);
+		DoubleMatrix Bpls1 = csvMatrix.performPLSR(X1,Y1,false);
 		
 		DoubleMatrix T1 = csvMatrix.getTmatrix();
 		
@@ -590,7 +592,7 @@ public class NanoQSAR_PLSTest {
 		CsvMatrix csvMatrix = new CsvMatrix();
 		
 		/* Perform the PLS algorithm and calculate BPLS* */
-		DoubleMatrix Bpls1 = csvMatrix.performPLSR(X2,Y2);
+		DoubleMatrix Bpls1 = csvMatrix.performPLSR(X2,Y2,false);
 		
 		/* Confirm the latent space has only 1 dimension. 
 		 * Loop over the rows of BPLS* and verify that only one
@@ -698,7 +700,7 @@ public class NanoQSAR_PLSTest {
 		/* Perform the PLS regression algorithm and return the 
 		 * BPLS matrix.
 		 */
-		DoubleMatrix BPLSS = csvMatrix.performPLSR(X,Yobs);	
+		DoubleMatrix BPLSS = csvMatrix.performPLSR(X,Yobs,false);	
 		
 		/* Predict the results using X and BPLS*. */
 		DoubleMatrix Ypred = CsvMatrix.predictResults(X, BPLSS);
