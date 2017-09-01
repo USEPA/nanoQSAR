@@ -106,17 +106,13 @@ public class NanoQSAR_PLS
 			LOGGER.info("R2 = " + R2+", numDeflations = "+csvMatrix.getNumOfDeflations());
 			
 			/* Perform 5-fold cross-validation prediction. */
-			DoubleMatrix Ytilde = csvMatrix.performFiveFoldCrossValidation(Xorig, Yorig1);
+			int nfolds = 5;
+			DoubleMatrix Ytilde = csvMatrix.performMultiFoldCrossValidation(nfolds, Xorig, Yorig1);
 			double[] q2Avg = csvMatrix.getQ2avg();
 			int numDeflationsAvg = csvMatrix.getNumDeflationsAvg();
 			
-			/* Calculate Q2 = 1.0 - ||Yobs-Ytilde||^2 / ||Yobs-Ymean||^2 */
-//			Ydiff = Yorig1.sub(Ytilde);
-//			sum1 = (Ydiff.dot(Ydiff))/(Ydiff.rows-csvMatrix.getNumberOfParameters()-1);
-//			double Q2 = 1.0 - (sum1 / sum2);
-			
 			/* Store Q2 in the logger file. */
-			LOGGER.info("Q2avg = " + q2Avg[0]+", numDeflationsAvg = "+numDeflationsAvg);
+			LOGGER.info("Q2avg = " + q2Avg[0]+", nfolds = "+nfolds+", numDeflationsAvg = "+numDeflationsAvg);
 			
 		}
 		catch(FileNotFoundException ex)

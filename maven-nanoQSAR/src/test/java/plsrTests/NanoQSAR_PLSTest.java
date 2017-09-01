@@ -455,7 +455,7 @@ public class NanoQSAR_PLSTest {
 //		}
 		
 		/* Perform a 5-fold cross-validation and compute Q2. */	
-		DoubleMatrix Ytilde = csvMatrix.performFiveFoldCrossValidation(X, Y);
+		DoubleMatrix Ytilde = csvMatrix.performMultiFoldCrossValidation(5, X, Y);
 		double sum1 = 0.0;
 		double sum2 = 0.0;
 		DoubleMatrix YdiffMean1 = Y.sub(meanY);
@@ -718,7 +718,7 @@ public class NanoQSAR_PLSTest {
 		assertTrue("R2 = "+R2+" should be less that 1.0, but not too much", 1.0>=R2 && R2>=0.80);
 		
 		/* Perform a 5-fold cross-validation and compute Q2. */		
-		DoubleMatrix Ytilde = csvMatrix.performFiveFoldCrossValidation(X, Yobs);
+		DoubleMatrix Ytilde = csvMatrix.performMultiFoldCrossValidation(5, X, Yobs);
 		sum1 = 0.0;
 		sum2 = 0.0;
 		for (int i = 0; i < n; i++)
