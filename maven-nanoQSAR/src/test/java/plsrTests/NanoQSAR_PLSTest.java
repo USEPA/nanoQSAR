@@ -54,7 +54,7 @@ public class NanoQSAR_PLSTest {
 		/* create an instance of CsvMatrix */
 		CsvMatrix csvMatrix = new CsvMatrix();
 			
-		DoubleMatrix Bstar = csvMatrix.performPLSR(Xorig,Yorig,Xorig.rows);
+		DoubleMatrix Bstar = csvMatrix.performPLSR(Xorig,Yorig,false);
 			
 		DoubleMatrix T = csvMatrix.getTmatrix();
 		DoubleMatrix diffMat = T.transpose().mmul(T);
@@ -378,7 +378,7 @@ public class NanoQSAR_PLSTest {
 		CsvMatrix csvMatrix = new CsvMatrix();
 		
 		/* Perform the PLS regression analysis. */
-		DoubleMatrix BplsStar = csvMatrix.performPLSR(X, Y, X.rows);	
+		DoubleMatrix BplsStar = csvMatrix.performPLSR(X, Y, false);	
 		
 		/* Predict the Y values using X and BPLS*. */
 		DoubleMatrix Ypredicted = CsvMatrix.predictResults(X, BplsStar);
@@ -536,7 +536,7 @@ public class NanoQSAR_PLSTest {
 		CsvMatrix csvMatrix = new CsvMatrix();
 		
 		/* Perform the PLS algorithm.*/
-		DoubleMatrix Bpls1 = csvMatrix.performPLSR(X1,Y1, X1.rows);
+		DoubleMatrix Bpls1 = csvMatrix.performPLSR(X1,Y1,false);
 		
 		DoubleMatrix T1 = csvMatrix.getTmatrix();
 		
@@ -592,7 +592,7 @@ public class NanoQSAR_PLSTest {
 		CsvMatrix csvMatrix = new CsvMatrix();
 		
 		/* Perform the PLS algorithm and calculate BPLS* */
-		DoubleMatrix Bpls1 = csvMatrix.performPLSR(X2,Y2, X2.rows);
+		DoubleMatrix Bpls1 = csvMatrix.performPLSR(X2,Y2,false);
 		
 		/* Confirm the latent space has only 1 dimension. 
 		 * Loop over the rows of BPLS* and verify that only one
@@ -700,7 +700,7 @@ public class NanoQSAR_PLSTest {
 		/* Perform the PLS regression algorithm and return the 
 		 * BPLS matrix.
 		 */
-		DoubleMatrix BPLSS = csvMatrix.performPLSR(X,Yobs,X.rows);	
+		DoubleMatrix BPLSS = csvMatrix.performPLSR(X,Yobs,false);	
 		
 		/* Predict the results using X and BPLS*. */
 		DoubleMatrix Ypred = CsvMatrix.predictResults(X, BPLSS);

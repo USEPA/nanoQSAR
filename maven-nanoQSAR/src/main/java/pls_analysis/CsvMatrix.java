@@ -852,11 +852,11 @@ public class CsvMatrix
 	 * @author Paul Harten
 	 * @throws IOException 
 	 */
-	public DoubleMatrix performResultsIndependentPLSR(DoubleMatrix X, DoubleMatrix Y, int maxNumDeflations)
+	public DoubleMatrix performResultsIndependentPLSR(DoubleMatrix X, DoubleMatrix Y, boolean testForOverfitting)
 	{
 		DoubleMatrix BplsStar = new DoubleMatrix(X.columns+1, Y.columns);
 		for (int j=0; j<Y.columns; j++) {
-			BplsStar.putColumn(j, performPLSR(X,Y.getColumn(j), maxNumDeflations));
+			BplsStar.putColumn(j, performPLSR(X,Y.getColumn(j), testForOverfitting));
 		}
 		return BplsStar;
 	}
@@ -869,7 +869,7 @@ public class CsvMatrix
 	 * @author Wilson Melendez
 	 * @throws IOException 
 	 */
-	public DoubleMatrix performPLSR(DoubleMatrix Xorig, DoubleMatrix Yorig, int maxNumDeflations)
+	public DoubleMatrix performPLSR(DoubleMatrix Xorig, DoubleMatrix Yorig, boolean testForOverfitting)
 	{	
 		Pmatrix = null;
 		Umatrix = null;
@@ -912,15 +912,15 @@ public class CsvMatrix
 		/* Perform the NIPALS algorithm. NIPALS is a PLS regression 
 		 * algorithm. 
 		 */
-		bValues = performNIPALS(X0, Y0, maxNumDeflations);
+		bValues = performNIPALS(X0, Y0, testForOverfitting);
 		numOfDeflations = bValues.size();
 		
-		DoubleMatrix BplsStar = determineCoefficients(bValues);
+		DoubleMatrix BplsStar = determineCoefficients(bValues, Pmatrix, Cmatrix);
 			
 		return BplsStar;				
 	}
 
-	private DoubleMatrix determineCoefficients(List<Double> bValues) {
+	private DoubleMatrix determineCoefficients(List<Double> bValues, DoubleMatrix P, DoubleMatrix C) {
 		
 		DoubleMatrix Bpls = null;
 		DoubleMatrix BplsStar = null;
@@ -934,16 +934,16 @@ public class CsvMatrix
 		{
 			mB.put(i,bValues.get(i));
 		}		
-		Bmatrix = DoubleMatrix.diag(mB);
+//		Bmatrix = DoubleMatrix.diag(mB);
 		
 		/* Calculate the Moore-Penrose pseudo-inverse of the transpose 
 		 * of the P matrix. */
-		DoubleMatrix ptInv = Solve.pinv(Pmatrix.transpose());
+		DoubleMatrix ptInv = Solve.pinv(P.transpose());
 		
 		/* Calculate the PLS regression weights. This is also known as 
 		 * the BPLS vector. 
 		 */
-		Bpls = ptInv.mmul((Cmatrix.transpose()).mulColumnVector(mB));
+		Bpls = ptInv.mmul((C.transpose()).mulColumnVector(mB));
 //		Bpls = ptInv.mmul(Bmatrix).mmul(Cmatrix.transpose());
         
 		/* Re-introduce units into the BPLS vector. */
@@ -1055,7 +1055,7 @@ public class CsvMatrix
 	 * NIPALS.
 	 * @author Wilson Melendez
 	 */
-	public List<Double> performNIPALS(DoubleMatrix X0, DoubleMatrix Y0, int maxNumDeflations)
+	public List<Double> performNIPALS(DoubleMatrix X0, DoubleMatrix Y0, Boolean testForOverfitting)
 	{
 		List<Double> bValues = new ArrayList();
 		DoubleMatrix X = new DoubleMatrix();
@@ -1068,32 +1068,17 @@ public class CsvMatrix
 		DoubleMatrix p;		
 		DoubleMatrix tpt, tct;	
 		
-		boolean IsFirstDeflation;
 		double deltaT;
 		int numDeflations = 0;
+		int maxNumDeflations = X0.rows;
 		double press0 = 0;
 		double press = 0;
 		
 		X = X0;
 		Y = Y0;
 		
-		/* Calculate the rank of X */
-//		DoubleMatrix[] fullSVD = Singular.fullSVD(X0);
-//		DoubleMatrix singularValuesDM = fullSVD[1];
-//		double rank = rank(X0, singularValuesDM);
-		
-		/* Set the maximum number of latent variables/structures 
-		 * to the rank of the X matrix.
-		 */
-//		int maxNumLS = (int) rank;
-		
-		/* Initialize parameters */
-		IsFirstDeflation = true;
-//		normY0 = Y.norm2();
-		
-//		/* Initialize u with random values. */
-//		u = Y.getColumn(0);
-		
+		numDeflations = 0;
+				
 		do {
 			
 			/* Initialize u with first column of Y. */
@@ -1131,32 +1116,42 @@ public class CsvMatrix
 			} while (deltaT > EPSILON);
 			
 			double b = t.transpose().dot(u);
-			bValues.add(b);
 			
 			/* Compute the factor loadings for X. */
 			p = X.transpose().mmul(t);
+			
+			if (testForOverfitting) { // calculate cross-validation effects
+				if (numDeflations==0) {
+					press0 = sumOfSquares(Ytesting);
+				} else {
+					List<Double> bValuesTrial = new ArrayList(bValues);
+					bValuesTrial.add(b);
+					DoubleMatrix pTrial = DoubleMatrix.concatHorizontally(Pmatrix, p);
+					DoubleMatrix cTrial = DoubleMatrix.concatHorizontally(Cmatrix, c);
+					press = calculatePredictedResidual(bValuesTrial, Xtesting, Ytesting, pTrial, cTrial);
+					if (press > press0) break;
+					press0 = press;
+				}
+			}
+			
+			bValues.add(b);
 			
 			/* Deflate the X and Y matrices. */
 			tpt = t.mmul(p.transpose());
 			tct = (t.mmul(c.transpose())).muli(b);
 			X = X.sub(tpt);
 			Y = Y.sub(tct);
-
-			/* Deflate the Normalized Test matrix */
-//			double press = calculatePredictedResidual(bValues);
-//			if (press > press0) break;
-//			press0 = press;
-//			double ress = Y.dot(Y);
+			
+			numDeflations = numDeflations + 1;
 			
 			/* Store t, u, p, c, and w in their corresponding matrices. */
-			if (IsFirstDeflation)
+			if (numDeflations==1)
 			{
 				Tmatrix = t.dup();
 				Umatrix = u.dup();
 				Pmatrix = p.dup();
 				Cmatrix = c.dup();				
 				Wmatrix = w.dup();
-				IsFirstDeflation = false;
 			}
 			else
 			{
@@ -1171,26 +1166,26 @@ public class CsvMatrix
 				Wmatrix = DoubleMatrix.concatHorizontally(Wmatrix,w);				
 			}
 			
-			numDeflations = numDeflations + 1;
+//			if (maxNumDeflations==0) { // calculating cross-validation
+//				if (numDeflations==1) press0 = sumOfSquares(Ytesting);
+//				/* still testing, predict effect of additional latent space vector */
+//				press = calculatePredictedResidual(bValues, Xtesting, Ytesting, Pmatrix, Cmatrix);
+//				if (press > press0) {
+//					break;
+//				}
+//				press0 = press;
+//			} else {
+//				if (numDeflations>=maxNumDeflations) break;
+//			}
 			
-			if (maxNumDeflations==0) {
-				if (numDeflations==1) press0 = sumOfSquares(Ytesting);
-				/* still testing, predict effect of additional latent space vector */
-				press = calculatePredictedResidual(bValues, Xtesting, Ytesting);
-				if (press > press0) break;
-				press0 = press;
-			} else {
-				if (numDeflations>=maxNumDeflations) break;
-			}
-			
-		} while (X.norm2() > EPSILON_DEFLATION);
+		} while (X.norm2() > EPSILON_DEFLATION && numDeflations < maxNumDeflations);
 		
 		return bValues;
 	
 	}
 
-	private double calculatePredictedResidual(List<Double> bValues, DoubleMatrix X, DoubleMatrix Y) {
-		DoubleMatrix BplsStar = determineCoefficients(bValues);
+	private double calculatePredictedResidual(List<Double> bValues, DoubleMatrix X, DoubleMatrix Y, DoubleMatrix P, DoubleMatrix C) {
+		DoubleMatrix BplsStar = determineCoefficients(bValues, P, C);
 		DoubleMatrix Yhat = predictResults(X, BplsStar);
 		double press = sumOfSquares(Yhat.sub(Y));
 		return press;
@@ -1329,7 +1324,7 @@ public class CsvMatrix
 			}
 			
 			/* Perform the PLS regression analysis. */
-			DoubleMatrix BplsS = performPLSR(Xtraining, Ytraining, 0);
+			DoubleMatrix BplsS = performPLSR(Xtraining, Ytraining, true);
 			
 			/* Predict the Y values that were left out. */
 			Yhat = predictResults(Xtesting, BplsS);			
@@ -1370,7 +1365,7 @@ public class CsvMatrix
 			separateTrainingFromTesting(ifold, list);
 						
 			/* Perform the PLS regression analysis. */
-			DoubleMatrix BplsS = performPLSR(Xtraining, Ytraining, 0);
+			DoubleMatrix BplsS = performPLSR(Xtraining, Ytraining, true);
 			
 			numDeflationsAvg += numOfDeflations;
 			

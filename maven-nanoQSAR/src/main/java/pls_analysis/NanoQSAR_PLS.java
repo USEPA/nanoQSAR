@@ -84,9 +84,10 @@ public class NanoQSAR_PLS
 			/* Perform 5-fold cross-validation prediction. */
 			DoubleMatrix Ytilde = csvMatrix.performFiveFoldCrossValidation(Xorig, Yorig1);
 			double[] q2Avg = csvMatrix.getQ2avg();
+			int numDefAvg = csvMatrix.getNumDeflationsAvg();
 			
 			/* Store Q2 in the logger file. */
-			LOGGER.info("Q2avg = " + q2Avg[0]);
+			LOGGER.info("Q2avg = " + q2Avg[0]+", numDeflationsAvg = "+numDefAvg);
 			
 			/* Calculate average of observed values. */
 			double meanY = Yorig1.mean();
@@ -96,7 +97,7 @@ public class NanoQSAR_PLS
 			double sum2 = Ydiff.dot(Ydiff);
 			
 			/* Perform PLS regression and return the BPLS* vector. */
-			DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig,Yorig1,csvMatrix.getNumDeflationsAvg());  
+			DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig,Yorig1,false);  
 			
 			/* Write BPLS* vector to a CSV file. */
 			CsvMatrix.writeBplsStarToCsv(BplsS, filename_BPLS);			
@@ -110,7 +111,7 @@ public class NanoQSAR_PLS
 			double R2 = 1.0 - (sum1 / sum2);
 			
 			/* Store R2 in the logger file. */
-			LOGGER.info("R2 = " + R2);
+			LOGGER.info("R2 = " + R2+", numDeflations= "+csvMatrix.getNumOfDeflations());
 			
 		}
 		catch(FileNotFoundException ex)
