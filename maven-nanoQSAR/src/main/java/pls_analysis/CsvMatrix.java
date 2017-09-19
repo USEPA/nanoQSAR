@@ -101,6 +101,7 @@ public class CsvMatrix
 		this.nanoMaterials = nanoMaterials;
 		nanoMaterials.selectNumericColumns();
 		rowsSize = nanoMaterials.size();
+		header = nanoMaterials.getHeader();
 		jcX = nanoMaterials.getDescriptorIndex();
 		jcY = nanoMaterials.getResultIndex();
 		xcolumns = jcX.length;
@@ -144,7 +145,7 @@ public class CsvMatrix
 	 * @return
 	 * @author Wilson Melendez
 	 */
-	public static List<String[]> getRows() {
+	public List<String[]> getRows() {
 		return rows;
 	}
 
@@ -162,7 +163,7 @@ public class CsvMatrix
 	 * @return
 	 * @author Wilson Melendez
 	 */
-	public static String[] getHeader() {
+	public String[] getHeader() {
 		return header;
 	}
 
@@ -515,7 +516,7 @@ public class CsvMatrix
 	 * @author Paul Harten
 	 * @throws Exception 
 	 */
-	public static void buildMatrices() throws Exception
+	public void buildMatrices() throws Exception
 	{		
 
 		xMatrix = new DoubleMatrix(rowsSize, xcolumns);   // full descriptor matrix
@@ -611,7 +612,7 @@ public class CsvMatrix
 						xColumn.put(i, avg);
 					}
 				}
-			} else { /* fill the whole column up with 0.0 */
+			} else { /* all NaN values, fill the whole column up with 0.0 */
 				for (int i=0; i<rowsSize; i++) {
 					xColumn.put(i, 0.0);
 				}
@@ -1000,7 +1001,7 @@ public class CsvMatrix
 	 * @param Bstar
 	 * @author Wilson Melendez
 	 */
-	public static void writeBplsStarToCsv(DoubleMatrix Bstar, String filename)
+	public static void writeBplsStarToCsv(String[] descriptorHeader, DoubleMatrix Bstar, String filename)
 	{
 		String[] entries = new String[Bstar.rows];
 		
@@ -1011,12 +1012,21 @@ public class CsvMatrix
 			/* Create an instance of the CSVWriter class and specify the comma as the 
 			 * default separator. Default quote character is double quote. */ 
 			CSVWriter csvOutput = new CSVWriter(file,CSVWriter.DEFAULT_SEPARATOR);
+			
+			/* first write descriptor header row */
+			entries[0] = "B - coeffs:";
+			for (int i=0; i<Bstar.rows-1; i++) {
+				entries[i+1] = descriptorHeader[i];
+			}
+			/* Write row of data to output using the writeNext method. */
+			csvOutput.writeNext(entries); 
 					
 			/* allow for multiple columns of Bstar */
 			for (int j=0; j<Bstar.columns; j++) {
-
+				
+				DoubleMatrix bColumn = Bstar.getColumn(j);
 				for (int i=0; i<Bstar.rows; i++) {
-					entries[i] = String.valueOf(Bstar.get(i));
+					entries[i] = String.valueOf(bColumn.get(i));
 				}
 
 				/* Write row of data to output using the writeNext method. */
