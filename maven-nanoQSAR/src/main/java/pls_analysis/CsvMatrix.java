@@ -101,6 +101,7 @@ public class CsvMatrix
 		this.nanoMaterials = nanoMaterials;
 		nanoMaterials.selectNumericColumns();
 		rowsSize = nanoMaterials.size();
+		header = nanoMaterials.getHeader();
 		jcX = nanoMaterials.getDescriptorIndex();
 		jcY = nanoMaterials.getResultIndex();
 		xcolumns = jcX.length;
@@ -144,7 +145,7 @@ public class CsvMatrix
 	 * @return
 	 * @author Wilson Melendez
 	 */
-	public static List<String[]> getRows() {
+	public List<String[]> getRows() {
 		return rows;
 	}
 
@@ -162,7 +163,7 @@ public class CsvMatrix
 	 * @return
 	 * @author Wilson Melendez
 	 */
-	public static String[] getHeader() {
+	public String[] getHeader() {
 		return header;
 	}
 
@@ -515,7 +516,7 @@ public class CsvMatrix
 	 * @author Paul Harten
 	 * @throws Exception 
 	 */
-	public static void buildMatrices() throws Exception
+	public void buildMatrices() throws Exception
 	{		
 
 		xMatrix = new DoubleMatrix(rowsSize, xcolumns);   // full descriptor matrix
@@ -611,7 +612,7 @@ public class CsvMatrix
 						xColumn.put(i, avg);
 					}
 				}
-			} else { /* fill the whole column up with 0.0 */
+			} else { /* all NaN values, fill the whole column up with 0.0 */
 				for (int i=0; i<rowsSize; i++) {
 					xColumn.put(i, 0.0);
 				}
@@ -1000,7 +1001,7 @@ public class CsvMatrix
 	 * @param Bstar
 	 * @author Wilson Melendez
 	 */
-	public static void writeBplsStarToCsv(DoubleMatrix Bstar, String filename)
+	public static void writeBplsStarToCsv(String[] descriptorHeader, DoubleMatrix Bstar, String filename)
 	{
 		String[] entries = new String[Bstar.rows];
 		
@@ -1011,12 +1012,21 @@ public class CsvMatrix
 			/* Create an instance of the CSVWriter class and specify the comma as the 
 			 * default separator. Default quote character is double quote. */ 
 			CSVWriter csvOutput = new CSVWriter(file,CSVWriter.DEFAULT_SEPARATOR);
+			
+			/* first write descriptor header row */
+			entries[0] = "B - coeffs:";
+			for (int i=0; i<Bstar.rows-1; i++) {
+				entries[i+1] = descriptorHeader[i];
+			}
+			/* Write row of data to output using the writeNext method. */
+			csvOutput.writeNext(entries); 
 					
 			/* allow for multiple columns of Bstar */
 			for (int j=0; j<Bstar.columns; j++) {
-
+				
+				DoubleMatrix bColumn = Bstar.getColumn(j);
 				for (int i=0; i<Bstar.rows; i++) {
-					entries[i] = String.valueOf(Bstar.get(i));
+					entries[i] = String.valueOf(bColumn.get(i));
 				}
 
 				/* Write row of data to output using the writeNext method. */
@@ -1145,16 +1155,13 @@ public class CsvMatrix
 			numDeflations = numDeflations + 1;
 			
 			/* Store t, u, p, c, and w in their corresponding matrices. */
-			if (numDeflations==1)
-			{
+			if (numDeflations==1) {
 				Tmatrix = t.dup();
 				Umatrix = u.dup();
 				Pmatrix = p.dup();
 				Cmatrix = c.dup();				
 				Wmatrix = w.dup();
-			}
-			else
-			{
+			} else {
 				/* Make t orthonormal to the rest of its cumulative matrix */
 				t = t.sub(Tmatrix.mmul((Tmatrix.transpose()).mmul(t)));
 				t = t.div(t.norm2());
@@ -1165,18 +1172,6 @@ public class CsvMatrix
 				Cmatrix = DoubleMatrix.concatHorizontally(Cmatrix,c);
 				Wmatrix = DoubleMatrix.concatHorizontally(Wmatrix,w);				
 			}
-			
-//			if (maxNumDeflations==0) { // calculating cross-validation
-//				if (numDeflations==1) press0 = sumOfSquares(Ytesting);
-//				/* still testing, predict effect of additional latent space vector */
-//				press = calculatePredictedResidual(bValues, Xtesting, Ytesting, Pmatrix, Cmatrix);
-//				if (press > press0) {
-//					break;
-//				}
-//				press0 = press;
-//			} else {
-//				if (numDeflations>=maxNumDeflations) break;
-//			}
 			
 		} while (X.norm2() > EPSILON_DEFLATION && numDeflations < maxNumDeflations);
 		
@@ -1277,7 +1272,7 @@ public class CsvMatrix
 	 * to cross-validate the original data using the 5-fold cross-validation method.
 	 * @author Paul Harten
 	 */
-	private List<Integer> createSetIndexListAndShuffle()
+	private List<Integer> createSetIndexListAndShuffle(int nfolds)
 	{
 
 		List<Integer> list = new ArrayList<Integer>();
@@ -1285,7 +1280,7 @@ public class CsvMatrix
 		/* Generate list of indices. */
 		for (int i = 0; i < Xmatrix.rows; i++)
 		{
-			list.add(i % numDataSets);
+			list.add(i % nfolds);
 		}
 		
 		/* Randomly shuffle the list of indices. */
@@ -1295,68 +1290,65 @@ public class CsvMatrix
 	}
 	
 	/**
-	 * This method implements the 5-fold cross-validation algorithm.
+	 * This method implements the multifold cross-validation algorithm.
 	 * @author Wilson Melendez & Paul Harten
 	 */
-	public DoubleMatrix performFiveFoldCrossValidation()
-	{
-		DoubleMatrix Ytilde = new DoubleMatrix();
-		
-		for (int ifold = 0; ifold < numDataSets; ifold++)
-		{
-			/* Leave one set out and use remaining sets to build model. */
-			Xtraining = new DoubleMatrix(0, XmatrixSet[0].columns);
-			Ytraining = new DoubleMatrix(0, YmatrixSet[0].columns);
-			Xtesting = new DoubleMatrix(0, XmatrixSet[0].columns);
-			Ytesting = new DoubleMatrix(0, YmatrixSet[0].columns);
-			DoubleMatrix Yhat = null;
-			
-			/* Build the X and Y training and testing matrices for the model. */
-			for (int i = 0; i < numDataSets; i++)
-			{
-				if (i==ifold) {
-					Xtesting = XmatrixSet[i];
-					Ytesting = YmatrixSet[i];
-				} else {
-					Xtraining = DoubleMatrix.concatVertically(Xtraining, XmatrixSet[i]);
-					Ytraining = DoubleMatrix.concatVertically(Ytraining, YmatrixSet[i]);
-				}
-			}
-			
-			/* Perform the PLS regression analysis. */
-			DoubleMatrix BplsS = performPLSR(Xtraining, Ytraining, true);
-			
-			/* Predict the Y values that were left out. */
-			Yhat = predictResults(Xtesting, BplsS);			
-			
-			/* Build the predicted Y's into a single matrix. */
-			Ytilde = DoubleMatrix.concatVertically(Ytilde, Yhat);
-
-		}
-		
-		return Ytilde;
-	}
+//	public DoubleMatrix performMultiFoldCrossValidation(int nfolds)
+//	{
+//		DoubleMatrix Ytilde = new DoubleMatrix();
+//		
+//		for (int ifold = 0; ifold < nfolds; ifold++)
+//		{
+//			/* Leave one set out and use remaining sets to build model. */
+//			Xtraining = new DoubleMatrix(0, XmatrixSet[0].columns);
+//			Ytraining = new DoubleMatrix(0, YmatrixSet[0].columns);
+//			Xtesting = new DoubleMatrix(0, XmatrixSet[0].columns);
+//			Ytesting = new DoubleMatrix(0, YmatrixSet[0].columns);
+//			DoubleMatrix Yhat = null;
+//			
+//			/* Build the X and Y training and testing matrices for the model. */
+//			for (int i = 0; i < numDataSets; i++)
+//			{
+//				if (i==ifold) {
+//					Xtesting = XmatrixSet[i];
+//					Ytesting = YmatrixSet[i];
+//				} else {
+//					Xtraining = DoubleMatrix.concatVertically(Xtraining, XmatrixSet[i]);
+//					Ytraining = DoubleMatrix.concatVertically(Ytraining, YmatrixSet[i]);
+//				}
+//			}
+//			
+//			/* Perform the PLS regression analysis. */
+//			DoubleMatrix BplsS = performPLSR(Xtraining, Ytraining, true);
+//			
+//			/* Predict the Y values that were left out. */
+//			Yhat = predictResults(Xtesting, BplsS);			
+//			
+//			/* Build the predicted Y's into a single matrix. */
+//			Ytilde = DoubleMatrix.concatVertically(Ytilde, Yhat);
+//
+//		}
+//		
+//		return Ytilde;
+//	}
 	/**
-	 * This method implements the 5-fold cross-validation algorithm.
+	 * This method implements the multi-fold cross-validation algorithm.
 	 * @author Wilson Melendez & Paul Harten
 	 */
-	public DoubleMatrix performFiveFoldCrossValidation(DoubleMatrix Xorig, DoubleMatrix Yorig)
+	public DoubleMatrix performMultiFoldCrossValidation(int nfolds, DoubleMatrix Xorig, DoubleMatrix Yorig)
 	{
 		Xmatrix = Xorig;
 		Ymatrix = Yorig;
 		xcolumns = Xorig.columns;
 		ycolumns = Yorig.columns;
-		/* Split original data into 5 subsets that will be used for a 5-fold
-		 * cross-validation analysis. */
-		List<Integer> list = createSetIndexListAndShuffle();
+		/* Split original data into nfolds cross-validation analysis. */
+		List<Integer> list = createSetIndexListAndShuffle(nfolds);
 		
 		DoubleMatrix Ytilde = new DoubleMatrix(Yorig.rows,Yorig.columns);
 		
 		numDeflationsAvg = 0;
 		q2avg = new double[Yorig.columns];
 		for (int j=0; j<q2avg.length; j++) q2avg[j]=0.0;
-		
-		int nfolds = numDataSets;
 		
 		for (int ifold = 0; ifold < nfolds; ifold++)
 		{
@@ -1372,8 +1364,8 @@ public class CsvMatrix
 			/* Predict the Y values that were left out. */
 			Yhat = predictResults(Xtesting, BplsS);	
 
+			/* Use the list to unshuffle Yhat into Ytilde. */
 			int index = 0;
-			/* Build the predicted Y's into a single matrix. */
 			for (int i=0; i<list.size(); i++) {
 				if (list.get(i)==ifold) {
 					Ytilde.putRow(i, Yhat.getRow(index++));
@@ -1411,15 +1403,6 @@ public class CsvMatrix
 		
 		for (int j=0;j<q2avg.length;j++) q2avg[j] /= nfolds;
 		numDeflationsAvg /= nfolds;
-		 
-		/* Use the list containing the shuffled indices to 
-		 * obtain the unshuffled Ytilde vector. */
-//		DoubleMatrix Yunshuffled = new DoubleMatrix(Ytilde.rows, Ytilde.columns);
-//		for (int i = 0; i < Ytilde.rows; i++)
-//		{
-//			int index = list.get(i);
-//			Yunshuffled.putRow(index, Ytilde.getRow(i));
-//		}
 		
 		return Ytilde;
 	}

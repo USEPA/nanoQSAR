@@ -81,14 +81,6 @@ public class NanoQSAR_PLS
 			
 			DoubleMatrix Yorig1 = Yorig.getColumn(1);	// Use LC50 as the effect variable.
 			
-			/* Perform 5-fold cross-validation prediction. */
-			DoubleMatrix Ytilde = csvMatrix.performFiveFoldCrossValidation(Xorig, Yorig1);
-			double[] q2Avg = csvMatrix.getQ2avg();
-			int numDefAvg = csvMatrix.getNumDeflationsAvg();
-			
-			/* Store Q2 in the logger file. */
-			LOGGER.info("Q2avg = " + q2Avg[0]+", numDeflationsAvg = "+numDefAvg);
-			
 			/* Calculate average of observed values. */
 			double meanY = Yorig1.mean();
 			
@@ -97,10 +89,13 @@ public class NanoQSAR_PLS
 			double sum2 = Ydiff.dot(Ydiff);
 			
 			/* Perform PLS regression and return the BPLS* vector. */
-			DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig,Yorig1,false);  
+			DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig,Yorig1,false); 
+			
+			/* Get Descriptor Header information */
+			String[] descriptorHeader = nanoMaterials.getDescriptorHeader();
 			
 			/* Write BPLS* vector to a CSV file. */
-			CsvMatrix.writeBplsStarToCsv(BplsS, filename_BPLS);			
+			CsvMatrix.writeBplsStarToCsv(descriptorHeader, BplsS, filename_BPLS);			
 			
 			/* Predict the Y values. */
 			DoubleMatrix Ypredicted = CsvMatrix.predictResults(Xorig, BplsS);
@@ -111,7 +106,16 @@ public class NanoQSAR_PLS
 			double R2 = 1.0 - (sum1 / sum2);
 			
 			/* Store R2 in the logger file. */
-			LOGGER.info("R2 = " + R2+", numDeflations= "+csvMatrix.getNumOfDeflations());
+			LOGGER.info("R2 = " + R2+", numDeflations = "+csvMatrix.getNumOfDeflations());
+			
+			/* Perform 5-fold cross-validation prediction. */
+			int nfolds = 5;
+			DoubleMatrix Ytilde = csvMatrix.performMultiFoldCrossValidation(nfolds, Xorig, Yorig1);
+			double[] q2Avg = csvMatrix.getQ2avg();
+			int numDeflationsAvg = csvMatrix.getNumDeflationsAvg();
+			
+			/* Store Q2 in the logger file. */
+			LOGGER.info("Q2avg = " + q2Avg[0]+", nfolds = "+nfolds+", numDeflationsAvg = "+numDeflationsAvg);
 			
 		}
 		catch(FileNotFoundException ex)

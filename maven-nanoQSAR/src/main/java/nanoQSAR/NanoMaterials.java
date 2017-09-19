@@ -22,9 +22,12 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
 	 * 
 	 */
 	private static final long serialVersionUID = 9210392203321638729L;
-	private String[] header = null;
 	private int[] descriptorIndex = null;
 	private int[] resultIndex = null;
+	
+	private String[] header = null;
+	private String[] descriptorHeader = null;
+	private String[] resultHeader = null;
 	
 	public NanoMaterials() throws Exception {
 		super();
@@ -278,9 +281,9 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
         
         /* Create arrays that will store indices, minimum, and 
          * maximum values of the X columns. */
-        String[] desArray = new String[descriptors.size()];
-        desArray = descriptors.toArray(desArray);
-        setDescriptorIndex(NanoMaterial.getFieldIndex(desArray));        
+        descriptorHeader = new String[descriptors.size()];
+        descriptorHeader = descriptors.toArray(descriptorHeader);
+        setDescriptorIndex(NanoMaterial.getFieldIndex(descriptorHeader));
         
 		ArrayList<String> results = new ArrayList<String>();
 		
@@ -290,20 +293,12 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
         
         /* Create arrays that will store indices, minimum, and 
          * maximum values of the Y columns. */
-        String[] resArray = new String[results.size()];
-        resArray = results.toArray(resArray);
-        setResultIndex(NanoMaterial.getFieldIndex(resArray));        
+        resultHeader = new String[results.size()];
+        resultHeader = results.toArray(resultHeader);
+        setResultIndex(NanoMaterial.getFieldIndex(resultHeader));
 
 	}
 	
-	public void setHeader(String[] header) {
-		this.header = header;
-	}
-	
-	public String[] getHeader() {
-		return this.header;
-	}
-
 	public int[] getDescriptorIndex() {
 		return descriptorIndex;
 	}
@@ -318,6 +313,22 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
 
 	public void setResultIndex(int[] resultIndex) {
 		this.resultIndex = resultIndex;
+	}
+	
+	public void setHeader(String[] header) {
+		this.header = header;
+	}
+	
+	public String[] getHeader() {
+		return this.header;
+	}
+
+	public String[] getDescriptorHeader() {
+		return descriptorHeader;
+	}
+
+	protected String[] getResultHeader() {
+		return resultHeader;
 	}
 
 }
