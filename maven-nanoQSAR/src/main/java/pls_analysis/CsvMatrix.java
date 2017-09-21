@@ -1083,6 +1083,7 @@ public class CsvMatrix
 		int maxNumDeflations = X0.rows;
 		double press0 = 0;
 		double press = 0;
+		double xnorm2 = 0;
 		
 		X = X0;
 		Y = Y0;
@@ -1173,7 +1174,9 @@ public class CsvMatrix
 				Wmatrix = DoubleMatrix.concatHorizontally(Wmatrix,w);				
 			}
 			
-		} while (X.norm2() > EPSILON_DEFLATION && numDeflations < maxNumDeflations);
+			xnorm2 = X.norm2();
+			
+		} while (xnorm2 > EPSILON_DEFLATION && numDeflations < maxNumDeflations);
 		
 		return bValues;
 	
@@ -1458,15 +1461,15 @@ public class CsvMatrix
 		 }
 	}
 
-	protected void setXtesting(DoubleMatrix xtesting) {
+	public void setXtesting(DoubleMatrix xtesting) {
 		Xtesting = xtesting;
 	}
 
-	protected void setYtesting(DoubleMatrix ytesting) {
+	public void setYtesting(DoubleMatrix ytesting) {
 		Ytesting = ytesting;
 	}
 
-	protected int getNumOfDeflations() {
+	public int getNumOfDeflations() {
 		return numOfDeflations;
 	}
 	
