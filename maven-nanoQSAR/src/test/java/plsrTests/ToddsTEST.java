@@ -23,12 +23,14 @@ public class ToddsTEST {
 		predictionDataStrings = readCsvFile("LC50_prediction_set-2D.csv");
 		
 		header = trainingDataStrings.firstElement();
+		String[] descriptorHeader = new String[header.length-2];
+		for (int i=0; i<descriptorHeader.length; i++) descriptorHeader[i] = header[i+2];
 		
-		DoubleMatrix xTraining = new DoubleMatrix(trainingDataStrings.size(), header.length-2);;
+		DoubleMatrix xTraining = new DoubleMatrix(trainingDataStrings.size(), descriptorHeader.length);
 		DoubleMatrix yTraining = new DoubleMatrix(trainingDataStrings.size(), 1);
 		buildMatrices(trainingDataStrings, xTraining, yTraining);
 		
-		DoubleMatrix xPrediction = new DoubleMatrix(predictionDataStrings.size(), header.length-2);
+		DoubleMatrix xPrediction = new DoubleMatrix(predictionDataStrings.size(), descriptorHeader.length);
 		DoubleMatrix yPrediction = new DoubleMatrix(predictionDataStrings.size(), 1);
 		buildMatrices(predictionDataStrings, xPrediction, yPrediction);
 
@@ -42,7 +44,7 @@ public class ToddsTEST {
 		DoubleMatrix BplsStar = csvMatrix.performPLSR(xTraining, yTraining, true);
 		
 		/* write BplsStar to a csv file */
-		CsvMatrix.writeBplsStarToCsv(header, BplsStar, "LC50_training_set-Bpls.csv");
+		CsvMatrix.writeBplsStarToCsv(descriptorHeader, BplsStar, "LC50_training_set-Bpls.csv");
 		
 		/* Predict the Y values using X and BPLS*. */
 		DoubleMatrix yPredicted = CsvMatrix.predictResults(xTraining, BplsStar);
