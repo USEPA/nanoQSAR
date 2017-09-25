@@ -35,11 +35,14 @@ public class ToddsTEST {
 		/* create CsvMatrix instance */
 		CsvMatrix csvMatrix = new CsvMatrix();
 		
-		csvMatrix.setXtesting(xPrediction);
-		csvMatrix.setYtesting(yPrediction);
+		csvMatrix.setXtesting(xTraining);
+		csvMatrix.setYtesting(yTraining);
 		
 		/* Perform the PLS regression analysis. */
-		DoubleMatrix BplsStar = csvMatrix.performPLSR(xTraining, yTraining, false);	
+		DoubleMatrix BplsStar = csvMatrix.performPLSR(xTraining, yTraining, true);
+		
+		/* write BplsStar to a csv file */
+		CsvMatrix.writeBplsStarToCsv(header, BplsStar, "LC50_training_set-Bpls.csv");
 		
 		/* Predict the Y values using X and BPLS*. */
 		DoubleMatrix yPredicted = CsvMatrix.predictResults(xTraining, BplsStar);
@@ -65,7 +68,7 @@ public class ToddsTEST {
 		/* Predict the Y values using X and BPLS*. */
 		yPredicted = CsvMatrix.predictResults(xPrediction, BplsStar);
 		
-		/* Calculate the residual sum of squares also known as PRESS.
+		/* Calculate the predicted residual sum of squares also known as PRESS.
 		 * The equation is : PRESS = ||yPrediction - yPredicted||^2  
 		 * where || is the norm of a vector.
 		 */
