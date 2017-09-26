@@ -79,11 +79,14 @@ public class NanoQSAR_PLS
 			DoubleMatrix Xorig = csvMatrix.getXmatrix();
 			DoubleMatrix Yorig = csvMatrix.getYmatrix();
 			
+			csvMatrix.setXtesting(Xorig);
+			csvMatrix.setYtesting(Yorig);
+			
 //			Yorig = Yorig.getColumn(0);	// UseViability as the effect variable.
 //			Yorig = Yorig.getColumn(1);	// Use LC50 as the effect variable.
 			
 			/* Perform PLS regression and return the BPLS* vector. */
-			DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig,Yorig,false); 
+			DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig,Yorig,true); 
 			
 			/* Get Descriptor Header information */
 			String[] descriptorHeader = nanoMaterials.getDescriptorHeader();
