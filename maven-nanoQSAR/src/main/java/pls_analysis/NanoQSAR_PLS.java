@@ -79,17 +79,14 @@ public class NanoQSAR_PLS
 			DoubleMatrix Xorig = csvMatrix.getXmatrix();
 			DoubleMatrix Yorig = csvMatrix.getYmatrix();
 			
-			DoubleMatrix Yorig1 = Yorig.getColumn(1);	// Use LC50 as the effect variable.
+			csvMatrix.setXtesting(Xorig);
+			csvMatrix.setYtesting(Yorig);
 			
-			/* Calculate average of observed values. */
-			double meanY = Yorig1.mean();
-			
-			/* Calculate denominator */
-			DoubleMatrix Ydiff = Yorig1.sub(meanY);
-			double sum2 = Ydiff.dot(Ydiff);
+//			Yorig = Yorig.getColumn(0);	// UseViability as the effect variable.
+//			Yorig = Yorig.getColumn(1);	// Use LC50 as the effect variable.
 			
 			/* Perform PLS regression and return the BPLS* vector. */
-			DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig,Yorig1,false); 
+			DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig,Yorig,true); 
 			
 			/* Get Descriptor Header information */
 			String[] descriptorHeader = nanoMaterials.getDescriptorHeader();
@@ -100,22 +97,46 @@ public class NanoQSAR_PLS
 			/* Predict the Y values. */
 			DoubleMatrix Ypredicted = CsvMatrix.predictResults(Xorig, BplsS);
 			
-			/* Calculate R2 = 1.0 - ||Yobs-Ypred||^2 / ||Yobs-Ymean||^2 */
-			Ydiff = Yorig1.sub(Ypredicted);
-			double sum1 = Ydiff.dot(Ydiff);
-			double R2 = 1.0 - (sum1 / sum2);
+			DoubleMatrix Ydiff = null;
+			double[] r2 = new double[Yorig.columns];
+			
+			/* Calculate R2 = 1.0 - ||Yobs-Ypred||^2 / ||Yobs-Ymean||^2 for each column */
+			
+			DoubleMatrix yDiffMean = Yorig.subRowVector(Yorig.columnMeans());
+			DoubleMatrix yDiffPred = Yorig.sub(Ypredicted);
+			
+			for (int jcol=0; jcol<Yorig.columns; jcol++) {
+				
+				Ydiff = yDiffMean.getColumn(jcol);
+				double var = Ydiff.dot(Ydiff);
+
+				Ydiff = yDiffPred.getColumn(jcol);
+				double press = Ydiff.dot(Ydiff);
+
+				if (var==0) r2[jcol] = 1.0;
+				else r2[jcol] = 1.0-(press/var);
+			}
+			
+//			/* Calculate R2 = 1.0 - ||Yobs-Ypred||^2 / ||Yobs-Ymean||^2 */
+//			DoubleMatrix Ydiff = Yorig.subRowVector(Yorig.columnMeans());
+//			double sum2 = CsvMatrix.sumOfSquares(Ydiff);
+//			Ydiff = Yorig.sub(Ypredicted);
+//			double sum1= CsvMatrix.sumOfSquares(Ydiff);
+//			double R2 = 1.0 - (sum1 / sum2);
 			
 			/* Store R2 in the logger file. */
-			LOGGER.info("R2 = " + R2+", numDeflations = "+csvMatrix.getNumOfDeflations());
+			LOGGER.info("R2[0] = " + r2[0]+", numDeflations = "+csvMatrix.getNumOfDeflations());
+//			LOGGER.info("R2[1] = " + r2[1]+", numDeflations = "+csvMatrix.getNumOfDeflations());
 			
 			/* Perform 5-fold cross-validation prediction. */
 			int nfolds = 5;
-			DoubleMatrix Ytilde = csvMatrix.performMultiFoldCrossValidation(nfolds, Xorig, Yorig1);
+			DoubleMatrix Ytilde = csvMatrix.performMultiFoldCrossValidation(nfolds, Xorig, Yorig);
 			double[] q2Avg = csvMatrix.getQ2avg();
 			int numDeflationsAvg = csvMatrix.getNumDeflationsAvg();
 			
 			/* Store Q2 in the logger file. */
-			LOGGER.info("Q2avg = " + q2Avg[0]+", nfolds = "+nfolds+", numDeflationsAvg = "+numDeflationsAvg);
+			LOGGER.info("Q2[0]avg = " + q2Avg[0]+", nfolds = "+nfolds+", numDeflationsAvg = "+numDeflationsAvg);
+//			LOGGER.info("Q2[1]avg = " + q2Avg[1]+", nfolds = "+nfolds+", numDeflationsAvg = "+numDeflationsAvg);
 			
 		}
 		catch(FileNotFoundException ex)
