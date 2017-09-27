@@ -1133,13 +1133,13 @@ public class CsvMatrix
 			
 			if (testForOverfitting) { // calculate cross-validation effects
 				if (numDeflations==0) {
-					press0 = sumOfSquares(Ytesting);
+					press0 = sumOfSquares(Ytraining);
 				} else {
 					List<Double> bValuesTrial = new ArrayList(bValues);
 					bValuesTrial.add(b);
 					DoubleMatrix pTrial = DoubleMatrix.concatHorizontally(Pmatrix, p);
 					DoubleMatrix cTrial = DoubleMatrix.concatHorizontally(Cmatrix, c);
-					press = calculatePredictedResidual(bValuesTrial, Xtesting, Ytesting, pTrial, cTrial);
+					press = calculatePredictedResidual(bValuesTrial, Xtraining, Ytraining, pTrial, cTrial);
 					if (press > press0) break;
 					press0 = press;
 				}
@@ -1459,6 +1459,14 @@ public class CsvMatrix
 			System.out.printf("%11.6f ", Ymatrix.get(i)); 	
 			System.out.println();
 		 }
+	}
+
+	public void setXtraining(DoubleMatrix xTraining) {
+		Xtraining = xTraining;
+	}
+
+	public void setYtraining(DoubleMatrix yTraining) {
+		Ytraining = yTraining;
 	}
 
 	public void setXtesting(DoubleMatrix xtesting) {

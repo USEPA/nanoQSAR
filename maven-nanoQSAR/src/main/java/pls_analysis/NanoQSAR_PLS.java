@@ -79,8 +79,8 @@ public class NanoQSAR_PLS
 			DoubleMatrix Xorig = csvMatrix.getXmatrix();
 			DoubleMatrix Yorig = csvMatrix.getYmatrix();
 			
-			csvMatrix.setXtesting(Xorig);
-			csvMatrix.setYtesting(Yorig);
+			csvMatrix.setXtraining(Xorig);
+			csvMatrix.setYtraining(Yorig);
 			
 //			Yorig = Yorig.getColumn(0);	// UseViability as the effect variable.
 //			Yorig = Yorig.getColumn(1);	// Use LC50 as the effect variable.

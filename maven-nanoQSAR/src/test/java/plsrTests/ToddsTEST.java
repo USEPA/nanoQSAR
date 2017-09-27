@@ -37,8 +37,8 @@ public class ToddsTEST {
 		/* create CsvMatrix instance */
 		CsvMatrix csvMatrix = new CsvMatrix();
 		
-		csvMatrix.setXtesting(xTraining);
-		csvMatrix.setYtesting(yTraining);
+		csvMatrix.setXtraining(xTraining);
+		csvMatrix.setYtraining(yTraining);
 		
 		/* Perform the PLS regression analysis. */
 		DoubleMatrix BplsStar = csvMatrix.performPLSR(xTraining, yTraining, true);
