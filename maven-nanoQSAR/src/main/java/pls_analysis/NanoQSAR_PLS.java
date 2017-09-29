@@ -91,6 +91,22 @@ public class NanoQSAR_PLS
 			/* Get Descriptor Header information */
 			String[] descriptorHeader = nanoMaterials.getDescriptorHeader();
 			
+			/* Get CategoryDescriptor Header information */
+			String[] categoryDescriptorHeader = nanoMaterials.getCategoryDescriptorHeader();
+			
+			if (categoryDescriptorHeader!=null) {
+				int i1 = descriptorHeader.length;
+				int i2 = categoryDescriptorHeader.length;
+				String[] header = new String[i1+i2];
+				for (int i=0; i<i1; i++) header[i] = descriptorHeader[i];
+				for (int i=0; i<i2; i++) header[i+i1] = categoryDescriptorHeader[i];
+				descriptorHeader = header;
+			}
+			
+			if (BplsS.rows != descriptorHeader.length+1) {
+				throw new Error("The matrix size is incorrect");
+			}
+			
 			/* Write BPLS* vector to a CSV file. */
 			CsvMatrix.writeBplsStarToCsv(descriptorHeader, BplsS, filename_BPLS);			
 			

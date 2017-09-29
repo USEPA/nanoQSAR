@@ -33,7 +33,6 @@ import nanoQSAR.NanoMaterials;
  */
 public class CsvMatrix
 {
-	private static NanoMaterials nanoMaterials;
 	private static int xcolumns;
 	private static int ycolumns;
 	private static int rowsSize;
@@ -98,17 +97,12 @@ public class CsvMatrix
 	public CsvMatrix(NanoMaterials nanoMaterials) throws Exception {
 		super();
 		
-		this.nanoMaterials = nanoMaterials;
-		nanoMaterials.selectNumericColumns();
-		rowsSize = nanoMaterials.size();
-		header = nanoMaterials.getHeader();
-		jcX = nanoMaterials.getDescriptorIndex();
-		jcY = nanoMaterials.getResultIndex();
-		xcolumns = jcX.length;
-		ycolumns = jcY.length;
+		nanoMaterials.selectContinuousColumns();
+		nanoMaterials.selectCategoryColumns();
+		nanoMaterials.selectResultColumns();
 
 		/* build Matrices from experimental data */
-		buildMatrices();
+		buildMatrices(nanoMaterials);
 		
 		/* get rid of NaN elements */
 		resizeMatrices();
@@ -516,8 +510,18 @@ public class CsvMatrix
 	 * @author Paul Harten
 	 * @throws Exception 
 	 */
-	public void buildMatrices() throws Exception
-	{		
+	public void buildMatrices(NanoMaterials nanoMaterials) throws Exception
+	{
+		
+		int rowsSize = nanoMaterials.size();
+		int[] jcX = nanoMaterials.getDescriptorIndex();
+		int[] jcX2 = nanoMaterials.getCategoryDescriptorIndex();
+		int[] jcY = nanoMaterials.getResultIndex();
+		int xcolumns = jcX.length+jcX2.length;
+		int ycolumns = jcY.length;
+		
+		DoubleMatrix xRow = new DoubleMatrix(1, xcolumns);
+		DoubleMatrix yRow = new DoubleMatrix(1, ycolumns);
 
 		xMatrix = new DoubleMatrix(rowsSize, xcolumns);   // full descriptor matrix
 		yMatrix = new DoubleMatrix(rowsSize, ycolumns);   // full result matrix
@@ -525,34 +529,55 @@ public class CsvMatrix
 		Field[] fields = NanoMaterial.class.getDeclaredFields();
 		for (Field field: fields) field.setAccessible(true);
 		
-		
 		/* Check whether data has any null values. */
 		for (int i=0; i<nanoMaterials.size(); i++) {
 			
 			NanoMaterial nanoMaterial = nanoMaterials.get(i);
 			
-			for (int j=0; j<jcX.length; j++) {
-				Field field = fields[jcX[j]];
-				Object v1 = field.get(nanoMaterial);
-				if (v1!=null) {
-					double value = ((Double)v1).doubleValue();
-					xMatrix.put(i,j,value);
-				} else {
-					xMatrix.put(i,j,Double.NaN);
-				}
-			}
+			xRow.fill(0);
+			buildContinuousColumns(nanoMaterial, fields, xRow, jcX);
+			buildCategoryColumns(nanoMaterial, fields, xRow, jcX.length, jcX2);
+			xMatrix.putRow(i, xRow);
 			
-			for (int j=0; j<jcY.length; j++) {
-				Field field = fields[jcY[j]];
-				Object v1 = field.get(nanoMaterial);
-				if (v1!=null) {
-					double value = ((Double)v1).doubleValue();
-					yMatrix.put(i,j,value);
-				} else {
-					yMatrix.put(i,j,Double.NaN);
-				}
-			}
+			yRow.fill(0);
+			buildContinuousColumns(nanoMaterial, fields, yRow, jcY);
+			yMatrix.putRow(i, yRow);
 			
+		}
+		
+	}
+
+	public void buildContinuousColumns(NanoMaterial nanoMaterial, Field[] fields, DoubleMatrix xRow, int[] index) throws IllegalAccessException {
+		
+		/* For the continuous columns with null values put in NaN, */
+		/* otherwise put in double value.                          */
+		for (int j=0; j<index.length; j++) {
+			Field field = fields[index[j]];
+			Object v1 = field.get(nanoMaterial);
+			if (v1!=null) {
+				double value = ((Double)v1).doubleValue();
+				xRow.put(0,j,value);
+			} else {
+				xRow.put(0,j,Double.NaN);
+			}
+		}
+		
+	}
+	
+	public void buildCategoryColumns(NanoMaterial nanoMaterial, Field[] fields, DoubleMatrix xRow, int offset, int[] index) throws IllegalAccessException {
+		
+		/* For the category columns with null values put in 0, */
+		/* and start building integer table for each column.   */
+		
+		for (int j=0; j<index.length; j++) {
+			Field field = fields[index[j]];
+			Object v1 = field.get(nanoMaterial);
+			if (v1!=null) {
+//				int value = ((String)v1).doubleValue();
+				xRow.put(0,j+offset,1);
+			} else {
+				xRow.put(0,j+offset,0);
+			}
 		}
 		
 	}
@@ -565,7 +590,10 @@ public class CsvMatrix
 	 * @throws Exception 
 	 */
 	public static void resizeMatrices() throws Exception
-	{		
+	{
+		int rowsSize = xMatrix.rows;
+		int xcolumns = xMatrix.columns;
+		int ycolumns = yMatrix.columns;
 
 		Xmatrix = new DoubleMatrix(0, xcolumns);   // X matrix
 		Ymatrix = new DoubleMatrix(0, ycolumns);   // Y matrix
