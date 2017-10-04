@@ -304,6 +304,7 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
 		/* Store indices of current Descriptor columns */
 		descriptors.add("DataSource");	
 	    descriptors.add("LotNumber");
+		descriptors.add("CoreComp");
 		descriptors.add("ShellComp"); 
 		descriptors.add("FunctionalGroups");  
 		descriptors.add("FunctionalizationProtocol");	

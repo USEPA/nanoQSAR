@@ -98,7 +98,7 @@ public class CsvMatrix
 		super();
 		
 		nanoMaterials.selectContinuousColumns();
-		nanoMaterials.selectCategoryColumns();
+		nanoMaterials.selectCategoryColumns();  // leave this in to use category descriptors
 		nanoMaterials.selectResultColumns();
 
 		/* build Matrices from experimental data */
@@ -517,7 +517,8 @@ public class CsvMatrix
 		int[] jcX = nanoMaterials.getDescriptorIndex();
 		int[] jcX2 = nanoMaterials.getCategoryDescriptorIndex();
 		int[] jcY = nanoMaterials.getResultIndex();
-		int xcolumns = jcX.length+jcX2.length;
+		int xcolumns = jcX.length;
+		if (jcX2!=null) xcolumns += jcX2.length;
 		int ycolumns = jcY.length;
 		
 		DoubleMatrix xRow = new DoubleMatrix(1, xcolumns);
@@ -535,19 +536,19 @@ public class CsvMatrix
 			NanoMaterial nanoMaterial = nanoMaterials.get(i);
 			
 			xRow.fill(0);
-			buildContinuousColumns(nanoMaterial, fields, xRow, jcX);
+			buildContinuousColumns(nanoMaterial, fields, xRow, 0, jcX);
 			buildCategoryColumns(nanoMaterial, fields, xRow, jcX.length, jcX2);
 			xMatrix.putRow(i, xRow);
 			
 			yRow.fill(0);
-			buildContinuousColumns(nanoMaterial, fields, yRow, jcY);
+			buildContinuousColumns(nanoMaterial, fields, yRow, 0, jcY);
 			yMatrix.putRow(i, yRow);
 			
 		}
 		
 	}
 
-	public void buildContinuousColumns(NanoMaterial nanoMaterial, Field[] fields, DoubleMatrix xRow, int[] index) throws IllegalAccessException {
+	public void buildContinuousColumns(NanoMaterial nanoMaterial, Field[] fields, DoubleMatrix xRow, int offset, int[] index) throws IllegalAccessException {
 		
 		/* For the continuous columns with null values put in NaN, */
 		/* otherwise put in double value.                          */
@@ -556,9 +557,9 @@ public class CsvMatrix
 			Object v1 = field.get(nanoMaterial);
 			if (v1!=null) {
 				double value = ((Double)v1).doubleValue();
-				xRow.put(0,j,value);
+				xRow.put(0,j+offset,value);
 			} else {
-				xRow.put(0,j,Double.NaN);
+				xRow.put(0,j+offset,Double.NaN);
 			}
 		}
 		
@@ -569,17 +570,32 @@ public class CsvMatrix
 		/* For the category columns with null values put in 0, */
 		/* and start building integer table for each column.   */
 		
+		if (index==null) return;
+		
 		for (int j=0; j<index.length; j++) {
 			Field field = fields[index[j]];
 			Object v1 = field.get(nanoMaterial);
-			if (v1!=null) {
-//				int value = ((String)v1).doubleValue();
-				xRow.put(0,j+offset,1);
-			} else {
-				xRow.put(0,j+offset,0);
-			}
+			xRow.put(0,j+offset,getCatVal(v1));
 		}
 		
+	}
+
+	private double getCatVal(Object v1) {
+		
+		if (v1==null) return 0.0;  // assign category value of zero when missing data;
+		
+		CharSequence s1 = (CharSequence)((String)v1);
+		
+//		return (double)(s1.hashCode());
+		
+		double sum = 0.0;
+		while (s1.length()>4) {
+			sum += s1.subSequence(0, 3).hashCode();
+			s1 = s1.subSequence(4, s1.length());
+		}  
+		sum += s1.hashCode();
+		
+		return sum;
 	}
 	
 	/**
