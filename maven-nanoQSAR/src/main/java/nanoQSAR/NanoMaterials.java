@@ -23,10 +23,12 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
 	 */
 	private static final long serialVersionUID = 9210392203321638729L;
 	private int[] descriptorIndex = null;
+	private int[] categoryDescriptorIndex = null;
 	private int[] resultIndex = null;
 	
 	private String[] header = null;
 	private String[] descriptorHeader = null;
+	private String[] categoryDescriptorHeader = null;
 	private String[] resultHeader = null;
 	
 	public NanoMaterials() throws Exception {
@@ -199,12 +201,12 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
 	}
 	
 	/**
-	 * This method determines the positional indices of the numeric 
+	 * This method determines the positional indices of the continuous 
 	 * data in the CSV file.
 	 * @author Wilson Melendez & Paul Harten
 	 * @throws Exception 
 	 */
-	public void selectNumericColumns() throws Exception
+	public void selectContinuousColumns() throws Exception
 	{
 		/* Create ArrayLists to store positional indices, minimum, 
 		 * and maximum values of the X and Y matrices. */
@@ -284,7 +286,64 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
         descriptorHeader = new String[descriptors.size()];
         descriptorHeader = descriptors.toArray(descriptorHeader);
         setDescriptorIndex(NanoMaterial.getFieldIndex(descriptorHeader));
+
+	}
+	
+	/**
+	 * This method determines the positional indices of the category 
+	 * data in the CSV file.
+	 * @author Wilson Melendez & Paul Harten
+	 * @throws Exception 
+	 */
+	public void selectCategoryColumns() throws Exception
+	{
+		/* Create ArrayLists to store positional indices, minimum, 
+		 * and maximum values of the X and Y matrices. */
+		ArrayList<String> descriptors = new ArrayList<String>();
+		
+		/* Store indices of current Descriptor columns */
+		descriptors.add("DataSource");	
+	    descriptors.add("LotNumber");
+		descriptors.add("CoreComp");
+		descriptors.add("ShellComp"); 
+		descriptors.add("FunctionalGroups");  
+		descriptors.add("FunctionalizationProtocol");	
+        descriptors.add("PurityMethod"); 
+        descriptors.add("PurityRefChemical"); 
+        descriptors.add("ContamMethod"); 
+        descriptors.add("CrystalStructure"); 
+        descriptors.add("CrystalStructureMethod");  
+        descriptors.add("SynthesisMethod");  
+        descriptors.add("ParticleOuterDiamUncertain"); 
+        descriptors.add("ParticleOuterDiamMethod");  
+        descriptors.add("ParticleInnerDiamUncertain");        
+        descriptors.add("ParticleInnerDiamMethod");    
+        descriptors.add("ParticleLengthUncertain");      
+        descriptors.add("ParticleLengthMethod");   
+        descriptors.add("ParticleThicknessUncertain"); 
+        descriptors.add("ParticleThicknessMethod"); 
+        descriptors.add("WallNumber");
+        descriptors.add("AspectRatio");
+        descriptors.add("Shape");
+        descriptors.add("SurfaceAreaUncertain"); 
+        descriptors.add("SurfaceAreaMethod");      
         
+        /* Create arrays that will store indices of the X category columns. */
+        categoryDescriptorHeader = new String[descriptors.size()];
+        categoryDescriptorHeader = descriptors.toArray(categoryDescriptorHeader);
+        setCategoryDescriptorIndex(NanoMaterial.getFieldIndex(categoryDescriptorHeader));
+
+	}
+	
+	/**
+	 * This method determines the positional indices of the numeric 
+	 * data in the CSV file.
+	 * @author Wilson Melendez & Paul Harten
+	 * @throws Exception 
+	 */
+	public void selectResultColumns() throws Exception
+	{
+		/* Create ArrayLists to store positional indices of the Y matrix. */
 		ArrayList<String> results = new ArrayList<String>();
 		
         /* Store indices of current Results columns */
@@ -306,6 +365,14 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
 	public void setDescriptorIndex(int[] descriptorIndex) {
 		this.descriptorIndex = descriptorIndex;
 	}
+	
+	public int[] getCategoryDescriptorIndex() {
+		return categoryDescriptorIndex;
+	}
+	
+	public void setCategoryDescriptorIndex(int[] categoryDescriptorIndex) {
+		this.categoryDescriptorIndex = categoryDescriptorIndex;
+	}
 
 	public int[] getResultIndex() {
 		return resultIndex;
@@ -325,6 +392,10 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
 
 	public String[] getDescriptorHeader() {
 		return descriptorHeader;
+	}
+	
+	public String[] getCategoryDescriptorHeader() {
+		return categoryDescriptorHeader;
 	}
 
 	protected String[] getResultHeader() {
