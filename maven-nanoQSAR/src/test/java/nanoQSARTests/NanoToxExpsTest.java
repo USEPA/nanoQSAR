@@ -24,40 +24,40 @@ import org.junit.rules.TemporaryFolder;
 import datamine.DBUtil;
 import datamine.MySqlQuery;
 import junit.framework.Assert;
-import nanoQSAR.NanoMaterial;
-import nanoQSAR.NanoMaterials;
+import nanoQSAR.NanoToxExp;
+import nanoQSAR.NanoToxExps;
 
 /**
  * @author pharten
  *
  */
-public class NanoMaterialsTest {
+public class NanoToxExpsTest {
 	
 	static String csvFilename = System.getProperty("user.dir") + "\\nanoQSAR.csv";
 
 	/**
-	 * Test method for {@link nanoQSAR.NanoMaterials#NanoMaterials()}.
+	 * Test method for {@link nanoQSAR.NanoToxExps#NanoMaterials()}.
 	 * @throws Exception 
 	 */
 	@Test
-	public final void testNanoMaterialsConstructor1() throws Exception {
-		NanoMaterials nanoMaterials = new NanoMaterials();
-		Assert.assertNotNull("NanoMaterials Constructer failed", nanoMaterials);
-		Assert.assertTrue("NanoMaterials Constructor is not zero size", nanoMaterials.size()==0);
+	public final void testNanoToxExpsConstructor1() throws Exception {
+		NanoToxExps nanoToxExps = new NanoToxExps();
+		Assert.assertNotNull("NanoToxExps Constructer failed", nanoToxExps);
+		Assert.assertTrue("NanoToxExps Constructor is not zero size", nanoToxExps.size()==0);
 	}
 	/**
-	 * Test method for {@link nanoQSAR.NanoMaterials#NanoMaterials(datamine.MySqlQuery)}.
+	 * Test method for {@link nanoQSAR.NanoToxExps#NanoMaterials(datamine.MySqlQuery)}.
 	 * @throws Exception 
 	 */
 	@Test
-	public final void testNanoMaterialsConstructor2() throws Exception {
-		NanoMaterials nanoMaterials = new NanoMaterials(csvFilename);
-		Assert.assertNotNull("NanoMaterials Constructer failed", nanoMaterials);
-		Assert.assertFalse("NanoMaterials Constructor is zero size", nanoMaterials.size()==0);
+	public final void testNanoToxExpsConstructor2() throws Exception {
+		NanoToxExps nanoToxExps = new NanoToxExps(csvFilename);
+		Assert.assertNotNull("NanoToxExps Constructer failed", nanoToxExps);
+		Assert.assertFalse("NanoToxExps Constructor is zero size", nanoToxExps.size()==0);
 	}
 
 	/**
-	 * Test method for {@link nanoQSAR.NanoMaterials#writeCsvFile(java.lang.String)}.
+	 * Test method for {@link nanoQSAR.NanoToxExps#writeCsvFile(java.lang.String)}.
 	 */
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -79,12 +79,12 @@ public class NanoMaterialsTest {
 		// Get header file information
 		MySqlQuery mySqlQuery = new MySqlQuery();
 				
-		// Create array list of NanoMaterial objects.
-		NanoMaterials nanoMaterials = new NanoMaterials();
+		// Create array list of NanoToxExp objects.
+		NanoToxExps nanoToxExps = new NanoToxExps();
 
-		nanoMaterials.setHeader(mySqlQuery.getHeader());
+		nanoToxExps.setHeader(mySqlQuery.getHeader());
 	
-		NanoMaterial n1 = new NanoMaterial();
+		NanoToxExp n1 = new NanoToxExp();
 				
 		n1.setAssayName("cell viability");
 	    n1.setCellType("ARPE-19");
@@ -94,10 +94,10 @@ public class NanoMaterialsTest {
 		n1.setParticleExposDuration(48.0);
 		n1.setLc50(10.0);
 				
-		nanoMaterials.add(n1);		
+		nanoToxExps.add(n1);		
 				
 		// act
-		nanoMaterials.writeCsvFile(output.getPath());
+		nanoToxExps.writeCsvFile(output.getPath());
 		
 		// assert some header information
 		assertThat(contentOf(output)).contains("ORDMaterialID");
@@ -121,21 +121,21 @@ public class NanoMaterialsTest {
 	public void testReadCsvFile() throws Exception
 	{
 				
-		// Create NanoMaterials object */.
-		NanoMaterials nanoMaterials = new NanoMaterials();
+		// Create NanoToxExps object */.
+		NanoToxExps nanoToxExps = new NanoToxExps();
 
 		/* read in nanomaterials from CVS file */
-		nanoMaterials.readCsvFile(csvFilename);
+		nanoToxExps.readCsvFile(csvFilename);
 
-		/* write nanoMaterials out to temporary output file */
+		/* write nanoToxExps out to temporary output file */
 		String csvOutput  = temporaryFolder.newFolder("reports").toPath().resolve("output.csv").toString();
-	    nanoMaterials.writeCsvFile(csvOutput);
+	    nanoToxExps.writeCsvFile(csvOutput);
 	    
-		// Create NanoMaterials object */.
-		NanoMaterials nanoMaterials2 = new NanoMaterials();
+		// Create NanoToxExps object */.
+		NanoToxExps nanoMaterials2 = new NanoToxExps();
 		nanoMaterials2.readCsvFile(csvOutput);
 	    
-	    Assert.assertTrue("nanoMateials are not the same", nanoMaterials.isSame(nanoMaterials2));
+	    Assert.assertTrue("nanoMateials are not the same", nanoToxExps.isSame(nanoMaterials2));
 		
 	}
 	
@@ -148,45 +148,45 @@ public class NanoMaterialsTest {
 	public void testSerialize() throws Exception
 	{
 				
-		// Create NanoMaterials object */.
-		NanoMaterials nanoMaterials = new NanoMaterials();
+		// Create NanoToxExps object */.
+		NanoToxExps nanoToxExps = new NanoToxExps();
 
 		/* read in nanomaterials from CVS file */
-		nanoMaterials.readCsvFile(csvFilename);
+		nanoToxExps.readCsvFile(csvFilename);
 
-		/* write nanoMaterials out to temporary output file */
-		String serOutput  = temporaryFolder.newFolder("reports").toPath().resolve("nanoMaterials.ser").toString();
+		/* write nanoToxExps out to temporary output file */
+		String serOutput  = temporaryFolder.newFolder("reports").toPath().resolve("nanoToxExps.ser").toString();
 		FileOutputStream fileOut = new FileOutputStream(serOutput);
 		ObjectOutputStream out = new ObjectOutputStream(fileOut);
-		out.writeObject(nanoMaterials);
+		out.writeObject(nanoToxExps);
 		out.close();
 		fileOut.close();
 		
         FileInputStream fileIn = new FileInputStream(serOutput);
         ObjectInputStream in = new ObjectInputStream(fileIn);
-        NanoMaterials nanoMaterials2 = (NanoMaterials)in.readObject();
+        NanoToxExps nanoMaterials2 = (NanoToxExps)in.readObject();
         in.close();
         fileIn.close();
 	    
-	    Assert.assertTrue("nanoMateials are not the same", nanoMaterials.isSame(nanoMaterials2));
+	    Assert.assertTrue("nanoMateials are not the same", nanoToxExps.isSame(nanoMaterials2));
 		
 	}
 	
 	@Test
 	public final void testClone() throws Exception {
 		
-		// Create NanoMaterials object */.
-		NanoMaterials nanoMaterials = new NanoMaterials();
+		// Create NanoToxExps object */.
+		NanoToxExps nanoToxExps = new NanoToxExps();
 
 		/* read in nanomaterials from CVS file */
-		nanoMaterials.readCsvFile(csvFilename);
+		nanoToxExps.readCsvFile(csvFilename);
 		
-		NanoMaterials clone = nanoMaterials.clone();
+		NanoToxExps clone = nanoToxExps.clone();
 		
-		Assert.assertNotNull("NanoMaterials clone is null", clone);
-		Assert.assertNotSame("NanoMaterials clone is same object", (Object)nanoMaterials, (Object)clone);
+		Assert.assertNotNull("NanoToxExps clone is null", clone);
+		Assert.assertNotSame("NanoToxExps clone is same object", (Object)nanoToxExps, (Object)clone);
 		
-		Assert.assertTrue("NanoMaterials clone isSame as nanoMaterial", nanoMaterials.isSame(clone));
+		Assert.assertTrue("NanoToxExps clone isSame as nanoMaterial", nanoToxExps.isSame(clone));
 		
 	}
 

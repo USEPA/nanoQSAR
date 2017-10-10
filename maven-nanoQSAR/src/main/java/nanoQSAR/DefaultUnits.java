@@ -27,7 +27,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultCoatingAmountUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultCoatingAmountUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getCoatingAmountUnit()).trim();
 		String strValue = String.valueOf(nanoM.getCoatingAmount()).trim();
@@ -58,7 +58,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultPurityUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultPurityUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getPurityUnit()).trim();
 		String strValue = String.valueOf(nanoM.getPurity()).trim();
@@ -90,7 +90,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultContaminantUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultContaminantUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getContamUnit()).trim();
 		String strValueAl = String.valueOf(nanoM.getContamAl()).trim();
@@ -226,7 +226,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultParticleOuterDiameterUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultParticleOuterDiameterUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getParticleOuterDiamUnit()).trim();
 		String strValueAvg = String.valueOf(nanoM.getParticleOuterDiamAvg()).trim();
@@ -271,7 +271,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultParticleInnerDiameterUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultParticleInnerDiameterUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getParticleInnerDiamUnit()).trim();
 		String strValueAvg = String.valueOf(nanoM.getParticleInnerDiamAvg()).trim();
@@ -314,7 +314,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultParticleLengthUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultParticleLengthUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getParticleLengthUnit()).trim();
 		String strValueAvg = String.valueOf(nanoM.getParticleLengthAvg()).trim();
@@ -358,7 +358,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultParticleThicknessUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultParticleThicknessUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getParticleThicknessUnit()).trim();
 		String strValueAvg = String.valueOf(nanoM.getParticleThicknessAvg()).trim();
@@ -401,7 +401,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultSurfaceAreaUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultSurfaceAreaUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getSurfaceAreaUnit()).trim();
 		String strValueAvg = String.valueOf(nanoM.getSurfaceAreaAvg()).trim();
@@ -444,7 +444,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultTimeValueUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultTimeValueUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getTimeValueUnit()).trim();
 		String strValue = String.valueOf(nanoM.getTimeValue()).trim();
@@ -474,7 +474,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultMcTimeValueUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultMcTimeValueUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getMc_timeValueUnit()).trim();
 		String strValue = String.valueOf(nanoM.getMc_timeValue()).trim();
@@ -504,7 +504,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultParticleConcentrationUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultParticleConcentrationUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getParticleConcentrationUnit()).trim();
 		String strValue = String.valueOf(nanoM.getParticleConcentration()).trim();
@@ -535,7 +535,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultMcParticleConcentrationUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultMcParticleConcentrationUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getMc_particleConcentrationUnit()).trim();
 		String strValue = String.valueOf(nanoM.getMc_particleConcentration()).trim();
@@ -566,7 +566,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultMediumTempUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultMediumTempUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getMediumTempUnit()).trim();
 		String strValue = String.valueOf(nanoM.getMediumTemp()).trim();
@@ -605,7 +605,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultMcMediumTempUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultMcMediumTempUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getMc_mediumTempUnit()).trim();
 		String strValue = String.valueOf(nanoM.getMc_mediumTemp()).trim();
@@ -644,7 +644,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultZetaPotentialUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultZetaPotentialUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getZetaPotentialUnit()).trim();
 		String strValueAvg = String.valueOf(nanoM.getZetaPotentialAvg()).trim();
@@ -686,7 +686,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultSizeDistributionUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultSizeDistributionUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getSizeDistribUnit()).trim();
 		String strValueAvg = String.valueOf(nanoM.getSizeDistribAvg()).trim();
@@ -728,7 +728,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultSizeDistributionUnit2(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultSizeDistributionUnit2(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getSizeDistribUnit2()).trim();
 		String strValueAvg = String.valueOf(nanoM.getSizeDistribAvg2()).trim();
@@ -770,7 +770,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultSerumConcentrationUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultSerumConcentrationUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getSerumConcentrationUnit()).trim();
 		String strValue = String.valueOf(nanoM.getSerumConcentration()).trim();
@@ -800,7 +800,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultMcSerumConcentrationUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultMcSerumConcentrationUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getMc_serumConcentrationUnit()).trim();
 		String strValue = String.valueOf(nanoM.getMc_serumConcentration()).trim();
@@ -830,7 +830,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultAntibioticConcentrationUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultAntibioticConcentrationUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getAntibioticConcentrationUnit()).trim();
 		String strValue = String.valueOf(nanoM.getAntibioticConcentration()).trim();
@@ -860,7 +860,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultMcAntibioticConcentrationUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultMcAntibioticConcentrationUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getMc_antibioticConcentrationUnit()).trim();
 		String strValue = String.valueOf(nanoM.getMc_antibioticConcentration()).trim();
@@ -890,7 +890,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultDOMUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultDOMUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getDomUnit()).trim();
 		String strValue = String.valueOf(nanoM.getDomConcentration()).trim();
@@ -920,7 +920,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultMcDOMUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultMcDOMUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getMc_domUnit()).trim();
 		String strValue = String.valueOf(nanoM.getMc_domConcentration()).trim();
@@ -950,7 +950,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultSalinityUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultSalinityUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getSalinityUnit()).trim();
 		
@@ -973,7 +973,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultMcSalinityUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultMcSalinityUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getMc_salinityUnit()).trim();
 		
@@ -996,7 +996,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultParticleExposureDurationUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultParticleExposureDurationUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getParticleExposDurationUnit()).trim();
 		String strValue = String.valueOf(nanoM.getParticleExposDuration()).trim();
@@ -1026,7 +1026,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultUVADoseUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultUVADoseUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getUvaDoseUnit()).trim();
 		String strValue = String.valueOf(nanoM.getUvaDose()).trim();
@@ -1056,7 +1056,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultUVAExposureDurationUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultUVAExposureDurationUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getUvaExposDurationUnit()).trim();
 		String strValue = String.valueOf(nanoM.getUvaExposDuration()).trim();
@@ -1087,7 +1087,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultViabilityUnit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultViabilityUnit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getViabilityUnit()).trim();
 		String strValueAvg = String.valueOf(nanoM.getViabilityAvg()).trim();
@@ -1129,7 +1129,7 @@ public class DefaultUnits
 	 * @param i
 	 * @throws Exception
 	 */
-	public static void checkDefaultLC50Unit(NanoMaterial nanoM, int i) throws Exception
+	public static void checkDefaultLC50Unit(NanoToxExp nanoM, int i) throws Exception
 	{
 		String strU = String.valueOf(nanoM.getLc50Unit()).trim();
 		String strValue = String.valueOf(nanoM.getLc50()).trim();
@@ -1162,43 +1162,43 @@ public class DefaultUnits
 	 * @param listNano
 	 * @throws Exception
 	 */
-	public static void checkUnits(Vector<NanoMaterial> nanoMats) throws Exception
+	public static void checkUnits(Vector<NanoToxExp> nanoMats) throws Exception
 	{		
 		try 
 		{
 			for(int i = 0; i < nanoMats.size(); i++)  
 			{
-				NanoMaterial nanoMaterial = nanoMats.get(i);
-				checkDefaultCoatingAmountUnit(nanoMaterial, i);			
-				checkDefaultPurityUnit(nanoMaterial, i);
-				checkDefaultContaminantUnit(nanoMaterial, i);				
-				checkDefaultParticleOuterDiameterUnit(nanoMaterial, i);
-				checkDefaultParticleInnerDiameterUnit(nanoMaterial, i);
-				checkDefaultParticleLengthUnit(nanoMaterial, i);
-				checkDefaultParticleThicknessUnit(nanoMaterial, i);
-				checkDefaultSurfaceAreaUnit(nanoMaterial, i);
-				checkDefaultTimeValueUnit(nanoMaterial, i);
-				checkDefaultMcTimeValueUnit(nanoMaterial, i);
-				checkDefaultParticleConcentrationUnit(nanoMaterial, i);
-				checkDefaultMcParticleConcentrationUnit(nanoMaterial, i);
-				checkDefaultMediumTempUnit(nanoMaterial, i);
-				checkDefaultMcMediumTempUnit(nanoMaterial, i);
-				checkDefaultZetaPotentialUnit(nanoMaterial, i);
-				checkDefaultSizeDistributionUnit(nanoMaterial, i);	
-				checkDefaultSizeDistributionUnit2(nanoMaterial, i);
-				checkDefaultSerumConcentrationUnit(nanoMaterial, i);
-				checkDefaultMcSerumConcentrationUnit(nanoMaterial, i);
-				checkDefaultAntibioticConcentrationUnit(nanoMaterial, i);
-				checkDefaultMcAntibioticConcentrationUnit(nanoMaterial, i);
-				checkDefaultDOMUnit(nanoMaterial, i);	
-				checkDefaultMcDOMUnit(nanoMaterial, i);
-				checkDefaultSalinityUnit(nanoMaterial, i);	
-				checkDefaultMcSalinityUnit(nanoMaterial, i);
-				checkDefaultParticleExposureDurationUnit(nanoMaterial, i);				
-				checkDefaultUVADoseUnit(nanoMaterial, i);
-				checkDefaultUVAExposureDurationUnit(nanoMaterial, i);				
-				checkDefaultViabilityUnit(nanoMaterial, i);
-				checkDefaultLC50Unit(nanoMaterial, i);														
+				NanoToxExp nanoToxExp = nanoMats.get(i);
+				checkDefaultCoatingAmountUnit(nanoToxExp, i);			
+				checkDefaultPurityUnit(nanoToxExp, i);
+				checkDefaultContaminantUnit(nanoToxExp, i);				
+				checkDefaultParticleOuterDiameterUnit(nanoToxExp, i);
+				checkDefaultParticleInnerDiameterUnit(nanoToxExp, i);
+				checkDefaultParticleLengthUnit(nanoToxExp, i);
+				checkDefaultParticleThicknessUnit(nanoToxExp, i);
+				checkDefaultSurfaceAreaUnit(nanoToxExp, i);
+				checkDefaultTimeValueUnit(nanoToxExp, i);
+				checkDefaultMcTimeValueUnit(nanoToxExp, i);
+				checkDefaultParticleConcentrationUnit(nanoToxExp, i);
+				checkDefaultMcParticleConcentrationUnit(nanoToxExp, i);
+				checkDefaultMediumTempUnit(nanoToxExp, i);
+				checkDefaultMcMediumTempUnit(nanoToxExp, i);
+				checkDefaultZetaPotentialUnit(nanoToxExp, i);
+				checkDefaultSizeDistributionUnit(nanoToxExp, i);	
+				checkDefaultSizeDistributionUnit2(nanoToxExp, i);
+				checkDefaultSerumConcentrationUnit(nanoToxExp, i);
+				checkDefaultMcSerumConcentrationUnit(nanoToxExp, i);
+				checkDefaultAntibioticConcentrationUnit(nanoToxExp, i);
+				checkDefaultMcAntibioticConcentrationUnit(nanoToxExp, i);
+				checkDefaultDOMUnit(nanoToxExp, i);	
+				checkDefaultMcDOMUnit(nanoToxExp, i);
+				checkDefaultSalinityUnit(nanoToxExp, i);	
+				checkDefaultMcSalinityUnit(nanoToxExp, i);
+				checkDefaultParticleExposureDurationUnit(nanoToxExp, i);				
+				checkDefaultUVADoseUnit(nanoToxExp, i);
+				checkDefaultUVAExposureDurationUnit(nanoToxExp, i);				
+				checkDefaultViabilityUnit(nanoToxExp, i);
+				checkDefaultLC50Unit(nanoToxExp, i);														
 			}
 		}
 		catch (Exception ex)

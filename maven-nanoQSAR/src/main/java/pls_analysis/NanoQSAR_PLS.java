@@ -11,8 +11,8 @@ import java.util.logging.Logger;
 
 import org.jblas.DoubleMatrix;
 
-import nanoQSAR.NanoMaterial;
-import nanoQSAR.NanoMaterials;
+import nanoQSAR.NanoToxExp;
+import nanoQSAR.NanoToxExps;
 
 
 /**
@@ -68,11 +68,11 @@ public class NanoQSAR_PLS
 		
 		try
 		{
-			/* create nanoMaterials from filename */
-			NanoMaterials nanoMaterials = new NanoMaterials(filename);
+			/* create nanoToxExps from filename */
+			NanoToxExps nanoToxExps = new NanoToxExps(filename);
 			
-			/* Build X and Y matrices from nanoMaterials. */
-			CsvMatrix csvMatrix = new CsvMatrix(nanoMaterials);
+			/* Build X and Y matrices from nanoToxExps. */
+			CsvMatrix csvMatrix = new CsvMatrix(nanoToxExps);
 			
 			/* Get the X and Y matrices.  Use a single column for 
 			 * the Y matrix. */
@@ -89,10 +89,10 @@ public class NanoQSAR_PLS
 			DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig,Yorig,true); 
 			
 			/* Get Descriptor Header information */
-			String[] descriptorHeader = nanoMaterials.getDescriptorHeader();
+			String[] descriptorHeader = nanoToxExps.getDescriptorHeader();
 			
 			/* Get CategoryDescriptor Header information */
-			String[] categoryDescriptorHeader = nanoMaterials.getCategoryDescriptorHeader();
+			String[] categoryDescriptorHeader = nanoToxExps.getCategoryDescriptorHeader();
 			
 			if (categoryDescriptorHeader!=null) {
 				int i1 = descriptorHeader.length;

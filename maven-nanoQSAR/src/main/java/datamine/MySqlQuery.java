@@ -7,8 +7,8 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import nanoQSAR.NanoMaterial;
-import nanoQSAR.NanoMaterials;
+import nanoQSAR.NanoToxExp;
+import nanoQSAR.NanoToxExps;
 
 /**
 * This class gets a connection to the database, submits a SQL query to the database, 
@@ -215,14 +215,14 @@ public class MySqlQuery
 	/**
 	 * @author Wilson Melendez
 	 * @param sqlQuery
-	 * @return  List<NanoMaterial> It returns a list containing objects of type NanoMaterial.
+	 * @return  List<NanoToxExp> It returns a list containing objects of type NanoToxExp.
 	 * @throws ClassNotFoundException  If no connection driver is available, throw exception.
 	 * @throws SQLException  An exception may be thrown if connection to database fails.
 	 */
-	public NanoMaterials getNanoMaterials() throws Exception
+	public NanoToxExps getNanoToxExps() throws Exception
 	{		
-		NanoMaterials nanoMaterials = new NanoMaterials();
-		NanoMaterial nanomaterial = null;
+		NanoToxExps nanoToxExps = new NanoToxExps();
+		NanoToxExp nanoToxExp = null;
 		Statement stmt = null;
 		Connection conn = null;
 		ResultSet rs = null;
@@ -241,190 +241,190 @@ public class MySqlQuery
 			while (rs.next())  // Loop over the results received from the MySQL database server.
 			{	
 				/* Instantiate a new nanomaterial object for every iteration of loop. */
-				nanomaterial = new NanoMaterial();
+				nanoToxExp = new NanoToxExp();
 				
 				/* Retrieve data by column names. */	
 				
 				// Retrieve data corresponding to assay table.
-				nanomaterial.setMeasurementID(rs.getInt("MeasurementID"));
-				nanomaterial.setAssayType((String)rs.getObject("AssayType"));
-				nanomaterial.setAssayName((String)rs.getObject("AssayName"));
-				nanomaterial.setSampleName((String)rs.getObject("SampleName"));
-				nanomaterial.setSubjectSpecies((String)rs.getObject("SubjectSpecies"));
-				nanomaterial.setSubjectID((String)rs.getObject("SubjectID"));
-				nanomaterial.setCellType((String)rs.getObject("CellType"));
-				nanomaterial.setCellSource((String)rs.getObject("CellSource"));
-				nanomaterial.setTestMediumID(rs.getInt("TestMediumID"));
-				nanomaterial.setPhAvg((Double)rs.getObject("pHAvg"));
-				nanomaterial.setPhApproxSymbol((String)rs.getObject("pHApproxSymbol"));
-			    nanomaterial.setPhUncertain((String)rs.getObject("pHUncertain"));
-				nanomaterial.setPhLow((Double)rs.getObject("pHLow"));
-				nanomaterial.setPhHigh((Double)rs.getObject("pHHigh"));
-				nanomaterial.setMediumTemp((Double)rs.getObject("MediumTemp"));
-				nanomaterial.setMediumTempUnit((String)rs.getObject("MediumTempUnit"));
-				nanomaterial.setTimeValue((Double)rs.getObject("TimeValue"));
-				nanomaterial.setTimeValueUnit((String)rs.getObject("TimeValueUnit"));
-				nanomaterial.setParticleConcentration((Double)rs.getObject("ParticleConcentration"));
-				nanomaterial.setParticleConcentrationUnit((String)rs.getObject("ParticleConcentrationUnit"));
-				nanomaterial.setParticleExposDuration((Double)rs.getObject("ParticleExposDuration"));
-				nanomaterial.setParticleExposDurationUnit((String)rs.getObject("ParticleExposDurationUnit"));
-				nanomaterial.setUvaDose((Double)rs.getObject("UvaDose"));
-				nanomaterial.setUvaDoseUnit((String)rs.getObject("UvaDoseUnit"));
-				nanomaterial.setUvaExposDuration((Double)rs.getObject("UvaExposDuration"));
-				nanomaterial.setUvaExposDurationUnit((String)rs.getObject("UvaExposDurationUnit"));
-				nanomaterial.setViabilityAvg((Double)rs.getObject("ViabilityAvg"));
-				nanomaterial.setViabilityApproxSymbol((String)rs.getObject("ViabilityApproxSymbol"));
-				nanomaterial.setViabilityUnit((String)rs.getObject("ViabilityUnit"));
-				nanomaterial.setViabilityUncertain((String)rs.getObject("ViabilityUncertain"));
-				nanomaterial.setViabilityLow((Double)rs.getObject("ViabilityLow"));
-				nanomaterial.setViabilityHigh((Double)rs.getObject("ViabilityHigh"));
-				nanomaterial.setViabilityMethod((String)rs.getObject("ViabilityMethod"));
-				nanomaterial.setLc50((Double)rs.getObject("Lc50"));
-				nanomaterial.setLc50ApproxSymbol((String)rs.getObject("Lc50ApproxSymbol"));
-				nanomaterial.setLc50Unit((String)rs.getObject("Lc50Unit"));
+				nanoToxExp.setMeasurementID(rs.getInt("MeasurementID"));
+				nanoToxExp.setAssayType((String)rs.getObject("AssayType"));
+				nanoToxExp.setAssayName((String)rs.getObject("AssayName"));
+				nanoToxExp.setSampleName((String)rs.getObject("SampleName"));
+				nanoToxExp.setSubjectSpecies((String)rs.getObject("SubjectSpecies"));
+				nanoToxExp.setSubjectID((String)rs.getObject("SubjectID"));
+				nanoToxExp.setCellType((String)rs.getObject("CellType"));
+				nanoToxExp.setCellSource((String)rs.getObject("CellSource"));
+				nanoToxExp.setTestMediumID(rs.getInt("TestMediumID"));
+				nanoToxExp.setPhAvg((Double)rs.getObject("pHAvg"));
+				nanoToxExp.setPhApproxSymbol((String)rs.getObject("pHApproxSymbol"));
+			    nanoToxExp.setPhUncertain((String)rs.getObject("pHUncertain"));
+				nanoToxExp.setPhLow((Double)rs.getObject("pHLow"));
+				nanoToxExp.setPhHigh((Double)rs.getObject("pHHigh"));
+				nanoToxExp.setMediumTemp((Double)rs.getObject("MediumTemp"));
+				nanoToxExp.setMediumTempUnit((String)rs.getObject("MediumTempUnit"));
+				nanoToxExp.setTimeValue((Double)rs.getObject("TimeValue"));
+				nanoToxExp.setTimeValueUnit((String)rs.getObject("TimeValueUnit"));
+				nanoToxExp.setParticleConcentration((Double)rs.getObject("ParticleConcentration"));
+				nanoToxExp.setParticleConcentrationUnit((String)rs.getObject("ParticleConcentrationUnit"));
+				nanoToxExp.setParticleExposDuration((Double)rs.getObject("ParticleExposDuration"));
+				nanoToxExp.setParticleExposDurationUnit((String)rs.getObject("ParticleExposDurationUnit"));
+				nanoToxExp.setUvaDose((Double)rs.getObject("UvaDose"));
+				nanoToxExp.setUvaDoseUnit((String)rs.getObject("UvaDoseUnit"));
+				nanoToxExp.setUvaExposDuration((Double)rs.getObject("UvaExposDuration"));
+				nanoToxExp.setUvaExposDurationUnit((String)rs.getObject("UvaExposDurationUnit"));
+				nanoToxExp.setViabilityAvg((Double)rs.getObject("ViabilityAvg"));
+				nanoToxExp.setViabilityApproxSymbol((String)rs.getObject("ViabilityApproxSymbol"));
+				nanoToxExp.setViabilityUnit((String)rs.getObject("ViabilityUnit"));
+				nanoToxExp.setViabilityUncertain((String)rs.getObject("ViabilityUncertain"));
+				nanoToxExp.setViabilityLow((Double)rs.getObject("ViabilityLow"));
+				nanoToxExp.setViabilityHigh((Double)rs.getObject("ViabilityHigh"));
+				nanoToxExp.setViabilityMethod((String)rs.getObject("ViabilityMethod"));
+				nanoToxExp.setLc50((Double)rs.getObject("Lc50"));
+				nanoToxExp.setLc50ApproxSymbol((String)rs.getObject("Lc50ApproxSymbol"));
+				nanoToxExp.setLc50Unit((String)rs.getObject("Lc50Unit"));
 				
 				// Retrieve data corresponding to materialChar table.
-				nanomaterial.setMaterialCharID(rs.getInt("MaterialCharID"));				
-				nanomaterial.setOrdMaterialID((String)rs.getObject("ORDMaterialID"));
-				nanomaterial.setDataSource((String)rs.getObject("DataSource"));
-				nanomaterial.setLotNumber((String)rs.getObject("LotNumber"));
-				nanomaterial.setCoreComp((String)rs.getObject("CoreComp"));
-				nanomaterial.setShellComp((String)rs.getObject("ShellComp"));
-				nanomaterial.setCoatingComp((String)rs.getObject("CoatingComp"));
-				nanomaterial.setCoatingAmount((Double)rs.getObject("CoatingAmount"));
-				nanomaterial.setCoatingAmountUnit((String)rs.getObject("CoatingAmountUnit"));
-			    nanomaterial.setFunctionalGroups((String)rs.getObject("FunctionalGroups"));
-				nanomaterial.setFunctionalizationProtocol((String)rs.getObject("FunctionalizationProtocol"));
-				nanomaterial.setPurity((Double)rs.getObject("Purity"));
-				nanomaterial.setPurityApproxSymbol((String)rs.getObject("PurityApproxSymbol"));
-				nanomaterial.setPurityUnit((String)rs.getObject("PurityUnit"));
-				nanomaterial.setPurityMethod((String)rs.getObject("PurityMethod"));
-				nanomaterial.setPurityRefChemical((String)rs.getObject("PurityRefChemical"));
-				nanomaterial.setContamUnit((String)rs.getObject("ContamUnit"));
-				nanomaterial.setContamAl((Double)rs.getObject("ContamAl"));
-				nanomaterial.setContamAs((Double)rs.getObject("ContamAs"));
-				nanomaterial.setContamBe((Double)rs.getObject("ContamBe"));
-				nanomaterial.setContamCa((Double)rs.getObject("ContamCa"));
-				nanomaterial.setContamCo((Double)rs.getObject("ContamCo"));
-				nanomaterial.setContamCr((Double)rs.getObject("ContamCr"));
-				nanomaterial.setContamFe((Double)rs.getObject("ContamFe"));
-				nanomaterial.setContamK((Double)rs.getObject("ContamK"));
-				nanomaterial.setContamMg((Double)rs.getObject("ContamMg"));
-				nanomaterial.setContamNa((Double)rs.getObject("ContamNa"));
-				nanomaterial.setContamP((Double)rs.getObject("ContamP"));
-				nanomaterial.setContamPb((Double)rs.getObject("ContamPb"));
-				nanomaterial.setContamSb((Double)rs.getObject("ContamSb"));
-				nanomaterial.setContamSe((Double)rs.getObject("ContamSe"));
-				nanomaterial.setContamSiO2((Double)rs.getObject("ContamSiO2"));
-				nanomaterial.setContamSn((Double)rs.getObject("ContamSn"));
-				nanomaterial.setContamTl((Double)rs.getObject("ContamTl"));
-				nanomaterial.setContamV((Double)rs.getObject("ContamV"));
-			    nanomaterial.setContamMethod((String)rs.getObject("ContamMethod"));
-				nanomaterial.setCrystalStructure((String)rs.getObject("CrystalStructure"));
-				nanomaterial.setCrystalStructureMethod((String)rs.getObject("CrystalStructureMethod"));
-				nanomaterial.setSynthesisMethod((String)rs.getObject("SynthesisMethod"));
-				nanomaterial.setSynthesisDate((Integer)rs.getObject("SynthesisDate"));
-				nanomaterial.setParticleOuterDiamAvg((Double)rs.getObject("ParticleOuterDiamAvg"));
-				nanomaterial.setParticleOuterDiamApproxSymbol((String)rs.getObject("ParticleOuterDiamApproxSymbol"));
-				nanomaterial.setParticleOuterDiamUnit((String)rs.getObject("ParticleOuterDiamUnit"));
-				nanomaterial.setParticleOuterDiamUncertain((String)rs.getObject("ParticleOuterDiamUncertain"));
-				nanomaterial.setParticleOuterDiamLow((Double)rs.getObject("ParticleOuterDiamLow"));
-				nanomaterial.setParticleOuterDiamHigh((Double)rs.getObject("ParticleOuterDiamHigh"));
-				nanomaterial.setParticleOuterDiamMethod((String)rs.getObject("ParticleOuterDiamMethod"));
-				nanomaterial.setParticleInnerDiamAvg((Double)rs.getObject("ParticleInnerDiamAvg"));
-				nanomaterial.setParticleInnerDiamApproxSymbol((String)rs.getObject("ParticleInnerDiamApproxSymbol"));
-				nanomaterial.setParticleInnerDiamUnit((String)rs.getObject("ParticleInnerDiamUnit"));
-				nanomaterial.setParticleInnerDiamUncertain((String)rs.getObject("ParticleInnerDiamUncertain"));
-				nanomaterial.setParticleInnerDiamLow((Double)rs.getObject("ParticleInnerDiamLow"));
-				nanomaterial.setParticleInnerDiamHigh((Double)rs.getObject("ParticleInnerDiamHigh"));
-				nanomaterial.setParticleInnerDiamMethod((String)rs.getObject("ParticleInnerDiamMethod"));
-				nanomaterial.setParticleLengthAvg((Double)rs.getObject("ParticleLengthAvg"));
-				nanomaterial.setParticleLengthApproxSymbol((String)rs.getObject("ParticleLengthApproxSymbol"));
-				nanomaterial.setParticleLengthUnit((String)rs.getObject("ParticleLengthUnit"));
-				nanomaterial.setParticleLengthUncertain((String)rs.getObject("ParticleLengthUncertain"));
-				nanomaterial.setParticleLengthLow((Double)rs.getObject("ParticleLengthLow"));
-				nanomaterial.setParticleLengthHigh((Double)rs.getObject("ParticleLengthHigh"));
-			    nanomaterial.setParticleLengthMethod((String)rs.getObject("ParticleLengthMethod"));
-				nanomaterial.setParticleThicknessAvg((Double)rs.getObject("ParticleThicknessAvg"));
-				nanomaterial.setParticleThicknessApproxSymbol((String)rs.getObject("ParticleThicknessApproxSymbol"));
-				nanomaterial.setParticleThicknessUnit((String)rs.getObject("ParticleThicknessUnit"));
-				nanomaterial.setParticleThicknessUncertain((String)rs.getObject("ParticleThicknessUncertain"));
-				nanomaterial.setParticleThicknessLow((Double)rs.getObject("ParticleThicknessLow"));
-				nanomaterial.setParticleThicknessHigh((Double)rs.getObject("ParticleThicknessHigh"));
-				nanomaterial.setParticleThicknessMethod((String)rs.getObject("ParticleThicknessMethod"));
-				nanomaterial.setWallNumber((String)rs.getObject("WallNumber"));
-				nanomaterial.setAspectRatio((Double)rs.getObject("AspectRatio"));
-				nanomaterial.setShape((String)rs.getObject("Shape"));
-				nanomaterial.setSurfaceAreaAvg((Double)rs.getObject("SurfaceAreaAvg"));
-				nanomaterial.setSurfaceAreaApproxSymbol((String)rs.getObject("SurfaceAreaApproxSymbol"));
-				nanomaterial.setSurfaceAreaUnit((String)rs.getObject("SurfaceAreaUnit"));
-				nanomaterial.setSurfaceAreaUncertain((String)rs.getObject("SurfaceAreaUncertain"));
-				nanomaterial.setSurfaceAreaLow((Double)rs.getObject("SurfaceAreaLow"));
-				nanomaterial.setSurfaceAreaHigh((Double)rs.getObject("SurfaceAreaHigh"));
-				nanomaterial.setSurfaceAreaMethod((String)rs.getObject("SurfaceAreaMethod"));
-				nanomaterial.setMc_timeValue((Double)rs.getObject("Mc_timeValue"));
-				nanomaterial.setMc_timeValueUnit((String)rs.getObject("Mc_timeValueUnit"));
-				nanomaterial.setMc_particleConcentration((Double)rs.getObject("Mc_particleConcentration"));
-				nanomaterial.setMc_particleConcentrationUnit((String)rs.getObject("Mc_particleConcentrationUnit"));
-				nanomaterial.setDispersionMediumID(rs.getInt("DispersionMediumID"));
-				nanomaterial.setSolubility((String)rs.getObject("Solubility"));
-				nanomaterial.setMc_pHAvg((Double)rs.getObject("Mc_pHAvg"));
-				nanomaterial.setMc_pHApproxSymbol((String)rs.getObject("Mc_pHApproxSymbol"));
-			    nanomaterial.setMc_pHUncertain((String)rs.getObject("Mc_pHUncertain"));
-				nanomaterial.setMc_pHLow((Double)rs.getObject("Mc_pHLow"));
-				nanomaterial.setMc_pHHigh((Double)rs.getObject("Mc_pHHigh"));
-				nanomaterial.setMc_mediumTemp((Double)rs.getObject("Mc_mediumTemp"));
-				nanomaterial.setMc_mediumTempUnit((String)rs.getObject("Mc_mediumTempUnit"));
-				nanomaterial.setZetaPotentialAvg((Double)rs.getObject("ZetaPotentialAvg"));
-				nanomaterial.setZetaPotentialApproxSymbol((String)rs.getObject("ZetaPotentialApproxSymbol"));
-				nanomaterial.setZetaPotentialUnit((String)rs.getObject("ZetaPotentialUnit"));
-				nanomaterial.setZetaPotentialUncertain((String)rs.getObject("ZetaPotentialUncertain"));
-				nanomaterial.setZetaPotentialLow((Double)rs.getObject("ZetaPotentialLow"));
-				nanomaterial.setZetaPotentialHigh((Double)rs.getObject("ZetaPotentialHigh"));
-				nanomaterial.setZetaPotentialMethod((String)rs.getObject("ZetaPotentialMethod"));
-				nanomaterial.setSizeDistribType((String)rs.getObject("SizeDistribType"));
-				nanomaterial.setSizeDistribModality((String)rs.getObject("SizeDistribModality"));
-				nanomaterial.setSizeDistribMethod((String)rs.getObject("SizeDistribMethod"));
-				nanomaterial.setSizeDistribAvg((Double)rs.getObject("SizeDistribAvg"));
-				nanomaterial.setSizeDistribApproxSymbol((String)rs.getObject("SizeDistribApproxSymbol"));
-				nanomaterial.setSizeDistribUnit((String)rs.getObject("SizeDistribUnit"));
-				nanomaterial.setSizeDistribUncertain((String)rs.getObject("SizeDistribUncertain"));
-				nanomaterial.setSizeDistribLow((Double)rs.getObject("SizeDistribLow"));
-				nanomaterial.setSizeDistribHigh((Double)rs.getObject("SizeDistribHigh"));
-				nanomaterial.setSizeDistribAvg2((Double)rs.getObject("SizeDistribAvg2"));;
-				nanomaterial.setSizeDistribApproxSymbol2((String)rs.getObject("SizeDistribApproxSymbol2"));
-				nanomaterial.setSizeDistribUnit2((String)rs.getObject("SizeDistribUnit2"));
-				nanomaterial.setSizeDistribUncertain2((String)rs.getObject("SizeDistribUncertain2"));
-			    nanomaterial.setSizeDistribLow2((Double)rs.getObject("SizeDistribLow2"));
-				nanomaterial.setSizeDistribHigh2((Double)rs.getObject("SizeDistribHigh2"));
+				nanoToxExp.setMaterialCharID(rs.getInt("MaterialCharID"));				
+				nanoToxExp.setOrdMaterialID((String)rs.getObject("ORDMaterialID"));
+				nanoToxExp.setDataSource((String)rs.getObject("DataSource"));
+				nanoToxExp.setLotNumber((String)rs.getObject("LotNumber"));
+				nanoToxExp.setCoreComp((String)rs.getObject("CoreComp"));
+				nanoToxExp.setShellComp((String)rs.getObject("ShellComp"));
+				nanoToxExp.setCoatingComp((String)rs.getObject("CoatingComp"));
+				nanoToxExp.setCoatingAmount((Double)rs.getObject("CoatingAmount"));
+				nanoToxExp.setCoatingAmountUnit((String)rs.getObject("CoatingAmountUnit"));
+			    nanoToxExp.setFunctionalGroups((String)rs.getObject("FunctionalGroups"));
+				nanoToxExp.setFunctionalizationProtocol((String)rs.getObject("FunctionalizationProtocol"));
+				nanoToxExp.setPurity((Double)rs.getObject("Purity"));
+				nanoToxExp.setPurityApproxSymbol((String)rs.getObject("PurityApproxSymbol"));
+				nanoToxExp.setPurityUnit((String)rs.getObject("PurityUnit"));
+				nanoToxExp.setPurityMethod((String)rs.getObject("PurityMethod"));
+				nanoToxExp.setPurityRefChemical((String)rs.getObject("PurityRefChemical"));
+				nanoToxExp.setContamUnit((String)rs.getObject("ContamUnit"));
+				nanoToxExp.setContamAl((Double)rs.getObject("ContamAl"));
+				nanoToxExp.setContamAs((Double)rs.getObject("ContamAs"));
+				nanoToxExp.setContamBe((Double)rs.getObject("ContamBe"));
+				nanoToxExp.setContamCa((Double)rs.getObject("ContamCa"));
+				nanoToxExp.setContamCo((Double)rs.getObject("ContamCo"));
+				nanoToxExp.setContamCr((Double)rs.getObject("ContamCr"));
+				nanoToxExp.setContamFe((Double)rs.getObject("ContamFe"));
+				nanoToxExp.setContamK((Double)rs.getObject("ContamK"));
+				nanoToxExp.setContamMg((Double)rs.getObject("ContamMg"));
+				nanoToxExp.setContamNa((Double)rs.getObject("ContamNa"));
+				nanoToxExp.setContamP((Double)rs.getObject("ContamP"));
+				nanoToxExp.setContamPb((Double)rs.getObject("ContamPb"));
+				nanoToxExp.setContamSb((Double)rs.getObject("ContamSb"));
+				nanoToxExp.setContamSe((Double)rs.getObject("ContamSe"));
+				nanoToxExp.setContamSiO2((Double)rs.getObject("ContamSiO2"));
+				nanoToxExp.setContamSn((Double)rs.getObject("ContamSn"));
+				nanoToxExp.setContamTl((Double)rs.getObject("ContamTl"));
+				nanoToxExp.setContamV((Double)rs.getObject("ContamV"));
+			    nanoToxExp.setContamMethod((String)rs.getObject("ContamMethod"));
+				nanoToxExp.setCrystalStructure((String)rs.getObject("CrystalStructure"));
+				nanoToxExp.setCrystalStructureMethod((String)rs.getObject("CrystalStructureMethod"));
+				nanoToxExp.setSynthesisMethod((String)rs.getObject("SynthesisMethod"));
+				nanoToxExp.setSynthesisDate((Integer)rs.getObject("SynthesisDate"));
+				nanoToxExp.setParticleOuterDiamAvg((Double)rs.getObject("ParticleOuterDiamAvg"));
+				nanoToxExp.setParticleOuterDiamApproxSymbol((String)rs.getObject("ParticleOuterDiamApproxSymbol"));
+				nanoToxExp.setParticleOuterDiamUnit((String)rs.getObject("ParticleOuterDiamUnit"));
+				nanoToxExp.setParticleOuterDiamUncertain((String)rs.getObject("ParticleOuterDiamUncertain"));
+				nanoToxExp.setParticleOuterDiamLow((Double)rs.getObject("ParticleOuterDiamLow"));
+				nanoToxExp.setParticleOuterDiamHigh((Double)rs.getObject("ParticleOuterDiamHigh"));
+				nanoToxExp.setParticleOuterDiamMethod((String)rs.getObject("ParticleOuterDiamMethod"));
+				nanoToxExp.setParticleInnerDiamAvg((Double)rs.getObject("ParticleInnerDiamAvg"));
+				nanoToxExp.setParticleInnerDiamApproxSymbol((String)rs.getObject("ParticleInnerDiamApproxSymbol"));
+				nanoToxExp.setParticleInnerDiamUnit((String)rs.getObject("ParticleInnerDiamUnit"));
+				nanoToxExp.setParticleInnerDiamUncertain((String)rs.getObject("ParticleInnerDiamUncertain"));
+				nanoToxExp.setParticleInnerDiamLow((Double)rs.getObject("ParticleInnerDiamLow"));
+				nanoToxExp.setParticleInnerDiamHigh((Double)rs.getObject("ParticleInnerDiamHigh"));
+				nanoToxExp.setParticleInnerDiamMethod((String)rs.getObject("ParticleInnerDiamMethod"));
+				nanoToxExp.setParticleLengthAvg((Double)rs.getObject("ParticleLengthAvg"));
+				nanoToxExp.setParticleLengthApproxSymbol((String)rs.getObject("ParticleLengthApproxSymbol"));
+				nanoToxExp.setParticleLengthUnit((String)rs.getObject("ParticleLengthUnit"));
+				nanoToxExp.setParticleLengthUncertain((String)rs.getObject("ParticleLengthUncertain"));
+				nanoToxExp.setParticleLengthLow((Double)rs.getObject("ParticleLengthLow"));
+				nanoToxExp.setParticleLengthHigh((Double)rs.getObject("ParticleLengthHigh"));
+			    nanoToxExp.setParticleLengthMethod((String)rs.getObject("ParticleLengthMethod"));
+				nanoToxExp.setParticleThicknessAvg((Double)rs.getObject("ParticleThicknessAvg"));
+				nanoToxExp.setParticleThicknessApproxSymbol((String)rs.getObject("ParticleThicknessApproxSymbol"));
+				nanoToxExp.setParticleThicknessUnit((String)rs.getObject("ParticleThicknessUnit"));
+				nanoToxExp.setParticleThicknessUncertain((String)rs.getObject("ParticleThicknessUncertain"));
+				nanoToxExp.setParticleThicknessLow((Double)rs.getObject("ParticleThicknessLow"));
+				nanoToxExp.setParticleThicknessHigh((Double)rs.getObject("ParticleThicknessHigh"));
+				nanoToxExp.setParticleThicknessMethod((String)rs.getObject("ParticleThicknessMethod"));
+				nanoToxExp.setWallNumber((String)rs.getObject("WallNumber"));
+				nanoToxExp.setAspectRatio((Double)rs.getObject("AspectRatio"));
+				nanoToxExp.setShape((String)rs.getObject("Shape"));
+				nanoToxExp.setSurfaceAreaAvg((Double)rs.getObject("SurfaceAreaAvg"));
+				nanoToxExp.setSurfaceAreaApproxSymbol((String)rs.getObject("SurfaceAreaApproxSymbol"));
+				nanoToxExp.setSurfaceAreaUnit((String)rs.getObject("SurfaceAreaUnit"));
+				nanoToxExp.setSurfaceAreaUncertain((String)rs.getObject("SurfaceAreaUncertain"));
+				nanoToxExp.setSurfaceAreaLow((Double)rs.getObject("SurfaceAreaLow"));
+				nanoToxExp.setSurfaceAreaHigh((Double)rs.getObject("SurfaceAreaHigh"));
+				nanoToxExp.setSurfaceAreaMethod((String)rs.getObject("SurfaceAreaMethod"));
+				nanoToxExp.setMc_timeValue((Double)rs.getObject("Mc_timeValue"));
+				nanoToxExp.setMc_timeValueUnit((String)rs.getObject("Mc_timeValueUnit"));
+				nanoToxExp.setMc_particleConcentration((Double)rs.getObject("Mc_particleConcentration"));
+				nanoToxExp.setMc_particleConcentrationUnit((String)rs.getObject("Mc_particleConcentrationUnit"));
+				nanoToxExp.setDispersionMediumID(rs.getInt("DispersionMediumID"));
+				nanoToxExp.setSolubility((String)rs.getObject("Solubility"));
+				nanoToxExp.setMc_pHAvg((Double)rs.getObject("Mc_pHAvg"));
+				nanoToxExp.setMc_pHApproxSymbol((String)rs.getObject("Mc_pHApproxSymbol"));
+			    nanoToxExp.setMc_pHUncertain((String)rs.getObject("Mc_pHUncertain"));
+				nanoToxExp.setMc_pHLow((Double)rs.getObject("Mc_pHLow"));
+				nanoToxExp.setMc_pHHigh((Double)rs.getObject("Mc_pHHigh"));
+				nanoToxExp.setMc_mediumTemp((Double)rs.getObject("Mc_mediumTemp"));
+				nanoToxExp.setMc_mediumTempUnit((String)rs.getObject("Mc_mediumTempUnit"));
+				nanoToxExp.setZetaPotentialAvg((Double)rs.getObject("ZetaPotentialAvg"));
+				nanoToxExp.setZetaPotentialApproxSymbol((String)rs.getObject("ZetaPotentialApproxSymbol"));
+				nanoToxExp.setZetaPotentialUnit((String)rs.getObject("ZetaPotentialUnit"));
+				nanoToxExp.setZetaPotentialUncertain((String)rs.getObject("ZetaPotentialUncertain"));
+				nanoToxExp.setZetaPotentialLow((Double)rs.getObject("ZetaPotentialLow"));
+				nanoToxExp.setZetaPotentialHigh((Double)rs.getObject("ZetaPotentialHigh"));
+				nanoToxExp.setZetaPotentialMethod((String)rs.getObject("ZetaPotentialMethod"));
+				nanoToxExp.setSizeDistribType((String)rs.getObject("SizeDistribType"));
+				nanoToxExp.setSizeDistribModality((String)rs.getObject("SizeDistribModality"));
+				nanoToxExp.setSizeDistribMethod((String)rs.getObject("SizeDistribMethod"));
+				nanoToxExp.setSizeDistribAvg((Double)rs.getObject("SizeDistribAvg"));
+				nanoToxExp.setSizeDistribApproxSymbol((String)rs.getObject("SizeDistribApproxSymbol"));
+				nanoToxExp.setSizeDistribUnit((String)rs.getObject("SizeDistribUnit"));
+				nanoToxExp.setSizeDistribUncertain((String)rs.getObject("SizeDistribUncertain"));
+				nanoToxExp.setSizeDistribLow((Double)rs.getObject("SizeDistribLow"));
+				nanoToxExp.setSizeDistribHigh((Double)rs.getObject("SizeDistribHigh"));
+				nanoToxExp.setSizeDistribAvg2((Double)rs.getObject("SizeDistribAvg2"));;
+				nanoToxExp.setSizeDistribApproxSymbol2((String)rs.getObject("SizeDistribApproxSymbol2"));
+				nanoToxExp.setSizeDistribUnit2((String)rs.getObject("SizeDistribUnit2"));
+				nanoToxExp.setSizeDistribUncertain2((String)rs.getObject("SizeDistribUncertain2"));
+			    nanoToxExp.setSizeDistribLow2((Double)rs.getObject("SizeDistribLow2"));
+				nanoToxExp.setSizeDistribHigh2((Double)rs.getObject("SizeDistribHigh2"));
 				
 				// Retrieve data corresponding to medium table.
-			    nanomaterial.setMediumID(rs.getInt("mediumID"));				
-				nanomaterial.setMediumDescription((String)rs.getObject("MediumDescription"));
-				nanomaterial.setSerumAdditive((String)rs.getObject("SerumAdditive"));
-				nanomaterial.setSerumConcentration((Double)rs.getObject("SerumConcentration"));
-				nanomaterial.setSerumConcentrationUnit((String)rs.getObject("SerumConcentrationUnit"));
-				nanomaterial.setAntibioticName((String)rs.getObject("AntibioticName"));
-				nanomaterial.setAntibioticConcentration((Double)rs.getObject("AntibioticConcentration"));
-				nanomaterial.setAntibioticConcentrationUnit((String)rs.getObject("AntibioticConcentrationUnit"));
-				nanomaterial.setDomForm((String)rs.getObject("DomForm"));
-				nanomaterial.setDomConcentration((Double)rs.getObject("DomConcentration"));
-				nanomaterial.setDomUnit((String)rs.getObject("DomUnit"));
-				nanomaterial.setSalinityValue((Double)rs.getObject("SalinityValue"));
-				nanomaterial.setSalinityUnit((String)rs.getObject("SalinityUnit"));		
+			    nanoToxExp.setMediumID(rs.getInt("mediumID"));				
+				nanoToxExp.setMediumDescription((String)rs.getObject("MediumDescription"));
+				nanoToxExp.setSerumAdditive((String)rs.getObject("SerumAdditive"));
+				nanoToxExp.setSerumConcentration((Double)rs.getObject("SerumConcentration"));
+				nanoToxExp.setSerumConcentrationUnit((String)rs.getObject("SerumConcentrationUnit"));
+				nanoToxExp.setAntibioticName((String)rs.getObject("AntibioticName"));
+				nanoToxExp.setAntibioticConcentration((Double)rs.getObject("AntibioticConcentration"));
+				nanoToxExp.setAntibioticConcentrationUnit((String)rs.getObject("AntibioticConcentrationUnit"));
+				nanoToxExp.setDomForm((String)rs.getObject("DomForm"));
+				nanoToxExp.setDomConcentration((Double)rs.getObject("DomConcentration"));
+				nanoToxExp.setDomUnit((String)rs.getObject("DomUnit"));
+				nanoToxExp.setSalinityValue((Double)rs.getObject("SalinityValue"));
+				nanoToxExp.setSalinityUnit((String)rs.getObject("SalinityUnit"));		
 				
-				nanomaterial.setMc_mediumDescription((String)rs.getObject("Mc_MediumDescription"));
-				nanomaterial.setMc_serumAdditive((String)rs.getObject("Mc_SerumAdditive"));
-				nanomaterial.setMc_serumConcentration((Double)rs.getObject("Mc_SerumConcentration"));
-				nanomaterial.setMc_serumConcentrationUnit((String)rs.getObject("Mc_SerumConcentrationUnit"));
-				nanomaterial.setMc_antibioticName((String)rs.getObject("Mc_AntibioticName"));
-				nanomaterial.setMc_antibioticConcentration((Double)rs.getObject("Mc_AntibioticConcentration"));
-				nanomaterial.setMc_antibioticConcentrationUnit((String)rs.getObject("Mc_AntibioticConcentrationUnit"));
-				nanomaterial.setMc_domForm((String)rs.getObject("Mc_DomForm"));
-				nanomaterial.setMc_domConcentration((Double)rs.getObject("Mc_DomConcentration"));
-				nanomaterial.setMc_domUnit((String)rs.getObject("Mc_DomUnit"));
-				nanomaterial.setMc_salinityValue((Double)rs.getObject("Mc_SalinityValue"));
-				nanomaterial.setMc_salinityUnit((String)rs.getObject("Mc_SalinityUnit"));
+				nanoToxExp.setMc_mediumDescription((String)rs.getObject("Mc_MediumDescription"));
+				nanoToxExp.setMc_serumAdditive((String)rs.getObject("Mc_SerumAdditive"));
+				nanoToxExp.setMc_serumConcentration((Double)rs.getObject("Mc_SerumConcentration"));
+				nanoToxExp.setMc_serumConcentrationUnit((String)rs.getObject("Mc_SerumConcentrationUnit"));
+				nanoToxExp.setMc_antibioticName((String)rs.getObject("Mc_AntibioticName"));
+				nanoToxExp.setMc_antibioticConcentration((Double)rs.getObject("Mc_AntibioticConcentration"));
+				nanoToxExp.setMc_antibioticConcentrationUnit((String)rs.getObject("Mc_AntibioticConcentrationUnit"));
+				nanoToxExp.setMc_domForm((String)rs.getObject("Mc_DomForm"));
+				nanoToxExp.setMc_domConcentration((Double)rs.getObject("Mc_DomConcentration"));
+				nanoToxExp.setMc_domUnit((String)rs.getObject("Mc_DomUnit"));
+				nanoToxExp.setMc_salinityValue((Double)rs.getObject("Mc_SalinityValue"));
+				nanoToxExp.setMc_salinityUnit((String)rs.getObject("Mc_SalinityUnit"));
 				
 //				/* execute set() on each property of nanomaterial with values taken by SqlQuery */
 //				final BeanInfo beanInfo = Introspector.getBeanInfo(nanomaterial.getClass());
@@ -433,7 +433,7 @@ public class MySqlQuery
 //		        	property.getWriteMethod().invoke(nanomaterial, rs.getObject(property.getDisplayName()));
 //		        }
 				
-				nanoMaterials.add(nanomaterial);  // Add object to list.
+				nanoToxExps.add(nanoToxExp);  // Add object to list.
 				
 			}
 			
@@ -451,7 +451,7 @@ public class MySqlQuery
 			DBUtil.close(conn);
 		}
 		
-		return nanoMaterials;
+		return nanoToxExps;
 	}
 	
 	

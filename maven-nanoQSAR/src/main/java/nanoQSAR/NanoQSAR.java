@@ -71,20 +71,20 @@ public class NanoQSAR {
 			/* Input database connection information and name of output file. */
 			DBUtil.loadProperties(propFilename);	
 			
-			NanoMaterials nanoMaterials = null;
+			NanoToxExps nanoToxExps = null;
 			
 			/* Test for connection to database */			
 			if (ConnectionManager.testConnection()) {
 				
 				/* Data-mine MySQL database */
-				nanoMaterials = new NanoMaterials(new MySqlQuery());
+				nanoToxExps = new NanoToxExps(new MySqlQuery());
 				/* write data to CSV file. */
-				nanoMaterials.writeCsvFile(DBUtil.getCsvFileName());
+				nanoToxExps.writeCsvFile(DBUtil.getCsvFileName());
 				
 			} else { /* Connectio to database is not avaialable */
 				
 				/* Get data from CSV file */
-				nanoMaterials = new NanoMaterials(DBUtil.getCsvFileName());
+				nanoToxExps = new NanoToxExps(DBUtil.getCsvFileName());
 			}
 
 		} catch(Exception ex) {

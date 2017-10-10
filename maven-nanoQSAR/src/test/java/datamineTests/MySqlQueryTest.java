@@ -7,8 +7,8 @@ import org.junit.Test;
 
 import datamine.DBUtil;
 import datamine.MySqlQuery;
-import nanoQSAR.NanoMaterial;
-import nanoQSAR.NanoMaterials;
+import nanoQSAR.NanoToxExp;
+import nanoQSAR.NanoToxExps;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -232,9 +232,9 @@ public class MySqlQueryTest {
 		try {
 			MySqlQuery mySqlQuery = new MySqlQuery();
 			Assert.assertNotNull(mySqlQuery);
-			NanoMaterials nanoMaterials = mySqlQuery.getNanoMaterials();
-			Assert.assertNotNull(nanoMaterials);
-			Assert.assertFalse("Unexpected: nanoMaterials database is empty", nanoMaterials.isEmpty());
+			NanoToxExps nanoToxExps = mySqlQuery.getNanoToxExps();
+			Assert.assertNotNull(nanoToxExps);
+			Assert.assertFalse("Unexpected: nanoToxExps database is empty", nanoToxExps.isEmpty());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -248,10 +248,10 @@ public class MySqlQueryTest {
 		try {
 			MySqlQuery mySqlQuery = new MySqlQuery();
 			Assert.assertNotNull(mySqlQuery);
-			NanoMaterials nanoMaterials = new NanoMaterials(mySqlQuery);
-			Assert.assertNotNull(nanoMaterials);
-			Assert.assertFalse("Unexpected: nanoMaterials database is empty", nanoMaterials.isEmpty());
-			nanoMaterials.writeCsvFile(DBUtil.getCsvFileName());
+			NanoToxExps nanoToxExps = new NanoToxExps(mySqlQuery);
+			Assert.assertNotNull(nanoToxExps);
+			Assert.assertFalse("Unexpected: nanoToxExps database is empty", nanoToxExps.isEmpty());
+			nanoToxExps.writeCsvFile(DBUtil.getCsvFileName());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
