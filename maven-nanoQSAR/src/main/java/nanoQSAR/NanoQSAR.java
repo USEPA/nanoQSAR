@@ -14,7 +14,7 @@ import datamine.MySqlQuery;
 public class NanoQSAR {
 
 	/**
-	 * This is the main method. It calls the LoggerInfo.init and getNanoMaterials methods.
+	 * This is the main method. It calls the LoggerInfo.init and getNanoToxExps methods.
 	 * @author Wilson Melendez & Paul Harten
 	 * @version 1.0
 	 * @param args  Properties file.
