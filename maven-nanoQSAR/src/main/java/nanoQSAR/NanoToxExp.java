@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
 
 import java.util.ArrayList;
 
-public class NanoMaterial extends Object implements Serializable, Cloneable {
+public class NanoToxExp extends Object implements Serializable, Cloneable {
 	
 	// Link table fields
 	private int materialCharID; 
@@ -196,16 +196,16 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	private Double mc_salinityValue; 
 	private String mc_salinityUnit;
 
-	public NanoMaterial() throws Exception {
+	public NanoToxExp() throws Exception {
 		super();
 	}
 	
-	public NanoMaterial(int[] fieldIndex, String[] values) throws Exception {
+	public NanoToxExp(int[] fieldIndex, String[] values) throws Exception {
 		super();
 	    
-		Field[] fields = NanoMaterial.class.getDeclaredFields();
+		Field[] fields = NanoToxExp.class.getDeclaredFields();
 		
-		/* execute set() on each property of NanoMaterial with fieldIndex and values taken from cvs file */
+		/* execute set() on each property of NanoToxExp with fieldIndex and values taken from cvs file */
 	    for (int i=0; i<values.length; i++) {
 
 	    	String value = values[i];
@@ -222,7 +222,7 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	    		if (value.matches("null")) field.set(this, null);
 	    		else field.set(this, Integer.valueOf(value));
 	    	} else {
-	    		throw new Error("Invalid NanoMaterial field class");
+	    		throw new Error("Invalid NanoToxExp field class");
 	    	}
 	    		
 	    }
@@ -232,7 +232,7 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	public static int[] getFieldIndex(String[] columnNames) throws Exception {
 		
 		// all columnNames of the CSV header are fields of this class, but in different order */
-		Field[] fields = NanoMaterial.class.getDeclaredFields();
+		Field[] fields = NanoToxExp.class.getDeclaredFields();
 	    int[] fieldIndex = new int[columnNames.length];
 	    for (int i=0; i<columnNames.length; i++) {
 	    	boolean notFound = true;
@@ -454,7 +454,7 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	 */
 	public String[] storeDataAsStringArray(int[] fieldIndex) throws Exception {
 	
-		Field[] fields = NanoMaterial.class.getDeclaredFields();
+		Field[] fields = NanoToxExp.class.getDeclaredFields();
 		
 		// all columns of the CSV header are fields of this class */
 		String[] strNano = new String[fieldIndex.length];
@@ -468,14 +468,14 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	}
 	
 	@Override
-	public NanoMaterial clone() {
+	public NanoToxExp clone() {
 		
-		NanoMaterial clone = null;
+		NanoToxExp clone = null;
 		
 		try {
-			clone = (NanoMaterial)super.clone();
+			clone = (NanoToxExp)super.clone();
 			
-			Field[] fields = NanoMaterial.class.getDeclaredFields();
+			Field[] fields = NanoToxExp.class.getDeclaredFields();
 		    for (int i=0; i<fields.length; i++) {
 		    	Field field = fields[i];
 		    	field.set(clone, field.get(this));
@@ -488,9 +488,9 @@ public class NanoMaterial extends Object implements Serializable, Cloneable {
 	}
 	
 	/* Return whether other nanoMaterial is the same as this one */
-	public boolean isSame(NanoMaterial other) throws Exception {
+	public boolean isSame(NanoToxExp other) throws Exception {
 
-		Field[] fields = NanoMaterial.class.getDeclaredFields();
+		Field[] fields = NanoToxExp.class.getDeclaredFields();
 	    for (int i=0; i<fields.length; i++) {
 	    	Field field = fields[i];
 	    	Object v1 = field.get(this);

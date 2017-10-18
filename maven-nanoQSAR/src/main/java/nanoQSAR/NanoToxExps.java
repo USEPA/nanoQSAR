@@ -16,34 +16,36 @@ import com.opencsv.CSVWriter;
 import datamine.DBUtil;
 import datamine.MySqlQuery;
 
-public class NanoMaterials extends Vector<NanoMaterial> implements Serializable, Cloneable {
+public class NanoToxExps extends Vector<NanoToxExp> implements Serializable, Cloneable {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 9210392203321638729L;
 	private int[] descriptorIndex = null;
+	private int[] categoryDescriptorIndex = null;
 	private int[] resultIndex = null;
 	
 	private String[] header = null;
 	private String[] descriptorHeader = null;
+	private String[] categoryDescriptorHeader = null;
 	private String[] resultHeader = null;
 	
-	public NanoMaterials() throws Exception {
+	public NanoToxExps() throws Exception {
 		super();
 	}
 	
-//	get nanoMaterials by reading from a CSV file
-	public NanoMaterials(String filename) throws Exception {
+//	get nanoToxExps by reading from a CSV file
+	public NanoToxExps(String filename) throws Exception {
 		super();
 		this.readCsvFile(filename);
 	}
 	
-//	get nanoMaterials by querying a database server
-	public NanoMaterials(MySqlQuery sqlQuery) throws Exception {
+//	get nanoToxExps by querying a database server
+	public NanoToxExps(MySqlQuery sqlQuery) throws Exception {
 		super();
 		/* Read data from remote MySQL server and store them in a list.  */
-		this.addAll(sqlQuery.getNanoMaterials());
+		this.addAll(sqlQuery.getNanoToxExps());
 		this.setHeader(sqlQuery.getHeader());
 	}
 	
@@ -53,18 +55,18 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
 	 * CSV file; it gets the header file of the CSV file; it calls the getSqlQuery method to
 	 * obtain the SQL query statement; it passes the SQL query statement to the 
 	 * getNanoMaterials method that will read the data from the database and stores them in a
-	 * list of NanoMaterial objects.  This information is passed to the write method of the 
+	 * list of NanoToxExp objects.  This information is passed to the write method of the 
 	 * CsvFileWriter class that will generate the CSV file.
 	 * @author Wilson Melendez
 	 * @param None.
 	 * @return Nothing.
 	 */
-	public void mineNanoMaterials(MySqlQuery sqlQuery) throws Exception {			
+	public void mineNanoToxExps(MySqlQuery sqlQuery) throws Exception {			
 	
 		try	{				  
 			
 			/* Read data from remote MySQL server and store them in a list.  */
-			this.addAll(sqlQuery.getNanoMaterials());
+			this.addAll(sqlQuery.getNanoToxExps());
 			
 			/* Check default units and perform unit conversions if necessary. */
 			DefaultUnits.checkUnits(this);
@@ -90,7 +92,7 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
 			/* read the headers from the csv file */
 			this.setHeader(csvReader.readNext());
 			
-			int[] fieldIndex = NanoMaterial.getFieldIndex(getHeader());
+			int[] fieldIndex = NanoToxExp.getFieldIndex(getHeader());
 			
 			String[] line = null;
 			/* Loop over lines in the csv file */
@@ -99,8 +101,8 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
 				/* Read next row of data */
 //				String[] line = csvReader.readNext();
 				
-				/* convert the data into a new NanoMaterial */
-				this.add(new NanoMaterial(fieldIndex, line));
+				/* convert the data into a new NanoToxExp */
+				this.add(new NanoToxExp(fieldIndex, line));
 	
 			}
 			
@@ -133,10 +135,10 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
 			csvOutput.writeNext(this.getHeader());
 			
 			/* Get header/fieldIndex translation*/
-			int[] fieldIndex = NanoMaterial.getFieldIndex(this.getHeader());
+			int[] fieldIndex = NanoToxExp.getFieldIndex(this.getHeader());
 			
-			/* Loop over list of NanoMaterial objects */
-			for(NanoMaterial nanoM : this) {
+			/* Loop over list of NanoToxExp objects */
+			for(NanoToxExp nanoM : this) {
 				/* Retrieve data as an array of strings and assign array to entries. 
 				 * The array represents one record (row of data). */
 				entries = nanoM.storeDataAsStringArray(fieldIndex);  
@@ -157,11 +159,11 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
 		
 	}
 
-	public NanoMaterials clone() {
+	public NanoToxExps clone() {
 		
-		NanoMaterials clone = null;
+		NanoToxExps clone = null;
 		try {
-			clone = new NanoMaterials();
+			clone = new NanoToxExps();
 			clone.setHeader(this.getHeader());
 			for (int i=0; i<this.size(); i++) {
 				clone.add(this.get(i).clone());
@@ -174,7 +176,7 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
 		return clone;
 	}
 
-	public boolean isSame(NanoMaterials other) throws Exception {
+	public boolean isSame(NanoToxExps other) throws Exception {
 		
 		if (this.getHeader().length != other.getHeader().length) return false;
 		if (this.size() != other.size()) return false;
@@ -199,12 +201,12 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
 	}
 	
 	/**
-	 * This method determines the positional indices of the numeric 
+	 * This method determines the positional indices of the continuous 
 	 * data in the CSV file.
 	 * @author Wilson Melendez & Paul Harten
 	 * @throws Exception 
 	 */
-	public void selectNumericColumns() throws Exception
+	public void selectContinuousColumns() throws Exception
 	{
 		/* Create ArrayLists to store positional indices, minimum, 
 		 * and maximum values of the X and Y matrices. */
@@ -283,8 +285,65 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
          * maximum values of the X columns. */
         descriptorHeader = new String[descriptors.size()];
         descriptorHeader = descriptors.toArray(descriptorHeader);
-        setDescriptorIndex(NanoMaterial.getFieldIndex(descriptorHeader));
+        setDescriptorIndex(NanoToxExp.getFieldIndex(descriptorHeader));
+
+	}
+	
+	/**
+	 * This method determines the positional indices of the category 
+	 * data in the CSV file.
+	 * @author Wilson Melendez & Paul Harten
+	 * @throws Exception 
+	 */
+	public void selectCategoryColumns() throws Exception
+	{
+		/* Create ArrayLists to store positional indices, minimum, 
+		 * and maximum values of the X and Y matrices. */
+		ArrayList<String> descriptors = new ArrayList<String>();
+		
+		/* Store indices of current Descriptor columns */
+		descriptors.add("DataSource");	
+	    descriptors.add("LotNumber");
+		descriptors.add("CoreComp");
+		descriptors.add("ShellComp"); 
+		descriptors.add("FunctionalGroups");  
+		descriptors.add("FunctionalizationProtocol");	
+        descriptors.add("PurityMethod"); 
+        descriptors.add("PurityRefChemical"); 
+        descriptors.add("ContamMethod"); 
+        descriptors.add("CrystalStructure"); 
+        descriptors.add("CrystalStructureMethod");  
+        descriptors.add("SynthesisMethod");  
+        descriptors.add("ParticleOuterDiamUncertain"); 
+        descriptors.add("ParticleOuterDiamMethod");  
+        descriptors.add("ParticleInnerDiamUncertain");        
+        descriptors.add("ParticleInnerDiamMethod");    
+        descriptors.add("ParticleLengthUncertain");      
+        descriptors.add("ParticleLengthMethod");   
+        descriptors.add("ParticleThicknessUncertain"); 
+        descriptors.add("ParticleThicknessMethod"); 
+        descriptors.add("WallNumber");
+        descriptors.add("AspectRatio");
+        descriptors.add("Shape");
+        descriptors.add("SurfaceAreaUncertain"); 
+        descriptors.add("SurfaceAreaMethod");      
         
+        /* Create arrays that will store indices of the X category columns. */
+        categoryDescriptorHeader = new String[descriptors.size()];
+        categoryDescriptorHeader = descriptors.toArray(categoryDescriptorHeader);
+        setCategoryDescriptorIndex(NanoToxExp.getFieldIndex(categoryDescriptorHeader));
+
+	}
+	
+	/**
+	 * This method determines the positional indices of the numeric 
+	 * data in the CSV file.
+	 * @author Wilson Melendez & Paul Harten
+	 * @throws Exception 
+	 */
+	public void selectResultColumns() throws Exception
+	{
+		/* Create ArrayLists to store positional indices of the Y matrix. */
 		ArrayList<String> results = new ArrayList<String>();
 		
         /* Store indices of current Results columns */
@@ -295,7 +354,7 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
          * maximum values of the Y columns. */
         resultHeader = new String[results.size()];
         resultHeader = results.toArray(resultHeader);
-        setResultIndex(NanoMaterial.getFieldIndex(resultHeader));
+        setResultIndex(NanoToxExp.getFieldIndex(resultHeader));
 
 	}
 	
@@ -305,6 +364,14 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
 
 	public void setDescriptorIndex(int[] descriptorIndex) {
 		this.descriptorIndex = descriptorIndex;
+	}
+	
+	public int[] getCategoryDescriptorIndex() {
+		return categoryDescriptorIndex;
+	}
+	
+	public void setCategoryDescriptorIndex(int[] categoryDescriptorIndex) {
+		this.categoryDescriptorIndex = categoryDescriptorIndex;
 	}
 
 	public int[] getResultIndex() {
@@ -325,6 +392,10 @@ public class NanoMaterials extends Vector<NanoMaterial> implements Serializable,
 
 	public String[] getDescriptorHeader() {
 		return descriptorHeader;
+	}
+	
+	public String[] getCategoryDescriptorHeader() {
+		return categoryDescriptorHeader;
 	}
 
 	protected String[] getResultHeader() {

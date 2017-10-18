@@ -10,8 +10,8 @@ import org.junit.Test;
 import datamine.DBUtil;
 import datamine.MySqlQuery;
 import nanoQSAR.DefaultUnits;
-import nanoQSAR.NanoMaterial;
-import nanoQSAR.NanoMaterials;
+import nanoQSAR.NanoToxExp;
+import nanoQSAR.NanoToxExps;
 
 import org.junit.BeforeClass;
 
@@ -24,8 +24,8 @@ public class DefaultUnitsTest {
 	
 	private static Double DELTA = 1.0E-15;
 
-	static NanoMaterial nanoM = null;
-	static NanoMaterials nanoMaterials = null;
+	static NanoToxExp nanoM = null;
+	static NanoToxExps nanoToxExps = null;
 	static int i;  // This is just a dummy index from the  point of this test.
 	
 	@BeforeClass
@@ -35,9 +35,9 @@ public class DefaultUnitsTest {
 		try
 		{
 			String filename = System.getProperty("user.dir") + "\\nanoQSAR.csv";
-			nanoMaterials = new NanoMaterials(filename);		// get all nanomaterials in above CSV file
-			i = (int) (Math.random()*nanoMaterials.size());		// generate a random integer in range [0, size-1]
-			nanoM = nanoMaterials.get(i);						// choose a row randomly	
+			nanoToxExps = new NanoToxExps(filename);		// get all nanomaterials in above CSV file
+			i = (int) (Math.random()*nanoToxExps.size());		// generate a random integer in range [0, size-1]
+			nanoM = nanoToxExps.get(i);						// choose a row randomly	
 		}
 		catch(IOException | GeneralSecurityException ex)
 		{
@@ -56,10 +56,10 @@ public class DefaultUnitsTest {
 
 		try
 		{	
-//			NanoMaterials nanomaterials = new NanoMaterials(new MySqlQuery());
+//			NanoToxExps nanomaterials = new NanoToxExps(new MySqlQuery());
 			String strU;
 			
-			for (NanoMaterial nanoM : nanoMaterials)
+			for (NanoToxExp nanoM : nanoToxExps)
 			{				
 				strU = String.valueOf(nanoM.getCoatingAmountUnit()).trim();
 				if (!strU.equals("ug") && !strU.equals("null") && !strU.equals("mg"))
@@ -258,13 +258,13 @@ public class DefaultUnitsTest {
 	{
 		try
 		{
-//			NanoMaterials nanomaterials = new NanoMaterials(new MySqlQuery());
+//			NanoToxExps nanomaterials = new NanoToxExps(new MySqlQuery());
 			String strU;
 			
 			/* Check default units and perform unit conversions if necessary. */
-			DefaultUnits.checkUnits(nanoMaterials);
+			DefaultUnits.checkUnits(nanoToxExps);
 			
-			for (NanoMaterial nanoM : nanoMaterials)
+			for (NanoToxExp nanoM : nanoToxExps)
 			{				
 				strU = String.valueOf(nanoM.getCoatingAmountUnit()).trim();
 				if (!strU.equals("ug") && !strU.equals("null"))

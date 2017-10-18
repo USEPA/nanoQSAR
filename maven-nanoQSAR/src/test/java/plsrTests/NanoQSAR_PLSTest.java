@@ -25,7 +25,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
-import nanoQSAR.NanoMaterials;
+import nanoQSAR.NanoToxExps;
 import pls_analysis.CsvMatrix;
 import pls_analysis.NanoQSAR_PLS;
 
@@ -84,7 +84,7 @@ public class NanoQSAR_PLSTest {
 			 * readCsvFile method. This will not throw a file-not-found 
 			 * exception since that error is expected*/
 			String filename = "FileDoesNotExist.csv";
-			NanoMaterials nanoMaterials = new NanoMaterials(filename);
+			NanoToxExps nanoToxExps = new NanoToxExps(filename);
 		}
 		catch(FileNotFoundException ex)
 		{

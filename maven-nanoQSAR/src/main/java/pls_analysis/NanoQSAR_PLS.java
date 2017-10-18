@@ -11,8 +11,8 @@ import java.util.logging.Logger;
 
 import org.jblas.DoubleMatrix;
 
-import nanoQSAR.NanoMaterial;
-import nanoQSAR.NanoMaterials;
+import nanoQSAR.NanoToxExp;
+import nanoQSAR.NanoToxExps;
 
 
 /**
@@ -68,19 +68,19 @@ public class NanoQSAR_PLS
 		
 		try
 		{
-			/* create nanoMaterials from filename */
-			NanoMaterials nanoMaterials = new NanoMaterials(filename);
+			/* create nanoToxExps from filename */
+			NanoToxExps nanoToxExps = new NanoToxExps(filename);
 			
-			/* Build X and Y matrices from nanoMaterials. */
-			CsvMatrix csvMatrix = new CsvMatrix(nanoMaterials);
+			/* Build X and Y matrices from nanoToxExps. */
+			CsvMatrix csvMatrix = new CsvMatrix(nanoToxExps);
 			
 			/* Get the X and Y matrices.  Use a single column for 
 			 * the Y matrix. */
 			DoubleMatrix Xorig = csvMatrix.getXmatrix();
 			DoubleMatrix Yorig = csvMatrix.getYmatrix();
 			
-			csvMatrix.setXtesting(Xorig);
-			csvMatrix.setYtesting(Yorig);
+			csvMatrix.setXtraining(Xorig);
+			csvMatrix.setYtraining(Yorig);
 			
 //			Yorig = Yorig.getColumn(0);	// UseViability as the effect variable.
 //			Yorig = Yorig.getColumn(1);	// Use LC50 as the effect variable.
@@ -89,7 +89,23 @@ public class NanoQSAR_PLS
 			DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig,Yorig,true); 
 			
 			/* Get Descriptor Header information */
-			String[] descriptorHeader = nanoMaterials.getDescriptorHeader();
+			String[] descriptorHeader = nanoToxExps.getDescriptorHeader();
+			
+			/* Get CategoryDescriptor Header information */
+			String[] categoryDescriptorHeader = nanoToxExps.getCategoryDescriptorHeader();
+			
+			if (categoryDescriptorHeader!=null) {
+				int i1 = descriptorHeader.length;
+				int i2 = categoryDescriptorHeader.length;
+				String[] header = new String[i1+i2];
+				for (int i=0; i<i1; i++) header[i] = descriptorHeader[i];
+				for (int i=0; i<i2; i++) header[i+i1] = categoryDescriptorHeader[i];
+				descriptorHeader = header;
+			}
+			
+			if (BplsS.rows != descriptorHeader.length+1) {
+				throw new Error("The matrix size is incorrect");
+			}
 			
 			/* Write BPLS* vector to a CSV file. */
 			CsvMatrix.writeBplsStarToCsv(descriptorHeader, BplsS, filename_BPLS);			

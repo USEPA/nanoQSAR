@@ -11,21 +11,21 @@ import java.lang.reflect.InvocationTargetException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import nanoQSAR.NanoMaterial;
+import nanoQSAR.NanoToxExp;
 
 /**
  * @author pharten
  *
  */
-public class NanoMaterialTest {
+public class NanoToxExpTest {
 
 	@Test
 	public void testNanoMaterial() {
 		
 		try {
 
-			NanoMaterial nanoMaterial = new NanoMaterial();
-			Assert.assertNotNull("NanoMaterial Constructer failed", nanoMaterial);
+			NanoToxExp nanoToxExp = new NanoToxExp();
+			Assert.assertNotNull("NanoToxExp Constructer failed", nanoToxExp);
 			
 		} catch (AssertionError e) {
 			
@@ -46,10 +46,10 @@ public class NanoMaterialTest {
 	@Test
 	public void testStoreDataAsStringArray() {
 		String [] entries;
-		NanoMaterial n1=null;
+		NanoToxExp n1=null;
 		
 		try {
-			n1 = new NanoMaterial();
+			n1 = new NanoToxExp();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -81,25 +81,25 @@ public class NanoMaterialTest {
 	@Test
 	public final void testClone() throws Exception {
 		
-		NanoMaterial nanoMaterial = new NanoMaterial();
-		nanoMaterial.setAssayName("cell viability");
-		nanoMaterial.setCellType("ARPE-19");
-		nanoMaterial.setOrdMaterialID("TiO2-ACROS-21358");
-		nanoMaterial.setSampleName("TiO2-I-142-NONE-0");
-		nanoMaterial.setParticleConcentration(0.0);
-		nanoMaterial.setParticleExposDuration(48.0);
-		nanoMaterial.setLc50(4.5);
+		NanoToxExp nanoToxExp = new NanoToxExp();
+		nanoToxExp.setAssayName("cell viability");
+		nanoToxExp.setCellType("ARPE-19");
+		nanoToxExp.setOrdMaterialID("TiO2-ACROS-21358");
+		nanoToxExp.setSampleName("TiO2-I-142-NONE-0");
+		nanoToxExp.setParticleConcentration(0.0);
+		nanoToxExp.setParticleExposDuration(48.0);
+		nanoToxExp.setLc50(4.5);
 		
-		NanoMaterial clone = nanoMaterial.clone();
+		NanoToxExp clone = nanoToxExp.clone();
 		
-		Assert.assertNotNull("NanoMaterial clone is null", clone);
-		Assert.assertNotSame("NanoMaterial clone is same object", nanoMaterial, clone);
+		Assert.assertNotNull("NanoToxExp clone is null", clone);
+		Assert.assertNotSame("NanoToxExp clone is same object", nanoToxExp, clone);
 		
 		/* execute AssertEquals() on each property of nanomaterial and clone */
-		final BeanInfo beanInfo = Introspector.getBeanInfo(nanoMaterial.getClass());
+		final BeanInfo beanInfo = Introspector.getBeanInfo(nanoToxExp.getClass());
         final PropertyDescriptor[] properties = beanInfo.getPropertyDescriptors();
         for (PropertyDescriptor property : properties) {
-    		Object v1 = property.getReadMethod().invoke(nanoMaterial, (Object[])null);
+    		Object v1 = property.getReadMethod().invoke(nanoToxExp, (Object[])null);
     		Object v2 = property.getReadMethod().invoke(clone, (Object[])null);
     		Assert.assertEquals(property.getDisplayName()+" not equal: ", v1, v2);
         }

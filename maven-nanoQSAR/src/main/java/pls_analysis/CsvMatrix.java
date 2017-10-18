@@ -24,8 +24,8 @@ import org.jblas.Solve;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
-import nanoQSAR.NanoMaterial;
-import nanoQSAR.NanoMaterials;
+import nanoQSAR.NanoToxExp;
+import nanoQSAR.NanoToxExps;
 
 /**
  * @author Wilson Melendez
@@ -33,7 +33,6 @@ import nanoQSAR.NanoMaterials;
  */
 public class CsvMatrix
 {
-	private static NanoMaterials nanoMaterials;
 	private static int xcolumns;
 	private static int ycolumns;
 	private static int rowsSize;
@@ -95,20 +94,15 @@ public class CsvMatrix
 		super();
 	}
 	
-	public CsvMatrix(NanoMaterials nanoMaterials) throws Exception {
+	public CsvMatrix(NanoToxExps nanoToxExps) throws Exception {
 		super();
 		
-		this.nanoMaterials = nanoMaterials;
-		nanoMaterials.selectNumericColumns();
-		rowsSize = nanoMaterials.size();
-		header = nanoMaterials.getHeader();
-		jcX = nanoMaterials.getDescriptorIndex();
-		jcY = nanoMaterials.getResultIndex();
-		xcolumns = jcX.length;
-		ycolumns = jcY.length;
+		nanoToxExps.selectContinuousColumns();
+		nanoToxExps.selectCategoryColumns();  // leave this in to use category descriptors
+		nanoToxExps.selectResultColumns();
 
 		/* build Matrices from experimental data */
-		buildMatrices();
+		buildMatrices(nanoToxExps);
 		
 		/* get rid of NaN elements */
 		resizeMatrices();
@@ -516,45 +510,92 @@ public class CsvMatrix
 	 * @author Paul Harten
 	 * @throws Exception 
 	 */
-	public void buildMatrices() throws Exception
-	{		
+	public void buildMatrices(NanoToxExps nanoToxExps) throws Exception
+	{
+		
+		int rowsSize = nanoToxExps.size();
+		int[] jcX = nanoToxExps.getDescriptorIndex();
+		int[] jcX2 = nanoToxExps.getCategoryDescriptorIndex();
+		int[] jcY = nanoToxExps.getResultIndex();
+		int xcolumns = jcX.length;
+		if (jcX2!=null) xcolumns += jcX2.length;
+		int ycolumns = jcY.length;
+		
+		DoubleMatrix xRow = new DoubleMatrix(1, xcolumns);
+		DoubleMatrix yRow = new DoubleMatrix(1, ycolumns);
 
 		xMatrix = new DoubleMatrix(rowsSize, xcolumns);   // full descriptor matrix
 		yMatrix = new DoubleMatrix(rowsSize, ycolumns);   // full result matrix
 		
-		Field[] fields = NanoMaterial.class.getDeclaredFields();
+		Field[] fields = NanoToxExp.class.getDeclaredFields();
 		for (Field field: fields) field.setAccessible(true);
 		
-		
 		/* Check whether data has any null values. */
-		for (int i=0; i<nanoMaterials.size(); i++) {
+		for (int i=0; i<nanoToxExps.size(); i++) {
 			
-			NanoMaterial nanoMaterial = nanoMaterials.get(i);
+			NanoToxExp nanoToxExp = nanoToxExps.get(i);
 			
-			for (int j=0; j<jcX.length; j++) {
-				Field field = fields[jcX[j]];
-				Object v1 = field.get(nanoMaterial);
-				if (v1!=null) {
-					double value = ((Double)v1).doubleValue();
-					xMatrix.put(i,j,value);
-				} else {
-					xMatrix.put(i,j,Double.NaN);
-				}
-			}
+			xRow.fill(0);
+			buildContinuousColumns(nanoToxExp, fields, xRow, 0, jcX);
+			buildCategoryColumns(nanoToxExp, fields, xRow, jcX.length, jcX2);
+			xMatrix.putRow(i, xRow);
 			
-			for (int j=0; j<jcY.length; j++) {
-				Field field = fields[jcY[j]];
-				Object v1 = field.get(nanoMaterial);
-				if (v1!=null) {
-					double value = ((Double)v1).doubleValue();
-					yMatrix.put(i,j,value);
-				} else {
-					yMatrix.put(i,j,Double.NaN);
-				}
-			}
+			yRow.fill(0);
+			buildContinuousColumns(nanoToxExp, fields, yRow, 0, jcY);
+			yMatrix.putRow(i, yRow);
 			
 		}
 		
+	}
+
+	public void buildContinuousColumns(NanoToxExp nanoToxExp, Field[] fields, DoubleMatrix xRow, int offset, int[] index) throws IllegalAccessException {
+		
+		/* For the continuous columns with null values put in NaN, */
+		/* otherwise put in double value.                          */
+		for (int j=0; j<index.length; j++) {
+			Field field = fields[index[j]];
+			Object v1 = field.get(nanoToxExp);
+			if (v1!=null) {
+				double value = ((Double)v1).doubleValue();
+				xRow.put(0,j+offset,value);
+			} else {
+				xRow.put(0,j+offset,Double.NaN);
+			}
+		}
+		
+	}
+	
+	public void buildCategoryColumns(NanoToxExp nanoToxExp, Field[] fields, DoubleMatrix xRow, int offset, int[] index) throws IllegalAccessException {
+		
+		/* For the category columns with null values put in 0, */
+		/* and start building integer table for each column.   */
+		
+		if (index==null) return;
+		
+		for (int j=0; j<index.length; j++) {
+			Field field = fields[index[j]];
+			Object v1 = field.get(nanoToxExp);
+			xRow.put(0,j+offset,getCatVal(v1));
+		}
+		
+	}
+
+	private double getCatVal(Object v1) {
+		
+		if (v1==null) return 0.0;  // assign category value of zero when missing data;
+		
+		CharSequence s1 = (CharSequence)((String)v1);
+		
+//		return (double)(s1.hashCode());
+		
+		double sum = 0.0;
+		while (s1.length()>4) {
+			sum += s1.subSequence(0, 3).hashCode();
+			s1 = s1.subSequence(4, s1.length());
+		}  
+		sum += s1.hashCode();
+		
+		return sum;
 	}
 	
 	/**
@@ -565,7 +606,10 @@ public class CsvMatrix
 	 * @throws Exception 
 	 */
 	public static void resizeMatrices() throws Exception
-	{		
+	{
+		int rowsSize = xMatrix.rows;
+		int xcolumns = xMatrix.columns;
+		int ycolumns = yMatrix.columns;
 
 		Xmatrix = new DoubleMatrix(0, xcolumns);   // X matrix
 		Ymatrix = new DoubleMatrix(0, ycolumns);   // Y matrix
@@ -1133,13 +1177,13 @@ public class CsvMatrix
 			
 			if (testForOverfitting) { // calculate cross-validation effects
 				if (numDeflations==0) {
-					press0 = sumOfSquares(Ytesting);
+					press0 = sumOfSquares(Ytraining);
 				} else {
 					List<Double> bValuesTrial = new ArrayList(bValues);
 					bValuesTrial.add(b);
 					DoubleMatrix pTrial = DoubleMatrix.concatHorizontally(Pmatrix, p);
 					DoubleMatrix cTrial = DoubleMatrix.concatHorizontally(Cmatrix, c);
-					press = calculatePredictedResidual(bValuesTrial, Xtesting, Ytesting, pTrial, cTrial);
+					press = calculatePredictedResidual(bValuesTrial, Xtraining, Ytraining, pTrial, cTrial);
 					if (press > press0) break;
 					press0 = press;
 				}
@@ -1459,6 +1503,14 @@ public class CsvMatrix
 			System.out.printf("%11.6f ", Ymatrix.get(i)); 	
 			System.out.println();
 		 }
+	}
+
+	public void setXtraining(DoubleMatrix xTraining) {
+		Xtraining = xTraining;
+	}
+
+	public void setYtraining(DoubleMatrix yTraining) {
+		Ytraining = yTraining;
 	}
 
 	public void setXtesting(DoubleMatrix xtesting) {
