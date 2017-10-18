@@ -24,8 +24,8 @@ import org.jblas.Solve;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
-import nanoQSAR.NanoMaterial;
-import nanoQSAR.NanoMaterials;
+import nanoQSAR.NanoToxExp;
+import nanoQSAR.NanoToxExps;
 
 /**
  * @author Wilson Melendez
@@ -94,15 +94,15 @@ public class CsvMatrix
 		super();
 	}
 	
-	public CsvMatrix(NanoMaterials nanoMaterials) throws Exception {
+	public CsvMatrix(NanoToxExps nanoToxExps) throws Exception {
 		super();
 		
-		nanoMaterials.selectContinuousColumns();
-		nanoMaterials.selectCategoryColumns();  // leave this in to use category descriptors
-		nanoMaterials.selectResultColumns();
+		nanoToxExps.selectContinuousColumns();
+		nanoToxExps.selectCategoryColumns();  // leave this in to use category descriptors
+		nanoToxExps.selectResultColumns();
 
 		/* build Matrices from experimental data */
-		buildMatrices(nanoMaterials);
+		buildMatrices(nanoToxExps);
 		
 		/* get rid of NaN elements */
 		resizeMatrices();
@@ -510,13 +510,13 @@ public class CsvMatrix
 	 * @author Paul Harten
 	 * @throws Exception 
 	 */
-	public void buildMatrices(NanoMaterials nanoMaterials) throws Exception
+	public void buildMatrices(NanoToxExps nanoToxExps) throws Exception
 	{
 		
-		int rowsSize = nanoMaterials.size();
-		int[] jcX = nanoMaterials.getDescriptorIndex();
-		int[] jcX2 = nanoMaterials.getCategoryDescriptorIndex();
-		int[] jcY = nanoMaterials.getResultIndex();
+		int rowsSize = nanoToxExps.size();
+		int[] jcX = nanoToxExps.getDescriptorIndex();
+		int[] jcX2 = nanoToxExps.getCategoryDescriptorIndex();
+		int[] jcY = nanoToxExps.getResultIndex();
 		int xcolumns = jcX.length;
 		if (jcX2!=null) xcolumns += jcX2.length;
 		int ycolumns = jcY.length;
@@ -527,34 +527,34 @@ public class CsvMatrix
 		xMatrix = new DoubleMatrix(rowsSize, xcolumns);   // full descriptor matrix
 		yMatrix = new DoubleMatrix(rowsSize, ycolumns);   // full result matrix
 		
-		Field[] fields = NanoMaterial.class.getDeclaredFields();
+		Field[] fields = NanoToxExp.class.getDeclaredFields();
 		for (Field field: fields) field.setAccessible(true);
 		
 		/* Check whether data has any null values. */
-		for (int i=0; i<nanoMaterials.size(); i++) {
+		for (int i=0; i<nanoToxExps.size(); i++) {
 			
-			NanoMaterial nanoMaterial = nanoMaterials.get(i);
+			NanoToxExp nanoToxExp = nanoToxExps.get(i);
 			
 			xRow.fill(0);
-			buildContinuousColumns(nanoMaterial, fields, xRow, 0, jcX);
-			buildCategoryColumns(nanoMaterial, fields, xRow, jcX.length, jcX2);
+			buildContinuousColumns(nanoToxExp, fields, xRow, 0, jcX);
+			buildCategoryColumns(nanoToxExp, fields, xRow, jcX.length, jcX2);
 			xMatrix.putRow(i, xRow);
 			
 			yRow.fill(0);
-			buildContinuousColumns(nanoMaterial, fields, yRow, 0, jcY);
+			buildContinuousColumns(nanoToxExp, fields, yRow, 0, jcY);
 			yMatrix.putRow(i, yRow);
 			
 		}
 		
 	}
 
-	public void buildContinuousColumns(NanoMaterial nanoMaterial, Field[] fields, DoubleMatrix xRow, int offset, int[] index) throws IllegalAccessException {
+	public void buildContinuousColumns(NanoToxExp nanoToxExp, Field[] fields, DoubleMatrix xRow, int offset, int[] index) throws IllegalAccessException {
 		
 		/* For the continuous columns with null values put in NaN, */
 		/* otherwise put in double value.                          */
 		for (int j=0; j<index.length; j++) {
 			Field field = fields[index[j]];
-			Object v1 = field.get(nanoMaterial);
+			Object v1 = field.get(nanoToxExp);
 			if (v1!=null) {
 				double value = ((Double)v1).doubleValue();
 				xRow.put(0,j+offset,value);
@@ -565,7 +565,7 @@ public class CsvMatrix
 		
 	}
 	
-	public void buildCategoryColumns(NanoMaterial nanoMaterial, Field[] fields, DoubleMatrix xRow, int offset, int[] index) throws IllegalAccessException {
+	public void buildCategoryColumns(NanoToxExp nanoToxExp, Field[] fields, DoubleMatrix xRow, int offset, int[] index) throws IllegalAccessException {
 		
 		/* For the category columns with null values put in 0, */
 		/* and start building integer table for each column.   */
@@ -574,7 +574,7 @@ public class CsvMatrix
 		
 		for (int j=0; j<index.length; j++) {
 			Field field = fields[index[j]];
-			Object v1 = field.get(nanoMaterial);
+			Object v1 = field.get(nanoToxExp);
 			xRow.put(0,j+offset,getCatVal(v1));
 		}
 		
