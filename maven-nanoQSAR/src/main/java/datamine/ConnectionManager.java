@@ -3,6 +3,7 @@ package datamine;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,7 +53,16 @@ public class ConnectionManager
 	public static Connection createConnection() throws SQLException
 	{
 
-		return DriverManager.getConnection(DBUtil.getDatabaseUrl(), DBUtil.getUsername(), DBUtil.getPassword());
+//		String info = DBUtil.getDatabaseUrl()+"?user="+DBUtil.getUsername()+"&password="+DBUtil.getPassword()+"&key="+DBUtil.getPasswordKey()+"&useSSL=false";
+//		return DriverManager.getConnection(info);
+		
+		Properties info = new Properties();
+		info.put("user", DBUtil.getUsername());
+		info.put("password", DBUtil.getPassword());
+		info.put("useSSL", "false");
+		return DriverManager.getConnection(DBUtil.getDatabaseUrl(), info);
+
+//		return DriverManager.getConnection(DBUtil.getDatabaseUrl(), DBUtil.getUsername(), DBUtil.getPassword());
 
 	}
 
@@ -87,8 +97,9 @@ public class ConnectionManager
 		
 		try	{
 			
-			ConnectionManager.getDriver();		
-			Connection conn = DriverManager.getConnection(DBUtil.getDatabaseUrl(), DBUtil.getUsername(), DBUtil.getPassword());
+//			ConnectionManager.getDriver();
+//			Connection conn = DriverManager.getConnection(DBUtil.getDatabaseUrl(), DBUtil.getUsername(), DBUtil.getPassword());
+			if (createConnection()==null) return false;
 			
 		} catch(CommunicationsException ex) {
 			
