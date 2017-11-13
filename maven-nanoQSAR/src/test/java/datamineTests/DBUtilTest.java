@@ -3,9 +3,11 @@ package datamineTests;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Properties;
 import java.util.logging.Level;
 
 import org.junit.Test;
@@ -15,41 +17,65 @@ import junit.framework.Assert;
 
 public class DBUtilTest {
 	
-	String filename = System.getProperty("user.dir") + "\\nanoQSAR.properties2";
+	String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
+	String keyFilename = System.getProperty("user.dir") + "\\nanoQSAR.key";
+	String propFilename2 = System.getProperty("user.dir") + "\\nanoQSAR.properties2";
+	String keyFilename2 = System.getProperty("user.dir") + "\\nanoQSAR.key2";
 	
 	/* default file values */
-	String csvFileName  = "nanoQSAR.csv";
-	String databaseURL = "jdbc:mysql://au.epa.gov:3306/dev_naknowbase_v1";
+	String CsvFileName  = "nanoQSAR.csv";
+	String databaseURL = "jdbc:mysql://mysql-res1.epa.gov:3306/dev_naknowbase_v1";
 	String DriverName = "com.mysql.jdbc.Driver";
 	String Username = "app_naknowbase";
-	String Password = "CFC5350886746A0B4B09F0AE27E86DDE19437790E4FCDDF7C72444536FFA77AA";
+	String Password = "AABE19899036AE8D8C349434FC44B0AB814019C1BBEE8C8D5BAFA84A4C8FAC54";
 	String OriginalPassword = "OriginalPassword";
-	String Key = "38A4AAABA01D0662F19CF52000852BF9";
+	String Key = "9D9AAB428E9FAD22D9DBEF323F7AACD0";
+	
+	@Test
+	public final void testStoreAndLoadProperties() {
+		
+		try {
+
+			Properties p1 = new Properties();
+			p1.put("CsvFileName", CsvFileName);
+			p1.put("databaseURL", databaseURL);
+			p1.put("DriverName", DriverName);
+			p1.put("Username", Username);
+			String encryptedPassword = DBUtil.encrypt(OriginalPassword, new File(keyFilename2));
+			p1.put("Password", encryptedPassword);
+			p1.store(new FileWriter(propFilename2), "");
+			
+			Properties p2 = new Properties();
+			
+			p2.load(new FileReader(propFilename2));
+			encryptedPassword = p2.getProperty("Password");
+			Assert.assertEquals(OriginalPassword, DBUtil.decrypt(encryptedPassword,  new File(keyFilename2)));
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (GeneralSecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 	
 	@Test
 	public final void testLoadProperties() {
 		
 		try {
 			
-
-			FileWriter out = new FileWriter(new File(filename));
+			DBUtil.loadProperties(propFilename, keyFilename);
 			
-			out.write("CsvFileName = "+csvFileName+"\n");
-			out.write("databaseURL = "+databaseURL+"\n");
-			out.write("DriverName = "+DriverName+"\n");
-			out.write("Username = "+Username+"\n");
-			out.write("Password = "+Password+"\n");
-			out.write("Key = "+Key+"\n");
-			out.close();
-			
-			DBUtil.loadProperties(filename);
-			
-			Assert.assertEquals(csvFileName, DBUtil.getCsvFileName());
+			Assert.assertEquals(CsvFileName, DBUtil.getCsvFileName());
 			Assert.assertEquals(databaseURL, DBUtil.getDatabaseUrl());
 			Assert.assertEquals(DriverName, DBUtil.getDriverName());
 			Assert.assertEquals(Username, DBUtil.getUsername());
-			Assert.assertEquals(OriginalPassword, DBUtil.getPassword());
-			Assert.assertEquals(Key, DBUtil.getPasswordKey());
+			String message = DBUtil.getPassword();
+			Assert.assertEquals(Password, message);
+			message = DBUtil.getPasswordKey();
+			Assert.assertEquals(Key, message);
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -62,26 +88,19 @@ public class DBUtilTest {
 	}
 
 	@Test
-	public final void testHexStringToByteArray() {
+	public final void testHexStringToByteArrayandBack() {
 		
 		try {
 			String test = "abcdeABCDE123456";
 			
-			byte[] convert = DBUtil.hexStringToByteArray(test);
+			byte[] b = DBUtil.hexStringToByteArray(test);
 			
-	        byte[] b = new byte[test.length() / 2];
-	        for (int i = 0; i < b.length; i++) 
-	        {
-	            int index = i * 2;
-	            int v = Integer.parseInt(test.substring(index, index + 2), 16);
-	            b[i] = (byte) v;
-	        }
+	        String test2 = DBUtil.byteArrayToHexString(b);
 	        
-	        Assert.assertEquals(convert.length, b.length); 
-	        for (int i=0; i<b.length; i++) {
-	        	Assert.assertEquals(convert[i], b[i]);
-	        }    
-			
+	        Assert.assertEquals(test.length(), test2.length());
+	        
+	        Assert.assertEquals(test.toUpperCase(), test2); 
+
 		} catch (Exception e) {
 			
 			e.printStackTrace();
@@ -95,8 +114,9 @@ public class DBUtilTest {
 		         
         try {
         	
-        	DBUtil.loadProperties(filename);
-        	Assert.assertEquals(OriginalPassword, DBUtil.getPassword());
+        	DBUtil.loadProperties(propFilename2, keyFilename2);
+        	String decrypted = DBUtil.decrypt(DBUtil.getPassword(), new File(keyFilename2));
+        	Assert.assertEquals(OriginalPassword, decrypted);
 
 		} catch (Exception e) {
 			

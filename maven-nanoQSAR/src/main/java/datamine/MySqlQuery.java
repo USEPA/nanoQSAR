@@ -229,6 +229,9 @@ public class MySqlQuery
 		
 		try
 		{
+			/* Input database connection information and name of output file. */
+			DBUtil.loadProperties(DBUtil.propFilename, DBUtil.keyFilename);
+			
 			/* Get the connection to the database. */
 			conn = ConnectionManager.getConnection();
 			

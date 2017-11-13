@@ -1,5 +1,8 @@
 package datamine;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -49,8 +52,10 @@ public class ConnectionManager
 	 * @author Wilson Melendez
 	 * @return  Connection
 	 * @throws SQLException
+	 * @throws IOException 
+	 * @throws GeneralSecurityException 
 	 */
-	public static Connection createConnection() throws SQLException
+	public static Connection createConnection() throws SQLException, GeneralSecurityException, IOException
 	{
 
 //		String info = DBUtil.getDatabaseUrl()+"?user="+DBUtil.getUsername()+"&password="+DBUtil.getPassword()+"&key="+DBUtil.getPasswordKey()+"&useSSL=false";
@@ -58,7 +63,7 @@ public class ConnectionManager
 		
 		Properties info = new Properties();
 		info.put("user", DBUtil.getUsername());
-		info.put("password", DBUtil.getPassword());
+		info.put("password", DBUtil.decrypt(DBUtil.getPassword(), new File(DBUtil.keyFilename)));
 		info.put("useSSL", "false");
 		return DriverManager.getConnection(DBUtil.getDatabaseUrl(), info);
 
@@ -74,8 +79,10 @@ public class ConnectionManager
 	 * @return  Connection
 	 * @throws ClassNotFoundException  It is thrown if not driver could be found.
 	 * @throws SQLException  It is thrown whenever a connection to the server fails.
+	 * @throws IOException 
+	 * @throws GeneralSecurityException 
 	 */
-	public static Connection getConnection() throws SQLException, ClassNotFoundException
+	public static Connection getConnection() throws SQLException, ClassNotFoundException, GeneralSecurityException, IOException
 	{	
 			
 		ConnectionManager.getDriver();		
@@ -91,8 +98,10 @@ public class ConnectionManager
 	 * @return  Connection
 	 * @throws ClassNotFoundException  It is thrown if not driver could be found.
 	 * @throws SQLException  It is thrown whenever a connection to the server fails.
+	 * @throws IOException 
+	 * @throws GeneralSecurityException 
 	 */
-	public static Boolean testConnection() throws SQLException, ClassNotFoundException
+	public static Boolean testConnection() throws SQLException, ClassNotFoundException, GeneralSecurityException, IOException
 	{	
 		
 		try	{
