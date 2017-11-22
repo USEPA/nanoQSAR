@@ -28,8 +28,9 @@ public class ConnectionManagerTest {
 	{
 		try
 		{
-			String filename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
-			DBUtil.loadProperties(filename);
+			String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
+			String keyFilename = System.getProperty("user.dir") + "\\nanoQSAR.key";
+			DBUtil.loadProperties(propFilename, keyFilename);
 		}
 		catch(GeneralSecurityException ex)
 		{
@@ -57,14 +58,20 @@ public class ConnectionManagerTest {
 	/**
 	 * This method checks whether a connection was created or not.
 	 * @author Wilson Melendez
+	 * @throws IOException 
+	 * @throws GeneralSecurityException 
 	 */
 	@Test
-	public void testCreateConnection() {
+	public void testCreateConnection() throws GeneralSecurityException, IOException {
 		try
 		{		
 			conn = ConnectionManager.createConnection();		
 		}
 		catch(SQLException ex)
+		{
+			Assert.assertNotNull(ex.getMessage(), conn);
+		}
+		catch(IOException ex)
 		{
 			Assert.assertNotNull(ex.getMessage(), conn);
 		}
@@ -86,9 +93,11 @@ public class ConnectionManagerTest {
 	
 	/**
 	 * @author Wilson Melendez
+	 * @throws IOException 
+	 * @throws GeneralSecurityException 
 	 */
 	@Test
-	public void testGetConnection() {
+	public void testGetConnection() throws GeneralSecurityException, IOException {
 		try
 		{
 			conn = ConnectionManager.getConnection();

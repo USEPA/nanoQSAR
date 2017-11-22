@@ -23,6 +23,7 @@ public class NanoQSAR {
 
 	/* Default filenames */
 	static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
+	static String keyFilename = System.getProperty("user.dir") + "\\nanoQSAR.key";
 	static String csvFilename = System.getProperty("user.dir") + "\\nanoQSAR.csv";
 	static String plsFilename = System.getProperty("user.dir") + "\\nanoQSAR_pls.csv";
 	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR.log";
@@ -69,7 +70,7 @@ public class NanoQSAR {
 //			LoggerInfo.init();
 
 			/* Input database connection information and name of output file. */
-			DBUtil.loadProperties(propFilename);	
+			DBUtil.loadProperties(propFilename, keyFilename);	
 			
 			NanoToxExps nanoToxExps = null;
 			

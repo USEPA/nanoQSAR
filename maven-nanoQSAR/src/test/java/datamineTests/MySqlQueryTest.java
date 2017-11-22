@@ -186,17 +186,6 @@ public class MySqlQueryTest {
 			"ViabilityLow", "ViabilityHigh", "ViabilityMethod", "LC50", 
 			"LC50ApproxSymbol", "LC50Unit"
 	};
-	
-	static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
-	
-	@BeforeClass
-	public static void setUp() throws IOException, GeneralSecurityException
-	{
-		/* Input database connection information and name of output file. */
-		String filename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
-		DBUtil.loadProperties(filename);
-	}
-
 
 	/**
 	 * Test method for {@link MySqlQuery#getSqlQuery()}.
