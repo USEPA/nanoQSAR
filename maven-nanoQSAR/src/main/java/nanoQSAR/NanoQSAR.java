@@ -81,7 +81,7 @@ public class NanoQSAR {
 				/* write data to CSV file. */
 				nanoToxExps.writeCsvFile(DBUtil.getCsvFileName());
 				
-			} else { /* Connectio to database is not avaialable */
+			} else { /* Connection to database is not avaialable */
 				
 				/* Get data from CSV file */
 				nanoToxExps = new NanoToxExps(DBUtil.getCsvFileName());

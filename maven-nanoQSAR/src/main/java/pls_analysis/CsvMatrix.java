@@ -98,7 +98,7 @@ public class CsvMatrix
 		super();
 		
 		nanoToxExps.selectContinuousColumns();
-		nanoToxExps.selectCategoryColumns();  // leave this in to use category descriptors
+		// nanoToxExps.selectCategoryColumns();  // leave this in to use category descriptors
 		nanoToxExps.selectResultColumns();
 
 		/* build Matrices from experimental data */
@@ -196,6 +196,22 @@ public class CsvMatrix
 	public static int getYcolumns() {
 		return ycolumns;
 	}
+
+	/**
+	 * @return the xMatrix
+	 */
+	public static DoubleMatrix getxMatrix() {
+		return xMatrix;
+	}
+	
+
+	/**
+	 * @return the yMatrix
+	 */
+	public static DoubleMatrix getyMatrix() {
+		return yMatrix;
+	}
+
 
 	/**
 	 * @return the rowsSize
@@ -518,7 +534,7 @@ public class CsvMatrix
 		int[] jcX2 = nanoToxExps.getCategoryDescriptorIndex();
 		int[] jcY = nanoToxExps.getResultIndex();
 		int xcolumns = jcX.length;
-		if (jcX2!=null) xcolumns += jcX2.length;
+		if (jcX2 != null) xcolumns += jcX2.length;
 		int ycolumns = jcY.length;
 		
 		DoubleMatrix xRow = new DoubleMatrix(1, xcolumns);
@@ -531,7 +547,7 @@ public class CsvMatrix
 		for (Field field: fields) field.setAccessible(true);
 		
 		/* Check whether data has any null values. */
-		for (int i=0; i<nanoToxExps.size(); i++) {
+		for (int i = 0; i < nanoToxExps.size(); i++) {
 			
 			NanoToxExp nanoToxExp = nanoToxExps.get(i);
 			
