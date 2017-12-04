@@ -34,6 +34,29 @@ public class PredictorsBetaMatrices {
 	
 	/* Need this line to allow logging of error messages */
 	private final static Logger LOGGER = Logger.getLogger("nanoQSAR_TEST");
+	
+	
+	/**
+	 * @return the resultsMatrix
+	 */
+	public DoubleMatrix getResultsMatrix() {
+		return resultsMatrix;
+	}
+
+	/**
+	 * @param testHeader the testHeader to set
+	 */
+	public void setTestHeader(String[] testHeader) {
+		this.testHeader = testHeader;
+	}
+
+	/**
+	 * @param resultsMatrix the resultsMatrix to set
+	 */
+	public void setResultsMatrix(DoubleMatrix resultsMatrix) {
+		this.resultsMatrix = resultsMatrix;
+	}
+
 	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR_TEST.log";
 	
 	/**
@@ -78,11 +101,20 @@ public class PredictorsBetaMatrices {
 		this.testXmatrix = xTestMatrix;
 	}
 
+	/**
+	 * This method makes a copy of an existing file.
+	 * @param source
+	 * @param dest
+	 * @throws IOException
+	 */
 	public void copyFiles(File source, File dest) throws IOException
 	{
 		Files.copy(source.toPath(), dest.toPath(),StandardCopyOption.REPLACE_EXISTING);
 	}
 
+	/**
+	 * This method replaces nulls with averages or zeroes.
+	 */
 	public void replaceNullsXmatrix()
 	{
 		int xcolumns = testXmatrix.columns;
@@ -119,6 +151,13 @@ public class PredictorsBetaMatrices {
 		
 	}
 	
+	/**
+	 * This method reads a CSV file.  In this case, it will read a CSV that contains the beta coefficients.
+	 * @param filename
+	 * @param xcol
+	 * @param ycol
+	 * @throws Exception
+	 */
 	public void readCsvFile(String filename, int xcol, int ycol) throws Exception
 	{
         CSVReader csvReader = null;
@@ -160,13 +199,18 @@ public class PredictorsBetaMatrices {
 		}
 	}
 	
-	public void verifyOrderHeaders(DoubleMatrix bMatrix, String[] xHeader, String[] bHeader)
+	/**
+	 * This method compares the headers of the X and beta-coefficients matrices.
+	 * If a mismatch is found between these headers, an exception will be thrown.
+	 * @param xHeader
+	 * @param bHeader
+	 * @throws Exception
+	 */
+	public void verifyOrderHeaders(String[] xHeader, String[] bHeader) throws Exception
 	{
 		boolean noMatch = false;
 		int xlen = xHeader.length;
-		int blen = bHeader.length;
-		DoubleMatrix temp = new DoubleMatrix(bMatrix.rows, bMatrix.columns);
-		
+				
 		for (int i = 0; i < xlen; i++)
 		{
 			if (!xHeader[i].equalsIgnoreCase(bHeader[i + 1]))
@@ -175,29 +219,19 @@ public class PredictorsBetaMatrices {
 			}
 		}
 		
-		if (noMatch == true)
+		if (noMatch == true) 
 		{
-			for (int j = 0; j < xlen; j++)
-			{
-				for (int i = 1; i < blen; i++)
-				{
-					if (xHeader[j].equalsIgnoreCase(bHeader[i]))
-					{
-						for (int icol = 0; icol < bMatrix.columns; icol++)
-						{
-							temp.put(j, icol, bMatrix.get(i, icol));
-						}
-					}
-				}
-				
-			}
-			
-			bMatrix.copy(temp);
+			throw new Exception("Headers of X and Beta matrices do not match.");
 		}
+		
 		
 	}
 	
-	
+	/**
+	 * This method builds the header that will be used for the output file.
+	 * @param xmatrixH
+	 * @param ymatrixH
+	 */
 	public void buildTestHeader(String[] xmatrixH, String[] ymatrixH)
 	{
 		ArrayList<String> list = new ArrayList<String>();
@@ -222,12 +256,22 @@ public class PredictorsBetaMatrices {
 		this.testHeader = list.toArray(testHeader);
 	}
 	
+	/**
+	 * This method concatenates several matrices into a single matrix.
+	 * @param xMatrix
+	 * @param yMatrix
+	 * @param predictions
+	 */
 	public void buildResultsMatrix(DoubleMatrix xMatrix, DoubleMatrix yMatrix, DoubleMatrix predictions)
 	{
 		DoubleMatrix temp = DoubleMatrix.concatHorizontally(xMatrix, yMatrix);
 		this.resultsMatrix = DoubleMatrix.concatHorizontally(temp, predictions);
 	}
 	
+	/**
+	 * This method writes the results to a CSV file.
+	 * @param filename
+	 */
 	public void writeResultsToCsv(String filename)
 	{
 		String[] entries = new String[this.resultsMatrix.columns];
