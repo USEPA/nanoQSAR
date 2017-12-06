@@ -269,6 +269,62 @@ public class PredictorsBetaMatrices {
 	}
 	
 	/**
+	 * This method calculates R2 using observed and predicted Y values.
+	 * @param yobs
+	 * @param ypred
+	 * @return
+	 */
+	public double[] calculateR2(DoubleMatrix yobs, DoubleMatrix ypred)
+	{
+		DoubleMatrix yobsMatrix = new DoubleMatrix(0, yobs.columns);
+		DoubleMatrix ypredMatrix = new DoubleMatrix(0, yobs.columns);
+		DoubleMatrix yObsrow, yPredrow;
+	
+		// Loop over the rows of the Y matrix with the observed values and choose only rows with experimental results.
+		// Build observed and predicted Y matrices with the rows corresponding to experimental results.
+		for (int i = 0; i < yobs.rows; i++)
+		{			
+			boolean nonNumberFound = false;
+			yObsrow = yobs.getRow(i);
+			yPredrow = ypred.getRow(i);
+			for (int j = 0; j < yobs.columns; j++)
+			{
+				if (Double.isNaN(yObsrow.get(j))) 
+				{
+					nonNumberFound = true;
+					break;
+				}
+			}
+			
+			if (!nonNumberFound)
+			{
+				yobsMatrix = DoubleMatrix.concatVertically(yobsMatrix, yObsrow);
+				ypredMatrix = DoubleMatrix.concatVertically(ypredMatrix, yPredrow);
+			}
+		}
+		
+		DoubleMatrix Ydiff = null;
+		double[] r2 = new double[yobsMatrix.columns];
+		
+		/* Calculate R2 = 1.0 - ||Yobs-Ypred||^2 / ||Yobs-Ymean||^2 for each column */
+		DoubleMatrix yDiffMean = yobsMatrix.subRowVector(yobsMatrix.columnMeans());
+		DoubleMatrix yDiffPred = yobsMatrix.sub(ypredMatrix);
+		
+		for (int jcol = 0; jcol < yobsMatrix.columns; jcol++) 
+		{			
+			Ydiff = yDiffMean.getColumn(jcol);
+			double var = Ydiff.dot(Ydiff);
+
+			Ydiff = yDiffPred.getColumn(jcol);
+			double press = Ydiff.dot(Ydiff);
+
+			if (var == 0) r2[jcol] = 1.0;
+			else r2[jcol] = 1.0 - (press  /var);
+		}
+		return r2;
+	}
+	
+	/**
 	 * This method writes the results to a CSV file.
 	 * @param filename
 	 */
@@ -285,19 +341,23 @@ public class PredictorsBetaMatrices {
 			CSVWriter csvOutput = new CSVWriter(file, CSVWriter.DEFAULT_SEPARATOR);
 			
 			/* first write descriptor header row */
-			for (int i = 0; i < this.resultsMatrix.columns; i++) {
+			for (int i = 0; i < this.resultsMatrix.columns; i++) 
+			{
 				entries[i] = this.testHeader[i];
 			}
 			/* Write row of data to output using the writeNext method. */
 			csvOutput.writeNext(entries); 
 					
 			/* Loop over each row of the rMatrix */
-			for (int i = 0; i < this.resultsMatrix.rows; i++) {
-				
+			for (int i = 0; i < this.resultsMatrix.rows; i++) 
+			{				
 				DoubleMatrix rRow = this.resultsMatrix.getRow(i);
 				
-				for (int j = 0; j < this.resultsMatrix.columns; j++) {
+				for (int j = 0; j < this.resultsMatrix.columns; j++) 
+				{
+					if (!Double.isNaN(rRow.get(j)) && rRow.get(j) < 0.0) rRow.put(j, 0.0);
 					entries[j] = String.valueOf(rRow.get(j));
+					if (entries[j].equalsIgnoreCase("NaN")) entries[j]= "Null";
 				}
 
 				/* Write row of data to output using the writeNext method. */

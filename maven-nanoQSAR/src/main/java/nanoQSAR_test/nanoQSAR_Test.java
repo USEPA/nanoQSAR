@@ -4,7 +4,6 @@
 package nanoQSAR_test;
 
 import java.io.File;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,7 +26,7 @@ public class nanoQSAR_Test {
 	static String helpString = "User options:\njava -jar nanoQSAR_Test -h\njava -jar nanoQSAR_Test\njava -jar nanoQSAR_Test propFilename\n";
 
 	/* Create an object of type Logger so we can log error or warning messages. */
-	protected static Logger LOGGER =  Logger.getLogger("nanoQSAR_TEST", null);
+	private static Logger LOGGER =  Logger.getLogger("nanoQSAR_TEST");
 	
 	/**
 	 * @param args
@@ -56,15 +55,10 @@ public class nanoQSAR_Test {
 
 		    /* Initialize log file information. Throw IOException and/or SecurityException 
 		     * if creation of file handler was not successful. */
-		    LOGGER.setLevel(Level.INFO);
-		    if (!LOGGER.getUseParentHandlers()) 
-		    {
-			   
-		        LOGGER.addHandler(new FileHandler(logFilename));		
-			    LOGGER.addHandler(new ConsoleHandler());
-		    }
+			LOGGER.addHandler(new FileHandler(logFilename));
+			LOGGER.setLevel(Level.INFO);
 		
-		    /* Input database connection information and name of output file. */
+		    /* Input filenames stored in properties file. */
 			Utilities.loadProperties(propFilename);	
 			
 		    /* Make a copy of nanoQSAR.csv. */
@@ -73,10 +67,10 @@ public class nanoQSAR_Test {
 		    File source = new File(originalFilename);
 		    File dest = new File(testFilename);
 		
-		    PredictorsBetaMatrices comp = new PredictorsBetaMatrices();	
-		    comp.copyFiles(source, dest);		
+		    PredictorsBetaMatrices prdb = new PredictorsBetaMatrices();	
+		    prdb.copyFiles(source, dest);		
 		
-			/* Read CSV file. */
+			/* Read CSV file with data that had been mined from database. */
 			NanoToxExps nanoToxExps = new NanoToxExps(testFilename);			
 			
 			/* Select the columns that will be used to build X and Y matrices from nanoToxExps. */
@@ -89,7 +83,6 @@ public class nanoQSAR_Test {
 			
 			/* Get a copy of the X matrix and replace null entries with averages or zeroes. */			
 			DoubleMatrix xmatrix = CsvMatrix.getxMatrix();
-			PredictorsBetaMatrices prdb = new PredictorsBetaMatrices();
 			prdb.setTestXmatrix(xmatrix);
 			prdb.replaceNullsXmatrix();
 			
@@ -108,14 +101,14 @@ public class nanoQSAR_Test {
 			/* Get header of BPLS matrix */
 			String[] bplsHeader = prdb.getHeader();			
 			
-			/* Get a copy of the beta coefficients matrix. */
-			DoubleMatrix bMatrix = prdb.getBetaMatrix();
-			
 			/* Verify that the headers of the X and Beta-Coefficients matrices match. */
 			/* If a mismatch in the headers is found, an exception will be thrown. */
 			prdb.verifyOrderHeaders(xMatrixHeader, bplsHeader);
 			
-			/* Get a copy of the processed X matrix.  */
+			/* Get a copy of the beta coefficients matrix. */
+			DoubleMatrix bMatrix = prdb.getBetaMatrix();			
+			
+			/* Get a copy of the processed X matrix (with replaced nulls).  */
 			DoubleMatrix testXmatrix = prdb.getTestXmatrix();
 			
 			/* Predict results using the X matrix and beta coefficients. */
@@ -126,15 +119,14 @@ public class nanoQSAR_Test {
 			
 			/* Get copy of the original Y matrix  */
 			DoubleMatrix yMatrix = CsvMatrix.getyMatrix();
+		
+			/* Calculate R2: use the original Y matrix and predicted Y matrix. */
+			double[] r2 = prdb.calculateR2(yMatrix, yPred);
 			
+			/* Store R2 in the logger file. */
+			LOGGER.info("R2[0] = " + r2[0]);
 			
-			/* Perform 5-fold cross-validation prediction. */
-			// int nfolds = 5;
-			// DoubleMatrix Ytilde = csvm.performMultiFoldCrossValidation(nfolds,testXmatrix, yPred);
-			// double[] q2Avg = csvm.getQ2avg();
-			// int numDeflationsAvg = csvm.getNumDeflationsAvg();
-			
-			/* Build results matrix */
+			/* Build results matrix that will be written to output. */
 			prdb.buildResultsMatrix(testXmatrix, yMatrix, yPred);
 			
 			/* Write test results to CSV file. */

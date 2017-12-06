@@ -19,14 +19,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-import datamine.MySqlQuery;
 import junit.framework.Assert;
-import nanoQSAR.NanoQSAR;
-import nanoQSAR.NanoToxExp;
-import nanoQSAR.NanoToxExps;
 import nanoQSAR_test.PredictorsBetaMatrices;
 import nanoQSAR_test.Utilities;
-import nanoQSAR_test.nanoQSAR_Test;
 
 /**
  * @author Wmelende
@@ -318,31 +313,36 @@ public class nanoQSARCopyReadFileTests {
 	{
 		return temporaryFolder.getRoot().toPath().resolve(folder).toString();
 	}
-	
-
+		
+	/**
+	 * This test checks the R2 calculation for a case in which the answer is known.
+	 */
 	@Test
-	public final void testMain() {
-		nanoQSAR_Test nanoQSAR_test = new nanoQSAR_Test();
-		Assert.assertNotNull("nanoQSAR was null", nanoQSAR_test);
-	}
-	
-	@Test
-	public void testMainProgam()
+	public void testCalculateR2()
 	{
-		String helpString = "User options:\njava -jar nanoQSAR -h\njava -jar nanoQSAR\njava -jar nanoQSAR propFilename\n";
-		String csvFile = System.getProperty("user.dir") + "\\nanoQSAR_TEST.csv";
+		// Declared object and matrices.
+		PredictorsBetaMatrices prdb6 = new PredictorsBetaMatrices();
+		DoubleMatrix Yobs = new DoubleMatrix(5, 1);
+		DoubleMatrix Ypred = new DoubleMatrix(5, 1);
 		
-		String[] args = null;
+		// Assign values to the Y matrices.
+		Yobs.put(0, 0, 1.0);
+		Yobs.put(1, 0, 2.0);
+		Yobs.put(2, 0, 3.0);
+		Yobs.put(3, 0, 4.0);
+		Yobs.put(4, 0, 5.0);
 		
-		/* Run the application. */
-		nanoQSAR_Test.main(args);
+		Ypred.put(0, 0, 1.1);
+		Ypred.put(1, 0, 1.8);
+		Ypred.put(2, 0, 2.7);
+		Ypred.put(3, 0, 4.2);
+		Ypred.put(4, 0, 5.3);
 		
-		/* Verify that the CSV file was created and that it's not
-		 * empty. */
-		File file = new File(csvFile);
-		Assert.assertTrue("CSV file exists.", file.exists());
-		Assert.assertTrue("CSV file is not empty.", file.length() > 0);		
+		// Calculate R2
+		double[] r2 = prdb6.calculateR2(Yobs, Ypred);
+		
+		// assert
+		assertEquals(0.973, r2[0], 1.0E-12);
 	}
-		
 	
 }
