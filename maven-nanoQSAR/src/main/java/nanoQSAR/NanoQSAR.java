@@ -65,7 +65,8 @@ public class NanoQSAR {
 			LOGGER.setLevel(Level.INFO);
 			if (!LOGGER.getUseParentHandlers()) {
 				LOGGER.addHandler(new FileHandler(logFilename));
-				LOGGER.addHandler(new ConsoleHandler());
+				// LOGGER.addHandler(new ConsoleHandler());
+				LOGGER.setUseParentHandlers(false);  // This will prevent LOGGER from printing messages to the console.
 			}
 //			LoggerInfo.init();
 

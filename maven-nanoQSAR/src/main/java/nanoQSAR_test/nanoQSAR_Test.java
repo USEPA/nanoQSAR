@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import org.jblas.DoubleMatrix;
 
+import datamine.DBUtil;
 import pls_analysis.CsvMatrix;
 import nanoQSAR.NanoToxExps;
 
@@ -26,7 +27,7 @@ public class nanoQSAR_Test {
 	static String helpString = "User options:\njava -jar nanoQSAR_Test -h\njava -jar nanoQSAR_Test\njava -jar nanoQSAR_Test propFilename\n";
 
 	/* Create an object of type Logger so we can log error or warning messages. */
-	private static Logger LOGGER =  Logger.getLogger("nanoQSAR_TEST");
+	private static Logger LOGGER1 =  Logger.getLogger("nanoQSAR_TEST");
 	
 	/**
 	 * @param args
@@ -55,15 +56,16 @@ public class nanoQSAR_Test {
 
 		    /* Initialize log file information. Throw IOException and/or SecurityException 
 		     * if creation of file handler was not successful. */
-			LOGGER.addHandler(new FileHandler(logFilename));
-			LOGGER.setLevel(Level.INFO);
+			LOGGER1.addHandler(new FileHandler(logFilename));
+			LOGGER1.setLevel(Level.INFO);
+			LOGGER1.setUseParentHandlers(false);  // This will prevent LOGGER from printing messages to the console.
 		
 		    /* Input filenames stored in properties file. */
-			Utilities.loadProperties(propFilename);	
+			DBUtil.loadProperties(propFilename);	
 			
 		    /* Make a copy of nanoQSAR.csv. */
-			String originalFilename = Utilities.getCsvFileName();
-			String testFilename = Utilities.getPredictionsFileName();
+			String originalFilename = DBUtil.getCsvFileName();
+			String testFilename = DBUtil.getPredictionsFileName();
 		    File source = new File(originalFilename);
 		    File dest = new File(testFilename);
 		
@@ -89,7 +91,7 @@ public class nanoQSAR_Test {
 			/* Read the beta coefficients from CSV file and store them in a matrix. */
 			int xcol = xmatrix.columns;
 			int ycol = CsvMatrix.getyMatrix().columns;
-			String betaFilename = Utilities.getBplsFileName();
+			String betaFilename = DBUtil.getBplsFileName();
 			prdb.readCsvFile(betaFilename, xcol, ycol);
 			
 			/* Get header of X-matrix */
@@ -124,7 +126,7 @@ public class nanoQSAR_Test {
 			double[] r2 = prdb.calculateR2(yMatrix, yPred);
 			
 			/* Store R2 in the logger file. */
-			LOGGER.info("R2[0] = " + r2[0]);
+			LOGGER1.info("R2[0] = " + r2[0]);
 			
 			/* Build results matrix that will be written to output. */
 			prdb.buildResultsMatrix(testXmatrix, yMatrix, yPred);

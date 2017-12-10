@@ -50,11 +50,9 @@ public class nanoQSARCopyReadFileTests {
 			Assert.assertEquals(BplsFileName, Utilities.getBplsFileName());
 			Assert.assertEquals(PredictionsFileName, Utilities.getPredictionsFileName());
 			
-		} catch (IOException e) {		
+		} catch (Exception e) {		
 			e.printStackTrace();
-		} catch (GeneralSecurityException e) {
-			e.printStackTrace();
-		}
+		} 
 
 	}
 

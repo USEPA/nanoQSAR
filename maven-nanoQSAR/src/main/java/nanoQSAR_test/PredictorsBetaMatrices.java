@@ -33,7 +33,7 @@ public class PredictorsBetaMatrices {
 	private String[] testHeader = null;
 	
 	/* Need this line to allow logging of error messages */
-	private final static Logger LOGGER = Logger.getLogger("nanoQSAR_TEST");
+	private final static Logger LOGGER1 = Logger.getLogger("nanoQSAR_TEST");
 	
 	
 	/**
@@ -369,7 +369,7 @@ public class PredictorsBetaMatrices {
 		}
 		catch(IOException ex)
 		{
-			LOGGER.severe("FileWriter for " + filename + " could not be constructed." + ex);	
+			LOGGER1.severe("FileWriter for " + filename + " could not be constructed." + ex);	
 		}
 	}
 	

@@ -2,8 +2,8 @@
 <!DOCTYPE log SYSTEM "logger.dtd">
 <log>
 <record>
-  <date>2017-12-06T14:10:01</date>
-  <millis>1512591001003</millis>
+  <date>2017-12-09T23:47:42</date>
+  <millis>1512884862043</millis>
   <sequence>5</sequence>
   <logger>nanoQSAR</logger>
   <level>INFO</level>
@@ -13,14 +13,14 @@
   <message>R2[0] = 0.697352251509041, numDeflations = 9</message>
 </record>
 <record>
-  <date>2017-12-06T14:10:01</date>
-  <millis>1512591001113</millis>
+  <date>2017-12-09T23:47:42</date>
+  <millis>1512884862152</millis>
   <sequence>6</sequence>
   <logger>nanoQSAR</logger>
   <level>INFO</level>
   <class>pls_analysis.NanoQSAR_PLS</class>
   <method>main</method>
   <thread>1</thread>
-  <message>Q2[0]avg = 0.5597952049114366, nfolds = 5, numDeflationsAvg = 7</message>
+  <message>Q2[0]avg = 0.39984933717267646, nfolds = 5, numDeflationsAvg = 7</message>
 </record>
 </log>

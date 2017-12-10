@@ -1,10 +1,5 @@
 package datamine;
 
-/**
- * @author Wmelende & Paul Harten
- *
- */
-import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -23,6 +18,10 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+/**
+ * @author Wmelende & Paul Harten
+ *
+ */
 import java.nio.file.*;
 
 import javax.crypto.BadPaddingException;
@@ -53,9 +52,14 @@ public class DBUtil
 	private static String password;
 	private static String csvFileName;
 	private static String passwordKey;
+	private static String BplsFileName;
+	private static String PredictionsFileName;
 	
 	/* Need this line to allow logging of error messages */
 	private static Logger LOGGER = Logger.getLogger("nanoQSAR");
+	
+	/* Need this line to allow logging of error messages */
+	private static Logger LOGGER1 = Logger.getLogger("nanoQSAR_TEST");
 	
 	public static String getDriverName() {
 		return driverName;
@@ -103,6 +107,22 @@ public class DBUtil
 
 	public static void setPasswordKey(String passwordKey) {
 		DBUtil.passwordKey = passwordKey;
+	}
+	
+	public static String getBplsFileName() {
+		return BplsFileName;
+	}
+
+	public static void setBplsFileName(String bplsFileName) {
+		BplsFileName = bplsFileName;
+	}
+
+	public static String getPredictionsFileName() {
+		return PredictionsFileName;
+	}
+
+	public static void setPredictionsFileName(String predictionsFileName) {
+		PredictionsFileName = predictionsFileName;
 	}
 	
 	/**
@@ -163,6 +183,59 @@ public class DBUtil
 				catch(IOException ex)
 				{
 					LOGGER.log(Level.SEVERE, "InputStream variable, input, could not be closed.", ex);
+					throw ex;
+				}				
+			}
+		}
+	}
+	
+	/**
+	 * This method loads some of the properties in the properties file.
+	 * @author Wilson Melendez
+	 * @param propFilename
+	 * @throws Exception 
+	 * @throws IOException
+	 */
+	public static void loadProperties(String propFilename) throws Exception
+	{
+		Properties prop = new Properties();
+		FileInputStream propFile = null;
+		
+		try
+		{
+			Path p1 = Paths.get(propFilename);
+			propFile = new FileInputStream(p1.toString());
+			
+			// Load properties file
+			prop.load(propFile);
+			
+			// Get the properties and assign them to their respective fields.
+			setCsvFileName(prop.getProperty("CsvFileName").trim());
+			setBplsFileName(prop.getProperty("BplsFileName").trim());
+			setPredictionsFileName(prop.getProperty("PredictionsFileName").trim());
+		}
+		catch(FileNotFoundException ex)
+		{
+			LOGGER1.setUseParentHandlers(false);  // Do not print to the console.
+			LOGGER1.log(Level.SEVERE, "Properties file, " + propFilename + ", was not found.", ex);
+			throw ex;
+		}
+		catch(Exception ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			if (propFile != null)
+			{
+				try
+				{
+					propFile.close();
+				}
+				catch(IOException ex)
+				{
+					LOGGER1.setUseParentHandlers(false);  // Do not print to the console.
+					LOGGER1.log(Level.SEVERE, "InputStream variable, input, could not be closed.", ex);
 					throw ex;
 				}				
 			}

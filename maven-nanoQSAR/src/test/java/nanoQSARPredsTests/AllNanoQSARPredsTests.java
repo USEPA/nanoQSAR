@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ nanoQSAR_TestTests.class, nanoQSARCopyReadFileTests.class, utilitiesTests.class })
+@SuiteClasses({ nanoQSAR_TestTests.class, nanoQSARCopyReadFileTests.class })
 
 public class AllNanoQSARPredsTests {
 

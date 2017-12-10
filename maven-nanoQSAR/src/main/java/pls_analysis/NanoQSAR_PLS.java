@@ -57,7 +57,7 @@ public class NanoQSAR_PLS
 			 * if creation of file handler was not successful. */
 			LOGGER.addHandler(new FileHandler(logFilename));
 			LOGGER.setLevel(Level.INFO);
-
+			LOGGER.setUseParentHandlers(false);  // This will prevent LOGGER from printing messages to the console.
 		}
 		catch(Exception ex)
 		{
