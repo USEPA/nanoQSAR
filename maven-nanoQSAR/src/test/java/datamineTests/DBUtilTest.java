@@ -14,7 +14,7 @@ import org.junit.Test;
 
 import datamine.DBUtil;
 import junit.framework.Assert;
-import nanoQSAR_test.Utilities;
+
 
 public class DBUtilTest {
 	

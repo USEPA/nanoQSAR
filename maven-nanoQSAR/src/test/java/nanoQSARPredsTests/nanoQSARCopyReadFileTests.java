@@ -19,9 +19,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
+import datamine.DBUtil;
 import junit.framework.Assert;
 import nanoQSAR_test.PredictorsBetaMatrices;
-import nanoQSAR_test.Utilities;
+
 
 /**
  * @author Wmelende
@@ -44,11 +45,11 @@ public class nanoQSARCopyReadFileTests {
 		
 		try {
 			
-			Utilities.loadProperties(propFilename);
+			DBUtil.loadProperties(propFilename);
 			
-			Assert.assertEquals(CsvFileName, Utilities.getCsvFileName());
-			Assert.assertEquals(BplsFileName, Utilities.getBplsFileName());
-			Assert.assertEquals(PredictionsFileName, Utilities.getPredictionsFileName());
+			Assert.assertEquals(CsvFileName, DBUtil.getCsvFileName());
+			Assert.assertEquals(BplsFileName, DBUtil.getBplsFileName());
+			Assert.assertEquals(PredictionsFileName, DBUtil.getPredictionsFileName());
 			
 		} catch (Exception e) {		
 			e.printStackTrace();
