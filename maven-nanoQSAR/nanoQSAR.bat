@@ -15,5 +15,9 @@ echo Beginning execution of the PLS Regression algorithm.
 java -jar nanoQSAR_PLS.jar
 echo Ending execution of the PLS Regression application.
 
+echo Beginning execution of the prediction-of-results application.
+java -jar nanoQSAR_TEST.jar
+echo Ending execution of the prediction-of-results application.
+
 echo Ending execution of batch file.
 
