@@ -41,7 +41,7 @@ public class nanoQSAR_TestTests {
 	@Test
 	public void testMainProgam1()
 	{
-		String csvFile = System.getProperty("user.dir") + "\\nanoQSAR_TEST.csv";
+		String csvFile = System.getProperty("user.dir") + "\\nanoQSAR_Predictions.csv";
 		
 		String[] args = null;
 		
@@ -65,7 +65,7 @@ public class nanoQSAR_TestTests {
 	@Test
 	public void testMainProgam2()
 	{
-		String csvFile = System.getProperty("user.dir") + "\\nanoQSAR_TEST.csv";
+		String csvFile = System.getProperty("user.dir") + "\\nanoQSAR_Predictions.csv";
 		
 		String[] args = new String[0];
 		
@@ -87,7 +87,7 @@ public class nanoQSAR_TestTests {
 	@Test
 	public void testMainProgram3()
 	{
-		String csvFile = System.getProperty("user.dir") + "\\nanoQSAR_TEST.csv";
+		String csvFile = System.getProperty("user.dir") + "\\nanoQSAR_Predictions.csv";
 		
 		String[] args = {System.getProperty("user.dir") + "\\nanoQSAR.properties"};
 		

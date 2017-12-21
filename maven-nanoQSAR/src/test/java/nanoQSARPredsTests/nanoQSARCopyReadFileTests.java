@@ -40,7 +40,7 @@ public class nanoQSARCopyReadFileTests {
 	    /* default file values */
 		String CsvFileName  = "nanoQSAR.csv";
 		String BplsFileName = "nanoQSAR_BPLS.csv";
-		String PredictionsFileName = "nanoQSAR_TEST.csv";
+		String PredictionsFileName = "nanoQSAR_Predictions.csv";
 		String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";	
 		
 		try {
