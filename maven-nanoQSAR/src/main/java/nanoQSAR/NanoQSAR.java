@@ -51,8 +51,10 @@ public class NanoQSAR {
 				return;
 
 			} else if (args.length == 1) { // Using command-line entered properties file
-
+				
+				/* key file must be in same folder as properties file, but with "key" extension */
 				propFilename = args[0].trim();
+				keyFilename = propFilename.substring(0,propFilename.lastIndexOf('.')+1)+"key";
 
 			} else { // Something is wrong
 
@@ -83,7 +85,7 @@ public class NanoQSAR {
 				/* write data to CSV file. */
 				nanoToxExps.writeCsvFile(DBUtil.getCsvFileName());
 				
-			} else { /* Connection to database is not avaialable */
+			} else { /* Connection to database is not available */
 				
 				/* Get data from CSV file */
 				nanoToxExps = new NanoToxExps(DBUtil.getCsvFileName());
