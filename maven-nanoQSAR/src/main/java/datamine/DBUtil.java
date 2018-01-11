@@ -1,10 +1,5 @@
 package datamine;
 
-/**
- * @author Wmelende & Paul Harten
- *
- */
-import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -12,18 +7,29 @@ import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+/**
+ * @author Wmelende & Paul Harten
+ *
+ */
 import java.nio.file.*;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -36,6 +42,8 @@ import javax.crypto.spec.SecretKeySpec;
 public class DBUtil 
 {
 	public static final String AES = "AES";
+	public static final String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
+	public static final String keyFilename = System.getProperty("user.dir") + "\\nanoQSAR.key";
 	
 	/* Static fields for name of driver, URL of database, username and password. */
 	private static String driverName;
@@ -44,9 +52,14 @@ public class DBUtil
 	private static String password;
 	private static String csvFileName;
 	private static String passwordKey;
+	private static String BplsFileName;
+	private static String PredictionsFileName;
 	
 	/* Need this line to allow logging of error messages */
 	private static Logger LOGGER = Logger.getLogger("nanoQSAR");
+	
+	/* Need this line to allow logging of error messages */
+	private static Logger LOGGER1 = Logger.getLogger("nanoQSAR_TEST");
 	
 	public static String getDriverName() {
 		return driverName;
@@ -96,24 +109,40 @@ public class DBUtil
 		DBUtil.passwordKey = passwordKey;
 	}
 	
+	public static String getBplsFileName() {
+		return BplsFileName;
+	}
+
+	public static void setBplsFileName(String bplsFileName) {
+		BplsFileName = bplsFileName;
+	}
+
+	public static String getPredictionsFileName() {
+		return PredictionsFileName;
+	}
+
+	public static void setPredictionsFileName(String predictionsFileName) {
+		PredictionsFileName = predictionsFileName;
+	}
+	
 	/**
 	 * This method opens and reads a property file containing database connection
 	 * information and the name of the output file.
 	 * @author Wilson Melendez
 	 * @throws IOException
 	 */
-	public static void loadProperties(String filename) throws IOException, GeneralSecurityException
+	public static void loadProperties(String propFilename, String keyFilename) throws IOException, GeneralSecurityException
 	{
 		Properties prop = new Properties();
-		InputStream input = null;
+		FileInputStream propFile = null;
 		
 		try
 		{
-			Path p1 = Paths.get(filename);
-			input = new FileInputStream(p1.toString());
+			Path p1 = Paths.get(propFilename);
+			propFile = new FileInputStream(p1.toString());
 			
 			// Load properties file
-			prop.load(input);
+			prop.load(propFile);
 			
 			// Get the properties and assign them to their respective fields.
 			setDatabaseUrl(prop.getProperty("databaseURL").trim());
@@ -121,34 +150,92 @@ public class DBUtil
 			setPassword(prop.getProperty("Password").trim());
 			setUsername(prop.getProperty("Username").trim());	
 			setCsvFileName(prop.getProperty("CsvFileName").trim());
-			setPasswordKey(prop.getProperty("Key").trim());
+			
+			Path p2 = Paths.get(keyFilename);
+			File keyFile = new File(p2.toString());
+			
+			String message = DBUtil.byteArrayToHexString(readKeyFile(keyFile));
+			setPasswordKey(message);
 			
 //			encryptPassword();
 
 			/* Decrypt password using the key. */
-			decryptPassword();
+//			decrypt(getPassword(), new File(p2.toString()));
 		}
 		catch(IOException ex)
 		{
-			LOGGER.log(Level.SEVERE, "Properties file, " + filename + ", was not found.", ex);
+			LOGGER.log(Level.SEVERE, "Properties file, " + propFilename + ", was not found.", ex);
 			throw ex;
 		}
-		catch(GeneralSecurityException ex)
-		{
-			LOGGER.log(Level.SEVERE, "Password de-encryption failed.", ex);
-			throw ex;
-		}
+//		catch(GeneralSecurityException ex)
+//		{
+//			LOGGER.log(Level.SEVERE, "Password de-encryption failed.", ex);
+//			throw ex;
+//		}
 		finally
 		{
-			if (input != null)
+			if (propFile != null)
 			{
 				try
 				{
-					input.close();
+					propFile.close();
 				}
 				catch(IOException ex)
 				{
 					LOGGER.log(Level.SEVERE, "InputStream variable, input, could not be closed.", ex);
+					throw ex;
+				}				
+			}
+		}
+	}
+	
+	/**
+	 * This method loads some of the properties in the properties file.
+	 * @author Wilson Melendez
+	 * @param propFilename
+	 * @throws Exception 
+	 * @throws IOException
+	 */
+	public static void loadProperties(String propFilename) throws Exception
+	{
+		Properties prop = new Properties();
+		FileInputStream propFile = null;
+		
+		try
+		{
+			Path p1 = Paths.get(propFilename);
+			propFile = new FileInputStream(p1.toString());
+			
+			// Load properties file
+			prop.load(propFile);
+			
+			// Get the properties and assign them to their respective fields.
+			setCsvFileName(prop.getProperty("CsvFileName").trim());
+			setBplsFileName(prop.getProperty("BplsFileName").trim());
+			setPredictionsFileName(prop.getProperty("PredictionsFileName").trim());
+		}
+		catch(FileNotFoundException ex)
+		{
+			LOGGER1.setUseParentHandlers(false);  // Do not print to the console.
+			LOGGER1.log(Level.SEVERE, "Properties file, " + propFilename + ", was not found.", ex);
+			throw ex;
+		}
+		catch(Exception ex)
+		{
+			throw ex;
+		}
+		finally
+		{
+			if (propFile != null)
+			{
+				try
+				{
+					propFile.close();
+				}
+				catch(IOException ex)
+				{
+					LOGGER1.setUseParentHandlers(false);  // Do not print to the console.
+					LOGGER1.log(Level.SEVERE, "InputStream variable, input, could not be closed.", ex);
 					throw ex;
 				}				
 			}
@@ -188,51 +275,42 @@ public class DBUtil
     }
 	
 	/**
-	 * This method decrypts the password using a key.
-	 * @author Wilson Melendez
+	 * This method decrypts the password using a keyFile.
+	 * @author Wilson Melendez & Paul Harten
 	 * @throws GeneralSecurityException
 	 */
-	public static void decryptPassword() throws GeneralSecurityException
+	public static String decrypt(String message, File keyFile) throws GeneralSecurityException, IOException
 	{
-		String tempkey = getPasswordKey();                
-        byte[] decrypted;
-        String OriginalPassword;
-        Cipher cipher = null;
-        byte[] bytekey = hexStringToByteArray(tempkey);
-        SecretKeySpec sks = new SecretKeySpec(bytekey, DBUtil.AES);
-        
-        try 
-        {
-			cipher = Cipher.getInstance(DBUtil.AES);
-		} 
-        catch (NoSuchAlgorithmException | NoSuchPaddingException ex) 
-        {			
-			LOGGER.log(Level.SEVERE,"Attempt to create cipher object failed.",ex);
-			throw ex;
-		}
-		
-        try 
-        {
-			cipher.init(Cipher.DECRYPT_MODE, sks);
-		} 
-        catch (InvalidKeyException ex) 
-        {			
-			LOGGER.log(Level.SEVERE,"Initialization of cipher failed.",ex);
-			throw ex;
-		}
-        
-		try 
-		{
-			decrypted = cipher.doFinal(hexStringToByteArray(getPassword()));
-		} 
-		catch (IllegalBlockSizeException | BadPaddingException ex) 
-		{			
-			LOGGER.log(Level.SEVERE,"Decryption of password failed.",ex);
-			throw ex;
-		}
-		
-		OriginalPassword = new String(decrypted);
-        setPassword(OriginalPassword);
+		SecretKeySpec sks = getSecretKeySpec(keyFile);
+		Cipher cipher = Cipher.getInstance(DBUtil.AES);
+		cipher.init(Cipher.DECRYPT_MODE, sks);                
+        byte[] decrypted = cipher.doFinal(hexStringToByteArray(message));
+        return new String(decrypted);
+	}
+	
+	/**
+	 * This method decrypts the password using a keyFile.
+	 * @author Paul Harten
+	 * @throws IOException
+	 */
+	public static SecretKeySpec getSecretKeySpec(File keyFile) throws IOException
+	{
+		byte[] key = readKeyFile(keyFile);
+		SecretKeySpec sks = new SecretKeySpec(key, DBUtil.AES);
+		return sks;
+	}
+	
+	/**
+	 * This method decrypts the password using a keyFile.
+	 * @author Paul Harten
+	 * @throws IOException
+	 */
+	public static byte[] readKeyFile(File keyFile) throws FileNotFoundException
+	{
+		Scanner scanner = new Scanner(keyFile);
+		String keyValue = scanner.next();
+		scanner.close();
+		return hexStringToByteArray(keyValue);
 	}
 	
 	/**
@@ -240,48 +318,23 @@ public class DBUtil
 	 * @author Paul Harten
 	 * @throws GeneralSecurityException
 	 */
-	public static void encryptPassword() throws GeneralSecurityException
+	public static String encrypt(String value, File keyFile) throws GeneralSecurityException, IOException
 	{
-		String tempkey = getPasswordKey();                
-        byte[] encrypted;
-        String OriginalPassword = "OriginalPassword";
-        Cipher cipher = null;
-        byte[] bytekey = hexStringToByteArray(tempkey);
-        SecretKeySpec sks = new SecretKeySpec(bytekey, DBUtil.AES);
-        
-        try 
-        {
-			cipher = Cipher.getInstance(DBUtil.AES);
-		} 
-        catch (NoSuchAlgorithmException | NoSuchPaddingException ex) 
-        {			
-			LOGGER.log(Level.SEVERE,"Attempt to create cipher object failed.",ex);
-			throw ex;
+		if (!keyFile.exists()) {
+			KeyGenerator keyGen = KeyGenerator.getInstance(DBUtil.AES);
+			keyGen.init(128);;
+			SecretKey sk = keyGen.generateKey();
+			FileWriter fw = new FileWriter(keyFile);
+			fw.write(byteArrayToHexString(sk.getEncoded()));
+			fw.flush();
+			fw.close();
 		}
+		SecretKeySpec sks = getSecretKeySpec(keyFile);
+		Cipher cipher = Cipher.getInstance(DBUtil.AES);
+		cipher.init(Cipher.ENCRYPT_MODE, sks, cipher.getParameters());
+		byte[] encrypted = cipher.doFinal(value.getBytes());
 		
-        try 
-        {
-			cipher.init(Cipher.ENCRYPT_MODE, sks);
-		} 
-        catch (InvalidKeyException ex) 
-        {			
-			LOGGER.log(Level.SEVERE,"Initialization of cipher failed.",ex);
-			throw ex;
-		}
-        
-		try 
-		{
-			encrypted = cipher.doFinal(OriginalPassword.getBytes());
-		} 
-		catch (IllegalBlockSizeException | BadPaddingException ex) 
-		{			
-			LOGGER.log(Level.SEVERE,"Encryption of password failed.",ex);
-			throw ex;
-		}
-		
-		String encryptedPassword = new String(byteArrayToHexString(encrypted));
-        setPassword(encryptedPassword);
-        
+		return byteArrayToHexString(encrypted);
 	}
 	
 	/**

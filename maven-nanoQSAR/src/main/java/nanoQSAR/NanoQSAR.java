@@ -23,6 +23,7 @@ public class NanoQSAR {
 
 	/* Default filenames */
 	static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
+	static String keyFilename = System.getProperty("user.dir") + "\\nanoQSAR.key";
 	static String csvFilename = System.getProperty("user.dir") + "\\nanoQSAR.csv";
 	static String plsFilename = System.getProperty("user.dir") + "\\nanoQSAR_pls.csv";
 	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR.log";
@@ -50,8 +51,10 @@ public class NanoQSAR {
 				return;
 
 			} else if (args.length == 1) { // Using command-line entered properties file
-
+				
+				/* key file must be in same folder as properties file, but with "key" extension */
 				propFilename = args[0].trim();
+				keyFilename = propFilename.substring(0,propFilename.lastIndexOf('.')+1)+"key";
 
 			} else { // Something is wrong
 
@@ -64,12 +67,13 @@ public class NanoQSAR {
 			LOGGER.setLevel(Level.INFO);
 			if (!LOGGER.getUseParentHandlers()) {
 				LOGGER.addHandler(new FileHandler(logFilename));
-				LOGGER.addHandler(new ConsoleHandler());
+				// LOGGER.addHandler(new ConsoleHandler());
+				LOGGER.setUseParentHandlers(false);  // This will prevent LOGGER from printing messages to the console.
 			}
 //			LoggerInfo.init();
 
 			/* Input database connection information and name of output file. */
-			DBUtil.loadProperties(propFilename);	
+			DBUtil.loadProperties(propFilename, keyFilename);	
 			
 			NanoToxExps nanoToxExps = null;
 			
@@ -81,7 +85,7 @@ public class NanoQSAR {
 				/* write data to CSV file. */
 				nanoToxExps.writeCsvFile(DBUtil.getCsvFileName());
 				
-			} else { /* Connectio to database is not avaialable */
+			} else { /* Connection to database is not available */
 				
 				/* Get data from CSV file */
 				nanoToxExps = new NanoToxExps(DBUtil.getCsvFileName());

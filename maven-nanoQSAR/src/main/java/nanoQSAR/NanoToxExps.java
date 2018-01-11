@@ -398,7 +398,7 @@ public class NanoToxExps extends Vector<NanoToxExp> implements Serializable, Clo
 		return categoryDescriptorHeader;
 	}
 
-	protected String[] getResultHeader() {
+	public String[] getResultHeader() {
 		return resultHeader;
 	}
 

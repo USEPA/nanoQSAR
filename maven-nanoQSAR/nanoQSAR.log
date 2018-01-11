@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="windows-1252" standalone="no"?>
+<!DOCTYPE log SYSTEM "logger.dtd">
+<log>
+<record>
+  <date>2017-12-18T11:27:31</date>
+  <millis>1513618051977</millis>
+  <sequence>0</sequence>
+  <logger>nanoQSAR</logger>
+  <level>INFO</level>
+  <class>pls_analysis.NanoQSAR_PLS</class>
+  <method>main</method>
+  <thread>1</thread>
+  <message>R2[0] = 0.697352251509041, numDeflations = 9</message>
+</record>
+<record>
+  <date>2017-12-18T11:27:32</date>
+  <millis>1513618052134</millis>
+  <sequence>1</sequence>
+  <logger>nanoQSAR</logger>
+  <level>INFO</level>
+  <class>pls_analysis.NanoQSAR_PLS</class>
+  <method>main</method>
+  <thread>1</thread>
+  <message>Q2[0]avg = 0.6231697238418723, nfolds = 5, numDeflationsAvg = 7</message>
+</record>
+</log>

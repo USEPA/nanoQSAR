@@ -57,7 +57,7 @@ public class NanoQSAR_PLS
 			 * if creation of file handler was not successful. */
 			LOGGER.addHandler(new FileHandler(logFilename));
 			LOGGER.setLevel(Level.INFO);
-
+			LOGGER.setUseParentHandlers(false);  // This will prevent LOGGER from printing messages to the console.
 		}
 		catch(Exception ex)
 		{
@@ -94,7 +94,7 @@ public class NanoQSAR_PLS
 			/* Get CategoryDescriptor Header information */
 			String[] categoryDescriptorHeader = nanoToxExps.getCategoryDescriptorHeader();
 			
-			if (categoryDescriptorHeader!=null) {
+			if (categoryDescriptorHeader != null) {
 				int i1 = descriptorHeader.length;
 				int i2 = categoryDescriptorHeader.length;
 				String[] header = new String[i1+i2];
@@ -103,7 +103,7 @@ public class NanoQSAR_PLS
 				descriptorHeader = header;
 			}
 			
-			if (BplsS.rows != descriptorHeader.length+1) {
+			if (BplsS.rows != descriptorHeader.length + 1) {
 				throw new Error("The matrix size is incorrect");
 			}
 			

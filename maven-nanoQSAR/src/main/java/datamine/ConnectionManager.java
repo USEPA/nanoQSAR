@@ -1,8 +1,12 @@
 package datamine;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -48,11 +52,22 @@ public class ConnectionManager
 	 * @author Wilson Melendez
 	 * @return  Connection
 	 * @throws SQLException
+	 * @throws IOException 
+	 * @throws GeneralSecurityException 
 	 */
-	public static Connection createConnection() throws SQLException
+	public static Connection createConnection() throws SQLException, GeneralSecurityException, IOException
 	{
 
-		return DriverManager.getConnection(DBUtil.getDatabaseUrl(), DBUtil.getUsername(), DBUtil.getPassword());
+//		String info = DBUtil.getDatabaseUrl()+"?user="+DBUtil.getUsername()+"&password="+DBUtil.getPassword()+"&key="+DBUtil.getPasswordKey()+"&useSSL=false";
+//		return DriverManager.getConnection(info);
+		
+		Properties info = new Properties();
+		info.put("user", DBUtil.getUsername());
+		info.put("password", DBUtil.decrypt(DBUtil.getPassword(), new File(DBUtil.keyFilename)));
+		info.put("useSSL", "false");
+		return DriverManager.getConnection(DBUtil.getDatabaseUrl(), info);
+
+//		return DriverManager.getConnection(DBUtil.getDatabaseUrl(), DBUtil.getUsername(), DBUtil.getPassword());
 
 	}
 
@@ -64,8 +79,10 @@ public class ConnectionManager
 	 * @return  Connection
 	 * @throws ClassNotFoundException  It is thrown if not driver could be found.
 	 * @throws SQLException  It is thrown whenever a connection to the server fails.
+	 * @throws IOException 
+	 * @throws GeneralSecurityException 
 	 */
-	public static Connection getConnection() throws SQLException, ClassNotFoundException
+	public static Connection getConnection() throws SQLException, ClassNotFoundException, GeneralSecurityException, IOException
 	{	
 			
 		ConnectionManager.getDriver();		
@@ -81,14 +98,17 @@ public class ConnectionManager
 	 * @return  Connection
 	 * @throws ClassNotFoundException  It is thrown if not driver could be found.
 	 * @throws SQLException  It is thrown whenever a connection to the server fails.
+	 * @throws IOException 
+	 * @throws GeneralSecurityException 
 	 */
-	public static Boolean testConnection() throws SQLException, ClassNotFoundException
+	public static Boolean testConnection() throws SQLException, ClassNotFoundException, GeneralSecurityException, IOException
 	{	
 		
 		try	{
 			
-			ConnectionManager.getDriver();		
-			Connection conn = DriverManager.getConnection(DBUtil.getDatabaseUrl(), DBUtil.getUsername(), DBUtil.getPassword());
+//			ConnectionManager.getDriver();
+//			Connection conn = DriverManager.getConnection(DBUtil.getDatabaseUrl(), DBUtil.getUsername(), DBUtil.getPassword());
+			if (createConnection()==null) return false;
 			
 		} catch(CommunicationsException ex) {
 			

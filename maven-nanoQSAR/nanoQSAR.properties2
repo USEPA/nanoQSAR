@@ -1,7 +1,7 @@
+#
+#Mon Dec 18 11:26:35 CST 2017
 Username=app_naknowbase
-Password=AABE19899036AE8D8C349434FC44B0AB814019C1BBEE8C8D5BAFA84A4C8FAC54
+Password=C4D16E3911990B3BA7C885B32B3B43D4CEAAB37C51A62B7D02CAD2793B2C7D0E
 CsvFileName=nanoQSAR.csv
 databaseURL=jdbc\:mysql\://mysql-res1.epa.gov\:3306/dev_naknowbase_v1
 DriverName=com.mysql.jdbc.Driver
-BplsFileName=nanoQSAR_BPLS.csv
-PredictionsFileName=nanoQSAR_Predictions.csv
