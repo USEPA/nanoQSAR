@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nanoQSARPredsTests;
+package predictionTests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.contentOf;
@@ -21,14 +21,14 @@ import org.junit.rules.TemporaryFolder;
 
 import datamine.DBUtil;
 import junit.framework.Assert;
-import nanoQSAR_test.PredictorsBetaMatrices;
+import prediction.Predictor;
 
 
 /**
  * @author Wmelende
  *
  */
-public class nanoQSARCopyReadFileTests {
+public class PredictorCopyReadTests {
 		
 	
 	/**
@@ -70,9 +70,9 @@ public class nanoQSARCopyReadFileTests {
 		/* Make a copy of nanoQSAR.csv. */
 		File source = new File(originalFilename);
 		File dest = new File(testFilename);
-		PredictorsBetaMatrices comp = new PredictorsBetaMatrices();
+		Predictor predictor = new Predictor();
 		try {
-			comp.copyFiles(source, dest);
+			predictor.copyFiles(source, dest);
 		} catch (IOException ex) {
 			throw ex;
 		}
@@ -88,7 +88,7 @@ public class nanoQSARCopyReadFileTests {
     	String[] xHeader = {"A1", "B1", "C1"};
     	String[] bHeader = {"A0", "A1", "B1", "C2"};
     	
-    	PredictorsBetaMatrices prdb = new PredictorsBetaMatrices();
+    	Predictor prdb = new Predictor();
     	try {
     		prdb.verifyOrderHeaders(xHeader, bHeader);
     	} catch (Exception ex) {
@@ -123,7 +123,7 @@ public class nanoQSARCopyReadFileTests {
 		x1.put(2, 3, Double.NaN);
 		
 		// Remove nulls from matrix and replace them with zeroes or averages. 
-		PredictorsBetaMatrices prdb1 = new PredictorsBetaMatrices();
+		Predictor prdb1 = new Predictor();
 		prdb1.setTestXmatrix(x1);
 		prdb1.replaceNullsXmatrix();
 		DoubleMatrix px1 = prdb1.getTestXmatrix();
@@ -147,7 +147,7 @@ public class nanoQSARCopyReadFileTests {
 	{
 		int xcol = 100;
 		int ycol = 2;		
-		PredictorsBetaMatrices prdb2 = new PredictorsBetaMatrices();
+		Predictor prdb2 = new Predictor();
 		try 
 		{
 			String betaFile = "FileDoesNotExist.csv";  // Non-existing CSV file
@@ -203,7 +203,7 @@ public class nanoQSARCopyReadFileTests {
 		String[] yHeader = {"ViabilityAvg", "LC50"};
 		
 		// Build actual header.
-		PredictorsBetaMatrices prdb3 = new PredictorsBetaMatrices();
+		Predictor prdb3 = new Predictor();
 		prdb3.buildTestHeader(xHeader, yHeader);
 		
 		// assert
@@ -252,7 +252,7 @@ public class nanoQSARCopyReadFileTests {
 		expectedMatrix.put(2, 5, 7.0);
 		
 		// Concatenate the matrix1, matrix2, and matrix3 matrices.
-		PredictorsBetaMatrices prdb4 = new PredictorsBetaMatrices();
+		Predictor prdb4 = new Predictor();
 		prdb4.buildResultsMatrix(matrix1, matrix2, matrix3);
 		
 		// Get the single matrix containing a1, a2, and a3.
@@ -280,7 +280,7 @@ public class nanoQSARCopyReadFileTests {
         File output = temporaryFolder.newFolder("reports").toPath().resolve("output.txt").toFile();
 		
         /* Declare object that will hold the information to be written to output. */
-        PredictorsBetaMatrices prdb5 = new PredictorsBetaMatrices();
+        Predictor prdb5 = new Predictor();
         
         /* Declare and initialize header output. */
 		String[] testHeader1 = {"ViabilityAvg", "LC50"};	
@@ -320,7 +320,7 @@ public class nanoQSARCopyReadFileTests {
 	public void testCalculateR2()
 	{
 		// Declared object and matrices.
-		PredictorsBetaMatrices prdb6 = new PredictorsBetaMatrices();
+		Predictor prdb6 = new Predictor();
 		DoubleMatrix Yobs = new DoubleMatrix(5, 1);
 		DoubleMatrix Ypred = new DoubleMatrix(5, 1);
 		

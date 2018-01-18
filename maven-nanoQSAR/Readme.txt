@@ -24,9 +24,9 @@ echo Ending execution of the PLS Regression application.
 :: This is where the third jar file is run.  Data is brought
 :: in from the filename nanoQSAR_PLS.cvs where the
 :: beta coefficients are stored, and from the nanoQSAR.csv file
-:: from records with no resullts. The predicted results
+:: from records with no results. The predicted results
 :: are then output to the filename nanoQSAR_Predictions.csv.
-echo Beginning execution of the Predicitons algorithm.
+echo Beginning execution of the Predictions algorithm.
 java -jar nanoQSAR_Test.jar
 echo Ending execution of the PLS Regression application.
 

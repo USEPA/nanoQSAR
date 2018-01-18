@@ -1,12 +1,12 @@
-package nanoQSARPredsTests;
+package predictionTests;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ nanoQSAR_TestTests.class, nanoQSARCopyReadFileTests.class })
+@SuiteClasses({ NanoQSAR_PredTests.class, PredictorCopyReadTests.class })
 
-public class AllNanoQSARPredsTests {
+public class AllPredictionTests {
 
 }

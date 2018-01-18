@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nanoQSARPredsTests;
+package predictionTests;
 
 import static org.junit.Assert.assertTrue;
 
@@ -15,19 +15,19 @@ import java.nio.file.StandardCopyOption;
 import org.junit.Test;
 
 import junit.framework.Assert;
-import nanoQSAR_test.nanoQSAR_Test;
+import prediction.NanoQSAR_PRED;
 
 /**
  * @author Wmelende
  *
  */
-public class nanoQSAR_TestTests {
+public class NanoQSAR_PredTests {
 	
 	static String helpString = "User options:\njava -jar nanoQSAR_Test -h\njava -jar nanoQSAR_Test\njava -jar nanoQSAR_Test propFilename\n";
 
 	@Test
 	public final void testMain() {
-		nanoQSAR_Test nanoQSAR_test = new nanoQSAR_Test();
+		NanoQSAR_PRED nanoQSAR_test = new NanoQSAR_PRED();
 		Assert.assertNotNull("nanoQSAR was null", nanoQSAR_test);
 	}
 	
@@ -46,7 +46,7 @@ public class nanoQSAR_TestTests {
 		String[] args = null;
 		
 		/* Run the application. */
-		nanoQSAR_Test.main(args);
+		NanoQSAR_PRED.main(args);
 		
 		/* Verify that the CSV file was created and that it's not
 		 * empty. */
@@ -70,7 +70,7 @@ public class nanoQSAR_TestTests {
 		String[] args = new String[0];
 		
 		/* Run the application. */
-		nanoQSAR_Test.main(args);
+		NanoQSAR_PRED.main(args);
 		
 		/* Verify that the CSV file was created and that it's not
 		 * empty. */
@@ -92,7 +92,7 @@ public class nanoQSAR_TestTests {
 		String[] args = {System.getProperty("user.dir") + "\\nanoQSAR.properties"};
 		
 		/* Run the application. */
-		nanoQSAR_Test.main(args);
+		NanoQSAR_PRED.main(args);
 		
 		/* Verify that the CSV file was created and that it's not empty. */	
 		File file = new File(csvFile);
@@ -114,7 +114,7 @@ public class nanoQSAR_TestTests {
 		System.setOut(new PrintStream(outContent));
 			
 		/* Run the application. */
-		nanoQSAR_Test.main(args);
+		NanoQSAR_PRED.main(args);
 			
 		Assert.assertEquals(helpString, outContent.toString());		
 	}
@@ -144,7 +144,7 @@ public class nanoQSAR_TestTests {
 		String[] args = {file2.getPath()};
 		
 		/* Run the application. */
-		nanoQSAR_Test.main(args);
+		NanoQSAR_PRED.main(args);
 		
 		/* Verify that the CSV file was created and that it's not empty. */
 		String csvFile = System.getProperty("user.dir") + "\\nanoQSAR.csv";		
