@@ -2,7 +2,7 @@
 # Created: 01/06/2018 Wilson Melendez
 # Revised:
 
-extractXcolumns <- function(dataSet)
+extractXcolumns <- function(trainingData)
 {
   numericCols <- c("CoatingAmount", "Purity", "ContamAl", "ContamAs", "ContamBe", "ContamCa", "ContamCo", 
                  "ContamCr", "ContamFe", "ContamK", "ContamMg", "ContamNa", "ContamP", "ContamPb", "ContamSb", "ContamSe", 
@@ -24,20 +24,28 @@ extractXcolumns <- function(dataSet)
   # Loop over the data and store the numeric columns in a separate matrix.  
   for (i in 1: numCols)
   {
-    xcolumn <- dataSet[numericCols[i]]       # Extract numeric columns using their names.
+    xcolumn <- trainingData[numericCols[i]]       # Extract numeric columns using their names.
     xcolumn[xcolumn == "null"] = NA          # Set any nulls that may be found in the column to NAs.
     if (i == 1)
     {
-      xDF <- xcolumn              # Initialized data frame with the first column.
+      xDF <- xcolumn                         # Initialized data frame with the first column.
     }
     else
     {
-      xDF <- cbind(xDF, xcolumn)  # Concatenate columns horizontally.
+      xDF <- cbind(xDF, xcolumn)             # Concatenate columns horizontally.
     }
     
   }
   
- # Xmatrix <- matrix(as.numeric(xDF), nrow = nrow(xDF))  # Define new matrix with data converted to numeric.
+  # Convert columns of data frame to numeric.
+  for (i in 1:numCols)
+  {
+    if (class(xDF[,i]) == "character")
+    {
+      xDF[,i] <- as.numeric(xDF[,i])
+    }
+  }
+  
   return(xDF)
   
 }
