@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nanoQSAR_test;
+package prediction;
 
 import java.io.File;
 import java.util.logging.FileHandler;
@@ -18,7 +18,7 @@ import nanoQSAR.NanoToxExps;
  * @author Wmelende
  *
  */
-public class nanoQSAR_Test {
+public class NanoQSAR_PRED {
 	
 	/* Default filenames */
 	static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
@@ -69,8 +69,8 @@ public class nanoQSAR_Test {
 		    File source = new File(originalFilename);
 		    File dest = new File(testFilename);
 		
-		    PredictorsBetaMatrices prdb = new PredictorsBetaMatrices();	
-		    prdb.copyFiles(source, dest);		
+		    Predictor predictor = new Predictor();	
+		    predictor.copyFiles(source, dest);		
 		
 			/* Read CSV file with data that had been mined from database. */
 			NanoToxExps nanoToxExps = new NanoToxExps(testFilename);			
@@ -85,14 +85,14 @@ public class nanoQSAR_Test {
 			
 			/* Get a copy of the X matrix and replace null entries with averages or zeroes. */			
 			DoubleMatrix xmatrix = CsvMatrix.getxMatrix();
-			prdb.setTestXmatrix(xmatrix);
-			prdb.replaceNullsXmatrix();
+			predictor.setTestXmatrix(xmatrix);
+			predictor.replaceNullsXmatrix();
 			
 			/* Read the beta coefficients from CSV file and store them in a matrix. */
 			int xcol = xmatrix.columns;
 			int ycol = CsvMatrix.getyMatrix().columns;
 			String betaFilename = DBUtil.getBplsFileName();
-			prdb.readCsvFile(betaFilename, xcol, ycol);
+			predictor.readCsvFile(betaFilename, xcol, ycol);
 			
 			/* Get header of X-matrix */
 			String[] xMatrixHeader = nanoToxExps.getDescriptorHeader();
@@ -101,38 +101,38 @@ public class nanoQSAR_Test {
 			String[] yMatrixHeadr = nanoToxExps.getResultHeader();
 			
 			/* Get header of BPLS matrix */
-			String[] bplsHeader = prdb.getHeader();			
+			String[] bplsHeader = predictor.getHeader();			
 			
 			/* Verify that the headers of the X and Beta-Coefficients matrices match. */
 			/* If a mismatch in the headers is found, an exception will be thrown. */
-			prdb.verifyOrderHeaders(xMatrixHeader, bplsHeader);
+			predictor.verifyOrderHeaders(xMatrixHeader, bplsHeader);
 			
 			/* Get a copy of the beta coefficients matrix. */
-			DoubleMatrix bMatrix = prdb.getBetaMatrix();			
+			DoubleMatrix bMatrix = predictor.getBetaMatrix();			
 			
 			/* Get a copy of the processed X matrix (with replaced nulls).  */
-			DoubleMatrix testXmatrix = prdb.getTestXmatrix();
+			DoubleMatrix testXmatrix = predictor.getTestXmatrix();
 			
 			/* Predict results using the X matrix and beta coefficients. */
 			DoubleMatrix yPred = CsvMatrix.predictResults(testXmatrix, bMatrix);
 			
 			/* Build test header  */
-			prdb.buildTestHeader(xMatrixHeader, yMatrixHeadr);
+			predictor.buildTestHeader(xMatrixHeader, yMatrixHeadr);
 			
 			/* Get copy of the original Y matrix  */
 			DoubleMatrix yMatrix = CsvMatrix.getyMatrix();
 		
 			/* Calculate R2: use the original Y matrix and predicted Y matrix. */
-			double[] r2 = prdb.calculateR2(yMatrix, yPred);
+			double[] r2 = predictor.calculateR2(yMatrix, yPred);
 			
 			/* Store R2 in the logger file. */
 			LOGGER1.info("R2[0] = " + r2[0]);
 			
 			/* Build results matrix that will be written to output. */
-			prdb.buildResultsMatrix(testXmatrix, yMatrix, yPred);
+			predictor.buildResultsMatrix(testXmatrix, yMatrix, yPred);
 			
 			/* Write test results to CSV file. */
-			prdb.writeResultsToCsv(testFilename);
+			predictor.writeResultsToCsv(testFilename);
 		}
 		catch (Exception ex) 
 		{

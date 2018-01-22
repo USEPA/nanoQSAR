@@ -1,7 +1,7 @@
 /**
  * 
  */
-package nanoQSAR_test;
+package prediction;
 
 import java.io.File;
 import java.io.FileReader;
@@ -23,7 +23,7 @@ import com.opencsv.CSVWriter;
  * @author Wmelende
  *
  */
-public class PredictorsBetaMatrices {
+public class Predictor {
 
 	
 	private DoubleMatrix testXmatrix;
