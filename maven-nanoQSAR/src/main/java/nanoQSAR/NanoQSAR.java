@@ -52,8 +52,6 @@ public class NanoQSAR {
 		
 	}
 
-
-
 	public NanoQSAR() 
 	{
 		try	{
@@ -78,10 +76,6 @@ public class NanoQSAR {
 
 		} else if (args.length == 1 && args[0].trim().matches("-h")) { // respond with user options
 
-//				System.out.println("User options:");
-//				System.out.println("java -jar nanoQSAR -h");
-//				System.out.println("java -jar nanoQSAR");
-//				System.out.println("java -jar nanoQSAR propFilename");
 			System.out.print(helpString);
 			return false;
 

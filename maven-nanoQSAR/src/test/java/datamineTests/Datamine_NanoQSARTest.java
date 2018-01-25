@@ -38,7 +38,7 @@ public class Datamine_NanoQSARTest {
 		String[] args = null; // null string array
 		
 		/* Run the application. */
-		NanoQSAR.main(args);
+		NanoQSAR nanoQSAR = new NanoQSAR(args);
 		
 		/* Verify that the CSV file was created and that it's not empty. */	
 		File file = new File(System.getProperty("user.dir") + "\\nanoQSAR.csv");
@@ -60,7 +60,7 @@ public class Datamine_NanoQSARTest {
 		String[] args = new String[0];  // empty string array
 		
 		/* Run the application. */
-		NanoQSAR.main(args);
+		NanoQSAR nanoQSAR = new NanoQSAR(args);
 		
 		/* Verify that the CSV file was created and that it's not empty. */		
 		File file = new File(System.getProperty("user.dir") + "\\nanoQSAR.csv");
@@ -82,7 +82,7 @@ public class Datamine_NanoQSARTest {
 		String[] args = {System.getProperty("user.dir") + "\\nanoQSAR.properties"};
 		
 		/* Run the application. */
-		NanoQSAR.main(args);
+		NanoQSAR nanoQSAR = new NanoQSAR(args);
 		
 		/* Verify that the CSV file was created and that it's not empty. */	
 		File file = new File(System.getProperty("user.dir") + "\\nanoQSAR.csv");
@@ -107,7 +107,7 @@ public class Datamine_NanoQSARTest {
 		System.setOut(new PrintStream(outContent));
 			
 		/* Run the application. */
-		NanoQSAR.main(args);
+		NanoQSAR nanoQSAR = new NanoQSAR(args);
 			
 		Assert.assertEquals(helpString, outContent.toString());
 	}
@@ -139,7 +139,7 @@ public class Datamine_NanoQSARTest {
 		String[] args = {file2.getPath()};
 		
 		/* Run the application. */
-		NanoQSAR.main(args);
+		NanoQSAR nanoQSAR = new NanoQSAR(args);
 		
 		/* Verify that the CSV file was created and that it's not empty. */	
 		File file5 = new File(System.getProperty("user.dir") + "\\nanoQSAR.csv");
