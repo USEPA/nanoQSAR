@@ -32,18 +32,19 @@ public class ConnectionManager
 	 * @return Nothing.
 	 * @throws ClassNotFoundException  If driver could not be found, throw exception.
 	 */
-	public static void getDriver() throws ClassNotFoundException
-	{
-		try
-		{
-			Class.forName(DBUtil.getDriverName());
-		}
-		catch(ClassNotFoundException ex)
-		{
-			lOGGER.log(Level.SEVERE, "getDriver error: driver class " + DBUtil.getDriverName() + " was not found.", ex);
-			throw ex;
-		}
-	}
+//	public static Class getDriver(DBUtil dbUtil) throws ClassNotFoundException
+//	{
+//		try
+//		{
+//			String driverName = dbUtil.getDriverName();
+//			return Class.forName(driverName);
+//		}
+//		catch(ClassNotFoundException ex)
+//		{
+////			lOGGER.log(Level.SEVERE, "getDriver error: driver class " + dbUtil.getDriverName() + " was not found.", ex);
+//			throw ex;
+//		}
+//	}
 	
 	/**
 	 * This method creates a connection and returns an object of type Connection.  It throws
@@ -55,17 +56,17 @@ public class ConnectionManager
 	 * @throws IOException 
 	 * @throws GeneralSecurityException 
 	 */
-	public static Connection createConnection() throws SQLException, GeneralSecurityException, IOException
+	public static Connection createConnection(DBUtil dbUtil, String keyFilename) throws SQLException, GeneralSecurityException, IOException
 	{
 
 //		String info = DBUtil.getDatabaseUrl()+"?user="+DBUtil.getUsername()+"&password="+DBUtil.getPassword()+"&key="+DBUtil.getPasswordKey()+"&useSSL=false";
 //		return DriverManager.getConnection(info);
 		
 		Properties info = new Properties();
-		info.put("user", DBUtil.getUsername());
-		info.put("password", DBUtil.decrypt(DBUtil.getPassword(), new File(DBUtil.keyFilename)));
+		info.put("user", dbUtil.getUsername());
+		info.put("password", DBUtil.decrypt(dbUtil.getPassword(), new File(keyFilename)));
 		info.put("useSSL", "false");
-		return DriverManager.getConnection(DBUtil.getDatabaseUrl(), info);
+		return DriverManager.getConnection(dbUtil.getDatabaseUrl(), info);
 
 //		return DriverManager.getConnection(DBUtil.getDatabaseUrl(), DBUtil.getUsername(), DBUtil.getPassword());
 
@@ -82,11 +83,11 @@ public class ConnectionManager
 	 * @throws IOException 
 	 * @throws GeneralSecurityException 
 	 */
-	public static Connection getConnection() throws SQLException, ClassNotFoundException, GeneralSecurityException, IOException
+	public static Connection getConnection(DBUtil dbUtil, String keyFilename) throws SQLException, ClassNotFoundException, GeneralSecurityException, IOException
 	{	
 			
-		ConnectionManager.getDriver();		
-		return ConnectionManager.createConnection();
+//		ConnectionManager.getDriver(dbUtil);		
+		return ConnectionManager.createConnection(dbUtil, keyFilename);
 		
 	}
 	
@@ -101,14 +102,12 @@ public class ConnectionManager
 	 * @throws IOException 
 	 * @throws GeneralSecurityException 
 	 */
-	public static Boolean testConnection() throws SQLException, ClassNotFoundException, GeneralSecurityException, IOException
+	public static Boolean testConnection(DBUtil dbUtil, String keyFilename) throws SQLException, ClassNotFoundException, GeneralSecurityException, IOException
 	{	
 		
 		try	{
 			
-//			ConnectionManager.getDriver();
-//			Connection conn = DriverManager.getConnection(DBUtil.getDatabaseUrl(), DBUtil.getUsername(), DBUtil.getPassword());
-			if (createConnection()==null) return false;
+			if (createConnection(dbUtil, keyFilename)==null) return false;
 			
 		} catch(CommunicationsException ex) {
 			
