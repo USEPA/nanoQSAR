@@ -200,7 +200,7 @@ public class CsvMatrix
 	/**
 	 * @return the xMatrix
 	 */
-	public static DoubleMatrix getxMatrix() {
+	public DoubleMatrix getxMatrix() {
 		return xMatrix;
 	}
 	
@@ -208,7 +208,7 @@ public class CsvMatrix
 	/**
 	 * @return the yMatrix
 	 */
-	public static DoubleMatrix getyMatrix() {
+	public DoubleMatrix getyMatrix() {
 		return yMatrix;
 	}
 
