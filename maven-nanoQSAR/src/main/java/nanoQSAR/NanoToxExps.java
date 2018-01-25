@@ -42,11 +42,11 @@ public class NanoToxExps extends Vector<NanoToxExp> implements Serializable, Clo
 	}
 	
 //	get nanoToxExps by querying a database server
-	public NanoToxExps(MySqlQuery sqlQuery) throws Exception {
+	public NanoToxExps(DBUtil dbUtil, String keyFilename) throws Exception {
 		super();
 		/* Read data from remote MySQL server and store them in a list.  */
-		this.addAll(sqlQuery.getNanoToxExps());
-		this.setHeader(sqlQuery.getHeader());
+		this.addAll(MySqlQuery.getNanoToxExps(dbUtil, keyFilename));
+		this.setHeader(MySqlQuery.getHeader());
 	}
 	
 	/**
@@ -61,24 +61,24 @@ public class NanoToxExps extends Vector<NanoToxExp> implements Serializable, Clo
 	 * @param None.
 	 * @return Nothing.
 	 */
-	public void mineNanoToxExps(MySqlQuery sqlQuery) throws Exception {			
-	
-		try	{				  
-			
-			/* Read data from remote MySQL server and store them in a list.  */
-			this.addAll(sqlQuery.getNanoToxExps());
-			
-			/* Check default units and perform unit conversions if necessary. */
-			DefaultUnits.checkUnits(this);
-			
-		} catch	(Exception ex) {
-			
-//			lOGGER.log(Level.SEVERE, "Exception was thrown: ending the execution of the program.");
-			throw ex;
-			
-		}
-		
-	}
+//	public void mineNanoToxExps(DBUtil dbUtil) throws Exception {			
+//	
+//		try	{				  
+//			
+//			/* Read data from remote MySQL server and store them in a list.  */
+//			this.addAll(MySqlQuery.getNanoToxExps(dbUtil));
+//			
+//			/* Check default units and perform unit conversions if necessary. */
+//			DefaultUnits.checkUnits(this);
+//			
+//		} catch	(Exception ex) {
+//			
+////			lOGGER.log(Level.SEVERE, "Exception was thrown: ending the execution of the program.");
+//			throw ex;
+//			
+//		}
+//		
+//	}
 	
 	public void readCsvFile(String filename) throws Exception {
 
