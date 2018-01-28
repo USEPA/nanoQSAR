@@ -37,6 +37,8 @@ extractXcolumns <- function(trainingData)
     
   }
   
+  
+    
   # Convert columns of data frame to numeric.
   for (i in 1:numCols)
   {

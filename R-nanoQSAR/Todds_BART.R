@@ -73,7 +73,7 @@ library(bartMachine)
 # Allocate number of cores that will be used by the bartMachine
 set_bart_machine_num_cores(4)
 
-# Call the bartMachine using default values.
+# Build a BART model using default values.
 bart_machine_todd <- bartMachine(Xtraining, Ytraning, 
                                  num_trees = 200,
                                  num_burn_in = 250,
@@ -110,31 +110,51 @@ y_hat_training <- predict(bart_machine_todd, Xtraining)
 saveRDS(bart_machine_todd, file = "bart_machine.todd.rds")
 
 # Perform k-fold cross validation using the testing data set.
-bart_machine_toddCV <- k_fold_cv(Xtest, Ytest, 
-                                 k_folds = 5,
-                                 folds_vec = NULL, 
-                                 verbose = FALSE, 
-                                 num_trees = 200,
-                                 num_burn_in = 250,
-                                 num_iterations_after_burn_in = 1000,
-                                 alpha = 0.95, beta = 2, k = 2, q = 0.9, nu = 3,
-                                 prob_rule_class = 0.5,
-                                 mh_prob_steps = c(2.5, 2.5, 4)/9,
-                                 use_missing_data = TRUE, 
-                                 use_missing_data_dummies_as_covars = TRUE,
-                                 serialize = TRUE)
+# bart_machine_toddCV <- k_fold_cv(Xtraining, Ytraning, 
+#                                  k_folds = 5,
+#                                  folds_vec = NULL, 
+#                                  verbose = FALSE, 
+#                                  num_trees = 200,
+#                                  num_burn_in = 250,
+#                                  num_iterations_after_burn_in = 1000,
+#                                  alpha = 0.95, beta = 2, k = 2, q = 0.9, nu = 3,
+#                                  prob_rule_class = 0.5,
+#                                  mh_prob_steps = c(2.5, 2.5, 4)/9,
+#                                  use_missing_data = FALSE, 
+#                                  use_missing_data_dummies_as_covars = FALSE,
+#                                  serialize = TRUE)
 
 # Store bartMachine object in a file.
-saveRDS(bart_machine_toddCV, file = "bart_machine.toddCV.rds")
+# saveRDS(bart_machine_toddCV, file = "bart_machine.toddCV.rds")
+
+# Build a BART-CV model by cross-validating over a grid of hyperparameter choices.
+# Warning: this can take a long time to run.
+# bart_machine_CV <- bartMachineCV(Xmatrix, y,
+#                                 num_tree_cvs = c(50, 200), 
+#                                 k_cvs = c(2, 3, 5),
+#                                 nu_q_cvs = list(c(3, 0.9), c(3, 0.99), c(10, 0.75)), 
+#                                 k_folds = 5, verbose = FALSE,
+#                                 num_burn_in = 250,
+#                                 num_iterations_after_burn_in = 1000,
+#                                 alpha = 0.95, beta = 2,
+#                                 prob_rule_class = 0.5,
+#                                 mh_prob_steps = c(2.5, 2.5, 4)/9,
+#                                 use_missing_data = TRUE, 
+#                                 use_missing_data_dummies_as_covars = TRUE,
+#                                 serialize = TRUE)
 
 # Make predictions on the test data.  This is not necessary in this case because the bart_machine-toddCV object 
 # includes predicted values.  This is just an example of how to make predictions on data for which we don't 
 # know the outcomes (results).
-y_hat_test <- predict(bart_machine_toddCV, Xtest)
+y_hat_test <- predict(bart_machine_todd, Xtest)
 
 # We can test model performance on out-of-sample test data for which the outcomes are known.  Since we don't have
 # out-of-sample test data we will use the same test data from above to illustrate how to test the model performance 
 # on any future data, with known outcomes, we may obtain.
-ous_perf <- bart_predict_for_test_data(bart_machine_todd, Xtest, Ytest)
+oos_perf <- bart_predict_for_test_data(bart_machine_todd, Xtest, Ytest)
 print(oos_perf$rmse)
-                                  
+
+# Calculate Q2 using the Java program's formula.
+Q2 = 1.0 - sum((Ytest - y_hat_test)^2) / sum((Ytest - mean(Ytest))^2)
+print(Q2)
+

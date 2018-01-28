@@ -1,4 +1,4 @@
-# This script performs the following tasks:
+# This script performs a Bayesian Additive Regression Trees analysis of the nanoQSAR data.
 #
 # Created: 01/02/2018 Wilson Melendez
 # Revised: 
@@ -18,7 +18,7 @@ source("removeColumnsWithAllNAs.R")
 source("removeColumnsWithOneRepeatedValue.R")
 
 # Define string with location of Jar File
-jarFolder <- "C:/Users/wmelende/TempFiles"
+jarFolder <- working_directory
 
 # Call function that will run Jar file.
 runJarFile(jarFolder)
@@ -94,7 +94,7 @@ bart_machine <- bartMachine(Xmatrix, y,
                             seed = NULL,
                             verbose = TRUE)
 
-# Print a summary of the results
+# Print a summary of the results, which includes R2.
 summary(bart_machine)
 
 
@@ -102,7 +102,7 @@ summary(bart_machine)
 # object does provide predicted values.  Consider this an example on how to use the "predict" function.
 y_hat <- predict(bart_machine, Xmatrix)
 
-# Perform k-fold cross validation
+# Perform k-fold cross validation using default values.
 bart_machine_cv5fold <- k_fold_cv(Xmatrix, y, 
                                   k_folds = 5,
                                   folds_vec = NULL, 
@@ -117,7 +117,33 @@ bart_machine_cv5fold <- k_fold_cv(Xmatrix, y,
                                   use_missing_data_dummies_as_covars = TRUE,
                                   serialize = TRUE)
 
-             
+# Print R2 and RMSE values.
+print(bart_machine_cv5fold$PseudoRsq)
+print(bart_machine_cv5fold$rmse)
+
+# Build a BART-CV model by cross-validating over a grid of hyperparameter choices.
+# Warning: this can take a long time to run.
+# bartMachine CV win: k: 2 nu, q: 3, 0.99 m: 50
+bart_machine_CV <- bartMachineCV(Xmatrix, y,
+                                 num_tree_cvs = c(50, 200), 
+                                 k_cvs = c(2, 3, 5),
+                                 nu_q_cvs = list(c(3, 0.9), c(3, 0.99), c(10, 0.75)), 
+                                 k_folds = 5, verbose = FALSE,
+                                 num_burn_in = 250,
+                                 num_iterations_after_burn_in = 1000,
+                                 alpha = 0.95, beta = 2,
+                                 prob_rule_class = 0.5,
+                                 mh_prob_steps = c(2.5, 2.5, 4)/9,
+                                 use_missing_data = TRUE, 
+                                 use_missing_data_dummies_as_covars = TRUE,
+                                 serialize = TRUE)
+              
+# Print statistics
+print(bart_machine_CV$cv_stats)
+
+# Save model
+saveRDS(bart_machine_CV, file = "bart_machine_CV.rds")
+
 # Run a new bartMachine case by reducing beta: this will add more levels to the trees (deeper trees).
 bart_machine1 <- bartMachine(Xmatrix, y, 
                             num_trees = 200,
