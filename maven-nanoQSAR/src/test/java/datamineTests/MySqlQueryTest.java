@@ -217,11 +217,16 @@ public class MySqlQueryTest {
 
 	@Test
 	public void testGetNanoMaterials() {
+		
+		String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
+		String keyFilename = System.getProperty("user.dir") + "\\nanoQSAR.key";
 
 		try {
-			MySqlQuery mySqlQuery = new MySqlQuery();
-			Assert.assertNotNull(mySqlQuery);
-			NanoToxExps nanoToxExps = mySqlQuery.getNanoToxExps();
+			DBUtil dbUtil = new DBUtil();
+			dbUtil.loadProperties(propFilename, keyFilename);
+//			MySqlQuery mySqlQuery = new MySqlQuery();
+//			Assert.assertNotNull(mySqlQuery);
+			NanoToxExps nanoToxExps = MySqlQuery.getNanoToxExps(dbUtil, keyFilename);
 			Assert.assertNotNull(nanoToxExps);
 			Assert.assertFalse("Unexpected: nanoToxExps database is empty", nanoToxExps.isEmpty());
 		} catch (Exception e) {
@@ -233,14 +238,19 @@ public class MySqlQueryTest {
 	
 	@Test
 	public void testWriteCsvFile() {
+		
+		String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
+		String keyFilename = System.getProperty("user.dir") + "\\nanoQSAR.key";
 
 		try {
-			MySqlQuery mySqlQuery = new MySqlQuery();
-			Assert.assertNotNull(mySqlQuery);
-			NanoToxExps nanoToxExps = new NanoToxExps(mySqlQuery);
+			DBUtil dbUtil = new DBUtil();
+			dbUtil.loadProperties(propFilename, keyFilename);
+
+			// NanoToxExps uses MySqlQuery to construct
+			NanoToxExps nanoToxExps = new NanoToxExps(dbUtil, keyFilename);
 			Assert.assertNotNull(nanoToxExps);
 			Assert.assertFalse("Unexpected: nanoToxExps database is empty", nanoToxExps.isEmpty());
-			nanoToxExps.writeCsvFile(DBUtil.getCsvFileName());
+			nanoToxExps.writeCsvFile(dbUtil.getCsvFileName());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

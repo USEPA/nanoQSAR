@@ -42,18 +42,18 @@ import javax.crypto.spec.SecretKeySpec;
 public class DBUtil 
 {
 	public static final String AES = "AES";
-	public static final String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
-	public static final String keyFilename = System.getProperty("user.dir") + "\\nanoQSAR.key";
+//	public static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
+//	public static String keyFilename = System.getProperty("user.dir") + "\\nanoQSAR.key";
 	
 	/* Static fields for name of driver, URL of database, username and password. */
-	private static String driverName;
-	private static String databaseUrl;
-	private static String username;
-	private static String password;
-	private static String csvFileName;
-	private static String passwordKey;
-	private static String BplsFileName;
-	private static String PredictionsFileName;
+	private String driverName;
+	private String databaseUrl;
+	private String username;
+	private String password;
+	private String csvFileName;
+	private String passwordKey;
+	private String BplsFileName;
+	private String PredictionsFileName;
 	
 	/* Need this line to allow logging of error messages */
 	private static Logger LOGGER = Logger.getLogger("nanoQSAR");
@@ -61,68 +61,68 @@ public class DBUtil
 	/* Need this line to allow logging of error messages */
 	private static Logger LOGGER1 = Logger.getLogger("nanoQSAR_TEST");
 	
-	public static String getDriverName() {
+	public String getDriverName() {
 		return driverName;
 	}
 
-	public static void setDriverName(String driverName) {
-		DBUtil.driverName = driverName;
+	public void setDriverName(String driverName) {
+		this.driverName = driverName;
 	}
 
-	public static String getDatabaseUrl() {
+	public String getDatabaseUrl() {
 		return databaseUrl;
 	}
 
-	public static void setDatabaseUrl(String databaseUrl) {
-		DBUtil.databaseUrl = databaseUrl;
+	public void setDatabaseUrl(String databaseUrl) {
+		this.databaseUrl = databaseUrl;
 	}
 
-	public static String getUsername() {
+	public String getUsername() {
 		return username;
 	}
 
-	public static void setUsername(String username) {
-		DBUtil.username = username;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
-	public static String getPassword() {
+	public String getPassword() {
 		return password;
 	}
 
-	public static void setPassword(String password) {
-		DBUtil.password = password;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
-	public static String getCsvFileName() {
+	public String getCsvFileName() {
 		return csvFileName;
 	}
 
-	public static void setCsvFileName(String csvFileName) {
-		DBUtil.csvFileName = csvFileName;
+	public void setCsvFileName(String csvFileName) {
+		this.csvFileName = csvFileName;
 	}
 
-	public static String getPasswordKey() {
+	public String getPasswordKey() {
 		return passwordKey;
 	}
 
-	public static void setPasswordKey(String passwordKey) {
-		DBUtil.passwordKey = passwordKey;
+	public void setPasswordKey(String passwordKey) {
+		this.passwordKey = passwordKey;
 	}
 	
-	public static String getBplsFileName() {
+	public String getBplsFileName() {
 		return BplsFileName;
 	}
 
-	public static void setBplsFileName(String bplsFileName) {
-		BplsFileName = bplsFileName;
+	public void setBplsFileName(String bplsFileName) {
+		this.BplsFileName = bplsFileName;
 	}
 
-	public static String getPredictionsFileName() {
+	public String getPredictionsFileName() {
 		return PredictionsFileName;
 	}
 
-	public static void setPredictionsFileName(String predictionsFileName) {
-		PredictionsFileName = predictionsFileName;
+	public void setPredictionsFileName(String predictionsFileName) {
+		this.PredictionsFileName = predictionsFileName;
 	}
 	
 	/**
@@ -131,7 +131,7 @@ public class DBUtil
 	 * @author Wilson Melendez
 	 * @throws IOException
 	 */
-	public static void loadProperties(String propFilename, String keyFilename) throws IOException, GeneralSecurityException
+	public void loadProperties(String propFilename, String keyFilename) throws IOException, GeneralSecurityException
 	{
 		Properties prop = new Properties();
 		FileInputStream propFile = null;
@@ -193,10 +193,11 @@ public class DBUtil
 	 * This method loads some of the properties in the properties file.
 	 * @author Wilson Melendez
 	 * @param propFilename
+	 * @throws IOException 
 	 * @throws Exception 
 	 * @throws IOException
 	 */
-	public static void loadProperties(String propFilename) throws Exception
+	public void loadProperties(String propFilename) throws IOException
 	{
 		Properties prop = new Properties();
 		FileInputStream propFile = null;
@@ -213,6 +214,7 @@ public class DBUtil
 			setCsvFileName(prop.getProperty("CsvFileName").trim());
 			setBplsFileName(prop.getProperty("BplsFileName").trim());
 			setPredictionsFileName(prop.getProperty("PredictionsFileName").trim());
+
 		}
 		catch(FileNotFoundException ex)
 		{
@@ -220,8 +222,8 @@ public class DBUtil
 			LOGGER1.log(Level.SEVERE, "Properties file, " + propFilename + ", was not found.", ex);
 			throw ex;
 		}
-		catch(Exception ex)
-		{
+		catch (IOException ex) {
+			// TODO Auto-generated catch block
 			throw ex;
 		}
 		finally

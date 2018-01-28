@@ -9,6 +9,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import org.junit.Test;
 
@@ -40,7 +42,7 @@ public class NanoQSARTest {
 		String[] args = null;
 		
 		/* Run the application. */
-		NanoQSAR.main(args);
+		NanoQSAR nanoQSAR = new NanoQSAR(args);
 		
 		/* Verify that the CSV file was created and that it's not
 		 * empty. */
@@ -64,7 +66,7 @@ public class NanoQSARTest {
 		String[] args = new String[0];
 		
 		/* Run the application. */
-		NanoQSAR.main(args);
+		NanoQSAR nanoQSAR = new NanoQSAR(args);
 		
 		/* Verify that the CSV file was created and that it's not
 		 * empty. */
@@ -88,7 +90,7 @@ public class NanoQSARTest {
 		String[] args = {System.getProperty("user.dir") + "\\nanoQSAR.properties"};
 		
 		/* Run the application. */
-		NanoQSAR.main(args);
+		NanoQSAR nanoQSAR = new NanoQSAR(args);
 		
 		/* Verify that the CSV file was created and that it's not
 		 * empty. */	
@@ -114,7 +116,7 @@ public class NanoQSARTest {
 		System.setOut(new PrintStream(outContent));
 			
 		/* Run the application. */
-		NanoQSAR.main(args);
+		NanoQSAR nanoQSAR = new NanoQSAR(args);
 			
 		Assert.assertEquals(helpString, outContent.toString());
 		
@@ -132,9 +134,12 @@ public class NanoQSARTest {
 	{
 		File file1 = new File(System.getProperty("user.dir") + "\\nanoQSAR.properties");
 		File file2 = new File(System.getProperty("java.io.tmpdir"), "\\nanoQSAR.properties");
+		File file3 = new File(System.getProperty("user.dir") + "\\nanoQSAR.key");
+		File file4 = new File(System.getProperty("java.io.tmpdir"), "\\nanoQSAR.key");
 		
 		try {
-			copyFile(file1, file2);
+			Files.copy(file1.toPath(), file2.toPath(),StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(file3.toPath(), file4.toPath(),StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -143,36 +148,16 @@ public class NanoQSARTest {
 		String[] args = {file2.getPath()};
 		
 		/* Run the application. */
-		NanoQSAR.main(args);
+		NanoQSAR nanoQSAR = new NanoQSAR(args);
 		
 		/* Verify that the CSV file was created and that it's not empty. */
 		String csvFile = System.getProperty("user.dir") + "\\nanoQSAR.csv";		
-		File file3 = new File(csvFile);
-		assertTrue("CSV file exists.", file3.exists());
-		assertTrue("CSV file is not empty.", file3.length() > 0);
+		File file5 = new File(csvFile);
+		assertTrue("CSV file exists.", file5.exists());
+		assertTrue("CSV file is not empty.", file5.length() > 0);
 		
 		file2.deleteOnExit();
+		file4.deleteOnExit();
 	}
-	
-	private static void copyFile(File sourceFile, File destFile) throws IOException {
-
-	    if(!destFile.exists()) destFile.createNewFile();
-	    
-	    FileChannel origin = null;
-	    FileChannel destination = null;
-
-	    try {
-	        origin = new FileInputStream(sourceFile).getChannel();
-	        destination = new FileOutputStream(destFile).getChannel();
-	        long count = 0;
-	        long size = origin.size();              
-	        while((count += destination.transferFrom(origin, count, size-count))<size);
-	    } finally {
-            origin.close();
-            destination.close();
-	    }
-
-	}
-
 
 }
