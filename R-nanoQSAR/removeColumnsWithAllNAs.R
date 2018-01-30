@@ -5,16 +5,17 @@
 
 removeColumnsWithAllNAs <- function(XdataFrame)
 {
-  numRows = nrow(XdataFrame)
+  numRows = nrow(XdataFrame)  # Get the number of rows.
   
-  numCols = ncol(XdataFrame)
+  numCols = ncol(XdataFrame)  # Get the number of columns.
   
-  first <- TRUE
-  for (icol in 1:numCols)
+  first <- TRUE  # Logical flag.
+  
+  for (icol in 1:numCols)  # Loop over columns.
   {
-    xcol <- XdataFrame[,icol]
-    isColNas <- all(is.na(xcol))
-    if (isColNas) 
+    xcol <- XdataFrame[,icol]  # Select column.
+    isColNas <- all(is.na(xcol))  # Check whether columns has only NAs.
+    if (isColNas)                 # If true, proceed to store index of column to be removed from data frame.
     {
       if (first)
       {
@@ -27,6 +28,6 @@ removeColumnsWithAllNAs <- function(XdataFrame)
       }
     }
   }
-  Xnew <- XdataFrame[,-indexCols]
-  return(Xnew)
+  Xnew <- XdataFrame[,-indexCols]  # Remove columns with all NAs.
+  return(Xnew)                    # Return updated data frame.
 }

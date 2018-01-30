@@ -1,10 +1,10 @@
-# This script extracts the numeric columns from the input data.
-# Created: 01/04/2018  Wilson Melendez
-# Revised:
+# This script tests the extractXColumns.R script. It checks that the correct columns for the X matrix
+# were extracted by comparing the expected header with the obtained one.
+# Created: 01/26/208 Wilson Melendez
+# Revised: 
 
-extractNumericColumns <- function(nanoQSARdata)
+test.ExtractXColumns <- function()
 {
-  # Store the column names of the nummeric data.
   numericCols <- c("CoatingAmount", "Purity", "ContamAl", "ContamAs", "ContamBe", "ContamCa", "ContamCo", 
                    "ContamCr", "ContamFe", "ContamK", "ContamMg", "ContamNa", "ContamP", "ContamPb", "ContamSb", "ContamSe", 
                    "ContamSiO2", "ContamSn", "ContamTl", "ContamV", "ParticleOuterDiamAvg", "ParticleOuterDiamLow", 
@@ -16,33 +16,34 @@ extractNumericColumns <- function(nanoQSARdata)
                    "ZetaPotentialHigh", "SizeDistribAvg", "SizeDistribLow", "SizeDistribHigh", "SizeDistribAvg2", "SizeDistribLow2", 
                    "SizeDistribHigh2", "SerumConcentration", "AntibioticConcentration", "DOMConcentration", "SalinityValue", "pHAvg", 
                    "pHLow", "pHHigh", "MediumTemp", "TimeValue", "ParticleConcentration", "ParticleExposDuration", "UVADose", 
-                   "UVAExposDuration", "ViabilityAvg")
+                   "UVAExposDuration")
   
-  # Extract the header line
-  header <- names(nanoQSARdata)
+  # Define string with location of Jar File
+  jarFolder <- main_dir
   
-  # Get the number of rows
-  numRows <- nrow(nanoQSARdata)
+  # Call function that will run Jar file.
+  runJarFile(jarFolder)
   
-  # Get the number of columns
-  numCols <- length(numericCols)
+  # Read in CSV file.
+  filename <- paste(jarFolder, "/nanoQSAR.csv", sep="")
+  nanoQSARdata <- read.csv(filename, stringsAsFactors=FALSE)
   
-  # Loop over the data and store the numeric columns in a separate matrix.  
-  for (i in 1: numCols)
-  {
-    xcolumn <- nanoQSARdata[numericCols[i]]  # Extract numeric columns using their names.
-    xcolumn[xcolumn == "null"] = NA          # Set any nulls that may be found in the column to NAs.
-    if (i == 1)
-    {
-      xDF <- xcolumn              # Convert data frame to a matrix.
-    }
-    else
-    {
-      xDF <- cbind(xDF, xcolumn)  # Convert data frame to a matrix and concatenate columns horizontally.
-    }
-  }
-   
-  return(xDF)
+  # Set working directory back to test directory.
+  setwd(test_dir)
+  
+  # Extract numeric columns
+  numericData <- extractNumericColumns(nanoQSARdata)
+  
+  # Get the records with results
+  trainingData <- getRecordswithResults(numericData)
+  
+  # Extract the X matrix.
+  XmatrixOrig <- extractXcolumns(trainingData)
+  
+  # Get header of X matrix.
+  xheader <- colnames(XmatrixOrig)
+  
+  # Verify that X matrix's header is the expected one.
+  checkEquals(xheader, numericCols)
+  
 }
-
-

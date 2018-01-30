@@ -4,6 +4,7 @@
 
 extractXcolumns <- function(trainingData)
 {
+  # Store column names of X matrix.
   numericCols <- c("CoatingAmount", "Purity", "ContamAl", "ContamAs", "ContamBe", "ContamCa", "ContamCo", 
                  "ContamCr", "ContamFe", "ContamK", "ContamMg", "ContamNa", "ContamP", "ContamPb", "ContamSb", "ContamSe", 
                  "ContamSiO2", "ContamSn", "ContamTl", "ContamV", "ParticleOuterDiamAvg", "ParticleOuterDiamLow", 
@@ -37,6 +38,7 @@ extractXcolumns <- function(trainingData)
     
   }
   
+    
   # Convert columns of data frame to numeric.
   for (i in 1:numCols)
   {

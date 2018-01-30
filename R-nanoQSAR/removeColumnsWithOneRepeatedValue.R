@@ -5,19 +5,19 @@
 
 removeColumnsWithOneRepeatedValue <- function(XdataFrame)
 {
-  numRows = nrow(XdataFrame)
+  numRows = nrow(XdataFrame)  # Get the number of rows.
   
-  numCols = ncol(XdataFrame)
+  numCols = ncol(XdataFrame)  # Get the number of columns.
   
-  first <- TRUE
+  first <- TRUE   # Logical flag
   
-  for (icol in 1:numCols)
+  for (icol in 1:numCols)  # Loop over the columns of the data frame.
   {
     xcol <- XdataFrame[,icol]
     value <- xcol[1]
-    if (is.na(value) == TRUE || !all(!is.na(xcol)) == TRUE) next
+    if (is.na(value) == TRUE || !all(!is.na(xcol)) == TRUE) next  # Skip columns that have different values.
     
-    if (all(xcol == value)) 
+    if (all(xcol == value))   # If column has the same value throughout, proceed to store its index.
     {
       if (first)
       {
@@ -30,6 +30,6 @@ removeColumnsWithOneRepeatedValue <- function(XdataFrame)
       }
     }
   }
-  Xnew <- XdataFrame[,-indexCols]
-  return(Xnew)
+  Xnew <- XdataFrame[,-indexCols]  # Remove columns with repeated values throughout.
+  return(Xnew)                     # Return updated data frame.
 }

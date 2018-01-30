@@ -4,7 +4,7 @@
 
 extractYcolumn <- function(dataSet)
 {
-  Results = c("ViabilityAvg")
+  Results = c("ViabilityAvg")  # store name of results column.
   
   # Get the desired results using the name of the column in the original data.
   ycolumn <- dataSet[Results[1]]
