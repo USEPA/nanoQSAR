@@ -14,8 +14,8 @@ test.ToddData <- function()
   filename2 <- paste(mainFolder, "/LC50_prediction_set-2d.csv", sep="")
   
   # Read in CSV files.
-  Todd_TrainingData <- read.csv(filename1, stringsAsFactors=FALSE)
-  Todd_TestData <- read.csv(filename2, stringsAsFactors=FALSE)
+  Todd_TrainingData <- read.csv(filename1, stringsAsFactors = FALSE)
+  Todd_TestData <- read.csv(filename2, stringsAsFactors = FALSE)
   
   # Extract the training X and Y matrices 
   Xtraining <- Todd_TrainingData
@@ -76,22 +76,31 @@ test.ToddData <- function()
                                    verbose = TRUE)
   
   
+  # Use the test data to make predictions.
+  y_pred_data1 <- predict(bart_machine_todd, Xtest)
+  
   # Store bartMachine object in a file.
   outputFolder <- test_dir
-  fileRds <- paste(outputFolder, "/bart_machine_todd.rds", sep="")
+  fileRds <- paste(outputFolder, "/bart_machine_todd_testdata.rds", sep="")
   saveRDS(bart_machine_todd, file = fileRds)
 
-  
   # Verify that file exists.
   checkTrue(file.exists(fileRds), "File Exists.")
   
   # Read rds file
   bm1 <- readRDS(fileRds)
   
+  # Use input bartMachine object and test data to make predictions. 
+  y_pred_data2 <- predict(bm1, Xtest)
+  
+  # Verify that both predictions are the same.
+  checkEquals(y_pred_data1, y_pred_data2)
+  
   # Extract R2 from object
   r2 <- bm1$PseudoRsq
   
   # Verify that R2 is larger than 0.85.
   checkTrue(r2 > 0.85, "Condition is true.")
-
+  
+  
 }

@@ -1,21 +1,23 @@
-# This script performs the Bayesian Additive Regression Trees analysis on Todd's data.
+# This script performs the Bayesian Additive Regression Trees analysis on Todd Martin's data.
 #
 # Created: 01/19/2018 Wilson Melendez
 # Revised: 
 
-# Store location of script.
+# Set location of main scripts.  The user has to adjust this pathname based on the location where this and 
+# other scripts are located.
 working_directory <- "C:/Users/wmelende/RnanoQSAR/R-nanoQSAR"
 
 # Set working directory
 setwd(working_directory)
 
-# Define string with location of Todd's data
+# Set pathname of location of Todd's data. 
 toddFolder <- "C:/Users/wmelende/RnanoQSAR/R-nanoQSAR"
 
-# Read in CSV files.
-filename1 <- paste(toddFolder, "/LC50_training_set-2d.csv", sep="")
-filename2 <- paste(toddFolder, "/LC50_prediction_set-2d.csv", sep="")
+# Paste the names of the files to the directory pathanme.
+filename1 <- paste(toddFolder, "/LC50_training_set-2d.csv", sep = "")
+filename2 <- paste(toddFolder, "/LC50_prediction_set-2d.csv", sep = "")
 
+# Read in CSV files.
 Todd_TrainingData <- read.csv(filename1, stringsAsFactors=FALSE)
 Todd_TestData <- read.csv(filename2, stringsAsFactors=FALSE)
 
@@ -26,7 +28,7 @@ Xtraining$Tox <- NULL
 Ytraning <- Todd_TrainingData$Tox
 
 # Convert any non-numeric column of the X matrix to numeric.
-numCols = ncol(Xtraining)
+numCols = ncol(Xtraining)   # Get the number of columns.
 for (i in 1:numCols)
 {
   if (class(Xtraining[,i]) != "numeric")
@@ -35,14 +37,14 @@ for (i in 1:numCols)
   }
 }
 
-# Extract the test X and Y matrices
+# Extract the X and Y test matrices.
 Xtest <- Todd_TestData
 Xtest$CAS <- NULL
 Xtest$Tox <- NULL
 Ytest <- Todd_TestData$Tox
 
-# Convert any non-numeric column of the testing X matrix to numeric.
-numCols = ncol(Xtest)
+# Convert any non-numeric column of the X test matrix to numeric.
+numCols = ncol(Xtest)  # Get the number of columns
 for (i in 1:numCols)
 {
   if (class(Xtest[,i]) != "numeric")
@@ -67,10 +69,10 @@ library(rJava)
 # cores can be respecified at any time.
 options(java.parameters = "-Xmx4000m")
 
-# Load the bartMachine package
+# Load the bartMachine package.
 library(bartMachine)
 
-# Allocate number of cores that will be used by the bartMachine
+# Allocate number of cores that will be used by the bartMachine.
 set_bart_machine_num_cores(4)
 
 # Build a BART model using default values.
@@ -103,10 +105,10 @@ bart_machine_todd <- bartMachine(Xtraining, Ytraning,
 summary(bart_machine_todd)
 
 # Make predictions on the training data. Note: this is not necessary in this case because the bart_machine_todd
-# object does provide predicted values.  Consider this an example on how to use the "predict" function.
+# object has predicted values stored in it.  Consider this an example on how to use the "predict" function.
 y_hat_training <- predict(bart_machine_todd, Xtraining)
 
-# Store bartMachine object in a file.
+# Save bartMachine object in a file.
 saveRDS(bart_machine_todd, file = "bart_machine.todd.rds")
 
 # Perform k-fold cross validation using the testing data set.
@@ -124,7 +126,7 @@ saveRDS(bart_machine_todd, file = "bart_machine.todd.rds")
 #                                  use_missing_data_dummies_as_covars = FALSE,
 #                                  serialize = TRUE)
 
-# Store bartMachine object in a file.
+# Save bartMachine object in a file.
 # saveRDS(bart_machine_toddCV, file = "bart_machine.toddCV.rds")
 
 # Build a BART-CV model by cross-validating over a grid of hyperparameter choices.
@@ -143,16 +145,15 @@ saveRDS(bart_machine_todd, file = "bart_machine.todd.rds")
 #                                 use_missing_data_dummies_as_covars = TRUE,
 #                                 serialize = TRUE)
 
-# Make predictions on the test data.  This is not necessary in this case because the bart_machine-toddCV object 
-# includes predicted values.  This is just an example of how to make predictions on data for which we don't 
-# know the outcomes (results).
+# Make predictions on the test data.  
 y_hat_test <- predict(bart_machine_todd, Xtest)
 
-# We can test model performance on out-of-sample test data for which the outcomes are known.  Since we don't have
-# out-of-sample test data we will use the same test data from above to illustrate how to test the model performance 
-# on any future data, with known outcomes, we may obtain.
+# Write predicted values to a file.
+saveRDS(y_hat_test, file = "PredictedValues_Todd_TestData.rds")
+
+# We can test model performance on out-of-sample test data for which the outcomes are known.  
 oos_perf <- bart_predict_for_test_data(bart_machine_todd, Xtest, Ytest)
-print(oos_perf$rmse)
+print(oos_perf$rmse)  # Print the root-mean-square error
 
 # Calculate Q2 using the Java program's formula.
 Q2 = 1.0 - sum((Ytest - y_hat_test)^2) / sum((Ytest - mean(Ytest))^2)

@@ -4,24 +4,24 @@
 
 getRecordswithResults <- function(dataSet)
 {
-  Results = c("ViabilityAvg")
+  Results = c("ViabilityAvg")  # Store name of results column.
   
   # Get the number of rows
   numRows <- nrow(dataSet)
   
   first <- TRUE
   
-  for (i in 1:numRows)
+  for (i in 1:numRows)  # Loop over the rows.
   {
     if (dataSet[i, Results[1]] == "null") next   # Skip records with no results
     if (first)
     {
-      Tdata <- dataSet[i,]
+      Tdata <- dataSet[i,]    # Attach first record with results.
       first <- FALSE
     }
     else
     {
-      Tdata <- rbind(Tdata, dataSet[i,])
+      Tdata <- rbind(Tdata, dataSet[i,])  # Concatenate records horizontally.
     }
   }
   return(Tdata)

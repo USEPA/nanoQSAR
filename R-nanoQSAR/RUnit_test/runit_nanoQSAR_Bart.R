@@ -64,10 +64,12 @@ test.nanoQSAR_Bart <- function()
                               seed = NULL,
                               verbose = TRUE)
   
-  # Store bartMachine object in a file.
-  fileNanoQsarRds <- paste(getwd(), "/bart_machine_nanoQSAR.rds", sep="")
-  saveRDS(bart_machine, file = fileNanoQsarRds)
+  # Make predictions 
+  y_pred1 <- predict(bart_machine, Xmatrix)
   
+  # Store bartMachine object in a file.
+  fileNanoQsarRds <- paste(test_dir, "/bart_machine_nanoQSAR.rds", sep="")
+  saveRDS(bart_machine, file = fileNanoQsarRds)
   
   # Verify that file exists.
   checkTrue(file.exists(fileNanoQsarRds), "File Exists.")
@@ -75,10 +77,16 @@ test.nanoQSAR_Bart <- function()
   # Read rds file
   bmNano <- readRDS(fileNanoQsarRds)
   
+  # Retrieve predicted values from bartMachine object.
+  y_pred2 <- bmNano$y_hat_train
+  
+  # Verify that both predictions are the same.
+  checkEquals(y_pred1, y_pred2)
+  
   # Extract R2 from object
   r2 <- bmNano$PseudoRsq
   
-  # Verify that R2 is larger than 0.85.
+  # Verify that R2 is larger than 0.70.
   checkTrue(r2 > 0.70, "Condition is true.")
   
 }

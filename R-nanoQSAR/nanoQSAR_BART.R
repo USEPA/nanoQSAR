@@ -3,12 +3,13 @@
 # Created: 01/02/2018 Wilson Melendez
 # Revised: 
 
-# Store location of script.
+# Set the location of scripts.
 working_directory <- "C:/Users/wmelende/RnanoQSAR/R-nanoQSAR"
 
 # Set working directory
 setwd(working_directory)
 
+# Load external functions into this script.
 source("runJarFile.R")
 source("extractNumericColumns.R")
 source("extractXcolumns.R")
@@ -141,7 +142,7 @@ bart_machine_CV <- bartMachineCV(Xmatrix, y,
 # Print statistics
 print(bart_machine_CV$cv_stats)
 
-# Save model
+# Save model to a file.
 saveRDS(bart_machine_CV, file = "bart_machine_CV.rds")
 
 # Run a new bartMachine case by reducing beta: this will add more levels to the trees (deeper trees).
@@ -175,7 +176,7 @@ summary(bart_machine1)
 # Use readRDS() to load the objects back into R.
 saveRDS(bart_machine, file = "bart_machine.rds")
 saveRDS(bart_machine_cv5fold, file = "bart_machine_cv5fold.rds")
-saveRDS(bart_machine1, file = "bart_machine1.rds")
+saveRDS(bart_machine1, file = "bart_machine_DeeperTrees.rds")
 
 
 
