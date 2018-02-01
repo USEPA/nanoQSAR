@@ -745,7 +745,8 @@ public class NanoQSAR_PLSTest {
 	{
 		String[] args = null;
 		/* Run the application. */
-		NanoQSAR_PLS.main(args);
+		NanoQSAR_PLS nanoQSAR_PLS = new NanoQSAR_PLS(args);
+		assertNotNull("nanoQSAR_PLS is null", nanoQSAR_PLS);
 		
 		/* Verify that the log file was created and that it's not
 		 * empty. */

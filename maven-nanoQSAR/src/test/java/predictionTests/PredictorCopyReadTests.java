@@ -41,15 +41,16 @@ public class PredictorCopyReadTests {
 		String CsvFileName  = "nanoQSAR.csv";
 		String BplsFileName = "nanoQSAR_BPLS.csv";
 		String PredictionsFileName = "nanoQSAR_Predictions.csv";
-		String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";	
+		String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
 		
 		try {
 			
-			DBUtil.loadProperties(propFilename);
+			DBUtil dbUtil = new DBUtil();
+			dbUtil.loadProperties(propFilename);
 			
-			Assert.assertEquals(CsvFileName, DBUtil.getCsvFileName());
-			Assert.assertEquals(BplsFileName, DBUtil.getBplsFileName());
-			Assert.assertEquals(PredictionsFileName, DBUtil.getPredictionsFileName());
+			Assert.assertEquals(CsvFileName, dbUtil.getCsvFileName());
+			Assert.assertEquals(BplsFileName, dbUtil.getBplsFileName());
+			Assert.assertEquals(PredictionsFileName, dbUtil.getPredictionsFileName());
 			
 		} catch (Exception e) {		
 			e.printStackTrace();
