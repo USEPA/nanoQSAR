@@ -24,7 +24,7 @@ import prediction.NanoQSAR_PRED;
  */
 public class NanoQSAR_PredTests {
 	
-	static String helpString = "User options:\njava -jar nanoQSAR_Test -h\njava -jar nanoQSAR_Test\njava -jar nanoQSAR_Test propFilename\n";
+	static String helpString = "User options:\njava -jar nanoQSAR_PRED -h\njava -jar nanoQSAR_PRED\njava -jar nanoQSAR_PRED propFilename\n";
 
 	@Test
 	public final void testMain() {

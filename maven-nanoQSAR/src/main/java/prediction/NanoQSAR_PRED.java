@@ -23,9 +23,9 @@ public class NanoQSAR_PRED {
 	
 	/* Default filenames */
 	static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
-	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR_TEST.log";
+	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR_PRED.log";
 	
-	static String helpString = "User options:\njava -jar nanoQSAR_Test -h\njava -jar nanoQSAR_Test\njava -jar nanoQSAR_Test propFilename\n";
+	static String helpString = "User options:\njava -jar nanoQSAR_PRED -h\njava -jar nanoQSAR_PRED\njava -jar nanoQSAR_PRED propFilename\n";
 
 	/* Create an object of type Logger so we can log error or warning messages. */
 	private static Logger LOGGER1 =  Logger.getLogger("nanoQSAR_TEST");
