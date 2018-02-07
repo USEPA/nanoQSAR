@@ -23,8 +23,7 @@ public class NanoQSARTest {
 
 	@Test
 	public final void testMain() {
-		NanoQSAR nanoQSAR = new NanoQSAR();
-		Assert.assertNotNull("nanoQSAR was null", nanoQSAR);
+		NanoQSAR.main();
 	}
 	
 	/**
@@ -42,7 +41,7 @@ public class NanoQSARTest {
 		String[] args = null;
 		
 		/* Run the application. */
-		NanoQSAR nanoQSAR = new NanoQSAR(args);
+		NanoQSAR.main(args);
 		
 		/* Verify that the CSV file was created and that it's not
 		 * empty. */
@@ -66,7 +65,7 @@ public class NanoQSARTest {
 		String[] args = new String[0];
 		
 		/* Run the application. */
-		NanoQSAR nanoQSAR = new NanoQSAR(args);
+		NanoQSAR.main(args);
 		
 		/* Verify that the CSV file was created and that it's not
 		 * empty. */
@@ -90,7 +89,7 @@ public class NanoQSARTest {
 		String[] args = {System.getProperty("user.dir") + "\\nanoQSAR.properties"};
 		
 		/* Run the application. */
-		NanoQSAR nanoQSAR = new NanoQSAR(args);
+		NanoQSAR.main(args);
 		
 		/* Verify that the CSV file was created and that it's not
 		 * empty. */	
@@ -116,7 +115,7 @@ public class NanoQSARTest {
 		System.setOut(new PrintStream(outContent));
 			
 		/* Run the application. */
-		NanoQSAR nanoQSAR = new NanoQSAR(args);
+		NanoQSAR.main(args);
 			
 		Assert.assertEquals(helpString, outContent.toString());
 		
@@ -148,7 +147,7 @@ public class NanoQSARTest {
 		String[] args = {file2.getPath()};
 		
 		/* Run the application. */
-		NanoQSAR nanoQSAR = new NanoQSAR(args);
+		NanoQSAR.main(args);
 		
 		/* Verify that the CSV file was created and that it's not empty. */
 		String csvFile = System.getProperty("user.dir") + "\\nanoQSAR.csv";		

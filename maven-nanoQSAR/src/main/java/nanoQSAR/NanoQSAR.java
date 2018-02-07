@@ -32,16 +32,14 @@ public class NanoQSAR {
 	/* Create an object of type Logger so we can log error or warning messages. */
 	protected static Logger LOGGER =  Logger.getLogger("nanoQSAR", null);
 	
-	public NanoQSAR(String[] args) 
+	public static void main(String[] args) 
 	{
 		try	{
 		
 			if (testArgs(args)) {
 
-				startLogger();
+				NanoQSAR nanoQSAR = new NanoQSAR();
 
-				generate();
-				
 			}
 
 		} catch(Exception ex) {
@@ -52,13 +50,11 @@ public class NanoQSAR {
 		
 	}
 
-	public NanoQSAR() 
+	public static void main () 
 	{
 		try	{
 
-			startLogger();
-
-			generate();
+			NanoQSAR nanoQSAR = new NanoQSAR();
 
 		} catch(Exception ex) {
 
@@ -68,7 +64,7 @@ public class NanoQSAR {
 		
 	}
 	
-	private boolean testArgs(String[] args) throws Exception {
+	private static boolean testArgs(String[] args) throws Exception {
 		
 		if (args == null || args.length == 0) { // Use default properties file.
 
@@ -93,6 +89,15 @@ public class NanoQSAR {
 		
 		return true;
 		
+	}
+	
+	public NanoQSAR() throws Exception
+	{
+
+			startLogger();
+
+			generate();
+				
 	}
 	
 	private void startLogger() throws IOException {
