@@ -23,9 +23,9 @@ public class NanoQSAR_PRED {
 	
 	/* Default filenames */
 	static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
-	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR_PRED.log";
+	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR_TEST.log";
 	
-	static String helpString = "User options:\njava -jar nanoQSAR_PRED -h\njava -jar nanoQSAR_PRED\njava -jar nanoQSAR_PRED propFilename\n";
+	static String helpString = "User options:\njava -jar nanoQSAR_Test -h\njava -jar nanoQSAR_Test\njava -jar nanoQSAR_Test propFilename\n";
 
 	/* Create an object of type Logger so we can log error or warning messages. */
 	private static Logger LOGGER1 =  Logger.getLogger("nanoQSAR_TEST");
@@ -33,15 +33,13 @@ public class NanoQSAR_PRED {
 	/**
 	 * @param args
 	 */
-	public NanoQSAR_PRED(String[] args) {
+	public static void main(String[] args) {
 		
 		try	
 		{	
 			if (testArgs(args)) {
 
-				startLogger();
-
-				predict();
+				NanoQSAR_PRED nanoQSAR_PRED = new NanoQSAR_PRED();
 
 			}
 		}
@@ -52,15 +50,11 @@ public class NanoQSAR_PRED {
 				
 	}
 	
-	public NanoQSAR_PRED() {
+	public static void main() {
 		
 		try	
 		{	
-
-			startLogger();
-
-			predict();
-
+			NanoQSAR_PRED nanoQSAR_PRED = new NanoQSAR_PRED();
 		}
 		catch (Exception ex) 
 		{
@@ -69,7 +63,7 @@ public class NanoQSAR_PRED {
 		
 	}
 
-	private boolean testArgs(String[] args) throws Exception {
+	private static boolean testArgs(String[] args) throws Exception {
 		
 		if (args == null || args.length == 0) { // Use default properties file.
 
@@ -91,6 +85,15 @@ public class NanoQSAR_PRED {
 		
 		return true;
 		
+	}
+	
+	public NanoQSAR_PRED() throws Exception
+	{
+
+			startLogger();
+
+			predict();
+				
 	}
 	
 	private void startLogger() throws IOException {

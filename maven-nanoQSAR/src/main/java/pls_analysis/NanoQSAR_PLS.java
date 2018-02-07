@@ -41,18 +41,17 @@ public class NanoQSAR_PLS
 	 * This is the main method.
 	 * @param args
 	 * @author Wilson Melendez
+	 * @return 
 	 * @throws Exception 
 	 */
-	public NanoQSAR_PLS(String[] args) throws Exception 
+	public static void main(String[] args) throws Exception 
 	{
 
 		try	{
 			
 			if (testArgs(args)) {
 
-				startLogger();
-
-				analyze();
+				NanoQSAR_PLS nanoQSAR_PLS = new NanoQSAR_PLS();
 				
 			}
 
@@ -64,15 +63,12 @@ public class NanoQSAR_PLS
 		
 	}
 	
-	public NanoQSAR_PLS() throws Exception 
+	public static void main() throws Exception 
 	{
 
 		try	{
 
-			startLogger();
-
-			analyze();
-
+			NanoQSAR_PLS nanoQSAR_PLS = new NanoQSAR_PLS();
 
 		} catch(Exception ex) {
 
@@ -83,7 +79,7 @@ public class NanoQSAR_PLS
 	}
 
 
-	private boolean testArgs(String[] args) throws Exception {
+	private static boolean testArgs(String[] args) throws Exception {
 
 		if (args == null || args.length == 0) { // Use default properties file.
 
@@ -106,6 +102,15 @@ public class NanoQSAR_PLS
 		}
 		
 		return true;
+	}
+	
+	public NanoQSAR_PLS() throws Exception
+	{
+
+			startLogger();
+
+			analyze();
+				
 	}
 	
 	private void startLogger() throws IOException {

@@ -24,12 +24,11 @@ import prediction.NanoQSAR_PRED;
  */
 public class NanoQSAR_PredTests {
 	
-	static String helpString = "User options:\njava -jar nanoQSAR_PRED -h\njava -jar nanoQSAR_PRED\njava -jar nanoQSAR_PRED propFilename\n";
+	static String helpString = "User options:\njava -jar nanoQSAR_Test -h\njava -jar nanoQSAR_Test\njava -jar nanoQSAR_Test propFilename\n";
 
 	@Test
 	public final void testMain() {
-		NanoQSAR_PRED nanoQSAR_pred = new NanoQSAR_PRED();
-		Assert.assertNotNull("nanoQSAR_pred was null", nanoQSAR_pred);
+		NanoQSAR_PRED.main();
 	}
 	
 	/**
@@ -47,7 +46,7 @@ public class NanoQSAR_PredTests {
 		String[] args = null;
 		
 		/* Run the application. */
-		NanoQSAR_PRED nanoQSAR_pred = new NanoQSAR_PRED(args);
+		NanoQSAR_PRED.main(args);
 		
 		/* Verify that the CSV file was created and that it's not
 		 * empty. */
@@ -71,7 +70,7 @@ public class NanoQSAR_PredTests {
 		String[] args = new String[0];
 		
 		/* Run the application. */
-		NanoQSAR_PRED nanoQSAR_pred = new NanoQSAR_PRED(args);
+		NanoQSAR_PRED.main(args);
 		
 		/* Verify that the CSV file was created and that it's not
 		 * empty. */
@@ -93,7 +92,7 @@ public class NanoQSAR_PredTests {
 		String[] args = {System.getProperty("user.dir") + "\\nanoQSAR.properties"};
 		
 		/* Run the application. */
-		NanoQSAR_PRED nanoQSAR_pred = new NanoQSAR_PRED(args);
+		NanoQSAR_PRED.main(args);
 		
 		/* Verify that the CSV file was created and that it's not empty. */	
 		File file = new File(csvFile);
@@ -115,7 +114,7 @@ public class NanoQSAR_PredTests {
 		System.setOut(new PrintStream(outContent));
 			
 		/* Run the application. */
-		NanoQSAR_PRED nanoQSAR_pred = new NanoQSAR_PRED(args);
+		NanoQSAR_PRED.main(args);
 			
 		Assert.assertEquals(helpString, outContent.toString());		
 	}
@@ -146,7 +145,7 @@ public class NanoQSAR_PredTests {
 		String[] args = {file2.getPath()};
 		
 		/* Run the application. */
-		NanoQSAR_PRED nanoQSAR_pred = new NanoQSAR_PRED(args);
+		NanoQSAR_PRED.main(args);
 		
 		/* Verify that the CSV file was created and that it's not empty. */
 		File file3 = new File(csvFile);
