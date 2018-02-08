@@ -44,7 +44,7 @@ public class NanoQSAR_PLS
 	 * @return 
 	 * @throws Exception 
 	 */
-	public static void main(String[] args) throws Exception 
+	public static void main(String[] args)
 	{
 
 		try	{
@@ -63,7 +63,7 @@ public class NanoQSAR_PLS
 		
 	}
 	
-	public static void main() throws Exception 
+	public static void main()
 	{
 
 		try	{
