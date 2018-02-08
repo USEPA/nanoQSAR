@@ -64,8 +64,9 @@ public class ToddsTEST {
 		 */
 
 		double R2 = 1.0 - (ress / sumYmean);
-		int numOfDeflations = csvMatrix.getNumOfDeflations();
-		assertTrue("R2 = "+R2+", numOfDeflations = "+numOfDeflations, R2 > 0.60);
+		assertTrue("R2 = "+R2+", numOfDeflations = "+csvMatrix.getNumOfDeflations(), R2 > 0.60);
+		
+		System.out.println("R2 = "+R2+", numOfDeflations = "+csvMatrix.getNumOfDeflations());
 		
 		/* Predict the Y values using X and BPLS*. */
 		yPredicted = CsvMatrix.predictResults(xPrediction, BplsStar);
@@ -75,6 +76,12 @@ public class ToddsTEST {
 		 * where || is the norm of a vector.
 		 */
 		yDiff = yPrediction.sub(yPredicted);
+		
+//		System.out.println("i\t"+"obs\t"+"pred\t\t\t"+"diff");
+//		for (int i=0; i<yPredicted.length-1; i++) {
+//			System.out.println(i+"\t"+yPrediction.get(i)+"\t"+yPredicted.get(i)+"\t"+yDiff.get(i));
+//		}
+		
 		double press = yDiff.dot(yDiff);
 		
 		yDiff = yPrediction.sub(yPrediction.mean());
@@ -86,6 +93,8 @@ public class ToddsTEST {
 
 		double Q2 = 1.0 - (press / sumYmean);
 		assertTrue("Q2 = "+Q2+", numOfDeflations = "+csvMatrix.getNumOfDeflations(), Q2 > 0.60);
+		
+		System.out.println("Q2 = "+Q2+", numOfDeflations = "+csvMatrix.getNumOfDeflations());
 		
 //		/* Perform a 5-fold cross-validation and compute Q2. */	
 //		DoubleMatrix Ytilde = csvMatrix.performMultiFoldCrossValidation(5, X, Y);
