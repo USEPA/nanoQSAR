@@ -28,8 +28,8 @@ public class Datamine_NanoQSARTest {
 		NanoQSAR.main();
 		
 		/* Verify that the CSV file was created and that it's not empty. */	
-		Assert.assertTrue("CSV file exists.", file.exists());
-		Assert.assertTrue("CSV file is not empty.", file.length() > 0);
+		Assert.assertTrue("CSV file does not exist.", file.exists());
+		Assert.assertTrue("CSV file is empty.", file.length() > 0);
 	}
 	
 	/**
@@ -52,8 +52,8 @@ public class Datamine_NanoQSARTest {
 		NanoQSAR.main(args);
 		
 		/* Verify that the CSV file was created and that it's not empty. */	
-		Assert.assertTrue("CSV file exists.", file.exists());
-		Assert.assertTrue("CSV file is not empty.", file.length() > 0);
+		Assert.assertTrue("CSV file does not exist.", file.exists());
+		Assert.assertTrue("CSV file is empty.", file.length() > 0);
 		
 	}
 	
@@ -77,8 +77,8 @@ public class Datamine_NanoQSARTest {
 		NanoQSAR.main(args);
 		
 		/* Verify that the CSV file was created and that it's not empty. */		
-		assertTrue("CSV file exists.", file.exists());
-		assertTrue("CSV file is not empty.", file.length() > 0);
+		assertTrue("CSV file does not exist.", file.exists());
+		assertTrue("CSV file is empty.", file.length() > 0);
 	}
 	
 	/**
@@ -101,8 +101,8 @@ public class Datamine_NanoQSARTest {
 		NanoQSAR.main(args);
 		
 		/* Verify that the CSV file was created and that it's not empty. */	
-		assertTrue("CSV file exists.", file.exists());
-		assertTrue("CSV file is not empty.", file.length() > 0);
+		assertTrue("CSV file does not exists", file.exists());
+		assertTrue("CSV file is empty.", file.length() > 0);
 
 	}
 	
@@ -161,8 +161,8 @@ public class Datamine_NanoQSARTest {
 		NanoQSAR.main(args);
 		
 		/* Verify that the CSV file was created and that it's not empty. */	
-		assertTrue("CSV file exists.", file5.exists());
-		assertTrue("CSV file is not empty.", file5.length() > 0);
+		assertTrue("CSV file does not exist.", file5.exists());
+		assertTrue("CSV file is empty.", file5.length() > 0);
 		
 		file2.deleteOnExit();
 		file4.deleteOnExit();
