@@ -20,39 +20,44 @@ import java.sql.SQLException;
 */
 public class ConnectionManagerTest {
 		
-	Connection conn = null;
+	static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
+	static String keyFilename = System.getProperty("user.dir") + "\\nanoQSAR.key";
 //	ConnectionManager connManager = new ConnectionManager();
 	
-	@BeforeClass
-	public static void setUpProperties() throws IOException, GeneralSecurityException
-	{
-		try
-		{
-			String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
-			String keyFilename = System.getProperty("user.dir") + "\\nanoQSAR.key";
-			DBUtil.loadProperties(propFilename, keyFilename);
-		}
-		catch(GeneralSecurityException ex)
-		{
-			throw ex;
-		}
-	}
+//	@BeforeClass
+//	public static void setUpProperties() throws IOException, GeneralSecurityException
+//	{
+//		try
+//		{
+//			dbUtil = new DBUtil();
+//			dbUtil.loadProperties(propFilename, keyFilename);
+//		}
+//		catch(GeneralSecurityException ex)
+//		{
+//			throw ex;
+//		}
+//	}
 	
 	/**
 	 * This method checks whether the class for the driver was found.
 	 * @author Wilson Melendez
+	 * @throws ClassNotFoundException 
 	 */
-	@Test
-	public void testGetDriver() {		
-		try
-		{
-			ConnectionManager.getDriver();
-		}
-		catch(ClassNotFoundException ex)
-		{
-			Assert.fail("Exception was thrown: " + ex);			
-		}		
-	}
+//	@Test
+//	public void testGetDriver() {
+//		
+//		try
+//		{
+//			DBUtil dbUtil = new DBUtil();
+//			dbUtil.loadProperties(propFilename);
+//			Class driverClass = ConnectionManager.getDriver(dbUtil);
+//		}
+//		catch(ClassNotFoundException | IOException ex)
+//		{
+//			Assert.fail("Exception was thrown: " + ex);			
+//		}
+//
+//	}
 
 	
 	/**
@@ -63,9 +68,13 @@ public class ConnectionManagerTest {
 	 */
 	@Test
 	public void testCreateConnection() throws GeneralSecurityException, IOException {
+		
+		Connection conn = null;
 		try
-		{		
-			conn = ConnectionManager.createConnection();		
+		{
+			DBUtil dbUtil = new DBUtil();
+			dbUtil.loadProperties(propFilename, keyFilename);
+			conn = ConnectionManager.createConnection(dbUtil, keyFilename);		
 		}
 		catch(SQLException ex)
 		{
@@ -98,9 +107,13 @@ public class ConnectionManagerTest {
 	 */
 	@Test
 	public void testGetConnection() throws GeneralSecurityException, IOException {
+		
+		Connection conn = null;
 		try
 		{
-			conn = ConnectionManager.getConnection();
+			DBUtil dbUtil = new DBUtil();
+			dbUtil.loadProperties(propFilename, keyFilename);
+			conn = ConnectionManager.getConnection(dbUtil, keyFilename);
 		}
 		catch(ClassNotFoundException ex)
 		{

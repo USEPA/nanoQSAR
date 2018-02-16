@@ -135,7 +135,7 @@ public class NanoToxExpsTest {
 		NanoToxExps nanoMaterials2 = new NanoToxExps();
 		nanoMaterials2.readCsvFile(csvOutput);
 	    
-	    Assert.assertTrue("nanoMateials are not the same", nanoToxExps.isSame(nanoMaterials2));
+	    Assert.assertTrue("nanoMaterials are not the same", nanoToxExps.isSame(nanoMaterials2));
 		
 	}
 	

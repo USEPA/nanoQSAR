@@ -1,2 +1,4 @@
-/HelloWorldJava/.settings
-/HelloWorldJava/bin
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata

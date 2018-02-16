@@ -21,8 +21,15 @@ public class Datamine_NanoQSARTest {
 
 	@Test
 	public final void testMain() {
-		NanoQSAR nanoQSAR = new NanoQSAR();
-		Assert.assertNotNull("nanoQSAR was null", nanoQSAR);
+		// delete the CSV file if it exists.
+		File file = new File(System.getProperty("user.dir") + "\\nanoQSAR.csv");
+		if (file.exists()) file.delete();
+
+		NanoQSAR.main();
+		
+		/* Verify that the CSV file was created and that it's not empty. */	
+		Assert.assertTrue("CSV file does not exist.", file.exists());
+		Assert.assertTrue("CSV file is empty.", file.length() > 0);
 	}
 	
 	/**
@@ -34,17 +41,20 @@ public class Datamine_NanoQSARTest {
 	 */
 	@Test
 	public void testMainProgram1()
-	{	
+	{
+		// delete the CSV file if it exists.
+		File file = new File(System.getProperty("user.dir") + "\\nanoQSAR.csv");
+		if (file.exists()) file.delete();
+		
 		String[] args = null; // null string array
 		
 		/* Run the application. */
 		NanoQSAR.main(args);
 		
 		/* Verify that the CSV file was created and that it's not empty. */	
-		File file = new File(System.getProperty("user.dir") + "\\nanoQSAR.csv");
-		Assert.assertTrue("CSV file exists.", file.exists());
-		Assert.assertTrue("CSV file is not empty.", file.length() > 0);
-		file.deleteOnExit();
+		Assert.assertTrue("CSV file does not exist.", file.exists());
+		Assert.assertTrue("CSV file is empty.", file.length() > 0);
+		
 	}
 	
 	/**
@@ -57,16 +67,18 @@ public class Datamine_NanoQSARTest {
 	@Test
 	public void testMainProgram2()
 	{
+		// delete the CSV file if it exists.
+		File file = new File(System.getProperty("user.dir") + "\\nanoQSAR.csv");
+		if (file.exists()) file.delete();
+		
 		String[] args = new String[0];  // empty string array
 		
 		/* Run the application. */
 		NanoQSAR.main(args);
 		
 		/* Verify that the CSV file was created and that it's not empty. */		
-		File file = new File(System.getProperty("user.dir") + "\\nanoQSAR.csv");
-		assertTrue("CSV file exists.", file.exists());
-		assertTrue("CSV file is not empty.", file.length() > 0);
-		file.deleteOnExit();
+		assertTrue("CSV file does not exist.", file.exists());
+		assertTrue("CSV file is empty.", file.length() > 0);
 	}
 	
 	/**
@@ -78,17 +90,20 @@ public class Datamine_NanoQSARTest {
 	 */
 	@Test
 	public void testMainProgram3()
-	{	
+	{
+		// delete the CSV file if it exists.
+		File file = new File(System.getProperty("user.dir") + "\\nanoQSAR.csv");
+		if (file.exists()) file.delete();
+		
 		String[] args = {System.getProperty("user.dir") + "\\nanoQSAR.properties"};
 		
 		/* Run the application. */
 		NanoQSAR.main(args);
 		
 		/* Verify that the CSV file was created and that it's not empty. */	
-		File file = new File(System.getProperty("user.dir") + "\\nanoQSAR.csv");
-		assertTrue("CSV file exists.", file.exists());
-		assertTrue("CSV file is not empty.", file.length() > 0);
-		file.deleteOnExit();
+		assertTrue("CSV file does not exists", file.exists());
+		assertTrue("CSV file is empty.", file.length() > 0);
+
 	}
 	
 	/**
@@ -128,6 +143,10 @@ public class Datamine_NanoQSARTest {
 		File file3 = new File(System.getProperty("user.dir") + "\\nanoQSAR.key");
 		File file4 = new File(System.getProperty("java.io.tmpdir"), "\\nanoQSAR.key");
 		
+		// delete the CSV file if it exists.
+		File file5 = new File(System.getProperty("user.dir") + "\\nanoQSAR.csv");
+		if (file5.exists()) file5.delete();
+		
 		try {
 			copyFile(file1, file2);
 			copyFile(file3, file4);
@@ -142,10 +161,8 @@ public class Datamine_NanoQSARTest {
 		NanoQSAR.main(args);
 		
 		/* Verify that the CSV file was created and that it's not empty. */	
-		File file5 = new File(System.getProperty("user.dir") + "\\nanoQSAR.csv");
-		assertTrue("CSV file exists.", file5.exists());
-		assertTrue("CSV file is not empty.", file5.length() > 0);
-		file5.deleteOnExit();
+		assertTrue("CSV file does not exist.", file5.exists());
+		assertTrue("CSV file is empty.", file5.length() > 0);
 		
 		file2.deleteOnExit();
 		file4.deleteOnExit();

@@ -200,7 +200,7 @@ public class CsvMatrix
 	/**
 	 * @return the xMatrix
 	 */
-	public static DoubleMatrix getxMatrix() {
+	public DoubleMatrix getxMatrix() {
 		return xMatrix;
 	}
 	
@@ -208,7 +208,7 @@ public class CsvMatrix
 	/**
 	 * @return the yMatrix
 	 */
-	public static DoubleMatrix getyMatrix() {
+	public DoubleMatrix getyMatrix() {
 		return yMatrix;
 	}
 
@@ -891,17 +891,7 @@ public class CsvMatrix
 	 */
 	public static double sumOfSquares(DoubleMatrix A)
 	{
-		double sum2 = 0.0;
-		
-		for (int j = 0; j < A.columns; j++)
-		{
-			for (int i = 0; i < A.rows; i++)
-			{
-				sum2 = sum2 + Math.pow(A.get(i, j), 2);
-			}
-		}
-		
-		return sum2;
+		return A.dot(A);
 	}
 	
 	/**
@@ -939,31 +929,21 @@ public class CsvMatrix
 		Wmatrix = null;
 		Bmatrix = null;
 		
-//		Xmatrix = Xorig;
-//		Ymatrix = Yorig;
-		
 		/* Normalize the Xmatrix by turning each element of the 
 		 * matrix into Z-scores. 
 		 */
-		DoubleMatrix X0 = new DoubleMatrix(Xorig.rows,Xorig.columns);
-		X0.copy(Xorig);
-		
 		meanX = new DoubleMatrix(Xorig.columns);
 		stdX = new DoubleMatrix(Xorig.columns);
-        normalizeMatrix(X0, meanX, stdX);
+		DoubleMatrix normX = Xorig.dup();
+        normalizeMatrix(normX, meanX, stdX);
         
         /* Normalize the Ymatrix by turning each element of the 
 		 * matrix into Z-scores.
 		 */        
-        DoubleMatrix Y0 = new DoubleMatrix(Yorig.rows,Yorig.columns);
-        Y0.copy(Yorig);
-        
 		meanY = new DoubleMatrix(Yorig.columns);
 		stdY = new DoubleMatrix(Yorig.columns);		
-	    normalizeMatrix(Y0, meanY, stdY);
-        
-		/* Calculate the sum of squares for Y0. */
-		ssy = sumOfSquares(Y0);
+		DoubleMatrix normY = Yorig.dup();
+        normalizeMatrix(normY, meanY, stdY);
 		
 		/* Declare a list of double values that will hold the b
 		 * coefficients.  The b values are used to predict Y. 
@@ -973,7 +953,7 @@ public class CsvMatrix
 		/* Perform the NIPALS algorithm. NIPALS is a PLS regression 
 		 * algorithm. 
 		 */
-		bValues = performNIPALS(X0, Y0, testForOverfitting);
+		bValues = performNIPALS(normX, normY, testForOverfitting);
 		numOfDeflations = bValues.size();
 		
 		DoubleMatrix BplsStar = determineCoefficients(bValues, Pmatrix, Cmatrix);
@@ -1125,7 +1105,7 @@ public class CsvMatrix
 	 * NIPALS.
 	 * @author Wilson Melendez
 	 */
-	public List<Double> performNIPALS(DoubleMatrix X0, DoubleMatrix Y0, Boolean testForOverfitting)
+	public List<Double> performNIPALS(DoubleMatrix normX, DoubleMatrix normY, Boolean testForOverfitting)
 	{
 		List<Double> bValues = new ArrayList();
 		DoubleMatrix X = new DoubleMatrix();
@@ -1140,13 +1120,13 @@ public class CsvMatrix
 		
 		double deltaT;
 		int numDeflations = 0;
-		int maxNumDeflations = X0.rows;
+		int maxNumDeflations = normX.rows;
 		double press0 = 0;
 		double press = 0;
 		double xnorm2 = 0;
 		
-		X = X0;
-		Y = Y0;
+		X = normX.dup();
+		Y = normY.dup();
 		
 		numDeflations = 0;
 				
@@ -1193,12 +1173,14 @@ public class CsvMatrix
 			
 			if (testForOverfitting) { // calculate cross-validation effects
 				if (numDeflations==0) {
+					// unnormalized residual
 					press0 = sumOfSquares(Ytraining);
 				} else {
 					List<Double> bValuesTrial = new ArrayList(bValues);
 					bValuesTrial.add(b);
 					DoubleMatrix pTrial = DoubleMatrix.concatHorizontally(Pmatrix, p);
 					DoubleMatrix cTrial = DoubleMatrix.concatHorizontally(Cmatrix, c);
+					// unnormalized residual
 					press = calculatePredictedResidual(bValuesTrial, Xtraining, Ytraining, pTrial, cTrial);
 					if (press > press0) break;
 					press0 = press;

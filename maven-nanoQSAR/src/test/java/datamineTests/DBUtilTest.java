@@ -36,6 +36,7 @@ public class DBUtilTest {
 	public final void testStoreAndLoadProperties() {
 		
 		try {
+			DBUtil dbUtil = new DBUtil();
 
 			Properties p1 = new Properties();
 			p1.put("CsvFileName", CsvFileName);
@@ -66,16 +67,17 @@ public class DBUtilTest {
 	public final void testLoadProperties() {
 		
 		try {
+			DBUtil dbUtil = new DBUtil();
 			
-			DBUtil.loadProperties(propFilename, keyFilename);
+			dbUtil.loadProperties(propFilename, keyFilename);
 			
-			Assert.assertEquals(CsvFileName, DBUtil.getCsvFileName());
-			Assert.assertEquals(databaseURL, DBUtil.getDatabaseUrl());
-			Assert.assertEquals(DriverName, DBUtil.getDriverName());
-			Assert.assertEquals(Username, DBUtil.getUsername());
-			String message = DBUtil.getPassword();
+			Assert.assertEquals(CsvFileName, dbUtil.getCsvFileName());
+			Assert.assertEquals(databaseURL, dbUtil.getDatabaseUrl());
+			Assert.assertEquals(DriverName, dbUtil.getDriverName());
+			Assert.assertEquals(Username, dbUtil.getUsername());
+			String message = dbUtil.getPassword();
 			Assert.assertEquals(Password, message);
-			message = DBUtil.getPasswordKey();
+			message = dbUtil.getPasswordKey();
 			Assert.assertEquals(Key, message);
 			
 		} catch (IOException e) {
@@ -114,9 +116,10 @@ public class DBUtilTest {
 	public final void testDecryptPassword() {
 		         
         try {
+			DBUtil dbUtil = new DBUtil();
         	
-        	DBUtil.loadProperties(propFilename2, keyFilename2);
-        	String decrypted = DBUtil.decrypt(DBUtil.getPassword(), new File(keyFilename2));
+        	dbUtil.loadProperties(propFilename2, keyFilename2);
+        	String decrypted = DBUtil.decrypt(dbUtil.getPassword(), new File(keyFilename2));
         	Assert.assertEquals(OriginalPassword, decrypted);
 
 		} catch (Exception e) {
@@ -137,8 +140,10 @@ public class DBUtilTest {
 	{
 		try
 		{
+			DBUtil dbUtil = new DBUtil();
+			
 			String propFilename = System.getProperty("user.dir") + "\\fileDoesNotExist.properties"; // Non-existing file.
-			DBUtil.loadProperties(propFilename);			
+			dbUtil.loadProperties(propFilename);			
 		}
 		catch (Exception ex)
 		{
@@ -156,8 +161,10 @@ public class DBUtilTest {
 	{
 		try
 		{
+			DBUtil dbUtil = new DBUtil();
+			
 			String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties2"; // File with several missing properties.
-			DBUtil.loadProperties(propFilename);			
+			dbUtil.loadProperties(propFilename);			
 		}
 		catch (Exception ex)
 		{
