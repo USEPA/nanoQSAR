@@ -10,6 +10,8 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jblas.DoubleMatrix;
+
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
@@ -142,6 +144,61 @@ public class NanoToxExps extends Vector<NanoToxExp> implements Serializable, Clo
 				/* Retrieve data as an array of strings and assign array to entries. 
 				 * The array represents one record (row of data). */
 				entries = nanoM.storeDataAsStringArray(fieldIndex);  
+				
+				/* Write row of data to output using the writeNext method. */
+				csvOutput.writeNext(entries);     
+			}
+			
+			/* Close the writer. */
+			csvOutput.close();
+			
+		} catch(Exception ex)	{
+			
+//			lOGGER.log(Level.SEVERE, "FileWriter for " + filename + " could not be constructed.", ex);	
+			throw ex;
+			
+		}
+		
+	}
+	
+	public void writeCsvFileWithPredictions(String CsvFilename, DoubleMatrix yPred) throws Exception {
+
+		try	{
+			
+			/* create a new FileWriter for the CsvFileName */
+			FileWriter file = new FileWriter(CsvFilename); 
+			
+			/* Create an instance of the CSVWriter class and specify the comma as the 
+			 * default separator. Default quote character is double quote. */ 
+			CSVWriter csvOutput = new CSVWriter(file, CSVWriter.DEFAULT_SEPARATOR);
+			
+			/* Build and write header line to CSV file. */
+			String[] entries = new String[header.length+resultHeader.length];
+			for (int i = 0; i < header.length; i++) {
+				entries[i] = header[i];
+			}
+			for (int i = 0; i < resultHeader.length; i++) {
+				entries[i+header.length] = resultHeader[i]+"_Predicted";
+			}
+			csvOutput.writeNext(entries);
+			
+			/* Get header/fieldIndex translation*/
+			int[] fieldIndex = NanoToxExp.getFieldIndex(this.getHeader());
+			
+			String[] shortEntries = null;
+			int j=0;
+			/* Loop over list of NanoToxExp objects */
+			for(NanoToxExp nanoM : this) {
+				/* Retrieve data as an array of strings and assign array to entries. 
+				 * The array represents one record (row of data). */
+				shortEntries = nanoM.storeDataAsStringArray(fieldIndex);
+				for (int i=0;i<shortEntries.length;i++) {
+					entries[i] = shortEntries[i];
+				}
+				DoubleMatrix yPredRow = yPred.getRow(j++);
+				for (int i=0;i<yPred.columns;i++) {
+					entries[i+shortEntries.length] = String.valueOf(yPredRow.get(i));
+				}				
 				
 				/* Write row of data to output using the writeNext method. */
 				csvOutput.writeNext(entries);     

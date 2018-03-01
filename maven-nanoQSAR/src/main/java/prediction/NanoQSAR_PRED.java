@@ -3,7 +3,6 @@
  */
 package prediction;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -114,17 +113,13 @@ public class NanoQSAR_PRED {
 		DBUtil dbUtil = new DBUtil();
 		dbUtil.loadProperties(propFilename);	
 
-		/* Make a copy of nanoQSAR.csv. */
 		String originalFilename = dbUtil.getCsvFileName();
 		String testFilename = dbUtil.getPredictionsFileName();
-		File source = new File(originalFilename);
-		File dest = new File(testFilename);
 
 		Predictor predictor = new Predictor();	
-		predictor.copyFiles(source, dest);		
 
 		/* Read CSV file with data that had been mined from database. */
-		NanoToxExps nanoToxExps = new NanoToxExps(testFilename);			
+		NanoToxExps nanoToxExps = new NanoToxExps(originalFilename);			
 
 		/* Select the columns that will be used to build X and Y matrices from nanoToxExps. */
 		nanoToxExps.selectContinuousColumns();
@@ -148,9 +143,6 @@ public class NanoQSAR_PRED {
 		/* Get header of X-matrix */
 		String[] xMatrixHeader = nanoToxExps.getDescriptorHeader();
 
-		/* Get header of Y-Matrix */
-		String[] yMatrixHeadr = nanoToxExps.getResultHeader();
-
 		/* Get header of BPLS matrix */
 		String[] bplsHeader = predictor.getHeader();			
 
@@ -167,9 +159,6 @@ public class NanoQSAR_PRED {
 		/* Predict results using the X matrix and beta coefficients. */
 		DoubleMatrix yPred = CsvMatrix.predictResults(testXmatrix, bMatrix);
 
-		/* Build test header  */
-		predictor.buildTestHeader(xMatrixHeader, yMatrixHeadr);
-
 		/* Get copy of the original Y matrix  */
 		DoubleMatrix yMatrix = csvm.getyMatrix();
 
@@ -177,13 +166,10 @@ public class NanoQSAR_PRED {
 		double[] r2 = predictor.calculateR2(yMatrix, yPred);
 
 		/* Store R2 in the logger file. */
-		LOGGER.info("R2[0] = " + r2[0]);
-
-		/* Build results matrix that will be written to output. */
-		predictor.buildResultsMatrix(testXmatrix, yMatrix, yPred);
-
-		/* Write test results to CSV file. */
-		predictor.writeResultsToCsv(testFilename);
+		LOGGER.info("R2[0] = " + r2[0] + ", R2[1] = "+r2[1]);
+		
+		/* Add test results to original CSV file format. */
+		nanoToxExps.writeCsvFileWithPredictions(testFilename, yPred);
 		
 	}
 
