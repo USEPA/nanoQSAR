@@ -734,6 +734,11 @@ public class NanoQSAR_PLSTest {
 
 	@Test
 	public final void testMain() {
+		
+		// delete the log file if it exists.
+		File logfile = new File(logFilename);
+		if (logfile.exists()) logfile.delete();
+		
 		// delete the coefficient CSV file if it exists.
 		File file = new File(System.getProperty("user.dir") + "\\nanoQSAR_BPLS.csv");
 		if (file.exists()) file.delete();
@@ -743,6 +748,11 @@ public class NanoQSAR_PLSTest {
 		/* Verify that the Coefficient CSV file was created and that it's not empty. */	
 		Assert.assertTrue("Coefficient CSV file does not exist.", file.exists());
 		Assert.assertTrue("Coefficient CSV file is empty.", file.length() > 0);
+		
+		/* Verify that the log file was created and that it's not empty. */
+		file = new File(logFilename);
+		assertTrue("Log file does not exists.", file.exists());
+		assertTrue("Log file is empty.", file.length() > 0);
 	}
 	
 	/**
@@ -768,10 +778,6 @@ public class NanoQSAR_PLSTest {
 		Assert.assertTrue("Coefficient CSV file does not exist.", file.exists());
 		Assert.assertTrue("Coefficient CSV file is empty.", file.length() > 0);
 		
-		/* Verify that the log file was created and that it's not empty. */
-		file = new File(logFilename);
-		assertTrue("Log file does not exists.", file.exists());
-		assertTrue("Log file is empty.", file.length() > 0);
 	}
 	
 	/**

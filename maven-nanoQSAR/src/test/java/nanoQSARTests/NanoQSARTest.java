@@ -11,6 +11,7 @@ import java.io.PrintStream;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.logging.Logger;
 
 import org.junit.Test;
 
@@ -20,10 +21,24 @@ import nanoQSAR.NanoQSAR;
 public class NanoQSARTest {
 	
 	static String helpString = "User options:\njava -jar nanoQSAR -h\njava -jar nanoQSAR\njava -jar nanoQSAR propFilename\n";
+	
+	/* Need this line to allow logging of error messages */
+	private static Logger LOGGER = Logger.getLogger("nanoQSAR");
+	String logFilename = System.getProperty("user.dir") + "\\nanoQSAR.log";	
 
 	@Test
 	public final void testMain() {
+		
+		// delete the log file if it exists.
+		File logfile = new File(logFilename);
+		if (logfile.exists()) logfile.delete();
+		
 		NanoQSAR.main();
+		
+		/* Verify that the log file was created and that it's not empty. */
+		logfile = new File(logFilename);
+		assertTrue("Log file does not exists.", logfile.exists());
+		assertTrue("Log file should be empty.", logfile.length() == 0);
 	}
 	
 	/**

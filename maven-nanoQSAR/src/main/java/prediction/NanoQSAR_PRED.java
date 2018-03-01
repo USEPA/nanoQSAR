@@ -23,12 +23,12 @@ public class NanoQSAR_PRED {
 	
 	/* Default filenames */
 	static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
-	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR_PRED.log";
+	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR.log";
 	
 	static String helpString = "User options:\njava -jar nanoQSAR_Test -h\njava -jar nanoQSAR_Test\njava -jar nanoQSAR_Test propFilename\n";
 
 	/* Create an object of type Logger so we can log error or warning messages. */
-	private static Logger LOGGER1 =  Logger.getLogger("nanoQSAR_TEST");
+	private static Logger LOGGER =  Logger.getLogger("nanoQSAR");
 	
 	/**
 	 * @param args
@@ -100,9 +100,11 @@ public class NanoQSAR_PRED {
 		
 		/* Initialize log file information. Throw IOException and/or SecurityException 
 		 * if creation of file handler was not successful. */
-		LOGGER1.addHandler(new FileHandler(logFilename));
-		LOGGER1.setLevel(Level.INFO);
-		LOGGER1.setUseParentHandlers(false);  // This will prevent LOGGER from printing messages to the console.
+		LOGGER.setLevel(Level.INFO);
+		if (LOGGER.getUseParentHandlers()) {
+			LOGGER.addHandler(new FileHandler(logFilename));
+			LOGGER.setUseParentHandlers(false);  // This will prevent LOGGER from printing messages to the console.
+		}
 		
 	}
 	
@@ -175,7 +177,7 @@ public class NanoQSAR_PRED {
 		double[] r2 = predictor.calculateR2(yMatrix, yPred);
 
 		/* Store R2 in the logger file. */
-		LOGGER1.info("R2[0] = " + r2[0]);
+		LOGGER.info("R2[0] = " + r2[0]);
 
 		/* Build results matrix that will be written to output. */
 		predictor.buildResultsMatrix(testXmatrix, yMatrix, yPred);
