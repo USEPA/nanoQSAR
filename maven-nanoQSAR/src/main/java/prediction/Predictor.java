@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import nanoQSAR.NanoToxExp;
+import nanoQSAR.NanoToxExps;
 
 import org.jblas.DoubleMatrix;
 
@@ -33,7 +34,7 @@ public class Predictor {
 	private String[] testHeader = null;
 	
 	/* Need this line to allow logging of error messages */
-	private final static Logger LOGGER1 = Logger.getLogger("nanoQSAR_TEST");
+	private final static Logger LOGGER = Logger.getLogger("nanoQSAR");
 	
 	
 	/**
@@ -327,11 +328,12 @@ public class Predictor {
 	/**
 	 * This method writes the results to a CSV file.
 	 * @param filename
+	 * @throws IOException 
 	 */
-	public void writeResultsToCsv(String filename)
+	public void writeResultsToCsv(String filename) throws Exception
 	{
 		String[] entries = new String[this.resultsMatrix.columns];
-		
+	
 		try
 		{	
 			FileWriter file = new FileWriter(filename); 
@@ -355,7 +357,7 @@ public class Predictor {
 				
 				for (int j = 0; j < this.resultsMatrix.columns; j++) 
 				{
-					if (!Double.isNaN(rRow.get(j)) && rRow.get(j) < 0.0) rRow.put(j, 0.0);
+//					if (!Double.isNaN(rRow.get(j)) && rRow.get(j) < 0.0) rRow.put(j, 0.0);
 					entries[j] = String.valueOf(rRow.get(j));
 					if (entries[j].equalsIgnoreCase("NaN")) entries[j]= "Null";
 				}
@@ -366,10 +368,11 @@ public class Predictor {
 			
 			/* Close the writer. */
 			   csvOutput.close();   
-		}
-		catch(IOException ex)
-		{
-			LOGGER1.severe("FileWriter for " + filename + " could not be constructed." + ex);	
+		
+		} catch(Exception ex)	{
+
+			throw ex;
+
 		}
 	}
 	

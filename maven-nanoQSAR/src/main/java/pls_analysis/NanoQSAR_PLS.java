@@ -118,7 +118,7 @@ public class NanoQSAR_PLS
 		/* Initialize log file information. Throw IOException and/or SecurityException 
 		 * if creation of file handler was not successful. */
 		LOGGER.setLevel(Level.INFO);
-		if (!LOGGER.getUseParentHandlers()) {
+		if (LOGGER.getUseParentHandlers()) {
 			LOGGER.addHandler(new FileHandler(logFilename));
 			LOGGER.setUseParentHandlers(false);  // This will prevent LOGGER from printing messages to the console.
 		}
