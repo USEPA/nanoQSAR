@@ -33,10 +33,10 @@ public class MySqlQuery
 	 * @param None.
 	 * @return It returns a string containing an SQL statement query.
 	 */
-	public String getSqlQuery()
+	public static final String getSqlQuery()
 	{
-		String sqlQuery;		
-		sqlQuery = "SELECT link.LinkID, link.MaterialCharID, link.MeasurementID, "
+		final String sqlQuery =		
+				"SELECT link.LinkID, link.MaterialCharID, link.MeasurementID, "
 				 + "materialchar.ORDMaterialID, materialchar.DataSource, "
 				 + "materialchar.LotNumber, materialchar.CoreComp, materialchar.ShellComp, "
 				 + "materialchar.CoatingComp, materialchar.CoatingAmount, "
@@ -147,8 +147,8 @@ public class MySqlQuery
 	 * @param None.
 	 * @return String[]
 	 */
-	public String[] getHeader()	{
-		String[] header = {
+	public static final String[] getHeader()	{
+		final String[] header = {
 				"MaterialCharID","ORDMaterialID", "DataSource", "LotNumber", "CoreComp",
 				"ShellComp", "CoatingComp", "CoatingAmount", "CoatingAmountUnit", 
 				"FunctionalGroups", "FunctionalizationProtocol", "Purity", 
@@ -219,9 +219,10 @@ public class MySqlQuery
 	 * @throws ClassNotFoundException  If no connection driver is available, throw exception.
 	 * @throws SQLException  An exception may be thrown if connection to database fails.
 	 */
-	public NanoToxExps getNanoToxExps() throws Exception
+	public static NanoToxExps getNanoToxExps(DBUtil dbUtil, String keyFilename) throws Exception
 	{		
 		NanoToxExps nanoToxExps = new NanoToxExps();
+		nanoToxExps.setHeader(MySqlQuery.getHeader());
 		NanoToxExp nanoToxExp = null;
 		Statement stmt = null;
 		Connection conn = null;
@@ -229,8 +230,11 @@ public class MySqlQuery
 		
 		try
 		{
+			/* Input database connection information and name of output file. */
+//			dbUtil.loadProperties(dbUtil.propFilename, dbUtil.keyFilename);
+			
 			/* Get the connection to the database. */
-			conn = ConnectionManager.getConnection();
+			conn = ConnectionManager.getConnection(dbUtil, keyFilename);
 			
 			/* create the connection statement */
 			stmt = conn.createStatement();
@@ -453,7 +457,5 @@ public class MySqlQuery
 		
 		return nanoToxExps;
 	}
-	
-	
 
 }

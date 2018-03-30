@@ -22,6 +22,8 @@ public class ToddsTEST {
 		trainingDataStrings = readCsvFile("LC50_training_set-2D.csv");
 		predictionDataStrings = readCsvFile("LC50_prediction_set-2D.csv");
 		
+		randomize();
+		
 		header = trainingDataStrings.firstElement();
 		String[] descriptorHeader = new String[header.length-2];
 		for (int i=0; i<descriptorHeader.length; i++) descriptorHeader[i] = header[i+2];
@@ -64,8 +66,9 @@ public class ToddsTEST {
 		 */
 
 		double R2 = 1.0 - (ress / sumYmean);
-		int numOfDeflations = csvMatrix.getNumOfDeflations();
-		assertTrue("R2 = "+R2+", numOfDeflations = "+numOfDeflations, R2 > 0.60);
+		assertTrue("R2 = "+R2+", numOfDeflations = "+csvMatrix.getNumOfDeflations(), R2 > 0.30);
+		
+		System.out.println("R2 = "+R2+", numOfDeflations = "+csvMatrix.getNumOfDeflations());
 		
 		/* Predict the Y values using X and BPLS*. */
 		yPredicted = CsvMatrix.predictResults(xPrediction, BplsStar);
@@ -75,6 +78,12 @@ public class ToddsTEST {
 		 * where || is the norm of a vector.
 		 */
 		yDiff = yPrediction.sub(yPredicted);
+		
+//		System.out.println("i\t"+"obs\t"+"pred\t\t\t"+"diff");
+//		for (int i=0; i<yPredicted.length-1; i++) {
+//			System.out.println(i+"\t"+yPrediction.get(i)+"\t"+yPredicted.get(i)+"\t"+yDiff.get(i));
+//		}
+		
 		double press = yDiff.dot(yDiff);
 		
 		yDiff = yPrediction.sub(yPrediction.mean());
@@ -85,7 +94,9 @@ public class ToddsTEST {
 		 */
 
 		double Q2 = 1.0 - (press / sumYmean);
-		assertTrue("Q2 = "+Q2+", numOfDeflations = "+csvMatrix.getNumOfDeflations(), Q2 > 0.60);
+		assertTrue("Q2 = "+Q2+", numOfDeflations = "+csvMatrix.getNumOfDeflations(), Q2 > 0.30);
+		
+		System.out.println("Q2 = "+Q2+", numOfDeflations = "+csvMatrix.getNumOfDeflations());
 		
 //		/* Perform a 5-fold cross-validation and compute Q2. */	
 //		DoubleMatrix Ytilde = csvMatrix.performMultiFoldCrossValidation(5, X, Y);
@@ -114,6 +125,23 @@ public class ToddsTEST {
 //		double Q2Col3 = 1.0 - (ress3 / sumYmean3);
 //		assertTrue("Q2avg[2] < 0.0", Q2avg[2] > 0.9);
 		
+	}
+
+	//
+	// randomize the training and the prediction records
+	//
+	private void randomize() {
+		int i1, i2;
+		int len1 = trainingDataStrings.size()-1;	// account for the header
+		int len2 = predictionDataStrings.size()-1;	// account for the header
+		String[] temp = null;
+		for (int i=1; i<len1; i++) {
+			i1 = (int) (Math.random()*len1)+1;		// account for the header
+			i2 = (int) (Math.random()*len2)+1;		// account for the header
+			temp = trainingDataStrings.get(i1);
+			trainingDataStrings.set(i1, predictionDataStrings.get(i2));
+			predictionDataStrings.set(i2, temp);
+		}
 	}
 
 	private void buildMatrices(Vector<String[]> dataStrings, DoubleMatrix x, DoubleMatrix y) {

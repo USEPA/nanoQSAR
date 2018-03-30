@@ -9,6 +9,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.logging.Logger;
 
 import org.junit.Test;
 
@@ -18,11 +21,24 @@ import nanoQSAR.NanoQSAR;
 public class NanoQSARTest {
 	
 	static String helpString = "User options:\njava -jar nanoQSAR -h\njava -jar nanoQSAR\njava -jar nanoQSAR propFilename\n";
+	
+	/* Need this line to allow logging of error messages */
+	private static Logger LOGGER = Logger.getLogger("nanoQSAR");
+	String logFilename = System.getProperty("user.dir") + "\\nanoQSAR.log";	
 
 	@Test
 	public final void testMain() {
-		NanoQSAR nanoQSAR = new NanoQSAR();
-		Assert.assertNotNull("nanoQSAR was null", nanoQSAR);
+		
+		// delete the log file if it exists.
+		File logfile = new File(logFilename);
+		if (logfile.exists()) logfile.delete();
+		
+		NanoQSAR.main();
+		
+		/* Verify that the log file was created and that it's not empty. */
+		logfile = new File(logFilename);
+		assertTrue("Log file does not exists.", logfile.exists());
+		assertTrue("Log file should be empty.", logfile.length() == 0);
 	}
 	
 	/**
@@ -132,9 +148,12 @@ public class NanoQSARTest {
 	{
 		File file1 = new File(System.getProperty("user.dir") + "\\nanoQSAR.properties");
 		File file2 = new File(System.getProperty("java.io.tmpdir"), "\\nanoQSAR.properties");
+		File file3 = new File(System.getProperty("user.dir") + "\\nanoQSAR.key");
+		File file4 = new File(System.getProperty("java.io.tmpdir"), "\\nanoQSAR.key");
 		
 		try {
-			copyFile(file1, file2);
+			Files.copy(file1.toPath(), file2.toPath(),StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(file3.toPath(), file4.toPath(),StandardCopyOption.REPLACE_EXISTING);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -147,32 +166,12 @@ public class NanoQSARTest {
 		
 		/* Verify that the CSV file was created and that it's not empty. */
 		String csvFile = System.getProperty("user.dir") + "\\nanoQSAR.csv";		
-		File file3 = new File(csvFile);
-		assertTrue("CSV file exists.", file3.exists());
-		assertTrue("CSV file is not empty.", file3.length() > 0);
+		File file5 = new File(csvFile);
+		assertTrue("CSV file exists.", file5.exists());
+		assertTrue("CSV file is not empty.", file5.length() > 0);
 		
 		file2.deleteOnExit();
+		file4.deleteOnExit();
 	}
-	
-	private static void copyFile(File sourceFile, File destFile) throws IOException {
-
-	    if(!destFile.exists()) destFile.createNewFile();
-	    
-	    FileChannel origin = null;
-	    FileChannel destination = null;
-
-	    try {
-	        origin = new FileInputStream(sourceFile).getChannel();
-	        destination = new FileOutputStream(destFile).getChannel();
-	        long count = 0;
-	        long size = origin.size();              
-	        while((count += destination.transferFrom(origin, count, size-count))<size);
-	    } finally {
-            origin.close();
-            destination.close();
-	    }
-
-	}
-
 
 }

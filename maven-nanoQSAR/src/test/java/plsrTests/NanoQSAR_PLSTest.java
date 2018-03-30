@@ -6,14 +6,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.PrintStream;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.jblas.DoubleMatrix;
@@ -25,16 +23,18 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
+import junit.framework.Assert;
 import nanoQSAR.NanoToxExps;
 import pls_analysis.CsvMatrix;
 import pls_analysis.NanoQSAR_PLS;
-
 
 /**
  * @author Wilson Melendez
  *
  */
 public class NanoQSAR_PLSTest {
+	
+	static String helpString = "User options:\njava -jar nanoQSAR_PLS -h\njava -jar nanoQSAR_PLS\njava -jar nanoQSAR_PLS propFilename\n";
 	
 	/* Need this line to allow logging of error messages */
 	private static Logger LOGGER = Logger.getLogger("nanoQSAR");
@@ -731,6 +731,29 @@ public class NanoQSAR_PLSTest {
 		assertTrue("Q2 = "+Q2+" should be less than R2 = "+R2+", but not too much", R2>=Q2 && Q2>=R2-0.2);
 		
 	}
+
+	@Test
+	public final void testMain() {
+		
+		// delete the log file if it exists.
+		File logfile = new File(logFilename);
+		if (logfile.exists()) logfile.delete();
+		
+		// delete the coefficient CSV file if it exists.
+		File file = new File(System.getProperty("user.dir") + "\\nanoQSAR_BPLS.csv");
+		if (file.exists()) file.delete();
+		
+		NanoQSAR_PLS.main();
+		
+		/* Verify that the Coefficient CSV file was created and that it's not empty. */	
+		Assert.assertTrue("Coefficient CSV file does not exist.", file.exists());
+		Assert.assertTrue("Coefficient CSV file is empty.", file.length() > 0);
+		
+		/* Verify that the log file was created and that it's not empty. */
+		file = new File(logFilename);
+		assertTrue("Log file does not exists.", file.exists());
+		assertTrue("Log file is empty.", file.length() > 0);
+	}
 	
 	/**
 	 * This test performs the following steps:
@@ -741,18 +764,82 @@ public class NanoQSAR_PLSTest {
 	 * @throws Exception 
 	 */
 	@Test
-	public void testMainProgram() throws Exception
+	public void testMainProgram1()
 	{
+		// delete the coefficient CSV file if it exists.
+		File file = new File(System.getProperty("user.dir") + "\\nanoQSAR_BPLS.csv");
+		if (file.exists()) file.delete();
+		
 		String[] args = null;
 		/* Run the application. */
 		NanoQSAR_PLS.main(args);
 		
-		/* Verify that the log file was created and that it's not
-		 * empty. */
+		/* Verify that the Coefficient CSV file was created and that it's not empty. */	
+		Assert.assertTrue("Coefficient CSV file does not exist.", file.exists());
+		Assert.assertTrue("Coefficient CSV file is empty.", file.length() > 0);
+		
+	}
 	
-		File file = new File(logFilename);
-		assertTrue("Log file does not exists.", file.exists());
-		assertTrue("Log file is empty.", file.length() > 0);
+	/**
+	 * This test performs the following steps:
+	 * 1) it runs the whole application.
+	 * 2) it checks whether the CSV file was created.
+	 * 3) it checks whether the CSV file is empty or not.
+	 * @author Paul Harten
+	 */
+	@Test
+	public void testMainProgram2()
+	{
+		// delete the CSV file if it exists.
+		File file = new File(System.getProperty("user.dir") + "\\nanoQSAR_BPLS.csv");
+		if (file.exists()) file.delete();
+		
+		String[] args = new String[0];  // empty string array
+		
+		/* Run the application. */
+		NanoQSAR_PLS.main(args);
+		
+		/* Verify that the Coefficient CSV file was created and that it's not empty. */	
+		Assert.assertTrue("Coefficient CSV file does not exist.", file.exists());
+		Assert.assertTrue("Coefficient CSV file is empty.", file.length() > 0);
+	}
+	
+	/**
+	 * This test performs the following steps:
+	 * 1) it runs the whole application with a property file named.
+	 * 2) it checks whether the CSV file was created.
+	 * 3) it checks whether the CSV file is empty or not.
+	 * @author Paul Harten
+	 */
+	@Test
+	public void testMainProgram3()
+	{
+		// delete the CSV file if it exists.
+		File file = new File(System.getProperty("user.dir") + "\\nanoQSAR_BPLS.csv");
+		if (file.exists()) file.delete();
+		
+		String[] args = {System.getProperty("user.dir") + "\\nanoQSAR.properties"};
+		
+		/* Run the application. */
+		NanoQSAR_PLS.main(args);
+		
+		/* Verify that the Coefficient CSV file was created and that it's not empty. */	
+		Assert.assertTrue("Coefficient CSV file does not exist.", file.exists());
+		Assert.assertTrue("Coefficient CSV file is empty.", file.length() > 0);
+
+	}
+	
+	public void testMainProgram4()
+	{
+		String[] args = {"-h"};
+		
+		ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		System.setOut(new PrintStream(outContent));
+			
+		/* Run the application. */
+		NanoQSAR_PLS.main(args);
+			
+		Assert.assertEquals(helpString, outContent.toString());		
 	}
 	
 	/**
