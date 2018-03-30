@@ -13,7 +13,7 @@ cd %~dp0
 :: of all of the jar file runs are in the properties file.
 
 echo Beginning execution of the data mining application.
-java -jar nanoQSAR.jar %%properties.filename
+java -jar nanoQSAR.jar
 echo Ending execution of the data mining application.
 
 :: Next, the second jar file is run.  By default, data is brought
@@ -21,19 +21,18 @@ echo Ending execution of the data mining application.
 :: are output to the filename nanoQSAR_BPLS.csv.
 
 echo Beginning execution of the PLS Regression algorithm.
-java -jar nanoQSAR_PLS.jar %%properties.filename
+java -jar nanoQSAR_PLS.jar
 echo Ending execution of the PLS Regression application.
 
-:: Finally, the third jar file is run.  By default, data is
-:: brought in from the filename nanoQSAR_PLS.cvs where the
-:: beta coefficients are stored, and from the nanoQSAR.csv file
-:: for the records with no results. Experimental results are
-:: predicted for rows in nanoQSAR.csv that contain no results.
-:: The predicted results are then output to the filename
-:: nanoQSAR_Predictions.csv.
+:: Finally, the third jar file is run.  By default, the beta-
+:: coefficients are brought in from the filename nanoQSAR_BPLS.cvs,
+:: and from the nanoQSAR.csv file for the records with no results.
+:: Experimental results are predicted for rows in nanoQSAR.csv that
+:: contain no results alongside of predictions for rows that do have
+:: the original results.
 
 echo Beginning execution of the Predictions algorithm.
-java -jar nanoQSAR_PRED.jar %%properties.filename
+java -jar nanoQSAR_PRED.jar
 echo Ending execution of the PLS Regression application.
 
 echo Ending execution of batch file.
@@ -66,30 +65,24 @@ from the multiple tables in the relational database.
 The second jar file reads the nanoQSAR.csv file and performs a linear regression
 (QSAR) on the data to find an equation that relates the descriptor variables in a
 record to the resultant variables in a record.   This result of the analysis is
-output to the file nanoQSAR_BPLS.csv and contains the b coefficients of the equation
-Y = b0 + b1*X1 + b2 *X2 + … + bm * Xm , where Y is the predicted in vitro viability
-of human cells exposed to the varying concentrations of the nanomaterials, and
-Xi are descriptors of all experiments, including properties of the nanomaterials.
+output to the file nanoQSAR_BPLS.csv and contains the beta-coefficients of the equation
+Y = b0 + b1*X1 + b2*X2 + … + bm*Xm , where Y is the predicted in-vitro viability
+of human cells exposed to varying concentrations of the nanomaterials, bx are the
+calculated beta-coefficients, and Xi are descriptors of all experiments, including
+properties of the nanomaterials.
 
-The third jar file reads the filename nanoQSAR_PLS.cvs where the beta coefficients
-are stored, and the nanoQSAR.csv file for the records with no results. Experimental
-results are predicted for rows in nanoQSAR.csv that contain no results. The predicted
-results are then output to the file nanoQSAR_Predictions.csv.
+The third jar file reads the filename nanoQSAR_BPLS.cvs where the beta-coefficients
+are stored, and the nanoQSAR.csv file.  Experimental results are predicted for rows
+in nanoQSAR.csv that contain no results. The predicted results are then output along
+along with original results to the file nanoQSAR_Predictions.csv.
 
 This software should be used by clicking on the nanoQSAR.bat file, either from the
 command line in that directory, or by clicking on it from the graphics display.
-When executing from the command line, there are two numbers output, R2 and Q2avg.
-Both of these take on values in the range [0.0, 1.0] where 1.0 > R2 > Q2avg > 0.0.
-R2 is a measure of how well the model can be built to describe results, and Q2 is
-a measure of how well the model predicts results by cross-validation.  In cross-
-validation, the data is randomly separated into two parts; the data used to build
-the model (training data) and the data used to test the model (test data).
+Two R2 values are given in the nanoQSAR.log file.  The first R2 is a measure of how
+well the model predicts viability training results, and the second R2 is a
+measure of how well the model predicts LC50 training results.
 
-As it is now, these values are close to R2 = 0.69 and Q2avg ~ 0.60, depending on
-the random division of training/test data.  This is primarily because the database
-is limited in the types of nanomaterials investigated and entered at this time.
-
-There is also the file nanoQSAR-1-develop.zip in the directory mentioned above that
+There is also the file nanoQSAR-master.zip in the directory mentioned above that
 contains all of the source code used to generate the jar files, and the source code
 of the testers used to run all associated unit tests.  These files are Maven projects
 within Eclipse.  The source code for the jar files and testers can be compiled and
