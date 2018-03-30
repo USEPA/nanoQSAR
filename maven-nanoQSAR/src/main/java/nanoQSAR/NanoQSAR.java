@@ -24,7 +24,6 @@ public class NanoQSAR {
 	static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
 	static String keyFilename = System.getProperty("user.dir") + "\\nanoQSAR.key";
 	static String csvFilename = System.getProperty("user.dir") + "\\nanoQSAR.csv";
-	static String plsFilename = System.getProperty("user.dir") + "\\nanoQSAR_pls.csv";
 	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR.log";
 	
 	static String helpString = "User options:\njava -jar nanoQSAR -h\njava -jar nanoQSAR\njava -jar nanoQSAR propFilename\n";

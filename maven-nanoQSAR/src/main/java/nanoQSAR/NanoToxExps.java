@@ -10,6 +10,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.math3.util.OpenIntToDoubleHashMap.Iterator;
 import org.jblas.DoubleMatrix;
 
 import com.opencsv.CSVReader;
@@ -32,6 +33,9 @@ public class NanoToxExps extends Vector<NanoToxExp> implements Serializable, Clo
 	private String[] descriptorHeader = null;
 	private String[] categoryDescriptorHeader = null;
 	private String[] resultHeader = null;
+	
+	private NanoToxExps trainingSet = null;
+	private NanoToxExps testingSet = null;
 	
 	public NanoToxExps() throws Exception {
 		super();
@@ -258,6 +262,47 @@ public class NanoToxExps extends Vector<NanoToxExp> implements Serializable, Clo
 	}
 	
 	/**
+	 * Separate the training data from the testing data 
+	 * from data in the CSV file.
+	 * @author Paul Harten
+	 * @throws Exception 
+	 */
+	public void separate() throws Exception {
+		
+		NanoToxExps trainingSet = new NanoToxExps();
+		NanoToxExps testingSet = new NanoToxExps();
+		
+		int irow  = (int) (Math.random()*this.size());  // pick one row from this collection
+		String selOrdMatId = this.elementAt(irow).getOrdMaterialID();
+		
+		for (NanoToxExp expr : this) {
+			String ordMatId = expr.getOrdMaterialID();
+			if (ordMatId.equals(selOrdMatId)) {
+				trainingSet.add(expr);
+			} else {
+				testingSet.add(expr);
+			}
+		}
+        
+	}
+	
+	/**
+	 * This method determines the positional index of the ORDMaterialID 
+	 * data in the CSV file.
+	 * @author Paul Harten
+	 * @throws Exception 
+	 */
+	public int getORDMaterialIDIndex() throws Exception {
+		
+		/* Create String list */ 
+		String[] descriptors = {"ORDMaterialID"};     
+        
+        int[] indexes = NanoToxExp.getFieldIndex(descriptors);
+        
+        return indexes[0];
+	}
+	
+	/**
 	 * This method determines the positional indices of the continuous 
 	 * data in the CSV file.
 	 * @author Wilson Melendez & Paul Harten
@@ -457,6 +502,14 @@ public class NanoToxExps extends Vector<NanoToxExp> implements Serializable, Clo
 
 	public String[] getResultHeader() {
 		return resultHeader;
+	}
+
+	public  NanoToxExps getTrainingSet() {
+		return trainingSet;
+	}
+
+	public NanoToxExps getTestingSet() {
+		return testingSet;
 	}
 
 }

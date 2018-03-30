@@ -50,9 +50,11 @@ public class DBUtil
 	private String databaseUrl;
 	private String username;
 	private String password;
-	private String csvFileName;
 	private String passwordKey;
-	private String BplsFileName;
+	private String csvFileName;
+	private String trainFileName;
+	private String testFileName;
+	private String bplsFileName;
 	private String PredictionsFileName;
 	
 	/* Need this line to allow logging of error messages */
@@ -92,6 +94,14 @@ public class DBUtil
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	public String getPasswordKey() {
+		return passwordKey;
+	}
+
+	public void setPasswordKey(String passwordKey) {
+		this.passwordKey = passwordKey;
+	}
 
 	public String getCsvFileName() {
 		return csvFileName;
@@ -100,21 +110,29 @@ public class DBUtil
 	public void setCsvFileName(String csvFileName) {
 		this.csvFileName = csvFileName;
 	}
-
-	public String getPasswordKey() {
-		return passwordKey;
-	}
-
-	public void setPasswordKey(String passwordKey) {
-		this.passwordKey = passwordKey;
-	}
 	
+	public String getTrainFileName() {
+		return trainFileName;
+	}
+
+	public void setTrainFileName(String trainFileName) {
+		this.trainFileName = trainFileName;
+	}
+
+	public String getTestFileName() {
+		return testFileName;
+	}
+
+	public void setTestFileName(String testFileName) {
+		this.testFileName = testFileName;
+	}
+
 	public String getBplsFileName() {
-		return BplsFileName;
+		return bplsFileName;
 	}
 
 	public void setBplsFileName(String bplsFileName) {
-		this.BplsFileName = bplsFileName;
+		this.bplsFileName = bplsFileName;
 	}
 
 	public String getPredictionsFileName() {
@@ -212,6 +230,9 @@ public class DBUtil
 			
 			// Get the properties and assign them to their respective fields.
 			setCsvFileName(prop.getProperty("CsvFileName").trim());
+			String trainFileName = prop.getProperty("TrainFileName");
+			setTrainFileName(trainFileName.trim());
+			setTestFileName(prop.getProperty("TestFileName").trim());
 			setBplsFileName(prop.getProperty("BplsFileName").trim());
 			setPredictionsFileName(prop.getProperty("PredictionsFileName").trim());
 
