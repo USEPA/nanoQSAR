@@ -168,6 +168,8 @@ public class DBUtil
 			setPassword(prop.getProperty("Password").trim());
 			setUsername(prop.getProperty("Username").trim());	
 			setCsvFileName(prop.getProperty("CsvFileName").trim());
+			setTrainFileName(prop.getProperty("TrainFileName").trim());
+			setTestFileName(prop.getProperty("TestFileName").trim());
 			
 			Path p2 = Paths.get(keyFilename);
 			File keyFile = new File(p2.toString());
@@ -230,8 +232,7 @@ public class DBUtil
 			
 			// Get the properties and assign them to their respective fields.
 			setCsvFileName(prop.getProperty("CsvFileName").trim());
-			String trainFileName = prop.getProperty("TrainFileName");
-			setTrainFileName(trainFileName.trim());
+			setTrainFileName(prop.getProperty("TrainFileName").trim());
 			setTestFileName(prop.getProperty("TestFileName").trim());
 			setBplsFileName(prop.getProperty("BplsFileName").trim());
 			setPredictionsFileName(prop.getProperty("PredictionsFileName").trim());

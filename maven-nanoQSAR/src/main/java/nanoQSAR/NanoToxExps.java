@@ -269,8 +269,8 @@ public class NanoToxExps extends Vector<NanoToxExp> implements Serializable, Clo
 	 */
 	public void separate() throws Exception {
 		
-		NanoToxExps trainingSet = new NanoToxExps();
-		NanoToxExps testingSet = new NanoToxExps();
+		trainingSet = new NanoToxExps();
+		testingSet = new NanoToxExps();
 		
 		int irow  = (int) (Math.random()*this.size());  // pick one row from this collection
 		String selOrdMatId = this.elementAt(irow).getOrdMaterialID();
@@ -278,11 +278,14 @@ public class NanoToxExps extends Vector<NanoToxExp> implements Serializable, Clo
 		for (NanoToxExp expr : this) {
 			String ordMatId = expr.getOrdMaterialID();
 			if (ordMatId.equals(selOrdMatId)) {
-				trainingSet.add(expr);
-			} else {
 				testingSet.add(expr);
+			} else {
+				trainingSet.add(expr);
 			}
 		}
+		
+		testingSet.setHeader(header);
+		trainingSet.setHeader(header);
         
 	}
 	

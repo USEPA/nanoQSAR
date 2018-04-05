@@ -29,7 +29,7 @@ public class NanoQSAR_PLS
 {	
 	static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
 	static String csvFilename = System.getProperty("user.dir") + "\\nanoQSAR.csv";
-	static String trnFilename = System.getProperty("user.dir") + "\\nanoQSAR_TRAI.csv";
+	static String trnFilename = System.getProperty("user.dir") + "\\nanoQSAR_TRAN.csv";
 	static String tstFilename = System.getProperty("user.dir") + "\\nanoQSAR_TEST.csv";
 	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR.log";
 	static String filename_BPLS = System.getProperty("user.dir") + "\\nanoQSAR_BPLS.csv";
@@ -132,15 +132,17 @@ public class NanoQSAR_PLS
 		DBUtil dbUtil = new DBUtil();
 		dbUtil.loadProperties(propFilename);	
 		
-		/* create nanoToxExps from filename */
-		NanoToxExps nanoToxExps = new NanoToxExps(dbUtil.getCsvFileName());
+//		/* create nanoToxExps from filename */
+//		NanoToxExps nanoToxExps = new NanoToxExps(dbUtil.getCsvFileName());
+//		
+//		/* separate experiments into training and test sets */
+//		nanoToxExps.separate();
+//		NanoToxExps trainingSet = nanoToxExps.getTrainingSet();
+//		NanoToxExps testingSet = nanoToxExps.getTestingSet();
+//		trainingSet.writeCsvFile(dbUtil.getTrainFileName());
+//		testingSet.writeCsvFile(dbUtil.getTestFileName());
 		
-		/* separate experiments into training and test sets */
-		nanoToxExps.separate();
-		NanoToxExps trainingSet = nanoToxExps.getTrainingSet();
-		NanoToxExps testingSet = nanoToxExps.getTestingSet();
-		trainingSet.writeCsvFile(dbUtil.getTrainFileName());
-		testingSet.writeCsvFile(dbUtil.getTestFileName());
+		NanoToxExps trainingSet = new NanoToxExps(dbUtil.getTrainFileName());
 		
 		/* Build X and Y matrices from nanoToxExps. */
 		CsvMatrix csvMatrix = new CsvMatrix(trainingSet);
@@ -157,10 +159,10 @@ public class NanoQSAR_PLS
 		DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig, Yorig, true); 
 		
 		/* Get Descriptor Header information */
-		String[] descriptorHeader = nanoToxExps.getDescriptorHeader();
+		String[] descriptorHeader = trainingSet.getDescriptorHeader();
 		
 		/* Get CategoryDescriptor Header information */
-		String[] categoryDescriptorHeader = nanoToxExps.getCategoryDescriptorHeader();
+		String[] categoryDescriptorHeader = trainingSet.getCategoryDescriptorHeader();
 		
 		if (categoryDescriptorHeader != null) {
 			int i1 = descriptorHeader.length;
