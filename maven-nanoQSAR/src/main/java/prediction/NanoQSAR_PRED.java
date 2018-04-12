@@ -113,13 +113,13 @@ public class NanoQSAR_PRED {
 		DBUtil dbUtil = new DBUtil();
 		dbUtil.loadProperties(propFilename);	
 
-		String originalFilename = dbUtil.getCsvFileName();
-		String testFilename = dbUtil.getPredictionsFileName();
+		String testFilename = dbUtil.getTestFileName();
+		String predFilename = dbUtil.getPredictionsFileName();
 
 		Predictor predictor = new Predictor();	
 
-		/* Read CSV file with data that had been mined from database. */
-		NanoToxExps nanoToxExps = new NanoToxExps(originalFilename);			
+		/* Read CSV file with test data that had been mined from database. */
+		NanoToxExps nanoToxExps = new NanoToxExps(testFilename);			
 
 		/* Select the columns that will be used to build X and Y matrices from nanoToxExps. */
 		nanoToxExps.selectContinuousColumns();
@@ -169,7 +169,7 @@ public class NanoQSAR_PRED {
 		LOGGER.info("R2[0] = " + r2[0] + ", R2[1] = "+r2[1]);
 		
 		/* Add test results to original CSV file format. */
-		nanoToxExps.writeCsvFileWithPredictions(testFilename, yPred);
+		nanoToxExps.writeCsvFileWithPredictions(predFilename, yPred);
 		
 	}
 

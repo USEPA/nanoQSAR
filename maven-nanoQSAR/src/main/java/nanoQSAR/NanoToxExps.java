@@ -96,9 +96,9 @@ public class NanoToxExps extends Vector<NanoToxExp> implements Serializable, Clo
 			csvReader = new CSVReader(new FileReader(filename));
 			
 			/* read the headers from the csv file */
-			this.setHeader(csvReader.readNext());
+			header = (csvReader.readNext()).clone();
 			
-			int[] fieldIndex = NanoToxExp.getFieldIndex(getHeader());
+			int[] fieldIndex = NanoToxExp.getFieldIndex(header);
 			
 			String[] line = null;
 			/* Loop over lines in the csv file */
@@ -273,6 +273,7 @@ public class NanoToxExps extends Vector<NanoToxExp> implements Serializable, Clo
 		testingSet = new NanoToxExps();
 		
 		int irow  = (int) (Math.random()*this.size());  // pick one row from this collection
+		irow = this.size()-1;							// for now, always use the last nanomaterial that appears
 		String selOrdMatId = this.elementAt(irow).getOrdMaterialID();
 		
 		for (NanoToxExp expr : this) {
