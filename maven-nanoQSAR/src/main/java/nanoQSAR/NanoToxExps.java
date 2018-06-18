@@ -272,13 +272,17 @@ public class NanoToxExps extends Vector<NanoToxExp> implements Serializable, Clo
 		trainingSet = new NanoToxExps();
 		testingSet = new NanoToxExps();
 		
-		int irow  = (int) (Math.random()*this.size());  // pick one row from this collection
-		irow = this.size()-1;							// for now, always use the last nanomaterial that appears
-		String selOrdMatId = this.elementAt(irow).getOrdMaterialID();
-		
+		int irow  = (int) (Math.random()*this.size());
+		String selOrdMatId1 = this.elementAt(irow).getOrdMaterialID(); // pick one nanomaterial from this collection
+		String selOrdMatId2 = this.elementAt(irow).getOrdMaterialID();
+		while (selOrdMatId1.equals(selOrdMatId2)) { // loop until they are different
+			irow  = (int) (Math.random()*this.size());
+			selOrdMatId2 = this.elementAt(irow).getOrdMaterialID(); // pick another nanomaterial from this collection
+		}
+
 		for (NanoToxExp expr : this) {
 			String ordMatId = expr.getOrdMaterialID();
-			if (ordMatId.equals(selOrdMatId)) {
+			if (ordMatId.equals(selOrdMatId1) || ordMatId.equals(selOrdMatId2)) {
 				testingSet.add(expr);
 			} else {
 				trainingSet.add(expr);
