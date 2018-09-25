@@ -24,7 +24,6 @@ public class NanoQSAR {
 	static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
 	static String keyFilename = System.getProperty("user.dir") + "\\nanoQSAR.key";
 	static String csvFilename = System.getProperty("user.dir") + "\\nanoQSAR.csv";
-	static String plsFilename = System.getProperty("user.dir") + "\\nanoQSAR_pls.csv";
 	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR.log";
 	
 	static String helpString = "User options:\njava -jar nanoQSAR -h\njava -jar nanoQSAR\njava -jar nanoQSAR propFilename\n";
@@ -125,13 +124,33 @@ public class NanoQSAR {
 
 			/* Data-mine MySQL database */
 			nanoToxExps = new NanoToxExps(dbUtil, keyFilename);
-			/* write data to CSV file. */
+			
+			/* write data to main CSV file. */
 			nanoToxExps.writeCsvFile(dbUtil.getCsvFileName());
+			
+			/* separate experiments into training and test sets */
+			nanoToxExps.separate();
+			NanoToxExps trainingSet = nanoToxExps.getTrainingSet();
+			NanoToxExps testingSet = nanoToxExps.getTestingSet();
+			
+			/* write data to training and testing set files */
+			trainingSet.writeCsvFile(dbUtil.getTrainFileName());
+			testingSet.writeCsvFile(dbUtil.getTestFileName());
 
 		} else { /* Connection to database is not available */
 
 			/* Get data from CSV file */
 			nanoToxExps = new NanoToxExps(dbUtil.getCsvFileName());
+			
+			/* separate experiments into training and test sets */
+			nanoToxExps.separate();
+			NanoToxExps trainingSet = nanoToxExps.getTrainingSet();
+			NanoToxExps testingSet = nanoToxExps.getTestingSet();
+			
+			/* write data to training and testing set files */
+			trainingSet.writeCsvFile(dbUtil.getTrainFileName());
+			testingSet.writeCsvFile(dbUtil.getTestFileName());
+			
 		}
 		
 	}

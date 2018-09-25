@@ -25,6 +25,8 @@ public class DBUtilTest {
 	
 	/* default file values */
 	String CsvFileName  = "nanoQSAR.csv";
+	String TrainFileName  = "nanoQSAR_TRAN.csv";
+	String TestFileName  = "nanoQSAR_TEST.csv";
 	String databaseURL = "jdbc:mysql://mysql-res1.epa.gov:3306/dev_naknowbase_v1";
 	String DriverName = "com.mysql.jdbc.Driver";
 	String Username = "app_naknowbase";
@@ -40,6 +42,8 @@ public class DBUtilTest {
 
 			Properties p1 = new Properties();
 			p1.put("CsvFileName", CsvFileName);
+			p1.put("TrainFileName", TrainFileName);
+			p1.put("TestFileName", TestFileName);
 			p1.put("databaseURL", databaseURL);
 			p1.put("DriverName", DriverName);
 			p1.put("Username", Username);
@@ -72,6 +76,8 @@ public class DBUtilTest {
 			dbUtil.loadProperties(propFilename, keyFilename);
 			
 			Assert.assertEquals(CsvFileName, dbUtil.getCsvFileName());
+			Assert.assertEquals(TrainFileName, dbUtil.getTrainFileName());
+			Assert.assertEquals(TestFileName, dbUtil.getTestFileName());
 			Assert.assertEquals(databaseURL, dbUtil.getDatabaseUrl());
 			Assert.assertEquals(DriverName, dbUtil.getDriverName());
 			Assert.assertEquals(Username, dbUtil.getUsername());

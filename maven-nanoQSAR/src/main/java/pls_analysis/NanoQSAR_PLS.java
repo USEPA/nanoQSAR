@@ -29,7 +29,8 @@ public class NanoQSAR_PLS
 {	
 	static String propFilename = System.getProperty("user.dir") + "\\nanoQSAR.properties";
 	static String csvFilename = System.getProperty("user.dir") + "\\nanoQSAR.csv";
-	static String plsFilename = System.getProperty("user.dir") + "\\nanoQSAR_pls.csv";
+	static String trnFilename = System.getProperty("user.dir") + "\\nanoQSAR_TRAN.csv";
+	static String tstFilename = System.getProperty("user.dir") + "\\nanoQSAR_TEST.csv";
 	static String logFilename = System.getProperty("user.dir") + "\\nanoQSAR.log";
 	static String filename_BPLS = System.getProperty("user.dir") + "\\nanoQSAR_BPLS.csv";
 	
@@ -131,11 +132,20 @@ public class NanoQSAR_PLS
 		DBUtil dbUtil = new DBUtil();
 		dbUtil.loadProperties(propFilename);	
 		
-		/* create nanoToxExps from filename */
-		NanoToxExps nanoToxExps = new NanoToxExps(dbUtil.getCsvFileName());
+//		/* create nanoToxExps from filename */
+//		NanoToxExps nanoToxExps = new NanoToxExps(dbUtil.getCsvFileName());
+//		
+//		/* separate experiments into training and test sets */
+//		nanoToxExps.separate();
+//		NanoToxExps trainingSet = nanoToxExps.getTrainingSet();
+//		NanoToxExps testingSet = nanoToxExps.getTestingSet();
+//		trainingSet.writeCsvFile(dbUtil.getTrainFileName());
+//		testingSet.writeCsvFile(dbUtil.getTestFileName());
+		
+		NanoToxExps trainingSet = new NanoToxExps(dbUtil.getTrainFileName());
 		
 		/* Build X and Y matrices from nanoToxExps. */
-		CsvMatrix csvMatrix = new CsvMatrix(nanoToxExps);
+		CsvMatrix csvMatrix = new CsvMatrix(trainingSet);
 		
 		/* Get the X and Y matrices.  Use a single column for 
 		 * the Y matrix. */
@@ -149,10 +159,10 @@ public class NanoQSAR_PLS
 		DoubleMatrix BplsS = csvMatrix.performPLSR(Xorig, Yorig, true); 
 		
 		/* Get Descriptor Header information */
-		String[] descriptorHeader = nanoToxExps.getDescriptorHeader();
+		String[] descriptorHeader = trainingSet.getDescriptorHeader();
 		
 		/* Get CategoryDescriptor Header information */
-		String[] categoryDescriptorHeader = nanoToxExps.getCategoryDescriptorHeader();
+		String[] categoryDescriptorHeader = trainingSet.getCategoryDescriptorHeader();
 		
 		if (categoryDescriptorHeader != null) {
 			int i1 = descriptorHeader.length;
@@ -205,13 +215,13 @@ public class NanoQSAR_PLS
 //			LOGGER.info("R2[1] = " + r2[1]+", numDeflations = "+csvMatrix.getNumOfDeflations());
 		
 		/* Perform 5-fold cross-validation prediction. */
-		int nfolds = 5;
-		DoubleMatrix Ytilde = csvMatrix.performMultiFoldCrossValidation(nfolds, Xorig, Yorig);
-		double[] q2Avg = csvMatrix.getQ2avg();
-		int numDeflationsAvg = csvMatrix.getNumDeflationsAvg();
-		
-		/* Store Q2 in the logger file. */
-		LOGGER.info("Q2[0]avg = " + q2Avg[0]+", nfolds = "+nfolds+", numDeflationsAvg = "+numDeflationsAvg);
+//		int nfolds = 5;
+//		DoubleMatrix Ytilde = csvMatrix.performMultiFoldCrossValidation(nfolds, Xorig, Yorig);
+//		double[] q2Avg = csvMatrix.getQ2avg();
+//		int numDeflationsAvg = csvMatrix.getNumDeflationsAvg();
+//		
+//		/* Store Q2 in the logger file. */
+//		LOGGER.info("Q2[0]avg = " + q2Avg[0]+", nfolds = "+nfolds+", numDeflationsAvg = "+numDeflationsAvg);
 
 	}
 
