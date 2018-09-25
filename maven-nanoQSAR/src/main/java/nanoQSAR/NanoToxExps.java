@@ -10,6 +10,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.math3.util.OpenIntToDoubleHashMap.Iterator;
 import org.jblas.DoubleMatrix;
 
 import com.opencsv.CSVReader;
@@ -32,6 +33,9 @@ public class NanoToxExps extends Vector<NanoToxExp> implements Serializable, Clo
 	private String[] descriptorHeader = null;
 	private String[] categoryDescriptorHeader = null;
 	private String[] resultHeader = null;
+	
+	private NanoToxExps trainingSet = null;
+	private NanoToxExps testingSet = null;
 	
 	public NanoToxExps() throws Exception {
 		super();
@@ -92,9 +96,9 @@ public class NanoToxExps extends Vector<NanoToxExp> implements Serializable, Clo
 			csvReader = new CSVReader(new FileReader(filename));
 			
 			/* read the headers from the csv file */
-			this.setHeader(csvReader.readNext());
+			header = (csvReader.readNext()).clone();
 			
-			int[] fieldIndex = NanoToxExp.getFieldIndex(getHeader());
+			int[] fieldIndex = NanoToxExp.getFieldIndex(header);
 			
 			String[] line = null;
 			/* Loop over lines in the csv file */
@@ -255,6 +259,55 @@ public class NanoToxExps extends Vector<NanoToxExp> implements Serializable, Clo
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Separate the training data from the testing data 
+	 * from data in the CSV file.
+	 * @author Paul Harten
+	 * @throws Exception 
+	 */
+	public void separate() throws Exception {
+		
+		trainingSet = new NanoToxExps();
+		testingSet = new NanoToxExps();
+		
+		int irow  = (int) (Math.random()*this.size());
+		String selOrdMatId1 = this.elementAt(irow).getOrdMaterialID(); // pick one nanomaterial from this collection
+		String selOrdMatId2 = this.elementAt(irow).getOrdMaterialID();
+		while (selOrdMatId1.equals(selOrdMatId2)) { // loop until they are different
+			irow  = (int) (Math.random()*this.size());
+			selOrdMatId2 = this.elementAt(irow).getOrdMaterialID(); // pick another nanomaterial from this collection
+		}
+
+		for (NanoToxExp expr : this) {
+			String ordMatId = expr.getOrdMaterialID();
+			if (ordMatId.equals(selOrdMatId1) || ordMatId.equals(selOrdMatId2)) {
+				testingSet.add(expr);
+			} else {
+				trainingSet.add(expr);
+			}
+		}
+		
+		testingSet.setHeader(header);
+		trainingSet.setHeader(header);
+        
+	}
+	
+	/**
+	 * This method determines the positional index of the ORDMaterialID 
+	 * data in the CSV file.
+	 * @author Paul Harten
+	 * @throws Exception 
+	 */
+	public int getORDMaterialIDIndex() throws Exception {
+		
+		/* Create String list */ 
+		String[] descriptors = {"ORDMaterialID"};     
+        
+        int[] indexes = NanoToxExp.getFieldIndex(descriptors);
+        
+        return indexes[0];
 	}
 	
 	/**
@@ -457,6 +510,14 @@ public class NanoToxExps extends Vector<NanoToxExp> implements Serializable, Clo
 
 	public String[] getResultHeader() {
 		return resultHeader;
+	}
+
+	public  NanoToxExps getTrainingSet() {
+		return trainingSet;
+	}
+
+	public NanoToxExps getTestingSet() {
+		return testingSet;
 	}
 
 }

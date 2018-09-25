@@ -98,7 +98,7 @@ public class CsvMatrix
 		super();
 		
 		nanoToxExps.selectContinuousColumns();
-		// nanoToxExps.selectCategoryColumns();  // leave this in to use category descriptors
+		// nanoToxExps.selectCategoryColumns();  // leave this in to use category (non-continuous) descriptors
 		nanoToxExps.selectResultColumns();
 
 		/* build Matrices from experimental data */
@@ -531,7 +531,7 @@ public class CsvMatrix
 		
 		int rowsSize = nanoToxExps.size();
 		int[] jcX = nanoToxExps.getDescriptorIndex();
-		int[] jcX2 = nanoToxExps.getCategoryDescriptorIndex();
+		int[] jcX2 = nanoToxExps.getCategoryDescriptorIndex();  // will return null if category descriptors are not chosen.
 		int[] jcY = nanoToxExps.getResultIndex();
 		int xcolumns = jcX.length;
 		if (jcX2 != null) xcolumns += jcX2.length;
@@ -634,7 +634,7 @@ public class CsvMatrix
 		Boolean foundNaN;
 		double avg, num;
 		
-		/* if result data has NaN values, leave row out of calculations */
+		/* if any result data has NaN values, leave row out of calculations */
 		for (int i=0; i<rowsSize; i++) {
 			yRow = yMatrix.getRow(i);
 			foundNaN = false;
@@ -644,7 +644,7 @@ public class CsvMatrix
 					break;
 				}
 			}
-			if (!foundNaN) {
+			if (!foundNaN) { // leave row data out if no result data
 				Ymatrix = DoubleMatrix.concatVertically(Ymatrix, yRow);
 				Xmatrix = DoubleMatrix.concatVertically(Xmatrix, xMatrix.getRow(i)); 
 			}
