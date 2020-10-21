@@ -46,14 +46,14 @@ BEGIN
     -- an result must have an id. other fields are optional.
     -- input as zero length string works, but null returns null for the whole statement without these
     -- convert null value and zero length string to space filled string
-    SET v_resulttype = ifnull(p_resulttype, ' ' ) ;
-    SET v_resultdetails = ifnull(p_resultdetails, ' ' ) ;
-    SET v_resultvalue = ifnull(p_resultvalue, ' ' ) ;
-    SET v_resultapproxsymbol = ifnull(p_resultapproxsymbol, ' ' ) ;
-    SET v_resultunit   = ifnull(p_resultunit, ' ' ) ;
-    SET v_resultuncertainty = ifnull(p_resultuncertainty, ' ' ) ;
-    SET v_resultlow = ifnull(p_resultlow, ' ' ) ;
-    SET v_resulthigh = ifnull(p_resulthigh, ' ' ) ;
+    SET v_resulttype = ifnull(p_resulttype, '' ) ;
+    SET v_resultdetails = ifnull(p_resultdetails, '' ) ;
+    SET v_resultvalue = ifnull(p_resultvalue, '' ) ;
+    SET v_resultapproxsymbol = ifnull(p_resultapproxsymbol, '' ) ;
+    SET v_resultunit   = ifnull(p_resultunit, '' ) ;
+    SET v_resultuncertainty = ifnull(p_resultuncertainty, '' ) ;
+    SET v_resultlow = ifnull(p_resultlow, '' ) ;
+    SET v_resulthigh = ifnull(p_resulthigh, '' ) ;
 
         -- concatenate all result fields into one text field 
     SET r_result = concat_ws( ':', p_resultid, v_resulttype, v_resultdetails, 

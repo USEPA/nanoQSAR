@@ -33,9 +33,9 @@ BEGIN
     -- an contam must have an id and name. amount, unit, method are optional.
     -- input as zero length string works, but null returns null for the whole statement without these
     -- convert null value and zero length string to space filled string
-    SET v_contamamount = ifnull(p_contamamount, ' ' ) ;
-    SET v_contamunit   = ifnull(p_contamunit, ' ' ) ;
-    SET v_contammethod   = ifnull(p_contammethod, ' ' ) ;
+    SET v_contamamount = ifnull(p_contamamount, '' ) ;
+    SET v_contamunit   = ifnull(p_contamunit, '' ) ;
+    SET v_contammethod   = ifnull(p_contammethod, '' ) ;
         -- concatenate all contam fields into one text field 
       -- new lengths id=4 name=58 amt=7 unit=23
 

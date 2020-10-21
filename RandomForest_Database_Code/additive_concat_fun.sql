@@ -32,8 +32,8 @@ BEGIN
     -- an additive must have an id and name. amount and unit are optional.
     -- input as zero length string works, but null returns null for the whole statement without these
     -- convert null value and zero length string to space filled string
-    SET v_additiveamount = ifnull(p_additiveamount, ' ' ) ;
-    SET v_additiveunit   = ifnull(p_additiveunit, ' ' ) ;
+    SET v_additiveamount = ifnull(p_additiveamount, '' ) ;
+    SET v_additiveunit   = ifnull(p_additiveunit, '' ) ;
         -- concatenate all additive fields into one text field 
       -- max lengths id=2 name=43 amt=6 unit=5
       -- new lengths id=4 name=58 amt=7 unit=23

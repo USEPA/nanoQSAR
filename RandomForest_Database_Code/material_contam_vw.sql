@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW dev_naknowbase.material_contam_vw AS
--- detail view of material joined to publication. uses contam rank technique with CASE
+-- detail view of material joined to contam_vw. uses contam rank technique with CASE
 -- to separate rows into columns. The contam fields are concatenated into one field. 
 -- the contam joins and case statement transform up to 20 rows into 20 columns field.
 -- 374 rows in material. pub is required. GROUP BY 1 row per material  374 rows
@@ -45,14 +45,8 @@ SELECT mt.materialID, mt.publication_DOI, mt.CoreComposition,
        max(ctv.contam17_num_name_amt_unit_meth) AS contam17_num_name_amt_unit_meth,
        max(ctv.contam18_num_name_amt_unit_meth) AS contam18_num_name_amt_unit_meth,
        max(ctv.contam19_num_name_amt_unit_meth) AS contam19_num_name_amt_unit_meth,
-       max(ctv.contam20_num_name_amt_unit_meth) AS contam20_num_name_amt_unit_meth,
-      -- publication
-      pub.PubTitle, pub.Journal, pub.year, pub.`First Author` AS FirstAuthor, 
-      pub.Volume, pub.Issue, pub.PageStart, pub.PageEnd, pub.Keywords, pub.Correspondence,
-      pub.Affiliation, pub.Abstract
+       max(ctv.contam20_num_name_amt_unit_meth) AS contam20_num_name_amt_unit_meth
 FROM dev_naknowbase.material mt
-JOIN dev_naknowbase.publication pub
-  ON mt.publication_DOI = pub.DOI
 LEFT OUTER JOIN dev_naknowbase.contam_vw ctv
   ON mt.materialID = ctv.material_materialID
  AND mt.publication_DOI = ctv.material_publication_DOI
@@ -61,7 +55,6 @@ LEFT OUTER JOIN dev_naknowbase.materialfg mfg
  AND mt.publication_DOI = mfg.material_publication_DOI
 -- this groups 1 row per material but is needed for max on rank columns
 GROUP BY mt.materialID, mt.publication_DOI, mt.CoreComposition,
-      mfg.MaterialFGID,
-      pub.PubTitle, pub.Journal, pub.year, FirstAuthor
+      mfg.MaterialFGID
 ORDER BY mt.materialid, mt.publication_DOI
 ;

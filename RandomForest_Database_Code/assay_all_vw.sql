@@ -111,9 +111,10 @@ SELECT ay.assayID, ay.publication_DOI,
       
       -- the assay publication matches the medium and material publication except when
       -- medium or material are No Publication
-      pub.PubTitle, pub.Journal, pub.year PubYear, pub.`First Author` AS FirstAuthor, 
-      pub.Volume, pub.Issue, pub.PageStart, pub.PageEnd, pub.Keywords, pub.Correspondence,
-      pub.Affiliation, pub.Abstract
+      replace(pub.PubTitle, char(10), ' ') PubTitle, pub.Journal, pub.year, pub.`First Author` AS FirstAuthor, 
+      pub.Volume, pub.Issue, pub.PageStart, pub.PageEnd, replace(pub.Keywords, char(10), ' ') Keywords, 
+      pub.Correspondence, pub.Affiliation, replace(pub.Abstract, char(10), ' ') Abstract
+
       
 FROM dev_naknowbase.assay ay
 JOIN dev_naknowbase.publication pub

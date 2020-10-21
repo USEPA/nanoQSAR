@@ -41,10 +41,10 @@ BEGIN
     -- an parameters must have an id. other fields are optional.
     -- input as zero length string works, but null returns null for the whole statement without these
     -- convert null value and zero length string to space filled string
-    SET v_parametername = ifnull(p_parametername, ' ' ) ;
-    SET v_parameternumbervalue = ifnull(p_parameternumbervalue, ' ' ) ;
-    SET v_parameterunit   = ifnull(p_parameterunit, ' ' ) ;
-    SET v_parameternonnumbervalue = ifnull(p_parameternonnumbervalue, ' ' ) ;
+    SET v_parametername = ifnull(p_parametername, '' ) ;
+    SET v_parameternumbervalue = ifnull(p_parameternumbervalue, '' ) ;
+    SET v_parameterunit   = ifnull(p_parameterunit, '' ) ;
+    SET v_parameternonnumbervalue = ifnull(p_parameternonnumbervalue, '' ) ;
 
         -- concatenate all parameters fields into one text field 
     SET r_parameters = concat_ws( ':', p_idparameters, v_parametername,  
