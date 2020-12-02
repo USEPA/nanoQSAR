@@ -5,7 +5,7 @@ Created on Jun 23, 2020
 '''
 import unittest
 
-import calc
+import Calc as calc
 
 class TestCalc(unittest.TestCase):
 
