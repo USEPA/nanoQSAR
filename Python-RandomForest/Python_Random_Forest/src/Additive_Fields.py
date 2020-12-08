@@ -1,22 +1,54 @@
 '''
 Created on Nov 30, 2020
 
-@author: Wmelende
+This module contains the definition of a function used to split up 
+concatenated fields containing additives. 
+
+Functions
+---------
+split_additive_fields(df, nrow, col_names)
+    Splits up the concatenated additive fields.
+    
+@author: Wilson Melendez
 '''
 
 def split_additive_fields(df, nrow, col_names):
+    '''
+    Purpose
+    -------
+    This function splits up the concatenated fields containing the additives.
+    
+    Input Parameters
+    ----------------
+    df : DataFrame
+        DataFrame containing the inVitro data.
+    nrow : int
+        Number of rows in DataFrame df.
+    col_names  : int
+        The column headers in DataFrame df.
+    
+    Output Parameters
+    -----------------
+    Modified DataFrame df.
+    '''
     # Process the additive fields
     subs2 = "additive"
     list_additives = [icol for icol in col_names if subs2 in icol]
     num_additives = len(list_additives)
     additives_set = set()
-    
-    for irow in range(0, nrow):
-        for icol in range(0, num_additives):       
-            if (df[list_additives[icol]].iloc[irow].strip() == "NULL"):            
+    for icol in range(0, num_additives):
+        if (df[list_additives[icol]].isna().values.all() == True):
+            continue
+        for irow in range(0, nrow):       
+            if (df[list_additives[icol]].iloc[irow] == None):            
                 continue       
             else:            
-                list_str = df[list_additives[icol]].iloc[irow].split(":")            
+                list_str = df[list_additives[icol]].iloc[irow].split(":")
+                # list_str[0] = number
+                # list_str[1] = name of additive
+                # list_str[2] = amount of additive (numeric value)
+                # list_str[3] = unit of numeric value
+                            
                 if list_str[1].strip().lower() in additives_set:
                     if (list_str[0] != ''):
                         strnum = list_str[1].strip().lower() + ' num'

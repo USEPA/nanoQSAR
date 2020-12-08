@@ -1,10 +1,36 @@
 '''
 Created on Nov 30, 2020
 
-@author: Wmelende
+This module contains the definition of a function used to split up 
+concatenated fields containing results. 
+
+Functions
+---------
+split_result_fields(df, nrow, col_names)
+    Splits up the concatenated result fields.
+    
+@author: Wilson Melendez
 '''
 
 def split_result_fields(df, nrow, col_names):
+    '''
+    Purpose
+    -------
+    This function splits up the concatenated fields containing the results.
+    
+    Input Parameters
+    ----------------
+    df : DataFrame
+        DataFrame containing the inVitro data.
+    nrow : int
+        Number of rows in DataFrame df.
+    col_names  : int
+        The column headers in DataFrame df.
+    
+    Output Parameters
+    -----------------
+    Modified DataFrame df.
+    '''
     # Process the result fields                  
     subs3 = "result"
     list_results = [icol for icol in col_names if subs3 in icol]
@@ -28,13 +54,23 @@ def split_result_fields(df, nrow, col_names):
         string_results.append(list_str_result[i][0] + ' ' + list_str_result[i][9])
         string_results1.append(string_results)
     
-    for irow in range(0, nrow):
-        for icol in range(0, num_results):
-            if (df[list_results[icol]].iloc[irow].strip() == "NULL"):
-                for i in range(0, 9):
-                    df.loc[irow, string_results1[icol][i]] = '' 
+    for icol in range(0, num_results):
+        if (df[list_results[icol]].isna().values.all() == True):
+            continue
+        for irow in range(0, nrow):
+            if (df[list_results[icol]].iloc[irow] == None):
+                continue
             else:
                 list_str = df[list_results[icol]].iloc[irow].split(":")
+                # list_str[0] = number
+                # list_str[1] = type of result
+                # list_str[2] = dtl (detection limit?)
+                # list_str[3] = amount of result (numeric value)
+                # list_str[4] = approximation
+                # list_str[5] = unit of numeric value
+                # list_str[6] = uncertainty
+                # list_str[7] = low value
+                # list_str[8] = high value
                 if (list_str[0] != ''):
                     df.loc[irow, string_results1[icol][0]] = int(list_str[0])
                 else:

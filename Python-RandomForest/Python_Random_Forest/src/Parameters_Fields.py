@@ -1,26 +1,55 @@
 '''
 Created on Nov 30, 2020
 
-@author: Wmelende
+This module contains the definition of a function used to split up 
+concatenated fields containing parameters. 
+
+Functions
+---------
+split_parameters_fields(df, nrow, col_names)
+    Splits up the concatenated parameter fields.
+    
+@author: Wilson Melendez
 '''
 
 def split_parameters_fields(df, nrow, col_names):
+    '''
+    Purpose
+    -------
+    This function splits up the concatenated fields containing the parameters.
+    
+    Input Parameters
+    ----------------
+    df : DataFrame
+        DataFrame containing the inVitro data.
+    nrow : int
+        Number of rows in DataFrame df.
+    col_names  : int
+        The column headers in DataFrame df.
+    
+    Output Parameters
+    -----------------
+    Modified DataFrame df.
+    '''
     # Process the parameter fields.
     subs = "parameters"
     list_param = [icol for icol in col_names if subs in icol]
     num_param = len(list_param)
     param_set = set()
-    
-    for irow in range(0, nrow):
-        for icol in range(0, num_param):
-            
-            if (df[list_param[icol]].iloc[irow].strip() == "NULL"):
-                
-                continue
-            
+    for icol in range(0, num_param):
+        if (df[list_param[icol]].isna().values.all() == True):
+            continue
+        for irow in range(0, nrow):            
+            if (df[list_param[icol]].iloc[irow] == None):               
+                continue            
             else:
                 
                 list_str = df[list_param[icol]].iloc[irow].split(":")
+                # list_str[0] = number
+                # list_str[1] = name of parameter
+                # list_str[2] = amount of parameter (numeric value)
+                # list_str[3] = unit of numeric value
+                # list_str[4] = non-numeric string
                 
                 if list_str[1].strip().lower() in param_set:
                     if (list_str[0] != ''):
