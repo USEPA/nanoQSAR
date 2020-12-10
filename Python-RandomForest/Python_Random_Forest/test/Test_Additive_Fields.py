@@ -6,10 +6,13 @@ Created on Dec 3, 2020
 
 import pandas as pd
 from Additive_Fields import split_additive_fields
+from pathlib import Path
 
 def test_parameters_fields():
-    
-    input_file = "C:\\Users\\wmelende\\git\\nanoQSAR\\Python-RandomForest\\Python_Random_Forest\\test\\Test_Data.csv"
+ 
+    input_file = "data\\Test_Data.csv"
+    if not Path(input_file).exists():
+        input_file = "..\\data\\Test_Data.csv"
     
     # Read CSV file.
     dft = pd.read_csv(input_file, na_values = "NULL", skip_blank_lines = False, keep_default_na = True, na_filter = False, low_memory = False)
