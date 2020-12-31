@@ -8,7 +8,7 @@ import pandas as pd
 from Result_Fields import split_result_fields
 from pathlib import Path
 
-def test_parameters_fields():
+def test_results_fields():
     
     input_file = "data\\Test_Data.csv"
     if not Path(input_file).exists():
