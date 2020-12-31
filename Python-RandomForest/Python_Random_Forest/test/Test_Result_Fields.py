@@ -38,9 +38,9 @@ def test_parameters_fields():
     split_result_fields(dft, nrow, col_names)
     
     # Assert selected values
-    assert dft['result01 type'][0] == 'front scatter'
-    assert dft['result01 val'][0] == 1
-    assert dft['result01 unit'][0] == 'ratio to control'
-    assert dft['result02 type'][1] == 'side scatter'
-    assert dft['result02 val'][1] == 1.28
-    assert dft['result02 unit'][1] == 'ratio to control'
+    assert dft['front scatter number'][0] == 190481
+    assert dft['front scatter result'][0] == 1
+    assert dft['front scatter unit'][0] == 'ratio to control'
+    assert dft['side scatter number'][1] == 190494
+    assert dft['side scatter result'][1] == 1.28
+    assert dft['side scatter unit'][1] == 'ratio to control'
