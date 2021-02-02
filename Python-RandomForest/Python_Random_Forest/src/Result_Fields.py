@@ -11,8 +11,9 @@ split_result_fields(df, nrow, col_names)
     
 @author: Wilson Melendez
 '''
+import re 
 
-def split_result_fields(df, nrow, col_names):
+def split_result_fields(df):
     '''
     Name
     ----
@@ -40,9 +41,17 @@ def split_result_fields(df, nrow, col_names):
     ValueError
         If no result type is found in concatenated string or casting to int/float fails.
     '''
-    # Process the result fields                  
-    subs3 = "result"
-    list_results = [icol for icol in col_names if subs3 in icol]
+    # Extract column names
+    column_names = list(df.columns)
+    
+    # Determine number of rows in data frame.
+    nrow = len(df.index)
+    
+    # Extract the columns with concatenated result fields
+    result_regex = re.compile(r'result\d\d_num_type_dtl_val_approx_unit_uncert_low_hi')
+    list_results = list(filter(result_regex.match, column_names))            
+    
+    # Determine number of results headers
     num_results = len(list_results)
     
     try:
@@ -54,7 +63,6 @@ def split_result_fields(df, nrow, col_names):
                     continue
                 else:
                     list_str = df[list_results[icol]].iloc[irow].split(":")
-                    
                     # If result type was not present, throw an exception.
                     if (list_str[1] == ''):
                         error_message = "Type is missing for result " + list_results[icol] + " at row " + irow
@@ -69,19 +77,25 @@ def split_result_fields(df, nrow, col_names):
                     # list_str[6] = uncertainty
                     # list_str[7] = low value
                     # list_str[8] = high value
-                    strnum = list_str[1].strip().lower() + ' number'
-                    strdtl = list_str[1].strip().lower() + ' detail'
-                    strvalue = list_str[1].strip().lower() + ' result'
-                    strapprox = list_str[1].strip().lower() + ' approximation'
-                    strunit = list_str[1].strip().lower() + ' unit'
-                    struncer = list_str[1].strip().lower() + ' uncertainty'
-                    strlow = list_str[1].strip().lower() + ' low'
-                    strhigh = list_str[1].strip().lower() + ' high'
-                        
-                    if (list_str[0] != ''):   
-                        df.loc[irow, strnum] = int(list_str[0])
-                    else:
-                        df.loc[irow, strnum] = None
+                    # strnum = list_str[1].strip().lower() + ' result_number'
+                    strdtl = list_str[1].strip().lower() + ' result_detail'
+                    strvalue = list_str[1].strip().lower() + ' result_value'
+                    strapprox = list_str[1].strip().lower() + ' result_approximation'
+                    strunit = list_str[1].strip().lower() + ' result_unit'
+                    struncer = list_str[1].strip().lower() + ' result_uncertainty'
+                    strlow = list_str[1].strip().lower() + ' result_low'
+                    strhigh = list_str[1].strip().lower() + ' result_high'
+                    
+                    # New columns are added to the DataFrame by specifying a new name and 
+                    # assigning a value to it.  If the location of a new column is important, we 
+                    # can use the 'insert' method to specify its location within the DataFrame.  
+                    # In this function new columns are appended to the DataFrame so no attempt  
+                    # at specifying a specific location is made.   
+                      
+                    # if (list_str[0] != ''):   
+                    #     df.loc[irow, strnum] = int(list_str[0])
+                    # else:
+                    #     df.loc[irow, strnum] = None
                             
                     if (list_str[2] != ''):
                         df.loc[irow, strdtl] = list_str[2]
@@ -116,8 +130,7 @@ def split_result_fields(df, nrow, col_names):
                     if (list_str[8] != ''):
                         df.loc[irow, strhigh] = float(list_str[8])
                     else:
-                        df.loc[irow, strhigh] = None
-                        
+                        df.loc[irow, strhigh] = None             
     
     except ValueError as msg:
         error_message = msg + ", result = " + list_results[icol] + ", row = " + irow

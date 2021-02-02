@@ -6,7 +6,6 @@ Created on Dec 29, 2020
 
 @author: Wmelende
 '''
-from _codecs import utf_16_be_encode
 
 def delete_columns_with_all_equal_values(df):
     '''

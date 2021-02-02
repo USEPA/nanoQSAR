@@ -35,18 +35,18 @@ def test_parameters_fields():
     nrow = len(dft.index)
     
     # Proceed to split up the concatenated fields.
-    split_parameters_fields(dft, nrow, col_names)
+    split_parameters_fields(dft)
     
     # Assert values
-    assert dft['happel model parameter'][1] == 29.91
-    assert dft['column length'][7] == 30
-    assert dft['column length unit'][7] == 'centimeter'
-    assert dft['duration incubation'][0] == 24
-    assert dft['duration incubation unit'][0] == 'hours'
-    assert dft['duration incubation'][7] == 24
-    assert dft['duration incubation unit'][7] == 'hours'
-    assert dft['ph'][6] == 7.34
-    assert dft['ph unit'][6] == 'pH'
-    assert dft['distance'][4] == 25
-    assert dft['distance unit'][0] == 'centimeters'
+    assert dft['happel model parameter parameter_value'][1] == 29.91
+    assert dft['column length parameter_value'][7] == 30
+    assert dft['column length parameter_unit'][7] == 'centimeter'
+    assert dft['duration incubation parameter_value'][0] == 24
+    assert dft['duration incubation parameter_unit'][0] == 'hours'
+    assert dft['duration incubation parameter_value'][7] == 24
+    assert dft['duration incubation parameter_unit'][7] == 'hours'
+    assert dft['ph parameter_value'][6] == 7.34
+    assert dft['ph parameter_unit'][6] == 'pH'
+    assert dft['distance parameter_value'][4] == 25
+    assert dft['distance parameter_unit'][0] == 'centimeters'
     

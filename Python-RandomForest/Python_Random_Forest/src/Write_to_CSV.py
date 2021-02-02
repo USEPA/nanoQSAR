@@ -8,7 +8,7 @@ Created on Dec 21, 2020
 
 from pathlib import Path
 
-def write_to_csv(df, invitro_output):
+def write_to_csv(df, filename):
     '''
     Name
     ----
@@ -24,13 +24,13 @@ def write_to_csv(df, invitro_output):
         DataFrame containing the in vitro rows.
     
     '''
-    if not Path(invitro_output).exists():
-        invitro_output = "..\\" + invitro_output
+    if not Path(filename).exists():
+        file_output = "..\\" + filename
         
     # Write DataFrame to output.
     # Note that we must specify the right type of encoding to write out all characters correctly.
     # Some of the data contain Greek letters which need to be accounted for when writing to a CSV file.
-    df.to_csv(invitro_output, encoding = 'utf-8-sig')
+    df.to_csv(file_output, encoding = 'utf-8-sig')
     
     # Print message to console indicating that writing to CSV has completed.
-    print("Writing of " + invitro_output + " to a CSV file has completed.")
+    print("Writing of " + file_output + " to a CSV file has completed.")

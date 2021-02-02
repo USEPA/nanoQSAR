@@ -11,8 +11,9 @@ split_contaminant_fields(df, nrow, col_names)
 
 @author: Wilson Melendez
 '''
+import re 
 
-def split_contaminant_fields(df, nrow, col_names):
+def split_contaminant_fields(df):
     '''
     Name
     ----
@@ -26,10 +27,6 @@ def split_contaminant_fields(df, nrow, col_names):
     ----------------
     df : DataFrame
         DataFrame containing the inVitro data.
-    nrow : int
-        Number of rows in DataFrame df.
-    col_names  : list
-        The column headers in DataFrame df.
     
     Output Parameters
     -----------------
@@ -40,15 +37,21 @@ def split_contaminant_fields(df, nrow, col_names):
     ValueError
         If no result type is found in concatenated string or casting to int/float fails.
     '''
-    # Generate a list containing the column headers associated with contaminants.   
-    subs1 = "contam"
-    list_contaminants = [icol for icol in col_names if subs1 in icol]
+    # Extract column names
+    column_names = list(df.columns)
+    
+    # Determine number of rows in data frame.
+    nrow = len(df.index)
+    
+    # Generate a list containing the column headers associated with contaminants. 
+    contaminant_regex = re.compile(r'contam\d\d_num_name_amt_unit_meth')
+    list_contaminants = list(filter(contaminant_regex.match, column_names))
     
     # Determine the number of contaminant column headers.
     num_contaminants = len(list_contaminants)
     
     # Declare empty set that will contain the contaminant names.
-    contaminants_set = set()
+    # contaminants_set = set()
     try:
         for icol in range(0, num_contaminants):
             if (df[list_contaminants[icol]].isna().values.all() == True):
@@ -71,16 +74,28 @@ def split_contaminant_fields(df, nrow, col_names):
                     # list_str[3] = unit of numeric value
                     # list_str[4] = method used  
                     
-                    contaminants_set.add(list_str[1].strip().lower())
-                    strvalue = list_str[1].strip().lower()
-                    strunits = list_str[1].strip().lower() + ' unit'
-                    strnum = list_str[1].strip().lower() + ' num'
-                    strnonnum = list_str[1].strip().lower() + ' method'     
+                    # contaminants_set.add(list_str[1].strip().lower())
+                    strvalue = list_str[1].strip().lower() + ' contaminant_value'
+                    strunits = list_str[1].strip().lower() + ' contaminant_unit'
+                    # strnum = list_str[1].strip().lower() + ' contaminant_number'
+                    strnonnum = list_str[1].strip().lower() + ' contaminant_method'     
                     
-                    if (list_str[0] != ''):                    
-                        df.loc[irow, strnum] = int(list_str[0])
-                    else:
-                        df.loc[irow, strnum] = None
+                    # New columns are added to the DataFrame by specifying a new name and 
+                    # assigning a value to it.  If the location of a new column is important, we 
+                    # can use the 'insert' method to specify its location within the DataFrame.  
+                    # In this function new columns are appended to the DataFrame so no attempt  
+                    # at specifying a specific location is made.   
+                    
+                    # New columns are added to the DataFrame by specifying a new name and 
+                    # assigning a value to it.  If the location of a new column is important, we 
+                    # can use the 'insert' method to specify its location within the DataFrame.  
+                    # In this function new columns are appended to the DataFrame so no attempt  
+                    # at specifying a specific location is made.   
+                    
+                    # if (list_str[0] != ''):                    
+                    #     df.loc[irow, strnum] = int(list_str[0])
+                    # else:
+                    #     df.loc[irow, strnum] = None
                             
                     if (list_str[2] != ''):
                         df.loc[irow, strvalue] = float(list_str[2])

@@ -35,12 +35,10 @@ def test_results_fields():
     nrow = len(dft.index)
     
     # Proceed to split up the concatenated fields.
-    split_result_fields(dft, nrow, col_names)
+    split_result_fields(dft)
     
     # Assert selected values
-    assert dft['front scatter number'][0] == 190481
-    assert dft['front scatter result'][0] == 1
-    assert dft['front scatter unit'][0] == 'ratio to control'
-    assert dft['side scatter number'][1] == 190494
-    assert dft['side scatter result'][1] == 1.28
-    assert dft['side scatter unit'][1] == 'ratio to control'
+    assert dft['front scatter result_value'][0] == 1
+    assert dft['front scatter result_unit'][0] == 'ratio to control'
+    assert dft['side scatter result_value'][1] == 1.28
+    assert dft['side scatter result_unit'][1] == 'ratio to control'

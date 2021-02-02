@@ -11,8 +11,9 @@ split_additive_fields(df, nrow, col_names)
     
 @author: Wilson Melendez
 '''
-
-def split_additive_fields(df, nrow, col_names):
+import re
+ 
+def split_additive_fields(df):
     '''
     Name
     ----
@@ -40,9 +41,15 @@ def split_additive_fields(df, nrow, col_names):
     ValueError
         If no result type is found in concatenated string or casting to int/float fails.
     '''
+    # Extract column names
+    column_names = list(df.columns)
+    
+    # Determine number of rows in data frame.
+    nrow = len(df.index)
+    
     # Process the additive fields
-    subs2 = "additive"
-    list_additives = [icol for icol in col_names if subs2 in icol]
+    additive_regex = re.compile(r'additive\d\d_num_name_amt_unit')
+    list_additives = list(filter(additive_regex.match, column_names))
     num_additives = len(list_additives)
     
     try:
@@ -65,15 +72,21 @@ def split_additive_fields(df, nrow, col_names):
                     # list_str[2] = amount of additive (numeric value)
                     # list_str[3] = unit of numeric value
                     
-                    strvalue = list_str[1].strip().lower()
-                    strunits = list_str[1].strip().lower() + ' unit'
-                    strnum = list_str[1].strip().lower() + ' num' 
+                    strvalue = list_str[1].strip().lower() + ' additive_value'
+                    strunits = list_str[1].strip().lower() + ' additive_unit'
+                    # strnum = list_str[1].strip().lower() + ' additive_number' 
                     
-                    if (list_str[0] != ''):                    
-                        df.loc[irow, strnum] = int(list_str[0])
-                    else:
-                        df.loc[irow, strnum] = None
-                            
+                    # New columns are added to the DataFrame by specifying a new name and 
+                    # assigning a value to it.  If the location of a new column is important, we 
+                    # can use the 'insert' method to specify its location within the DataFrame.  
+                    # In this function new columns are appended to the DataFrame so no attempt  
+                    # at specifying a specific location is made.   
+                    
+                    # if (list_str[0] != ''):                    
+                    #     df.loc[irow, strnum] = int(list_str[0])
+                    # else:
+                    #     df.loc[irow, strnum] = None
+                    
                     if (list_str[2] != ''):
                         df.loc[irow, strvalue] = float(list_str[2])
                     else:

@@ -35,12 +35,12 @@ def test_additives_fields():
     nrow = len(dft.index)
     
     # Proceed to split up the concatenated fields.
-    split_additive_fields(dft, nrow, col_names)
+    split_additive_fields(dft)
     
     # Assert selected values
-    assert dft['fetal bovine serum'][1] == 10
-    assert dft['fetal bovine serum unit'][1] == 'percent'
-    assert dft['tryptone'][1] == 47
-    assert dft['tryptone unit'][1] == 'milligram/liter'
-    assert dft['ammonium sulfate'][1] == 116
-    assert dft['ammonium sulfate'][8] == 116
+    assert dft['fetal bovine serum additive_value'][1] == 10
+    assert dft['fetal bovine serum additive_unit'][1] == 'percent'
+    assert dft['tryptone additive_value'][1] == 47
+    assert dft['tryptone additive_unit'][1] == 'milligram/liter'
+    assert dft['ammonium sulfate additive_value'][1] == 116
+    assert dft['ammonium sulfate additive_value'][8] == 116

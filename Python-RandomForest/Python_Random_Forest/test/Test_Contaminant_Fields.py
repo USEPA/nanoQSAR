@@ -35,11 +35,11 @@ def test_contaminants_fields():
     nrow = len(dft.index)
     
     # Proceed to split up the concatenated fields.
-    split_contaminant_fields(dft, nrow, col_names)
+    split_contaminant_fields(dft)
     
     # Assert values
-    assert dft['aluminum'][1] == 184
-    assert dft['aluminum unit'][1] == 'milligrams/kilogram'
-    assert dft['boron'][1] == 4.55
-    assert dft['boron method'][1] == 'Inductively coupled plasma atomic emission spectroscopy'
-    assert dft['manganese'][1] == 2.84
+    assert dft['aluminum contaminant_value'][1] == 184
+    assert dft['aluminum contaminant_unit'][1] == 'milligrams/kilogram'
+    assert dft['boron contaminant_value'][1] == 4.55
+    assert dft['boron contaminant_method'][1] == 'Inductively coupled plasma atomic emission spectroscopy'
+    assert dft['manganese contaminant_value'][1] == 2.84

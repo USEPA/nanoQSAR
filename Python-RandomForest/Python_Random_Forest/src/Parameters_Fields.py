@@ -11,8 +11,9 @@ split_parameters_fields(df, nrow, col_names)
     
 @author: Wilson Melendez
 '''
+import re 
 
-def split_parameters_fields(df, nrow, col_names):
+def split_parameters_fields(df):
     '''
     Name
     ----
@@ -26,10 +27,6 @@ def split_parameters_fields(df, nrow, col_names):
     ----------------
     df : DataFrame
         DataFrame containing the inVitro data.
-    nrow : int
-        Number of rows in DataFrame df.
-    col_names  : list
-        The column headers in DataFrame df.
     
     Output Parameters
     -----------------
@@ -40,9 +37,17 @@ def split_parameters_fields(df, nrow, col_names):
     ValueError
         If no result type is found in concatenated string or casting to int/float fails.
     '''
-    # Process the parameter fields.
-    subs = "parameters"
-    list_param = [icol for icol in col_names if subs in icol]
+    # Extract column names
+    column_names = list(df.columns)
+    
+    # Determine number of rows in data frame.
+    nrow = len(df.index)
+    
+    # Generate a list containing the column headers associated with parameters.
+    parameter_regex = re.compile(r'parameters\d\d_num_name_numval_unit_nonnum')
+    list_param = list(filter(parameter_regex.match, column_names))
+    
+    # Determine number of parameters headers
     num_param = len(list_param)
     
     try:
@@ -67,15 +72,21 @@ def split_parameters_fields(df, nrow, col_names):
                     # list_str[3] = unit of numeric value
                     # list_str[4] = non-numeric string
                     
-                    strvalue = list_str[1].strip().lower()
-                    strunits = list_str[1].strip().lower() + ' unit'
-                    strnum = list_str[1].strip().lower() + ' num'
-                    strnonnum = list_str[1].strip().lower() + ' nonnum'
+                    # strnum = list_str[1].strip().lower() + ' parameter_number'
+                    strvalue = list_str[1].strip().lower() + ' parameter_value'
+                    strunits = list_str[1].strip().lower() + ' parameter_unit'                   
+                    strnonnum = list_str[1].strip().lower() + ' parameter_nonnum'
                     
-                    if (list_str[0] != ''):                    
-                        df.loc[irow, strnum] = int(list_str[0])
-                    else:
-                        df.loc[irow, strnum] = None
+                    # New columns are added to the DataFrame by specifying a new name and 
+                    # assigning a value to it.  If the location of a new column is important, we 
+                    # can use the 'insert' method to specify its location within the DataFrame.  
+                    # In this function new columns are appended to the DataFrame so no attempt  
+                    # at specifying a specific location is made.   
+                    
+                    # if (list_str[0] != ''):                    
+                    #     df.loc[irow, strnum] = int(list_str[0])
+                    # else:
+                    #     df.loc[irow, strnum] = None
                             
                     if (list_str[2] != ''):
                         df.loc[irow, strvalue] = float(list_str[2])

@@ -6,6 +6,8 @@ Created on Dec 21, 2020
 @author: Wmelende
 '''
 
+
+
 def replace_null_with_none(df):
     '''
     Name
@@ -28,5 +30,8 @@ def replace_null_with_none(df):
     '''
     # Replace all NULL entries with Python's object.
     df = df.replace({'NULL': None})
+    
+    # Replace empty string with None.
+    df = df.replace({"": None}) 
     
     return df

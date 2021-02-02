@@ -6,8 +6,9 @@ Created on Dec 27, 2020
 
 @author: Wmelende
 '''
+import re 
 
-def delete_concatenated_columns(df, col_names):
+def delete_concatenated_columns(df):
     '''
     Name
     ----
@@ -31,32 +32,35 @@ def delete_concatenated_columns(df, col_names):
     -----------------
     Modified DataFrame df.
     '''
+    # Extract column names
+    column_names = list(df.columns)
+    
     # Extract the columns with concatenated parameter fields
-    subs_parameters = "parameters"
-    list_parameters_headers = [icol for icol in col_names if subs_parameters in icol]
+    parameter_regex = re.compile(r'parameters\d\d_num_name_numval_unit_nonnum')
+    parameter_concatenated_columns = list(filter(parameter_regex.match, column_names))
     
     # Delete the parameters concatenated columns
-    df.drop(list_parameters_headers, axis = 1, inplace = True)
+    df.drop(parameter_concatenated_columns, axis = 1, inplace = True)
     
     # Extract the columns with concatenated contaminant fields
-    subs_contam = "contam"
-    list_contaminants_headers = [icol for icol in col_names if subs_contam in icol]
+    contaminant_regex = re.compile(r'contam\d\d_num_name_amt_unit_meth')
+    contaminant_concatenated_columns = list(filter(contaminant_regex.match, column_names))
     
     # Delete the contaminant concatenated columns
-    df.drop(list_contaminants_headers, axis = 1, inplace = True)
+    df.drop(contaminant_concatenated_columns, axis = 1, inplace = True)
     
     # Extract the columns with concatenated additive fields
-    subs_additives = "additive"
-    list_additives_headers = [icol for icol in col_names if subs_additives in icol]
+    additive_regex = re.compile(r'additive\d\d_num_name_amt_unit')
+    additive_concatenated_columns = list(filter(additive_regex.match, column_names))
     
     # Delete the additive concatenated columns
-    df.drop(list_additives_headers, axis = 1, inplace = True)
+    df.drop(additive_concatenated_columns, axis = 1, inplace = True)
     
     # Extract the columns with concatenated result fields
-    subs_results = "result"
-    list_results_headers = [icol for icol in col_names if subs_results in icol]
+    result_regex = re.compile(r'result\d\d_num_type_dtl_val_approx_unit_uncert_low_hi')
+    result_concatenated_columns = list(filter(result_regex.match, column_names))
     
     # Delete the result concatenated columns
-    df.drop(list_results_headers, inplace = True, axis = 1)
+    df.drop(result_concatenated_columns, inplace = True, axis = 1)
     
     
