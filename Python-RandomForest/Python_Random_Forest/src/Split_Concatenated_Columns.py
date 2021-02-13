@@ -18,6 +18,8 @@ from Write_to_CSV import write_to_csv
 from Delete_Concatenated_Columns import delete_concatenated_columns
 from Delete_Columns_With_All_Equal_Values import delete_columns_with_all_equal_values
 from Process_Units import process_data_units
+from Remove_Rows_NoResults import remove_rows_with_no_results
+from Delete_Merged_Columns import delete_merged_columns
 
 def main():
     input_file = "..\\data\\assay_all_vw_out_22325rows.csv"
@@ -27,6 +29,7 @@ def main():
     output_NoConcatenatedFields = "data\\inVitro_No_Concatenated_Fields.csv"
     output_DifferentValues = "data\\inVitro_Columns_with_Different_Values.csv"
     output_procesed_units = "data\\inVitro_processed_units.csv"
+    output_post_processed_units = "data\\inVitro_post_processed_units.csv"
     
     # Read CSV file. 
     # Note that we must specify the right type of encoding in order to read in all characters
@@ -83,6 +86,15 @@ def main():
     
     # Write DataFrame with processed units to a CSV file.
     write_to_csv(df, output_procesed_units)
+    
+    # Remove columns that were merged with other columns.
+    delete_merged_columns(df)
+    
+    # Remove rows that have no results
+    remove_rows_with_no_results(df)
+    
+    # Write DataFrame with rows that have no results removed
+    write_to_csv(df, output_post_processed_units)
 
 if __name__ == "__main__":
     main()

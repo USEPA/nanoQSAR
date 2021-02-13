@@ -4,6 +4,8 @@ Created on Jan 10, 2021
 @author: Wmelende
 '''
 import math
+from _ast import Or
+from pip._vendor.distlib.util import OR
 
 def process_data_units(df):
     
@@ -70,6 +72,8 @@ def process_data_units(df):
     
     # Process SurfaceArea units
     # The units of cubed meters/gram and milligrams/gram are not compatible with surface area.
+    # We are assuming cubed meters/gram and milligrams/gram are entry errors and that the units are
+    # square meters/gram.
     col_value = "SurfaceAreaValue"
     col_units = "SurfaceAreaUnit"
     col_low = "SurfaceAreaLow"
@@ -90,6 +94,7 @@ def process_data_units(df):
                     if (df[col_units].iloc[irow] == 'square meter/gram'):
                         df.loc[irow, col_units] = 'square meters/gram'
                     elif (df[col_units].iloc[irow] == 'square centimeters/gram'):
+                        df.loc[irow, col_units] = 'square meters/gram'
                         df.loc[irow, col_value] = df.loc[irow, col_value] * 10E-4
                         if (col_low in col_names):
                             if (df[col_low].iloc[irow] != None):
@@ -98,19 +103,10 @@ def process_data_units(df):
                             if (df[col_high].iloc[irow] != None):
                                 df.loc[irow, col_high] = df.loc[irow, col_high] * 10E-4
                     elif (df[col_units].iloc[irow] == 'cubed meters/gram'): 
-                        df.loc[irow, col_value] = None
-                        df.loc[irow, col_units] = None
-                        if (col_low in col_names):
-                            df.loc[irow, col_low] = None
-                        if (col_high in col_names):
-                            df.loc[irow, col_high] = None
+                        df.loc[irow, col_units] = 'square meters/gram'
                     elif (df[col_units].iloc[irow] == 'milligrams/gram'): 
-                        df.loc[irow, col_value] = None
-                        df.loc[irow, col_units] = None
-                        if (col_low in col_names):
-                            df.loc[irow, col_low] = None
-                        if (col_high in col_names):
-                            df.loc[irow, col_high] = None
+                        df.loc[irow, col_units] = 'square meters/gram'
+                        
     except ValueError as msg:
         error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
         print(error_message)  
@@ -213,21 +209,23 @@ def process_data_units(df):
                     str_units == 'micrograms' or 
                     str_units == 'micromolar' or 
                     str_units == 'log of micrograms/milliliter'):
-                    if (str_units == 'micrograms/milliliter' or str_units == 'milligrams/liter' ):
-                        df.loc[irow, col_units] = 'parts per million' 
+                    if (str_units == 'parts per million' or str_units == 'milligrams/liter' ):
+                        df.loc[irow, col_units] = 'micrograms/milliliter' 
                     elif (str_units == 'parts per billion'):
-                        df.loc[irow, col_units] = 'parts per million' 
+                        df.loc[irow, col_units] = 'micrograms/milliliter' 
                         df.loc[irow, col_value] = df.loc[irow, col_value] * 10E-3
                     elif (str_units == 'micrograms/cubed meter'):
-                        df.loc[irow, col_units] = 'parts per million' 
+                        df.loc[irow, col_units] = 'micrograms/milliliter' 
                         df.loc[irow, col_value] = df.loc[irow, col_value] * 10E-6
                     elif (str_units == 'log of micrograms/milliliter'):
+                        df.loc[irow, col_units] = 'micrograms/milliliter' 
+                        df.loc[irow, col_value] = 10**df.loc[irow, col_value] 
+                    elif (str_units == 'log of micrograms/milliliter'):
                         print(df.loc[irow, col_value])
-                        df.loc[irow, col_units] = 'parts per million' 
+                        df.loc[irow, col_units] = 'micrograms/milliliter' 
                         df.loc[irow, col_value] = 10**df.loc[irow, col_value] 
                     elif(str_units == 'milligrams' or str_units == 'micrograms' or str_units == 'micromolar'):
-                        df.loc[irow, col_units] = None
-                        df.loc[irow, col_value] = None
+                        df.loc[irow, col_units] = 'micrograms/milliliter' 
                 else:
                     error_message = ("Unrecognized units: " + str_units + ", column = " + 
                                      str(col_value) + " at row " + str(irow))
@@ -238,8 +236,11 @@ def process_data_units(df):
         print(error_message)  
     
     # Process Particle Concentration Log units
+    # This parameter is being merged with particle concentration (see above).
     col_value = "particle concentration log parameter_value"
+    newcol_value = "particle concentration parameter_value"
     col_units = "particle concentration log parameter_unit"
+    newcol_units = "particle concentration parameter_unit"
     df[col_value] = df[df[col_value]!= None][col_value].astype(float)
     try:
         for irow in range(0, nrow):
@@ -252,15 +253,15 @@ def process_data_units(df):
                     str_units == 'parts per million' or 
                     str_units == 'parts per billion' or
                     str_units == 'micrograms/cubed meter'):
-                    if (str_units == 'milligrams/liter' or str_units == 'parts per million'):
-                        df.loc[irow, col_units] = 'micrograms/milliliter' 
-                        df.loc[irow, col_value] = 10**df.loc[irow, col_value]
+                    if (str_units == 'micrograms/milliliter' or 'milligrams/liter' or str_units == 'parts per million'):
+                        df.loc[irow, newcol_units] = 'micrograms/milliliter' 
+                        df.loc[irow, newcol_value] = 10**df.loc[irow, col_value] 
                     elif (str_units == 'parts per billion'):
-                        df.loc[irow, col_units] = 'micrograms/milliliter' 
-                        df.loc[irow, col_value] = 10**df.loc[irow, col_value] * 10E-3
+                        df.loc[irow, newcol_units] = 'micrograms/milliliter' 
+                        df.loc[irow, newcol_value] = 10**df.loc[irow, col_value] * 10E-3
                     elif (str_units == 'micrograms/cubed meter'):
-                        df.loc[irow, col_units] = 'micrograms/milliliter' 
-                        df.loc[irow, col_value] = 10**df.loc[irow, col_value] * 10E-6
+                        df.loc[irow, newcol_units] = 'micrograms/milliliter' 
+                        df.loc[irow, newcol_value] = 10**df.loc[irow, col_value] * 10E-6
                 else:
                     error_message = ("Unrecognized units: " + str_units + ", column = " + 
                                      str(col_value) + " at row " + str(irow))
@@ -1406,8 +1407,7 @@ def process_data_units(df):
                         df.loc[irow, col_units] = 'millimolar' 
                         df.loc[irow, col_value] = df.loc[irow, col_value] / 58.44
                     elif(str_units == 'millimoles'):
-                        df.loc[irow, col_units] = None
-                        df.loc[irow, col_value] = None
+                        df.loc[irow, col_units] = 'millimolar'
                 else:
                     error_message = ("Unrecognized units: " + str_units + ", column = " + 
                                      str(col_value) + " at row " + str(irow))
@@ -1685,8 +1685,7 @@ def process_data_units(df):
                 str_units = df[col_units].iloc[irow]
                 if (str_units == 'units/milliliter' or 
                     str_units == 'units/milliliters'):
-                    if (str_units == 'units/milliliters'):
-                        df.loc[irow, col_units] = 'units/milliliter' 
+                    df.loc[irow, col_units] = 'enzyme units/milliliter' 
                 else:
                     error_message = ("Unrecognized units: " + str_units + ", column = " + 
                                      str(col_value) + " at row " + str(irow))
@@ -1799,8 +1798,7 @@ def process_data_units(df):
                         df.loc[irow, col_units] = 'millimolar' 
                         df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E-03
                     elif(str_units == 'millimole'):
-                        df.loc[irow, col_units] = None
-                        df.loc[irow, col_value] = None
+                        df.loc[irow, col_units] = 'millimolar' 
                 else:
                     error_message = ("Unrecognized units: " + str_units + ", column = " + 
                                      str(col_value) + " at row " + str(irow))
@@ -2183,9 +2181,11 @@ def process_data_units(df):
         print(error_message)  
         
     # Process penicilin units
-    # Spelling is wrong.
+    # Spelling is wrong.  This additive is being merged with penicillin.
     col_value = "penicilin additive_value"
     col_units = "penicilin additive_unit"
+    newcol_value = "penicillin additive_value"
+    newcol_units = "penicillin additive_unit"
     df[col_value] = df[df[col_value]!= None][col_value].astype(float)
     try:
         for irow in range(0, nrow):
@@ -2196,8 +2196,11 @@ def process_data_units(df):
                 if (str_units == 'enzyme units/milliliter' or 
                     str_units == 'enzyme units/liter'):
                     if (str_units == 'enzyme units/liter'):
-                        df.loc[irow, col_units] = 'enzyme units/milliliter' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E-03
+                        df.loc[irow, newcol_units] = 'enzyme units/milliliter' 
+                        df.loc[irow, newcol_value] = df.loc[irow, col_value] * 1.0E-03
+                    elif (str_units == 'enzyme units/milliliter'):
+                        df.loc[irow, newcol_units] = 'enzyme units/milliliter' 
+                        df.loc[irow, newcol_value] = df.loc[irow, col_value]
                 else:
                     error_message = ("Unrecognized units: " + str_units + ", column = " + 
                                      str(col_value) + " at row " + str(irow))
@@ -2212,9 +2215,10 @@ def process_data_units(df):
     # ######################################################################################################
     col_names = list(df.columns)
     subs_low = "result_low"
-    subs_high = "result_high"
+    subs_high = "result_high"    
     list_result_low = [icol for icol in col_names if subs_low in icol]
     list_result_high = [icol for icol in col_names if subs_high in icol]
+    
     
     # Process front scatter units
     result_type = "front scatter"
@@ -2263,16 +2267,17 @@ def process_data_units(df):
                 str_units = df[col_units].iloc[irow].lower()
                 if (str_units == 'ratio to control' or 
                     str_units == 'relative fluorescence units' or 
-                    str_units == 'fluorescence intensity'):
-                    if (str_units == 'relative light units'):
+                    str_units == 'fluorescence intensity' or
+                    str_units == 'Relative Fluorescence Units'):
+                    if (str_units == 'Relative Fluorescence Units'):
                         df.loc[irow, col_units] = 'relative fluorescence units' 
-                    elif (str_units == 'ratio to control' or str_units == 'Fluorescence Intensity'):
+                    elif (str_units == 'ratio to control' or str_units == 'fluorescence intensity'):
                         df.loc[irow, col_units] = None
                         df.loc[irow, col_value] = None
                         if (col_low in list_result_low):
                             df.loc[irow, col_low] = None
                         if (col_high in list_result_high):
-                            df.loc[irow, col_high] = None
+                            df.loc[irow, col_high] = None                     
                 else:
                     error_message = ("Unrecognized units: " + str_units + ", column = " + 
                                      str(col_value) + " at row " + str(irow))
@@ -2645,7 +2650,7 @@ def process_data_units(df):
                         if (col_low in list_result_low):
                             df.loc[irow, col_low] = None
                         if (col_high in list_result_high):
-                            df.loc[irow, col_high] = None 
+                            df.loc[irow, col_high] = None
                 else:
                     error_message = ("Unrecognized units: " + str_units + ", column = " + 
                                      str(col_value) + " at row " + str(irow))
@@ -2866,7 +2871,7 @@ def process_data_units(df):
                         if (col_low in list_result_low):
                             df.loc[irow, col_low] = None
                         if (col_high in list_result_high):
-                            df.loc[irow, col_high] = None 
+                            df.loc[irow, col_high] = None
                 else:
                     error_message = ("Unrecognized units: " + str_units + ", column = " + 
                                      str(col_value) + " at row " + str(irow))
@@ -3087,7 +3092,7 @@ def process_data_units(df):
                         if (col_low in list_result_low):
                             df.loc[irow, col_low] = None
                         if (col_high in list_result_high):
-                            df.loc[irow, col_high] = None 
+                            df.loc[irow, col_high] = None   
                 else:
                     error_message = ("Unrecognized units: " + str_units + ", column = " + 
                                      str(col_value) + " at row " + str(irow))
@@ -3168,7 +3173,7 @@ def process_data_units(df):
                         if (col_low in list_result_low):
                             df.loc[irow, col_low] = None
                         if (col_high in list_result_high):
-                            df.loc[irow, col_high] = None
+                            df.loc[irow, col_high] = None    
                 else:
                     error_message = ("Unrecognized units: " + str_units + ", column = " + 
                                      str(col_value) + " at row " + str(irow))
@@ -3394,7 +3399,7 @@ def process_data_units(df):
                 str_units = df[col_units].iloc[irow]
                 if (str_units == 'fold activity' or 
                     str_units == 'micromolar'):
-                    if (str_units == 'mmicromolar'):
+                    if (str_units == 'micromolar'):
                         df.loc[irow, col_units] = None
                         df.loc[irow, col_value] = None
                         if (col_low in list_result_low):
@@ -3631,12 +3636,7 @@ def process_data_units(df):
                 if (str_units == 'micrograms/milliliter' or 
                     str_units == 'nanometers'):
                     if (str_units == 'nanometers'):
-                        df.loc[irow, col_units] = None 
-                        df.loc[irow, col_value] = None
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = None
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = None
+                        df.loc[irow, col_units] = 'microgram/milliliter'
                 else:
                     error_message = ("Unrecognized units: " + str_units + ", column = " + 
                                      str(col_value) + " at row " + str(irow))
@@ -3772,12 +3772,19 @@ def process_data_units(df):
         print(error_message)     
     
     # Process relative fluorescence units
-    # How is ratio defined?
+    # This result type is being merged with the fluorescence result type.
     result_type = "relative fluorescence"
     col_value = result_type + " result_value"
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
+    
+    new_result_type = "fluorescence"
+    newcol_value = new_result_type + " result_value"
+    newcol_units = new_result_type + " result_unit"
+    newcol_low = new_result_type + " result_low"
+    newcol_high = new_result_type + " result_high"
+    
     df[col_value] = df[df[col_value]!= None][col_value].astype(float)
     if (col_low in list_result_low):
         df[col_low] = df[df[col_low]!= None][col_low].astype(float)
@@ -3789,15 +3796,13 @@ def process_data_units(df):
                 continue
             else:
                 str_units = df[col_units].iloc[irow]
-                if (str_units == 'Relative fluorescence units' or 
-                    str_units == 'ratio'):
-                    if (str_units == 'ratio'):
-                        df.loc[irow, col_units] = None 
-                        df.loc[irow, col_value] = None
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = None
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = None 
+                if (str_units == 'Relative fluorescence units'):
+                    df.loc[irow, newcol_units] = "relative fluorescence units"
+                    df.loc[irow, newcol_value] = df.loc[irow, col_value]
+                    if (col_low in list_result_low):
+                        df.loc[irow, newcol_low] = df.loc[irow, col_low]
+                    if (col_high in list_result_high):
+                        df.loc[irow, newcol_high] = df.loc[irow, col_high]                       
                 else:
                     error_message = ("Unrecognized units: " + str_units + ", column = " + 
                                      str(col_value) + " at row " + str(irow))
@@ -4165,7 +4170,7 @@ def process_data_units(df):
                 if (str_units == 'Chemiluminescence units' or 
                     str_units == 'Chemiluminescence'):
                     if (str_units == 'Chemiluminescence'):
-                        df.loc[irow, col_units] = 'Chemiluminescence units' 
+                        df.loc[irow, col_units] = 'chemiluminescence units' 
                 else:
                     error_message = ("Unrecognized units: " + str_units + ", column = " + 
                                      str(col_value) + " at row " + str(irow))
@@ -4225,7 +4230,7 @@ def process_data_units(df):
                 if (str_units == 'Chemiluminescence units' or 
                     str_units == 'Chemiluminescence'):
                     if (str_units == 'Chemiluminescence'):
-                        df.loc[irow, col_units] = 'Chemiluminescence units'
+                        df.loc[irow, col_units] = 'chemiluminescence units'
                 else:
                     error_message = ("Unrecognized units: " + str_units + ", column = " + 
                                      str(col_value) + " at row " + str(irow))
@@ -5017,7 +5022,7 @@ def process_data_units(df):
                 if (str_units == 'Chemiluminescence units' or 
                     str_units == 'Relative Light Units'):
                     if (str_units == 'Relative light units'):
-                        df.loc[irow, col_units] = 'Chemiluminescence units' 
+                        df.loc[irow, col_units] = 'chemiluminescence units' 
                 else:
                     error_message = ("Unrecognized units: " + str_units + ", column = " + 
                                      str(col_value) + " at row " + str(irow))
