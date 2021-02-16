@@ -28,12 +28,6 @@ def test_additives_fields():
     # Set all NULLs to None.
     dft = dft.replace({'NULL': None})
     
-    # Extract column names.
-    col_names = list(dft.columns)
-    
-    # Determine number of rows in data frame.
-    nrow = len(dft.index)
-    
     # Proceed to split up the concatenated fields.
     split_additive_fields(dft)
     
