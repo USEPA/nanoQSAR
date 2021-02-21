@@ -20,6 +20,8 @@ from Delete_Columns_With_All_Equal_Values import delete_columns_with_all_equal_v
 from Process_Units import process_data_units
 from Remove_Rows_NoResults import remove_rows_with_no_results
 from Delete_Merged_Columns import delete_merged_columns
+from Fix_Categorical_Data_Errors import fix_categorical_data
+from Encode_Categorical_Data import encode_categorical_columns
 
 def main():
     input_file = "..\\data\\assay_all_vw_out_22325rows.csv"
@@ -30,6 +32,7 @@ def main():
     output_DifferentValues = "data\\inVitro_Columns_with_Different_Values.csv"
     output_procesed_units = "data\\inVitro_processed_units.csv"
     output_post_processed_units = "data\\inVitro_post_processed_units.csv"
+    output_fixedCategoricalData = "data\\inVitro_fixed_categorical.data.csv"
     
     # Read CSV file. 
     # Note that we must specify the right type of encoding in order to read in all characters
@@ -93,8 +96,22 @@ def main():
     # Remove rows that have no results
     remove_rows_with_no_results(df)
     
+    # Delete columns with the same value
+    # This step is necessary because if rows with no results are removed (see step above), 
+    # there is the possibility of having columns that are now empty.
+    delete_columns_with_all_equal_values(df)
+    
     # Write DataFrame with rows that have no results removed
     write_to_csv(df, output_post_processed_units)
+    
+    # Fix categorical data typos and misspellings.
+    fix_categorical_data(df)
+    
+    # Write DataFrame with fixed categorical data
+    write_to_csv(df, output_fixedCategoricalData)
+    
+    # Encode categorical data
+    encode_categorical_columns(df)
 
 if __name__ == "__main__":
     main()
