@@ -22,5 +22,6 @@ def remove_rows_with_no_results(df):
             # Delete DataFrame row
             df.drop(index = irow, inplace = True)
             
-    # Reset the rows indices 
-    df = df.reset_index(level = 0, drop = True)
+    # Reset the rows indices. 
+    df.reset_index(level = 0, drop = True, inplace = True)
+    

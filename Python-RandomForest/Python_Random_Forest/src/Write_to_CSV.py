@@ -30,7 +30,7 @@ def write_to_csv(df, filename):
     # Write DataFrame to output.
     # Note that we must specify the right type of encoding to write out all characters correctly.
     # Some of the data contain Greek letters which need to be accounted for when writing to a CSV file.
-    df.to_csv(file_output, encoding = 'utf-8-sig')
+    df.to_csv(file_output, encoding = 'utf-8-sig', index = False)
     
     # Print message to console indicating that writing to CSV has completed.
     print("Writing of " + file_output + " to a CSV file has completed.")
