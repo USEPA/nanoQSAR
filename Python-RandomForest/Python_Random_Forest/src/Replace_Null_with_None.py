@@ -29,9 +29,8 @@ def replace_null_with_none(df):
     
     '''
     # Replace all NULL entries with Python's object.
-    df = df.replace({'NULL': None})
+    df.replace({'NULL': None}, inplace = True)
     
     # Replace empty string with None.
-    df = df.replace({"": None}) 
+    df.replace({"": None}, inplace = True) 
     
-    return df

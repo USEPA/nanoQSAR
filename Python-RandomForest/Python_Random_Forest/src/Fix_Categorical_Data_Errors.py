@@ -15,3 +15,15 @@ def fix_categorical_data(df):
     
     # Delete 'sub pathway parameter_nonnum' column
     df.drop("sub pathway parameter_nonnum", axis = 1, inplace = True)
+    
+    # Create list of categorical columns.
+    categorical_columns = ['CoreComposition', 'ShellComposition', 'CoatingComposition', 
+                           'Shape', 'SurfaceChargeType', 'particle concentration parameter_nonnum', 
+                           'cell type parameter_nonnum', 'subject parameter_nonnum', 
+                           'light parameter_nonnum']
+    
+    # Change case of categories to lowercase.
+    for columns in categorical_columns:
+        df[columns] = df[columns].str.lower()
+    
+                      

@@ -22,6 +22,7 @@ from Remove_Rows_NoResults import remove_rows_with_no_results
 from Delete_Merged_Columns import delete_merged_columns
 from Fix_Categorical_Data_Errors import fix_categorical_data
 from Encode_Categorical_Data import encode_categorical_columns
+from Delete_Unwanted_Columns import delete_unwanted_columns
 
 def main():
     input_file = "..\\data\\assay_all_vw_out_22325rows.csv"
@@ -52,7 +53,7 @@ def main():
                      encoding = 'utf-8-sig')
     
     # Replace NULL with None.
-    df = replace_null_with_none(df)
+    replace_null_with_none(df)
     
     # Proceed to split up the concatenated fields.
     split_parameters_fields(df)
@@ -82,7 +83,7 @@ def main():
                      encoding = 'utf-8-sig')
     
     # Replace NULL with None.
-    df = replace_null_with_none(df)
+    replace_null_with_none(df)
     
     # Process units
     process_data_units(df)
@@ -109,6 +110,10 @@ def main():
     
     # Write DataFrame with fixed categorical data
     write_to_csv(df, output_fixedCategoricalData)
+    
+    # Delete columns that have no predictive capabilities.
+    # These columns will not be needed for the Random Forest analysis.
+    delete_unwanted_columns(df)
     
     # Encode categorical data
     encode_categorical_columns(df)

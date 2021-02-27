@@ -63,7 +63,10 @@ def process_parameters_units(df):
                     str_units == 'micrograms' or 
                     str_units == 'micromolar' or 
                     str_units == 'log of micrograms/milliliter'):
-                    if (str_units == 'parts per million' or str_units == 'milligrams/liter' ):
+                    if (str_units == 'micrograms/milliliter'):
+                        if (df.loc[irow, col_value] < 0.0):
+                            df.loc[irow, col_value] = 0.0
+                    elif (str_units == 'parts per million' or str_units == 'milligrams/liter' ):
                         df.loc[irow, col_units] = 'micrograms/milliliter' 
                     elif (str_units == 'parts per billion'):
                         df.loc[irow, col_units] = 'micrograms/milliliter' 
