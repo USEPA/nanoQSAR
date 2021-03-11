@@ -21,10 +21,6 @@ def encode_categorical_columns(df):
     # for icol in columns_encode:
     #     df[icol].replace({None:""}, inplace = True)
     
-    # Replace empty strings with "Others" before doing any encoding.
-    # for icol in columns_encode:
-    #    df[icol].replace({"":"Missing"}, inplace = True)
-        
     # Create DataFrame with categorical data
     df_cat = df[columns_encode]
     original_headers_cat = list(df_cat.columns)
@@ -36,8 +32,7 @@ def encode_categorical_columns(df):
     imp_missing = SimpleImputer(missing_values = None, strategy = 'constant', fill_value = 'missing')
     
     # Impute the categorical data.
-    df_imp = imp_missing.fit_transform(df_cat)
-    
+    df_imp = imp_missing.fit_transform(df_cat)
     # Encode the categorical data using the One-Hot Encoder
     encoder = OneHotEncoder(handle_unknown='ignore')
     encoder.fit(df_imp)
