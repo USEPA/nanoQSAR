@@ -27,7 +27,7 @@ from Extract_X_and_Y_Matrices import extract_X_Y_matrices
 from Transform_DataFrames_to_Arrays import transform_dataframes_to_arrays
 from Extract_Viability_Rows import extract_viability_rows
 from Split_XY_Training_Testing_Matrices import split_X_y_training_testing
-from RandomForest_Regression import perform_RandomForest_progression
+from RandomForest_Regression import perform_RandomForest_regression
 from Impute_Numerical_Columns import impute_missing_data_of_numerical_columns
 
 def main():
@@ -161,7 +161,7 @@ def main():
     X_train, X_test, y_train, y_test = split_X_y_training_testing(X_array, y_array)
     
     # Perform a Random Forest regression
-    perform_RandomForest_progression(X_train, y_train, X_test, y_test)
+    perform_RandomForest_regression(X_train, y_train, X_test, y_test)
 
 if __name__ == "__main__":
     main()
