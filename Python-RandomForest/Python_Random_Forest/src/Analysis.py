@@ -25,6 +25,9 @@ def main():
     # Extract X and Y matrices
     dfX, dfY = extract_X_Y_matrices(df)
     
+    # Keep features from dfX
+    train_features = list(dfX.columns)
+    
     # Transform X and Y matrices to arrays
     X_array, y_array = transform_dataframes_to_arrays(dfX, dfY)
     
@@ -32,7 +35,7 @@ def main():
     X_train, X_test, y_train, y_test = split_X_y_training_testing(X_array, y_array)
     
     # Perform a Random Forest regression
-    perform_RandomForest_regression(X_train, y_train, X_test, y_test)
+    perform_RandomForest_regression(train_features, X_train, y_train, X_test, y_test)
 
 if __name__ == "__main__":
     main()
