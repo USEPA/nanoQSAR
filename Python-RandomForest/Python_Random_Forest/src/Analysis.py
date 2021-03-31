@@ -36,6 +36,7 @@ def main():
     # Split X and Y matrices into training and testing data sets.
     dfX_train, dfX_test, dfy_train, dfy_test = split_X_y_training_testing(dfX, dfY)
     
+    # Write train and test matrices to CSV files.
     write_to_csv(dfX_train, output_xtrain)
     write_to_csv(dfX_test, output_xtest)
     write_to_csv(dfy_train, output_ytrain)
