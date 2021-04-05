@@ -25,6 +25,7 @@ from Encode_Categorical_Data import encode_categorical_columns
 from Delete_Unwanted_Columns import delete_unwanted_columns
 from Extract_Viability_Rows import extract_viability_rows
 from Impute_Numerical_Columns import impute_missing_data_of_numerical_columns
+from Perform_Multivariate_Imputation import iteratively_impute_numerical_columns
 
 def main():
     input_file = "..\\data\\assay_all_vw_out_22325rows.csv"
@@ -39,6 +40,7 @@ def main():
     output_Viability_Rows = "data\\Viability_Results_Rows.csv"
     output_NonEmptyColumns_Viability_Rows = "data\\Viability_Results_Rows_NonEmptyColumns.csv"
     output_Imputed_Values = "data\\Imputed_Numerical_Columns.csv"
+    output_Multivariate_Imputed_Values = "data\\Multivariate_Imputed_Numerical_Columns.csv"
     
     # Read CSV file. 
     # Note that we must specify the right type of encoding in order to read in all characters
@@ -136,10 +138,12 @@ def main():
     write_to_csv(df, output_NonEmptyColumns_Viability_Rows)
     
     # Impute missing data of numerical columns.
-    df = impute_missing_data_of_numerical_columns(df)
+    # df = impute_missing_data_of_numerical_columns(df)
+    df = iteratively_impute_numerical_columns(df)
     
     # Write imputed DataFrame to a CSV file
-    write_to_csv(df, output_Imputed_Values)
+    # write_to_csv(df, output_Imputed_Values)
+    write_to_csv(df, output_Multivariate_Imputed_Values)
     
     print("Refinement Complete")
 

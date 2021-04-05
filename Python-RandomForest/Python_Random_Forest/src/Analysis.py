@@ -16,7 +16,8 @@ from RandomForest_Regression import perform_RandomForest_regression
 from Write_to_CSV import write_to_csv
 
 def main():
-    input_Imputed_Values = "..\\data\\Imputed_Numerical_Columns.csv"
+    # input_Imputed_Values = "..\\data\\Imputed_Numerical_Columns.csv"
+    input_Imputed_Values = "..\\data\\Multivariate_Imputed_Numerical_Columns.csv" 
     output_xtrain = "data\\X_Train.csv"
     output_ytrain = "data\\y_Train.csv"
     output_xtest = "data\\X_Test.csv"

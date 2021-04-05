@@ -29,6 +29,7 @@ def split_X_y_training_testing(dfX, dfy):
     subs_value = "CoreComposition"
     core_comp_columns  = [icol for icol in column_names if subs_value in icol]
     
+    # Cast core composition columns as integers.
     dfXy[core_comp_columns] = dfXy[core_comp_columns].round(0).astype(int)
     
     # Remove Titanium Dioxide from list
@@ -63,52 +64,7 @@ def split_X_y_training_testing(dfX, dfy):
             dfXy_test = pd.concat([dfXy_test, dfTemp1], axis = 0)
         else:
             dfXy_test = dfTemp1
-                        
-    # Calculate length of list
-    # num_core_comps = len(core_comp_columns)               
-    # for i in range(0, num_core_comps):
-        # Randomly select core composition from list
-    #    core_composition = random.choice(core_comp_columns)
-        # Determine number of times this core composition occurs (equal to 1).
-    #    df1 = dfXy[core_composition].value_counts()
-    #    num1 = df1.values[df1.index == 1][0]
-        
-    #    if (num1 < nrows_testing):
-    #        sum_rows = sum_rows + num1
-    #        if (sum_rows <= nrows_testing):
-                # Remove chosen core composition from list
-    #            core_comp_columns.remove(core_composition)               
-                # Add core composition to test list
-    #            core_comp_test.append(core_composition)                
-    #            dfTemp1 = dfXy[dfXy[core_composition] == 1]
-    #            list_test_rows = list_test_rows + list(dfTemp1.index)
-    #            if (i == 0):
-    #                dfXy_test = dfTemp1
-    #            else:                    
-    #                dfXy_test = pd.concat([dfXy_test, dfTemp1], axis = 0)
-    #            if (sum_rows == nrows_testing):
-    #                break
-    #        elif (sum_rows > nrows_testing):
-    #            diff1 = sum_rows - nrows_testing
-    #            diff2 = nrows_testing - (sum_rows - num1)
-    #            if (diff1 < diff2):
-                    # Remove chosen core composition from list
-    #                core_comp_columns.remove(core_composition)
-                    
-                    # Add core composition to test list                    
-    #               core_comp_test.append(core_composition)
-                    
-    #               dfTemp1 = dfXy[dfXy[core_composition] == 1]
-    #                list_test_rows = list_test_rows + list(dfTemp1.index)                    
-    #                dfXy_test = pd.concat([dfXy_test, dfTemp1], axis = 0)                    
-    #           break                          
-    #    elif (num1 > nrows_testing and sum_rows < nrows_testing):
-    #        # Remove chosen core composition from list
-    #        core_comp_columns.remove(core_composition)
-    #        continue
-        
-
-        
+                            
     # Remove rows that correspond to the testing set.
     dfXy_train = dfXy.drop(list_test_rows, inplace = False, axis = 0)
         
