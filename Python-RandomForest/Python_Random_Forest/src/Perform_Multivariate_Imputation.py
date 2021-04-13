@@ -14,6 +14,7 @@ from sklearn.experimental import enable_iterative_imputer
 # Now we can import normally from sklearn.impute
 from sklearn.impute import IterativeImputer
 from sklearn.linear_model import BayesianRidge
+from pandas.tests.test_nanops import skipna
 
 # from sklearn.tree import DecisionTreeRegressor
 # from sklearn.ensemble import ExtraTreesRegressor
@@ -26,15 +27,22 @@ def iteratively_impute_numerical_columns(df):
     # Define list with parameter columns.
     param_columns = ['OuterDiameterValue', 'SurfaceAreaValue', 'HydrodynamicDiameterValue', 
                     'particle concentration parameter_value','duration incubation parameter_value', 
-                    'duration aging parameter_value', 'duration irradiation parameter_value', 
-                    'concentration zinc parameter_value', 'concentration copper parameter_value', 
+                    'duration aging parameter_value', 'duration irradiation parameter_value',  
                     'irradiance parameter_value', 'irradiation power parameter_value',
                     'Purity', 'ChargeAvg', 'duration exposure parameter_value', 'temperature parameter_value',
                     'number of cells parameter_value', 'concentration carbon dioxide parameter_value'] 
     
+    # Store copper and zinc concentrations in a separate list.
+    param_conc_columns = ['concentration zinc parameter_value', 'concentration copper parameter_value']
+    
     # Extract columns with additive_value
     subs_value = "additive_value"
     additive_columns  = [icol for icol in column_names if subs_value in icol]
+    additive_columns.remove("fetal bovine serum additive_value")
+    
+    # Extract columns with contaminant_value 
+    subs_value = "contaminant_value"
+    contaminant_columns  = [icol for icol in column_names if subs_value in icol]
     
     categorical_columns = []
     # Extract encoded categorical data
@@ -47,7 +55,7 @@ def iteratively_impute_numerical_columns(df):
         categorical_columns = categorical_columns + encoded_columns
     
     # Add all columns to be used in the iterative imputation algorithm to a single list.
-    total_cols = categorical_columns + param_columns + additive_columns 
+    total_cols = categorical_columns + param_columns + param_conc_columns + additive_columns + contaminant_columns
     
     # Extract results columns and store them in a separate DataFrame
     subs_value = "result_value"
@@ -57,9 +65,21 @@ def iteratively_impute_numerical_columns(df):
     # Make a copy of the DataFrame with the chosen columns.
     df_temp = df[total_cols].copy()
     
+    # Impute additives and parameter-concentrations missing values with zeros.
+    total_cols_zero = additive_columns + contaminant_columns + param_conc_columns
+    df_temp[total_cols_zero] = df_temp[total_cols_zero].fillna(value = 0.0)
+    
     # Extract minimum and maximum values of features and store them in separate lists.
-    minimum_values = list(df_temp.min())
-    maximum_values = list(df_temp.max())
+    minimum_values = list(df_temp.min(axis = 0, skipna = True))
+    maximum_values = list(df_temp.max(axis = 0, skipna = True))
+    
+    # Obtain length of lists
+    length = len(maximum_values)
+    
+    # Loop over each element in lists and determine whether maximum value > minimum value.
+    for i in range(length):
+        if (maximum_values[i] <= minimum_values[i]):
+            maximum_values[i] = 1.1 * maximum_values[i]
     
     # Define iterative imputer
     # Estimators available are:
@@ -72,7 +92,8 @@ def iteratively_impute_numerical_columns(df):
                            random_state = 0, 
                            missing_values = np.nan, 
                            initial_strategy = 'mean',
-                           min_value = minimum_values)
+                           min_value = minimum_values,
+                           max_value = maximum_values)
     
     df_imp = imp.fit_transform(df_temp)
     

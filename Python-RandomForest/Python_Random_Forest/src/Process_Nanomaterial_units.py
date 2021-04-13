@@ -44,27 +44,28 @@ def process_nanomaterial_units(df):
     col_units = "OuterDiameterUnit"
     col_low = "OuterDiameterLow"
     col_high = "OuterDiameterHigh"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                if (df[col_units].iloc[irow] == 'nanometers' or df[col_units].iloc[irow] == 'micrometers'):
-                    if (df[col_units].iloc[irow] == 'micrometers'):
-                        df.loc[irow, col_units] = 'nanometers'
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1000
-                        if (col_low in col_names):
-                            if (df[col_low].iloc[irow] != None):
-                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1000
-                        if (col_high in col_names):   
-                            if (df[col_high].iloc[irow] != None):
-                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1000                        
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
+                else:
+                    if (df[col_units].iloc[irow] == 'nanometers' or df[col_units].iloc[irow] == 'micrometers'):
+                        if (df[col_units].iloc[irow] == 'micrometers'):
+                            df.loc[irow, col_units] = 'nanometers'
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1000
+                            if (col_low in col_names):
+                                if (df[col_low].iloc[irow] != None):
+                                    df.loc[irow, col_low] = df.loc[irow, col_low] * 1000
+                            if (col_high in col_names):   
+                                if (df[col_high].iloc[irow] != None):
+                                    df.loc[irow, col_high] = df.loc[irow, col_high] * 1000                        
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)
         
         
     # Process Thickness units
@@ -72,27 +73,28 @@ def process_nanomaterial_units(df):
     col_units = "ThicknessUnit"
     col_low = "ThicknessLow"
     col_high = "ThicknessHigh"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    # df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                if (df[col_units].iloc[irow] == 'nanometers' or df[col_units].iloc[irow] == 'micrometers'):
-                    if (df[col_units].iloc[irow] == 'micrometers'):
-                        df.loc[irow, col_units] = 'nanometers'
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1000
-                        if (col_low in col_names):
-                            if (df[col_low].iloc[irow] != None):
-                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1000
-                        if (col_high in col_names):   
-                            if (df[col_high].iloc[irow] != None):
-                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1000                        
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)  
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        # df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
+                else:
+                    if (df[col_units].iloc[irow] == 'nanometers' or df[col_units].iloc[irow] == 'micrometers'):
+                        if (df[col_units].iloc[irow] == 'micrometers'):
+                            df.loc[irow, col_units] = 'nanometers'
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1000
+                            if (col_low in col_names):
+                                if (df[col_low].iloc[irow] != None):
+                                    df.loc[irow, col_low] = df.loc[irow, col_low] * 1000
+                            if (col_high in col_names):   
+                                if (df[col_high].iloc[irow] != None):
+                                    df.loc[irow, col_high] = df.loc[irow, col_high] * 1000                        
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)  
                 
     
     # Process SurfaceArea units
@@ -103,106 +105,110 @@ def process_nanomaterial_units(df):
     col_units = "SurfaceAreaUnit"
     col_low = "SurfaceAreaLow"
     col_high = "SurfaceAreaHigh"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                if (df[col_units].iloc[irow] == 'square meters/gram' or 
-                    df[col_units].iloc[irow] == 'square centimeters/gram' or 
-                    df[col_units].iloc[irow] == 'square meter/gram' or 
-                    df[col_units].iloc[irow] == 'cubed meters/gram' or 
-                    df[col_units].iloc[irow] == 'milligrams/gram'):
-                    if (df[col_units].iloc[irow] == 'square meter/gram'):
-                        df.loc[irow, col_units] = 'square meters/gram'
-                    elif (df[col_units].iloc[irow] == 'square centimeters/gram'):
-                        df.loc[irow, col_units] = 'square meters/gram'
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 10E-4
-                        if (col_low in col_names):
-                            if (df[col_low].iloc[irow] != None):
-                                df.loc[irow, col_low] = df.loc[irow, col_low] * 10E-4
-                        if (col_high in col_names):   
-                            if (df[col_high].iloc[irow] != None):
-                                df.loc[irow, col_high] = df.loc[irow, col_high] * 10E-4
-                    elif (df[col_units].iloc[irow] == 'cubed meters/gram'): 
-                        df.loc[irow, col_units] = 'square meters/gram'
-                    elif (df[col_units].iloc[irow] == 'milligrams/gram'): 
-                        df.loc[irow, col_units] = 'square meters/gram'
-                        
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)  
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
+                else:
+                    if (df[col_units].iloc[irow] == 'square meters/gram' or 
+                        df[col_units].iloc[irow] == 'square centimeters/gram' or 
+                        df[col_units].iloc[irow] == 'square meter/gram' or 
+                        df[col_units].iloc[irow] == 'cubed meters/gram' or 
+                        df[col_units].iloc[irow] == 'milligrams/gram'):
+                        if (df[col_units].iloc[irow] == 'square meter/gram'):
+                            df.loc[irow, col_units] = 'square meters/gram'
+                        elif (df[col_units].iloc[irow] == 'square centimeters/gram'):
+                            df.loc[irow, col_units] = 'square meters/gram'
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1E-4
+                            if (col_low in col_names):
+                                if (df[col_low].iloc[irow] != None):
+                                    df.loc[irow, col_low] = df.loc[irow, col_low] * 1E-4
+                            if (col_high in col_names):   
+                                if (df[col_high].iloc[irow] != None):
+                                    df.loc[irow, col_high] = df.loc[irow, col_high] * 1E-4
+                        elif (df[col_units].iloc[irow] == 'cubed meters/gram'): 
+                            df.loc[irow, col_units] = 'square meters/gram'
+                        elif (df[col_units].iloc[irow] == 'milligrams/gram'): 
+                            df.loc[irow, col_units] = 'square meters/gram'
+                            
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)  
         
     # Process Purity units
     col_value = "Purity"
     col_units = "PurityUnit"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                if (df[col_units].iloc[irow] == 'percent' or df[col_units].iloc[irow] == 'fraction'):
-                    if (df[col_units].iloc[irow] == 'fraction'):
-                        df.loc[irow, col_units] = 'percent'
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 100                     
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
+                else:
+                    if (df[col_units].iloc[irow] == 'percent' or df[col_units].iloc[irow] == 'fraction'):
+                        if (df[col_units].iloc[irow] == 'fraction'):
+                            df.loc[irow, col_units] = 'percent'
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 100                     
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)
         
     # Process Hydrodynamic Diameter units
     col_value = "HydrodynamicDiameterValue"
     col_units = "HydrodynamicDiameterUnit"
     col_low = "HydrodynamicDiameterLow"
     col_high = "HydrodynamicDiameterHigh"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    #df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                if (df[col_units].iloc[irow] == 'nanometers' or df[col_units].iloc[irow] == 'micrometers'):
-                    if (df[col_units].iloc[irow] == 'micrometers'):
-                        df.loc[irow, col_units] = 'nanometers'
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1000
-                        if (col_low in col_names):
-                            if (df[col_low].iloc[irow] != None):
-                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1000
-                        if (col_high in col_names):   
-                            if (df[col_high].iloc[irow] != None):
-                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1000                        
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)  
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        #df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
+                else:
+                    if (df[col_units].iloc[irow] == 'nanometers' or df[col_units].iloc[irow] == 'micrometers'):
+                        if (df[col_units].iloc[irow] == 'micrometers'):
+                            df.loc[irow, col_units] = 'nanometers'
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1000
+                            if (col_low in col_names):
+                                if (df[col_low].iloc[irow] != None):
+                                    df.loc[irow, col_low] = df.loc[irow, col_low] * 1000
+                            if (col_high in col_names):   
+                                if (df[col_high].iloc[irow] != None):
+                                    df.loc[irow, col_high] = df.loc[irow, col_high] * 1000                        
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)  
         
     # Process Charge units
     col_value = "ChargeAvg"
     col_units = "ChargeUnit"
     col_low = "ChargeLow"
     col_high = "ChargeHigh"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    #df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    #df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                if (df[col_units].iloc[irow] == 'millivolts' or df[col_units].iloc[irow] == 'volts'):
-                    if (df[col_units].iloc[irow] == 'volts'):
-                        df.loc[irow, col_units] = 'millivolts'
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1000
-                        if (col_low in col_names):
-                            if (df[col_low].iloc[irow] != None):
-                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1000
-                        if (col_high in col_names):   
-                            if (df[col_high].iloc[irow] != None):
-                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1000                        
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)  
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        #df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        #df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
+                else:
+                    if (df[col_units].iloc[irow] == 'millivolts' or df[col_units].iloc[irow] == 'volts'):
+                        if (df[col_units].iloc[irow] == 'volts'):
+                            df.loc[irow, col_units] = 'millivolts'
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1000
+                            if (col_low in col_names):
+                                if (df[col_low].iloc[irow] != None):
+                                    df.loc[irow, col_low] = df.loc[irow, col_low] * 1000
+                            if (col_high in col_names):   
+                                if (df[col_high].iloc[irow] != None):
+                                    df.loc[irow, col_high] = df.loc[irow, col_high] * 1000                        
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)  

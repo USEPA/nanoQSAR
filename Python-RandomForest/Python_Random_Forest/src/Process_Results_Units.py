@@ -51,25 +51,26 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio to control' or 
-                    str_units == 'ratio'):
-                    if (str_units == 'ratio'):
-                        df.loc[irow, col_units] = 'ratio to control'
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)  
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio to control' or 
+                        str_units == 'ratio'):
+                        if (str_units == 'ratio'):
+                            df.loc[irow, col_units] = 'ratio to control'
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)  
         
     # Process fluorescence units
     # The fluorescence data appears to consist of 3 different data groups that are not comparable 
@@ -79,63 +80,65 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow].lower()
-                if (str_units == 'ratio to control' or 
-                    str_units == 'relative fluorescence units' or 
-                    str_units == 'fluorescence intensity' or
-                    str_units == 'Relative Fluorescence Units'):
-                    if (str_units == 'Relative Fluorescence Units'):
-                        df.loc[irow, col_units] = 'relative fluorescence units' 
-                    elif (str_units == 'ratio to control' or str_units == 'fluorescence intensity'):
-                        df.loc[irow, col_units] = None
-                        df.loc[irow, col_value] = None
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = None
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = None                     
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)  
+                    str_units = df[col_units].iloc[irow].lower()
+                    if (str_units == 'ratio to control' or 
+                        str_units == 'relative fluorescence units' or 
+                        str_units == 'fluorescence intensity' or
+                        str_units == 'Relative Fluorescence Units'):
+                        if (str_units == 'Relative Fluorescence Units'):
+                            df.loc[irow, col_units] = 'relative fluorescence units' 
+                        elif (str_units == 'ratio to control' or str_units == 'fluorescence intensity'):
+                            df.loc[irow, col_units] = None
+                            df.loc[irow, col_value] = None
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = None
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = None                     
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)  
         
     # Process  units
     col_value = "side scatter result_value"
     col_units = "side scatter result_unit"
     col_low = " result_low"
     col_high = " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'ratio to control'):
-                    if (str_units == 'ratio'):
-                        df.loc[irow, col_units] = 'ratio to control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)    
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'ratio to control'):
+                        if (str_units == 'ratio'):
+                            df.loc[irow, col_units] = 'ratio to control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)    
     
     # Process dna damage units
     result_type = "dna damage"
@@ -143,34 +146,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'percent' or 
-                    str_units == 'fraction'):
-                    if (str_units == 'fraction'):
-                        df.loc[irow, col_units] = 'percent' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)  
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'percent' or 
+                        str_units == 'fraction'):
+                        if (str_units == 'fraction'):
+                            df.loc[irow, col_units] = 'percent' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)  
         
     # Process number of micronuclei  units
     result_type = "number of micronuclei"
@@ -178,25 +182,26 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'micronuclei' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'micronuclei' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)    
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'micronuclei' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'micronuclei' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)    
     
     # Process hydrodynamic diameter units
     result_type = "hydrodynamic diameter"
@@ -204,34 +209,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'nanometers' or 
-                    str_units == 'micrometers'):
-                    if (str_units == 'micrometers'):
-                        df.loc[irow, col_units] = 'nanometers' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)  
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'nanometers' or 
+                        str_units == 'micrometers'):
+                        if (str_units == 'micrometers'):
+                            df.loc[irow, col_units] = 'nanometers' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)  
         
     # Process nfkb activation units
     result_type = "nfkb activation"
@@ -239,25 +245,26 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold change over control' or 
-                    str_units == 'fold change'):
-                    if (str_units == 'fold change'):
-                        df.loc[irow, col_units] = 'fold change over control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)    
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold change over control' or 
+                        str_units == 'fold change'):
+                        if (str_units == 'fold change'):
+                            df.loc[irow, col_units] = 'fold change over control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)    
         
     # Process ap1 activation units
     result_type = "ap1 activation"
@@ -265,25 +272,26 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold change over control' or 
-                    str_units == 'fold change'):
-                    if (str_units == 'fold change'):
-                        df.loc[irow, col_units] = 'fold change over control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)  
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold change over control' or 
+                        str_units == 'fold change'):
+                        if (str_units == 'fold change'):
+                            df.loc[irow, col_units] = 'fold change over control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)  
         
     # Process concentration titanium dioxide units
     result_type = "concentration titanium dioxide"
@@ -291,34 +299,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'milligrams/liter' or 
-                    str_units == 'micrograms/liter'):
-                    if (str_units == 'micrograms/liter'):
-                        df.loc[irow, col_units] = 'milligrams/liter' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E-03
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E-03
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E-03
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)    
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'milligrams/liter' or 
+                        str_units == 'micrograms/liter'):
+                        if (str_units == 'micrograms/liter'):
+                            df.loc[irow, col_units] = 'milligrams/liter' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E-03
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E-03
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E-03
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)    
     
     # Process growth rate units
     result_type = "growth rate"
@@ -326,34 +335,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'nanometers' or 
-                    str_units == 'micrometers'):
-                    if (str_units == 'micrometers'):
-                        df.loc[irow, col_units] = 'nanometers' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)  
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'nanometers' or 
+                        str_units == 'micrometers'):
+                        if (str_units == 'micrometers'):
+                            df.loc[irow, col_units] = 'nanometers' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)  
         
     # Process genomics units
     result_type = "genomics"
@@ -361,29 +371,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold change over control' or 
-                    str_units == 'fold change'):
-                    if (str_units == 'fold change'):
-                        df.loc[irow, col_units] = 'fold change over control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)    
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold change over control' or 
+                        str_units == 'fold change'):
+                        if (str_units == 'fold change'):
+                            df.loc[irow, col_units] = 'fold change over control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)    
     
     # Process alanine transaminase activity units
     result_type = "alanine transaminase activity"
@@ -391,29 +402,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'ratio' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)  
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'ratio' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)  
         
     # Process aspartate transaminase activity units
     result_type = "aspartate transaminase activity"
@@ -421,29 +433,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'ratio' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)    
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'ratio' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)    
     
     # Process lactate dehydrogenase activity units
     # Not sure how the units should be converted for this case.
@@ -455,35 +468,36 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'percent' or 
-                    str_units == 'enzyme units/liter'):
-                    if (str_units == 'percent' or str_units == 'ratio'):
-                        df.loc[irow, col_units] = None
-                        df.loc[irow, col_value] = None
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = None
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = None
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)  
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'percent' or 
+                        str_units == 'enzyme units/liter'):
+                        if (str_units == 'percent' or str_units == 'ratio'):
+                            df.loc[irow, col_units] = None
+                            df.loc[irow, col_value] = None
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = None
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = None
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)  
         
     # Process alkaline phosphatase activity units
     result_type = "alkaline phosphatase activity"
@@ -491,29 +505,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'ratio' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)    
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'ratio' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)    
     
     # Process chloramphenicol acetyltransferase activity units
     result_type = "chloramphenicol acetyltransferase activity"
@@ -521,29 +536,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'ratio' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)  
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'ratio' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)  
         
     # Process glucose-6-phosphate dehydrogenase activity units
     result_type = "glucose-6-phosphate dehydrogenase activity"
@@ -551,29 +567,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'ratio' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)    
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'ratio' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)    
     
     # Process gamma-glutamyl transferase activity units
     result_type = "gamma-glutamyl transferase activity"
@@ -581,29 +598,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'ratio' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)  
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'ratio' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)  
         
     # Process glutathione peroxidase activity units
     result_type = "glutathione peroxidase activity"
@@ -611,29 +629,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'ratio' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)    
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'ratio' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)    
     
     # Process glutathione reductase activity units
     result_type = "glutathione reductase activity"
@@ -641,29 +660,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'ratio' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)  
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'ratio' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)  
         
     # Process glutathione activity units
     # Not sure how to convert these units.
@@ -676,35 +696,36 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'Relative Light Units' or 
-                    str_units == 'Chemiluminescence units'):
-                    if (str_units == 'Chemiluminescence units' or str_units == 'Relative Light Units'):
-                        df.loc[irow, col_units] = None
-                        df.loc[irow, col_value] = None
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = None
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = None
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)    
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'Relative Light Units' or 
+                        str_units == 'Chemiluminescence units'):
+                        if (str_units == 'Chemiluminescence units' or str_units == 'Relative Light Units'):
+                            df.loc[irow, col_units] = None
+                            df.loc[irow, col_value] = None
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = None
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = None
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)    
     
     # Process microalbulmin activity units
     result_type = "microalbulmin activity"
@@ -712,29 +733,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'ratio' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)  
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'ratio' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)  
         
     # Process released protein units
     result_type = "released protein"
@@ -742,29 +764,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'ratio' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)    
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'ratio' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)    
     
     # Process superoxide dismutase activity units
     result_type = "superoxide dismutase activity"
@@ -772,29 +795,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'ratio' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)  
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'ratio' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)  
         
     # Process released bilirubin units
     result_type = "released bilirubin"
@@ -802,29 +826,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'ratio' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)   
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'ratio' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)   
         
     # Process released thioredoxin reductase units
     result_type = "released thioredoxin reductase"
@@ -832,29 +857,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'ratio' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)    
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'ratio' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)    
     
     # Process released triglycerides units
     result_type = "released triglycerides"
@@ -862,29 +888,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'ratio' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)    
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'ratio' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)    
     
     # Process size units
     # Two of the units are incompatible.
@@ -893,39 +920,40 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'nanometers' or 
-                    str_units == 'micrometers' or 
-                    str_units == 'micrograms/liter' or 
-                    str_units == 'percent'):
-                    if (str_units == 'micrometers'):
-                        df.loc[irow, col_units] = 'nanometers' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
-                    elif (str_units == 'percent' or str_units == 'micrograms/liter'):
-                        df.loc[irow, col_units] = None
-                        df.loc[irow, col_value] = None
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = None
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = None   
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'nanometers' or 
+                        str_units == 'micrometers' or 
+                        str_units == 'micrograms/liter' or 
+                        str_units == 'percent'):
+                        if (str_units == 'micrometers'):
+                            df.loc[irow, col_units] = 'nanometers' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
+                        elif (str_units == 'percent' or str_units == 'micrograms/liter'):
+                            df.loc[irow, col_units] = None
+                            df.loc[irow, col_value] = None
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = None
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = None   
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
         
         
     # Process zeta potential units
@@ -934,34 +962,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'millivolts' or 
-                    str_units == 'volts'):
-                    if (str_units == 'volts'):
-                        df.loc[irow, col_units] = 'millivolts' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E-03
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E-03
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E-03 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)    
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'millivolts' or 
+                        str_units == 'volts'):
+                        if (str_units == 'volts'):
+                            df.loc[irow, col_units] = 'millivolts' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E-03
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E-03
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E-03 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)    
     
     # Process concentration silver units
     # Two of the units are not considered concentration units.
@@ -970,43 +999,44 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'micrograms/milliliter' or 
-                    str_units == 'micrograms/liter' or 
-                    str_units == 'milligrams/kilogram' or 
-                    str_units == 'nanometers'):
-                    if (str_units == 'micrograms/liter'):
-                        df.loc[irow, col_units] = 'micrograms/milliliter' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E-03
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E-03
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E-03 
-                    elif (str_units == 'milligrams/kilogram' or str_units == 'nanometers'):
-                        df.loc[irow, col_units] = None
-                        df.loc[irow, col_value] = None
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = None
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = None    
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)    
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'micrograms/milliliter' or 
+                        str_units == 'micrograms/liter' or 
+                        str_units == 'milligrams/kilogram' or 
+                        str_units == 'nanometers'):
+                        if (str_units == 'micrograms/liter'):
+                            df.loc[irow, col_units] = 'micrograms/milliliter' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E-03
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E-03
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E-03 
+                        elif (str_units == 'milligrams/kilogram' or str_units == 'nanometers'):
+                            df.loc[irow, col_units] = None
+                            df.loc[irow, col_value] = None
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = None
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = None    
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)    
     
     # Process cell activity units
     result_type = "cell activity"
@@ -1014,29 +1044,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'ratio' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'ratio' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process deposition units
     result_type = "deposition"
@@ -1044,34 +1075,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'percent' or 
-                    str_units == 'fraction'):
-                    if (str_units == 'fraction'):
-                        df.loc[irow, col_units] = 'percent' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 100
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 100
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 100
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)   
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'percent' or 
+                        str_units == 'fraction'):
+                        if (str_units == 'fraction'):
+                            df.loc[irow, col_units] = 'percent' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 100
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 100
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 100
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)   
         
     # Process mass silver  units
     result_type = "mass silver"
@@ -1079,34 +1111,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'micrograms' or 
-                    str_units == 'milligrams'):
-                    if (str_units == 'milligrams'):
-                        df.loc[irow, col_units] = 'micrograms' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)    
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'micrograms' or 
+                        str_units == 'milligrams'):
+                        if (str_units == 'milligrams'):
+                            df.loc[irow, col_units] = 'micrograms' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)    
     
     # Process caspase 3/7 activity units
     result_type = "caspase 3/7 activity"
@@ -1114,29 +1147,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'Chemiluminescence units' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'Chemiluminescence units' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)    
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'Chemiluminescence units' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'Chemiluminescence units' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)    
     
     # Process concentration nitrate units
     # Are the units correct??
@@ -1145,29 +1179,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'Chemiluminescence units' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'Chemiluminescence units' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'Chemiluminescence units' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'Chemiluminescence units' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process total protein units
     result_type = "total protein"
@@ -1175,34 +1210,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'micrograms' or 
-                    str_units == 'milligrams'):
-                    if (str_units == 'milligrams'):
-                        df.loc[irow, col_units] = 'micrograms' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'micrograms' or 
+                        str_units == 'milligrams'):
+                        if (str_units == 'milligrams'):
+                            df.loc[irow, col_units] = 'micrograms' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
         
     # Process reactive oxygen species units
     # Not sure how to convert micromolar to fold activity or viceversa.
@@ -1211,34 +1247,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold activity' or 
-                    str_units == 'micromolar'):
-                    if (str_units == 'micromolar'):
-                        df.loc[irow, col_units] = None
-                        df.loc[irow, col_value] = None
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = None
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = None 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold activity' or 
+                        str_units == 'micromolar'):
+                        if (str_units == 'micromolar'):
+                            df.loc[irow, col_units] = None
+                            df.loc[irow, col_value] = None
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = None
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = None 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
         
     # Process fold increase units
     result_type = "fold increase"
@@ -1246,29 +1283,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold change over control' or 
-                    str_units == 'fold change'):
-                    if (str_units == 'fold change'):
-                        df.loc[irow, col_units] = 'fold change over control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold change over control' or 
+                        str_units == 'fold change'):
+                        if (str_units == 'fold change'):
+                            df.loc[irow, col_units] = 'fold change over control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process absorbance units
     result_type = "absorbance"
@@ -1276,29 +1314,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'absorbance units' or 
-                    str_units == None):
-                    if (str_units == None):
-                        df.loc[irow, col_units] = 'absorbance units' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)   
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'absorbance units' or 
+                        str_units == None):
+                        if (str_units == None):
+                            df.loc[irow, col_units] = 'absorbance units' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)   
     
     # Process metabolically active cells units
     result_type = "metabolically active cells"
@@ -1306,34 +1345,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'percent' or 
-                    str_units == 'fraction'):
-                    if (str_units == 'fraction'):
-                        df.loc[irow, col_units] = 'percent' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'percent' or 
+                        str_units == 'fraction'):
+                        if (str_units == 'fraction'):
+                            df.loc[irow, col_units] = 'percent' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process apoptosis units
     result_type = "apoptosis"
@@ -1341,34 +1381,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'percent' or 
-                    str_units == 'fraction'):
-                    if (str_units == 'fraction'):
-                        df.loc[irow, col_units] = 'percent' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'percent' or 
+                        str_units == 'fraction'):
+                        if (str_units == 'fraction'):
+                            df.loc[irow, col_units] = 'percent' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
         
     # Process caspase-3 activity units
     result_type = "caspase-3 activity"
@@ -1376,34 +1417,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'micromolar/(hour*milligram)' or 
-                    str_units == 'millimolar/(hour*milligram)'):
-                    if (str_units == 'millimolar/(hour*milligram)'):
-                        df.loc[irow, col_units] = 'micromolar/(hour*milligram)' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'micromolar/(hour*milligram)' or 
+                        str_units == 'millimolar/(hour*milligram)'):
+                        if (str_units == 'millimolar/(hour*milligram)'):
+                            df.loc[irow, col_units] = 'micromolar/(hour*milligram)' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
         
     # Process viability units
     result_type = "viability"
@@ -1411,34 +1453,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'percent' or 
-                    str_units == 'fraction'):
-                    if (str_units == 'fraction'):
-                        df.loc[irow, col_units] = 'percent' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'percent' or 
+                        str_units == 'fraction'):
+                        if (str_units == 'fraction'):
+                            df.loc[irow, col_units] = 'percent' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process lethal concentration 50 percent units
     # This result has nanometers as one of the its units but this has to be wrong. 
@@ -1447,29 +1490,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'micrograms/milliliter' or 
-                    str_units == 'nanometers'):
-                    if (str_units == 'nanometers'):
-                        df.loc[irow, col_units] = 'microgram/milliliter'
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'micrograms/milliliter' or 
+                        str_units == 'nanometers'):
+                        if (str_units == 'nanometers'):
+                            df.loc[irow, col_units] = 'microgram/milliliter'
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process nrf2/are units
     result_type = "nrf2/are"
@@ -1477,29 +1521,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold change over control' or 
-                    str_units == 'fold change'):
-                    if (str_units == 'fold change'):
-                        df.loc[irow, col_units] = 'fold change over control'
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold change over control' or 
+                        str_units == 'fold change'):
+                        if (str_units == 'fold change'):
+                            df.loc[irow, col_units] = 'fold change over control'
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process ap1 units
     result_type = "ap1"
@@ -1507,29 +1552,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold change over control' or 
-                    str_units == 'fold change'):
-                    if (str_units == 'fold change'):
-                        df.loc[irow, col_units] = 'fold change over control'
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold change over control' or 
+                        str_units == 'fold change'):
+                        if (str_units == 'fold change'):
+                            df.loc[irow, col_units] = 'fold change over control'
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
         
     # Process nfkb units
     result_type = "nfkb"
@@ -1537,29 +1583,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold change over control' or 
-                    str_units == 'fold change'):
-                    if (str_units == 'fold change'):
-                        df.loc[irow, col_units] = 'fold change over control'
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold change over control' or 
+                        str_units == 'fold change'):
+                        if (str_units == 'fold change'):
+                            df.loc[irow, col_units] = 'fold change over control'
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
         
     # Process glutathion units
     result_type = "glutathion"
@@ -1567,34 +1614,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'percent' or 
-                    str_units == 'fraction'):
-                    if (str_units == 'fraction'):
-                        df.loc[irow, col_units] = 'percent' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'percent' or 
+                        str_units == 'fraction'):
+                        if (str_units == 'fraction'):
+                            df.loc[irow, col_units] = 'percent' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process relative fluorescence units
     # This result type is being merged with the fluorescence result type.
@@ -1609,33 +1657,33 @@ def process_results_units(df):
     newcol_units = new_result_type + " result_unit"
     newcol_low = new_result_type + " result_low"
     newcol_high = new_result_type + " result_high"
-    
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'Relative fluorescence units'):
-                    df.loc[irow, newcol_units] = "relative fluorescence units"
-                    df.loc[irow, newcol_value] = df.loc[irow, col_value]
-                    if (col_low in list_result_low):
-                        df.loc[irow, newcol_low] = df.loc[irow, col_low]
-                    if (col_high in list_result_high):
-                        df.loc[irow, newcol_high] = df.loc[irow, col_high]                       
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'Relative fluorescence units'):
+                        df.loc[irow, newcol_units] = "relative fluorescence units"
+                        df.loc[irow, newcol_value] = df.loc[irow, col_value]
+                        if (col_low in list_result_low):
+                            df.loc[irow, newcol_low] = df.loc[irow, col_low]
+                        if (col_high in list_result_high):
+                            df.loc[irow, newcol_high] = df.loc[irow, col_high]                       
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process change in active electrodes units
     result_type = "change in active electrodes"
@@ -1643,29 +1691,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio to control' or 
-                    str_units == None):
-                    if (str_units == None):
-                        df.loc[irow, col_units] = 'ratio to control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio to control' or 
+                        str_units == None):
+                        if (str_units == None):
+                            df.loc[irow, col_units] = 'ratio to control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process electrophoretic mobility units
     result_type = "electrophoretic mobility"
@@ -1673,34 +1722,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'micrometers*centimeters/(volt*second)' or 
-                    str_units == 'millimeters*centimeters/(volt*second)'):
-                    if (str_units == 'millimeters*centimeters/(volt*second)'):
-                        df.loc[irow, col_units] = 'micrometers*centimeters/(volt*second)' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'micrometers*centimeters/(volt*second)' or 
+                        str_units == 'millimeters*centimeters/(volt*second)'):
+                        if (str_units == 'millimeters*centimeters/(volt*second)'):
+                            df.loc[irow, col_units] = 'micrometers*centimeters/(volt*second)' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
         
     # Process deposition rate units
     # Hertz is the standard unit for frequency.
@@ -1711,34 +1761,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'Hertz/second' or 
-                    str_units == '10^-6/second'):
-                    if (str_units == '10^-6/second'):
-                        df.loc[irow, col_units] = 'Hertz/second' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E-06
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E-06
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E-06 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'Hertz/second' or 
+                        str_units == '10^-6/second'):
+                        if (str_units == '10^-6/second'):
+                            df.loc[irow, col_units] = 'Hertz/second' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E-06
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E-06
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E-06 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
         
     # Process produced biogas units
     result_type = "produced biogas"
@@ -1746,34 +1797,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'milliliters' or 
-                    str_units == 'liters'):
-                    if (str_units == 'liters'):
-                        df.loc[irow, col_units] = 'milliliters' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'milliliters' or 
+                        str_units == 'liters'):
+                        if (str_units == 'liters'):
+                            df.loc[irow, col_units] = 'milliliters' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process concentration dissolved zinc ions units
     result_type = "concentration dissolved zinc ions"
@@ -1781,34 +1833,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'micrograms/liter' or 
-                    str_units == 'milligrams/liter'):
-                    if (str_units == 'milligrams/liter'):
-                        df.loc[irow, col_units] = 'micrograms/liter' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'micrograms/liter' or 
+                        str_units == 'milligrams/liter'):
+                        if (str_units == 'milligrams/liter'):
+                            df.loc[irow, col_units] = 'micrograms/liter' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process initial deposition rate units
     result_type = "initial deposition rate"
@@ -1816,34 +1869,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'Hertz/minute' or 
-                    str_units == 'Hertz/second'):
-                    if (str_units == 'Hertz/second'):
-                        df.loc[irow, col_units] = 'Hertz/minute' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 60
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 60
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 60 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'Hertz/minute' or 
+                        str_units == 'Hertz/second'):
+                        if (str_units == 'Hertz/second'):
+                            df.loc[irow, col_units] = 'Hertz/minute' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 60
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 60
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 60 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process dissipation to frequency shift ratio units
     result_type = "dissipation to frequency shift ratio"
@@ -1851,29 +1905,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'ratio'
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'ratio'
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
         
     # Process induced dna damage units
     result_type = "induced dna damage"
@@ -1881,34 +1936,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'percent' or 
-                    str_units == 'fraction'):
-                    if (str_units == 'fraction'):
-                        df.loc[irow, col_units] = 'percent' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'percent' or 
+                        str_units == 'fraction'):
+                        if (str_units == 'fraction'):
+                            df.loc[irow, col_units] = 'percent' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
         
     # Process micronuclei/1000 binucleated cells units
     result_type = "micronuclei/1000 binucleated cells"
@@ -1916,34 +1972,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'percent' or 
-                    str_units == 'fraction'):
-                    if (str_units == 'fraction'):
-                        df.loc[irow, col_units] = 'percent' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'percent' or 
+                        str_units == 'fraction'):
+                        if (str_units == 'fraction'):
+                            df.loc[irow, col_units] = 'percent' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process resistance units
     result_type = "resistance"
@@ -1951,29 +2008,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio to control' or 
-                    str_units == 'ratio'):
-                    if (str_units == 'ratio'):
-                        df.loc[irow, col_units] = 'ratio to control'
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio to control' or 
+                        str_units == 'ratio'):
+                        if (str_units == 'ratio'):
+                            df.loc[irow, col_units] = 'ratio to control'
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process chemiluminescence units
     result_type = "chemiluminescence"
@@ -1981,29 +2039,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'Chemiluminescence units' or 
-                    str_units == 'Chemiluminescence'):
-                    if (str_units == 'Chemiluminescence'):
-                        df.loc[irow, col_units] = 'chemiluminescence units' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'Chemiluminescence units' or 
+                        str_units == 'Chemiluminescence'):
+                        if (str_units == 'Chemiluminescence'):
+                            df.loc[irow, col_units] = 'chemiluminescence units' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process transcellular electrical resistance units
     result_type = "transcellular electrical resistance"
@@ -2011,29 +2070,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio to control' or 
-                    str_units == 'ratio'):
-                    if (str_units == 'ratio'):
-                        df.loc[irow, col_units] = 'ratio to control'
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio to control' or 
+                        str_units == 'ratio'):
+                        if (str_units == 'ratio'):
+                            df.loc[irow, col_units] = 'ratio to control'
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
         
     # Process ap-1 activity units
     result_type = "ap-1 activity"
@@ -2041,29 +2101,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'Chemiluminescence units' or 
-                    str_units == 'Chemiluminescence'):
-                    if (str_units == 'Chemiluminescence'):
-                        df.loc[irow, col_units] = 'chemiluminescence units'
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'Chemiluminescence units' or 
+                        str_units == 'Chemiluminescence'):
+                        if (str_units == 'Chemiluminescence'):
+                            df.loc[irow, col_units] = 'chemiluminescence units'
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
         
     # Process gsta3 expression units
     result_type = "gsta3 expression"
@@ -2071,29 +2132,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold change over control' or 
-                    str_units == 'fold change'):
-                    if (str_units == 'fold change'):
-                        df.loc[irow, col_units] = 'fold change over control'
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold change over control' or 
+                        str_units == 'fold change'):
+                        if (str_units == 'fold change'):
+                            df.loc[irow, col_units] = 'fold change over control'
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process expression levels units
     result_type = "expression levels"
@@ -2101,29 +2163,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio to control' or 
-                    str_units == 'ratio'):
-                    if (str_units == 'ratio'):
-                        df.loc[irow, col_units] = 'ratio to control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio to control' or 
+                        str_units == 'ratio'):
+                        if (str_units == 'ratio'):
+                            df.loc[irow, col_units] = 'ratio to control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process glutathione remaining units
     result_type = "glutathione remaining"
@@ -2131,34 +2194,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'percent' or 
-                    str_units == 'fraction'):
-                    if (str_units == 'fraction'):
-                        df.loc[irow, col_units] = 'percent' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'percent' or 
+                        str_units == 'fraction'):
+                        if (str_units == 'fraction'):
+                            df.loc[irow, col_units] = 'percent' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process effective concentration 5 percent units
     result_type = "effective concentration 5 percent"
@@ -2166,34 +2230,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'micrograms/liter' or 
-                    str_units == 'milligrams/liter'):
-                    if (str_units == 'milligrams/liter'):
-                        df.loc[irow, col_units] = 'micrograms/liter' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'micrograms/liter' or 
+                        str_units == 'milligrams/liter'):
+                        if (str_units == 'milligrams/liter'):
+                            df.loc[irow, col_units] = 'micrograms/liter' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
         
     # Process effective concentration 10 percent units
     result_type = "effective concentration 10 percent"
@@ -2201,34 +2266,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'micrograms/liter' or 
-                    str_units == 'milligrams/liter'):
-                    if (str_units == 'milligrams/liter'):
-                        df.loc[irow, col_units] = 'micrograms/liter' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'micrograms/liter' or 
+                        str_units == 'milligrams/liter'):
+                        if (str_units == 'milligrams/liter'):
+                            df.loc[irow, col_units] = 'micrograms/liter' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
         
     # Process effective concentration 20 percent units
     result_type = "effective concentration 20 percent"
@@ -2236,34 +2302,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'micrograms/liter' or 
-                    str_units == 'milligrams/liter'):
-                    if (str_units == 'milligrams/liter'):
-                        df.loc[irow, col_units] = 'micrograms/liter' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'micrograms/liter' or 
+                        str_units == 'milligrams/liter'):
+                        if (str_units == 'milligrams/liter'):
+                            df.loc[irow, col_units] = 'micrograms/liter' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process effective concentration 50 percent units
     result_type = "effective concentration 50 percent"
@@ -2271,34 +2338,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'micrograms/liter' or 
-                    str_units == 'milligrams/liter'):
-                    if (str_units == 'milligrams/liter'):
-                        df.loc[irow, col_units] = 'micrograms/liter' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'micrograms/liter' or 
+                        str_units == 'milligrams/liter'):
+                        if (str_units == 'milligrams/liter'):
+                            df.loc[irow, col_units] = 'micrograms/liter' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process total copper units
     result_type = "total copper"
@@ -2306,34 +2374,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'percent' or 
-                    str_units == 'fraction'):
-                    if (str_units == 'fraction'):
-                        df.loc[irow, col_units] = 'percent' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)   
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'percent' or 
+                        str_units == 'fraction'):
+                        if (str_units == 'fraction'):
+                            df.loc[irow, col_units] = 'percent' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)   
     
     # Process hydrogen peroxide production units
     result_type = "hydrogen peroxide production"
@@ -2341,29 +2410,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'Relative Light Units' or 
-                    str_units == 'Light Units'):
-                    if (str_units == 'Light Units'):
-                        df.loc[irow, col_units] = 'Relative Light Units' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'Relative Light Units' or 
+                        str_units == 'Light Units'):
+                        if (str_units == 'Light Units'):
+                            df.loc[irow, col_units] = 'Relative Light Units' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process recovery la4 cells units
     # Must double check unit conversion from 10000/well to 1000/well.
@@ -2372,34 +2442,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == '1000/well' or 
-                    str_units == '10000/well'):
-                    if (str_units == '10000/well'):
-                        df.loc[irow, col_units] = '1000/well' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 10
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 10
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 10 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == '1000/well' or 
+                        str_units == '10000/well'):
+                        if (str_units == '10000/well'):
+                            df.loc[irow, col_units] = '1000/well' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 10
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 10
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 10 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process endothelial nitric oxide synthase units
     result_type = "endothelial nitric oxide synthase"
@@ -2407,29 +2478,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold change over control' or 
-                    str_units == 'fold change'):
-                    if (str_units == 'fold change'):
-                        df.loc[irow, col_units] = 'fold change over control'
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold change over control' or 
+                        str_units == 'fold change'):
+                        if (str_units == 'fold change'):
+                            df.loc[irow, col_units] = 'fold change over control'
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process rna content units
     result_type = "rna content"
@@ -2437,34 +2509,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'nanograms/microliter' or 
-                    str_units == 'micrograms/microliter'):
-                    if (str_units == 'micrograms/microliter'):
-                        df.loc[irow, col_units] = 'nanograms/microliter' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'nanograms/microliter' or 
+                        str_units == 'micrograms/microliter'):
+                        if (str_units == 'micrograms/microliter'):
+                            df.loc[irow, col_units] = 'nanograms/microliter' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process genomics (microarrays), genes induced units
     # Must double check unit conversion from percent to fold change over control.
@@ -2473,43 +2546,44 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold change over control' or 
-                    str_units == 'percent'):
-                    if (str_units == 'percent'):
-                        df.loc[irow, col_units] = 'fold change over control' 
-                        if (df[col_value].iloc[irow] >= 0):
-                            df.loc[irow, col_value] = 1 + (df[col_value].iloc[irow] / 100)
-                        else:
-                            df.loc[irow, col_value] = -1 + (df[col_value].iloc[irow] / 100)  
-                        if (col_low in list_result_low):
-                            if (df[col_low].iloc[irow] >= 0.0):
-                                df[irow, col_low] = 1 + (df[col_low].iloc[irow] / 100)
-                            else:
-                                df[irow, col_low] = -1 + (df[col_low].iloc[irow] / 100)                            
-                        if (col_high in list_result_high):
-                            if (df[col_high].iloc[irow] >= 0.0):
-                                df[irow, col_high] = 1 + (df[col_high].iloc[irow] / 100)
-                            else:
-                                df[irow, col_high] = -1 + (df[col_high].iloc[irow] / 100)                        
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)   
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold change over control' or 
+                        str_units == 'percent'):
+                        if (str_units == 'percent'):
+                            df.loc[irow, col_units] = 'fold change over control' 
+                            if (df[col_value].iloc[irow] >= 0):
+                                df.loc[irow, col_value] = 1 + (df[col_value].iloc[irow] / 100)
+                            else:
+                                df.loc[irow, col_value] = -1 + (df[col_value].iloc[irow] / 100)  
+                            if (col_low in list_result_low):
+                                if (df[col_low].iloc[irow] >= 0.0):
+                                    df[irow, col_low] = 1 + (df[col_low].iloc[irow] / 100)
+                                else:
+                                    df[irow, col_low] = -1 + (df[col_low].iloc[irow] / 100)                            
+                            if (col_high in list_result_high):
+                                if (df[col_high].iloc[irow] >= 0.0):
+                                    df[irow, col_high] = 1 + (df[col_high].iloc[irow] / 100)
+                                else:
+                                    df[irow, col_high] = -1 + (df[col_high].iloc[irow] / 100)                        
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)   
     
     # Process genomics (microarrays), genes repressed units
     result_type = "genomics (microarrays), genes repressed"
@@ -2517,34 +2591,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'percent' or 
-                    str_units == 'fraction'):
-                    if (str_units == 'fraction'):
-                        df.loc[irow, col_units] = 'percent' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'percent' or 
+                        str_units == 'fraction'):
+                        if (str_units == 'fraction'):
+                            df.loc[irow, col_units] = 'percent' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process percent control units
     result_type = "percent control"
@@ -2552,34 +2627,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'percent' or 
-                    str_units == 'fraction'):
-                    if (str_units == 'fraction'):
-                        df.loc[irow, col_units] = 'percent' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'percent' or 
+                        str_units == 'fraction'):
+                        if (str_units == 'fraction'):
+                            df.loc[irow, col_units] = 'percent' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+02
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+02
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+02 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     
     # Process ratio reactive oxygen species to reactive nitrogen species units
@@ -2588,29 +2664,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold activity' or 
-                    str_units == 'ratio'):
-                    if (str_units == 'ratio'):
-                        df.loc[irow, col_units] = 'fold activity' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold activity' or 
+                        str_units == 'ratio'):
+                        if (str_units == 'ratio'):
+                            df.loc[irow, col_units] = 'fold activity' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process 8-oxo-dg activity units
     result_type = "8-oxo-dg activity"
@@ -2618,29 +2695,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold activity' or 
-                    str_units == 'ratio'):
-                    if (str_units == 'ratio'):
-                        df.loc[irow, col_units] = 'fold activity' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)   
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold activity' or 
+                        str_units == 'ratio'):
+                        if (str_units == 'ratio'):
+                            df.loc[irow, col_units] = 'fold activity' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)   
     
     # Process ap sites production units
     result_type = "ap sites production"
@@ -2648,29 +2726,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold activity' or 
-                    str_units == 'ratio'):
-                    if (str_units == 'ratio'):
-                        df.loc[irow, col_units] = 'fold activity' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold activity' or 
+                        str_units == 'ratio'):
+                        if (str_units == 'ratio'):
+                            df.loc[irow, col_units] = 'fold activity' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process total endogenous dna units
     result_type = "total endogenous dna"
@@ -2678,29 +2757,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold activity' or 
-                    str_units == 'ratio'):
-                    if (str_units == 'ratio'):
-                        df.loc[irow, col_units] = 'fold activity' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold activity' or 
+                        str_units == 'ratio'):
+                        if (str_units == 'ratio'):
+                            df.loc[irow, col_units] = 'fold activity' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process 4-hne activity units
     result_type = "4-hne activity"
@@ -2708,29 +2788,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold activity' or 
-                    str_units == 'ratio'):
-                    if (str_units == 'ratio'):
-                        df.loc[irow, col_units] = 'fold activity' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold activity' or 
+                        str_units == 'ratio'):
+                        if (str_units == 'ratio'):
+                            df.loc[irow, col_units] = 'fold activity' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process mda activity units
     result_type = "mda activity"
@@ -2738,29 +2819,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold activity' or 
-                    str_units == 'ratio'):
-                    if (str_units == 'ratio'):
-                        df.loc[irow, col_units] = 'fold activity' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold activity' or 
+                        str_units == 'ratio'):
+                        if (str_units == 'ratio'):
+                            df.loc[irow, col_units] = 'fold activity' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process metabolic activity units
     result_type = "metabolic activity"
@@ -2768,29 +2850,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio to control' or 
-                    str_units == 'ratio'):
-                    if (str_units == 'ratio'):
-                        df.loc[irow, col_units] = 'ratio to control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)   
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio to control' or 
+                        str_units == 'ratio'):
+                        if (str_units == 'ratio'):
+                            df.loc[irow, col_units] = 'ratio to control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)   
     
     # Process il-6 activity units
     result_type = "il-6 activity"
@@ -2798,34 +2881,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'picograms/milliliter' or 
-                    str_units == 'nanograms/milliliter'):
-                    if (str_units == 'nanograms/milliliter'):
-                        df.loc[irow, col_units] = 'picograms/milliliter' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'picograms/milliliter' or 
+                        str_units == 'nanograms/milliliter'):
+                        if (str_units == 'nanograms/milliliter'):
+                            df.loc[irow, col_units] = 'picograms/milliliter' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process free radical generation units
     result_type = "free radical generation"
@@ -2833,29 +2917,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'Chemiluminescence units' or 
-                    str_units == 'Relative Light Units'):
-                    if (str_units == 'Relative light units'):
-                        df.loc[irow, col_units] = 'chemiluminescence units' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'Chemiluminescence units' or 
+                        str_units == 'Relative Light Units'):
+                        if (str_units == 'Relative light units'):
+                            df.loc[irow, col_units] = 'chemiluminescence units' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process change in total spikes units
     result_type = "change in total spikes"
@@ -2863,29 +2948,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio to control' or 
-                    str_units == 'ratio'):
-                    if (str_units == 'ratio'):
-                        df.loc[irow, col_units] = 'ratio to control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio to control' or 
+                        str_units == 'ratio'):
+                        if (str_units == 'ratio'):
+                            df.loc[irow, col_units] = 'ratio to control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process firing rat units
     result_type = "firing rate"
@@ -2893,29 +2979,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio to control' or 
-                    str_units == 'ratio'):
-                    if (str_units == 'ratio'):
-                        df.loc[irow, col_units] = 'ratio to control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio to control' or 
+                        str_units == 'ratio'):
+                        if (str_units == 'ratio'):
+                            df.loc[irow, col_units] = 'ratio to control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process stain index units
     result_type = "stain index"
@@ -2923,29 +3010,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio to control' or 
-                    str_units == 'ratio'):
-                    if (str_units == 'ratio'):
-                        df.loc[irow, col_units] = 'ratio to control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)   
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio to control' or 
+                        str_units == 'ratio'):
+                        if (str_units == 'ratio'):
+                            df.loc[irow, col_units] = 'ratio to control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)   
     
     # Process cytokinesis-blocked proliferation index units
     # This result has units of ratio and percent.  Both units have values that are very
@@ -2956,29 +3044,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'percent'):
-                    if (str_units == 'percent'):
-                        df.loc[irow, col_units] = 'ratio' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'percent'):
+                        if (str_units == 'percent'):
+                            df.loc[irow, col_units] = 'ratio' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process number of silver particles units
     result_type = "number of silver particles"
@@ -2986,29 +3075,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'ratio' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'ratio' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process forward scatter units
     result_type = "forward scatter"
@@ -3016,29 +3106,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio to control' or 
-                    str_units == 'ratio'):
-                    if (str_units == 'ratio'):
-                        df.loc[irow, col_units] = 'ratio to control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio to control' or 
+                        str_units == 'ratio'):
+                        if (str_units == 'ratio'):
+                            df.loc[irow, col_units] = 'ratio to control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process concentration total zinc units
     result_type = "concentration total zinc"
@@ -3046,34 +3137,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'micrograms/liter' or 
-                    str_units == 'milligrams/liter'):
-                    if (str_units == 'milligrams/liter'):
-                        df.loc[irow, col_units] = 'micrograms/liter' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'micrograms/liter' or 
+                        str_units == 'milligrams/liter'):
+                        if (str_units == 'milligrams/liter'):
+                            df.loc[irow, col_units] = 'micrograms/liter' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+03
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+03
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+03 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process g1-phase cells units
     result_type = "g1-phase cells"
@@ -3081,29 +3173,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'percent' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'percent' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)   
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'percent' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'percent' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)   
     
     # Process are activity units
     result_type = "are activity"
@@ -3111,29 +3204,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'Chemiluminescence units' or 
-                    str_units == 'Relative Light Units'):
-                    if (str_units == 'Relative Light Units'):
-                        df.loc[irow, col_units] = 'Chemiluminescence units' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'Chemiluminescence units' or 
+                        str_units == 'Relative Light Units'):
+                        if (str_units == 'Relative Light Units'):
+                            df.loc[irow, col_units] = 'Chemiluminescence units' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process endothelin-1 units
     result_type = "endothelin-1"
@@ -3141,29 +3235,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold change over control' or 
-                    str_units == 'fold change'):
-                    if (str_units == 'fold change'):
-                        df.loc[irow, col_units] = 'fold change over control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold change over control' or 
+                        str_units == 'fold change'):
+                        if (str_units == 'fold change'):
+                            df.loc[irow, col_units] = 'fold change over control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process surface area units
     result_type = "surface area"
@@ -3171,34 +3266,35 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'nanometers squared' or 
-                    str_units == 'micrometers squared'):
-                    if (str_units == 'micrometers squared'):
-                        df.loc[irow, col_units] = 'nanometers squared' 
-                        df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+06
-                        if (col_low in list_result_low):
-                            df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+06
-                        if (col_high in list_result_high):
-                            df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+06 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'nanometers squared' or 
+                        str_units == 'micrometers squared'):
+                        if (str_units == 'micrometers squared'):
+                            df.loc[irow, col_units] = 'nanometers squared' 
+                            df.loc[irow, col_value] = df.loc[irow, col_value] * 1.0E+06
+                            if (col_low in list_result_low):
+                                df.loc[irow, col_low] = df.loc[irow, col_low] * 1.0E+06
+                            if (col_high in list_result_high):
+                                df.loc[irow, col_high] = df.loc[irow, col_high] * 1.0E+06 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process are/nrf2 activity units
     result_type = "are/nrf2 activity"
@@ -3206,29 +3302,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'Chemiluminescence units' or 
-                    str_units == 'Relative Light Units'):
-                    if (str_units == 'Relative Light Units'):
-                        df.loc[irow, col_units] = 'Chemiluminescence units' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'Chemiluminescence units' or 
+                        str_units == 'Relative Light Units'):
+                        if (str_units == 'Relative Light Units'):
+                            df.loc[irow, col_units] = 'Chemiluminescence units' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process mitosox fluorescence units
     result_type = "mitosox fluorescence"
@@ -3236,29 +3333,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'ratio to control' or 
-                    str_units == 'ratio'):
-                    if (str_units == 'ratio'):
-                        df.loc[irow, col_units] = 'ratio to control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)   
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'ratio to control' or 
+                        str_units == 'ratio'):
+                        if (str_units == 'ratio'):
+                            df.loc[irow, col_units] = 'ratio to control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)   
     
     # Process s-phase cells units
     result_type = "s-phase cells"
@@ -3266,29 +3364,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'percent' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'percent' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'percent' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'percent' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process endothelin receptor b  units
     result_type = "endothelin receptor b"
@@ -3296,29 +3395,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold change over control' or 
-                    str_units == 'fold change'):
-                    if (str_units == 'fold change'):
-                        df.loc[irow, col_units] = 'fold change over control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold change over control' or 
+                        str_units == 'fold change'):
+                        if (str_units == 'fold change'):
+                            df.loc[irow, col_units] = 'fold change over control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process g2/m-phase cells  units
     result_type = "g2/m-phase cells"
@@ -3326,29 +3426,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'percent' or 
-                    str_units == 'unitless'):
-                    if (str_units == 'unitless'):
-                        df.loc[irow, col_units] = 'percent'
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'percent' or 
+                        str_units == 'unitless'):
+                        if (str_units == 'unitless'):
+                            df.loc[irow, col_units] = 'percent'
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process tissue plasminogen activator units
     result_type = "tissue plasminogen activator"
@@ -3356,29 +3457,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold change over control' or 
-                    str_units == 'fold change'):
-                    if (str_units == 'fold change'):
-                        df.loc[irow, col_units] = 'fold change over control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold change over control' or 
+                        str_units == 'fold change'):
+                        if (str_units == 'fold change'):
+                            df.loc[irow, col_units] = 'fold change over control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process plasminogen activator inhibitor-1 units
     result_type = "plasminogen activator inhibitor-1"
@@ -3386,29 +3488,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold change over control' or 
-                    str_units == 'fold change'):
-                    if (str_units == 'fold change'):
-                        df.loc[irow, col_units] = 'fold change over control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = "Unrecognized units: " + str_units + ", column = " + str(col_value) 
-                    + " at row " + str(irow)
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)   
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold change over control' or 
+                        str_units == 'fold change'):
+                        if (str_units == 'fold change'):
+                            df.loc[irow, col_units] = 'fold change over control' 
+                    else:
+                        error_message = "Unrecognized units: " + str_units + ", column = " + str(col_value) 
+                        + " at row " + str(irow)
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)   
     
     # Process tissue factor units
     result_type = "tissue factor"
@@ -3416,29 +3519,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold change over control' or 
-                    str_units == 'fold change'):
-                    if (str_units == 'fold change'):
-                        df.loc[irow, col_units] = 'fold change over control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold change over control' or 
+                        str_units == 'fold change'):
+                        if (str_units == 'fold change'):
+                            df.loc[irow, col_units] = 'fold change over control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process tummor necrosis factor-α units
     result_type = "tummor necrosis factor-α"
@@ -3446,29 +3550,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold change over control' or 
-                    str_units == 'fold change'):
-                    if (str_units == 'fold change'):
-                        df.loc[irow, col_units] = 'fold change over control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold change over control' or 
+                        str_units == 'fold change'):
+                        if (str_units == 'fold change'):
+                            df.loc[irow, col_units] = 'fold change over control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process angiotensin receptor type 1a units
     result_type = "angiotensin receptor type 1a"
@@ -3476,29 +3581,30 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold change over control' or 
-                    str_units == 'fold change'):
-                    if (str_units == 'fold change'):
-                        df.loc[irow, col_units] = 'fold change over control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold change over control' or 
+                        str_units == 'fold change'):
+                        if (str_units == 'fold change'):
+                            df.loc[irow, col_units] = 'fold change over control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
     
     # Process caveolin-1 units
     result_type = "caveolin-1"
@@ -3506,26 +3612,27 @@ def process_results_units(df):
     col_units = result_type + " result_unit"
     col_low = result_type + " result_low"
     col_high = result_type + " result_high"
-    df[col_value] = df[df[col_value]!= None][col_value].astype(float)
-    if (col_low in list_result_low):
-        df[col_low] = df[df[col_low]!= None][col_low].astype(float)
-    if (col_high in list_result_high):
-        df[col_high] = df[df[col_high]!= None][col_high].astype(float)
-    try:
-        for irow in range(0, nrow):
-            if (math.isnan(df[col_value].iloc[irow])):
-                continue
-            else:
-                str_units = df[col_units].iloc[irow]
-                if (str_units == 'fold change over control' or 
-                    str_units == 'fold change'):
-                    if (str_units == 'fold change'):
-                        df.loc[irow, col_units] = 'fold change over control' 
+    if col_value in df.columns:
+        df[col_value] = df[df[col_value]!= None][col_value].astype(float)
+        if (col_low in list_result_low):
+            df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+        if (col_high in list_result_high):
+            df[col_high] = df[df[col_high]!= None][col_high].astype(float)
+        try:
+            for irow in range(0, nrow):
+                if (math.isnan(df[col_value].iloc[irow])):
+                    continue
                 else:
-                    error_message = ("Unrecognized units: " + str_units + ", column = " + 
-                                     str(col_value) + " at row " + str(irow))
-                    raise ValueError(error_message) 
-                                       
-    except ValueError as msg:
-        error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-        print(error_message)     
+                    str_units = df[col_units].iloc[irow]
+                    if (str_units == 'fold change over control' or 
+                        str_units == 'fold change'):
+                        if (str_units == 'fold change'):
+                            df.loc[irow, col_units] = 'fold change over control' 
+                    else:
+                        error_message = ("Unrecognized units: " + str_units + ", column = " + 
+                                         str(col_value) + " at row " + str(irow))
+                        raise ValueError(error_message) 
+                                           
+        except ValueError as msg:
+            error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
+            print(error_message)     
