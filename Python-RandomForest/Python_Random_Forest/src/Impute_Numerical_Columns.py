@@ -45,5 +45,6 @@ def impute_missing_data_of_numerical_columns(df):
     # Use the OuterDiameterValue
     df_temp['OuterDiameterLow'] = df_temp['OuterDiameterLow'].fillna(df_temp['OuterDiameterValue'])
     df_temp['OuterDiameterHigh'] = df_temp['OuterDiameterHigh'].fillna(df_temp['OuterDiameterValue'])
-     
+   
+    #df.loc[df['OuterDiameterValue']==0.0,['OuterDiameterValue']] = 0.5*(df['OuterDiameterLow']+df['OuterDiameterHigh'])  
     return df_temp
