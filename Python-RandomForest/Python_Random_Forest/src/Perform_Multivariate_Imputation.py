@@ -10,12 +10,11 @@ import numpy as np
 
 # SKLearn explicitly requires this experimental feature
 from sklearn.experimental import enable_iterative_imputer
-
 # Now we can import normally from sklearn.impute
 from sklearn.impute import IterativeImputer
+
 from sklearn.linear_model import BayesianRidge
 from pandas.tests.test_nanops import skipna
-from sklearn.tree._classes import DecisionTreeRegressor, ExtraTreeRegressor
 
 # from sklearn.tree import DecisionTreeRegressor
 # from sklearn.ensemble import ExtraTreesRegressor
@@ -94,7 +93,7 @@ def iteratively_impute_numerical_columns(df):
     # 2) DecisionTreeRegressor: non-linear regression
     # 3) ExtraTreesRegressor: similar to missForest in R (missForest is very popular with R users)
     # 4) KNeighborsRegressor: comparable to other KNN imputation approaches
-    imp = IterativeImputer(estimator = DecisionTreeRegressor(),
+    imp = IterativeImputer(estimator = BayesianRidge(),
                            max_iter = 100, 
                            random_state = 0, 
                            missing_values = np.nan, 

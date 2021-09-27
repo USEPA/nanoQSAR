@@ -6,13 +6,13 @@ Created on Mar 9, 2021
 
 import random
 
-#from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split
 import pandas as pd
 
 def split_X_y_training_testing(dfX, dfy):
     # Split the data into training and testing sets.
-    #X_train, X_test, y_train, y_test = train_test_split(dfX, dfy, test_size = 0.2, random_state = 0)
-    #return X_train, X_test, y_train, y_test
+    X_train, X_test, y_train, y_test = train_test_split(dfX, dfy, test_size = 0.2, random_state = 0)
+    return X_train, X_test, y_train, y_test
     
     # Combine dfX and dfY into a single DataFrame
     dfXy = pd.concat([dfX, dfy], axis = 1)
