@@ -6,12 +6,13 @@ Created on Mar 9, 2021
 
 import random
 
-# from sklearn.model_selection import train_test_split
+#from sklearn.model_selection import train_test_split
 import pandas as pd
 
 def split_X_y_training_testing(dfX, dfy):
     # Split the data into training and testing sets.
-    # X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
+    #X_train, X_test, y_train, y_test = train_test_split(dfX, dfy, test_size = 0.2, random_state = 0)
+    #return X_train, X_test, y_train, y_test
     
     # Combine dfX and dfY into a single DataFrame
     dfXy = pd.concat([dfX, dfy], axis = 1)
@@ -33,7 +34,8 @@ def split_X_y_training_testing(dfX, dfy):
     dfXy[core_comp_columns] = dfXy[core_comp_columns].round(0).astype(int)
     
     # Remove Titanium Dioxide from list
-    core_comp_columns.remove('CoreComposition_titanium dioxide')
+    #core_comp_columns.remove('CoreComposition_titanium dioxide')
+    core_comp_columns.remove('CoreComposition_no material')
     
     # Create list that will contain the test rows.
     list_test_rows = []

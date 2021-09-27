@@ -15,6 +15,7 @@ from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 from sklearn.linear_model import BayesianRidge
 from pandas.tests.test_nanops import skipna
+from sklearn.tree._classes import DecisionTreeRegressor, ExtraTreeRegressor
 
 # from sklearn.tree import DecisionTreeRegressor
 # from sklearn.ensemble import ExtraTreesRegressor
@@ -60,7 +61,13 @@ def iteratively_impute_numerical_columns(df):
     # Extract results columns and store them in a separate DataFrame
     subs_value = "result_value"
     result_columns  = [icol for icol in column_names if subs_value in icol]
-    df_results = df[result_columns].copy()
+    result_columns.remove("viability result_value")
+    #df_results = df[result_columns].copy()
+    total_cols = total_cols + result_columns
+    
+    subs_viability = "viability"
+    viability_columns  = [icol for icol in column_names if subs_viability in icol]
+    df_viability = df[viability_columns].copy()
     
     # Make a copy of the DataFrame with the chosen columns.
     df_temp = df[total_cols].copy()
@@ -87,11 +94,12 @@ def iteratively_impute_numerical_columns(df):
     # 2) DecisionTreeRegressor: non-linear regression
     # 3) ExtraTreesRegressor: similar to missForest in R (missForest is very popular with R users)
     # 4) KNeighborsRegressor: comparable to other KNN imputation approaches
-    imp = IterativeImputer(estimator = BayesianRidge(),
+    imp = IterativeImputer(estimator = DecisionTreeRegressor(),
                            max_iter = 100, 
                            random_state = 0, 
                            missing_values = np.nan, 
                            initial_strategy = 'mean',
+                           verbose = 0,
                            min_value = minimum_values,
                            max_value = maximum_values)
     
@@ -101,7 +109,7 @@ def iteratively_impute_numerical_columns(df):
     df_imputed = pd.DataFrame(data = df_imp, columns = total_cols)
     
     # Combine imputed DataFrame with results DataFrame
-    df_combined = pd.concat([df_imputed, df_results], axis = 1)
+    df_combined = pd.concat([df_imputed, df_viability], axis = 1)
     
     return df_combined
 
