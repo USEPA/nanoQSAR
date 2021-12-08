@@ -7,7 +7,6 @@ Created on Oct 29, 2020
 @author: Wilson Melendez
 '''
 
-import pandas as pd
 from InitialProcesses import initialProcesses
 from MiddleProcesses import middleProcesses
 #from Replace_Null_with_None import replace_null_with_none
@@ -20,7 +19,6 @@ from MiddleProcesses import middleProcesses
 #from Fix_Categorical_Data_Errors import fix_categorical_data
 #from Encode_Categorical_Data import encode_categorical_columns
 #from Delete_Unwanted_Columns import delete_unwanted_columns
-from Extract_Viability_Rows import extract_viability_rows
 from Impute_Numerical_Columns import impute_missing_data_of_numerical_columns
 from Perform_Multivariate_Imputation import iteratively_impute_numerical_columns
 from UtilRecords import read_from_csv, write_to_csv, delete_columns_with_all_equal_values
@@ -39,7 +37,7 @@ def main():
     df = middleProcesses(df)
     
     # Extract only the rows with viability results
-    df = extract_viability_rows(df)
+    df = extract_desired_rows("viability", df)
     
     # Write DataFrame to CSV file.
     write_to_csv(df, output_Viability_Rows)
@@ -59,6 +57,15 @@ def main():
     write_to_csv(df, output_Multivariate_Imputed_Values)
     
     print("Refinement Complete")
+    
+def extract_desired_rows(desired_result, df):
+    column_name = desired_result+" result_value"
+    df1 = df.loc[df[column_name].isna() == False]
+    
+    # Reset the rows indices.
+    df1 = df1.reset_index(level = 0, drop = True)
+    
+    return df1
 
 if __name__ == "__main__":
     main()
