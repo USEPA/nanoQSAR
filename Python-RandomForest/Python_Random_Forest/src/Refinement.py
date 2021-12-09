@@ -17,7 +17,7 @@ from MiddleProcesses import middleProcesses
 #from Remove_Rows_NoResults import remove_rows_with_no_results
 #from Delete_Merged_Columns import delete_merged_columns
 #from Fix_Categorical_Data_Errors import fix_categorical_data
-#from Encode_Categorical_Data import encode_categorical_columns
+from Encode_Categorical_Data import encode_categorical_columns
 #from Delete_Unwanted_Columns import delete_unwanted_columns
 from Impute_Numerical_Columns import impute_missing_data_of_numerical_columns
 from Perform_Multivariate_Imputation import iteratively_impute_numerical_columns
@@ -36,8 +36,11 @@ def main():
     
     df = middleProcesses(df)
     
+    # Encode categorical data
+    df = encode_categorical_columns(df)
+
     # Extract only the rows with viability results
-    df = extract_desired_rows("viability", df)
+    df = extract_desired_rows("expression levels", df)
     
     # Write DataFrame to CSV file.
     write_to_csv(df, output_Viability_Rows)
@@ -50,7 +53,7 @@ def main():
     
     # Impute missing data of numerical columns.
     # df = impute_missing_data_of_numerical_columns(df)
-    df = iteratively_impute_numerical_columns(df)
+    #df = iteratively_impute_numerical_columns(df)
     
     # Write imputed DataFrame to a CSV file
     # write_to_csv(df, output_Imputed_Values)
