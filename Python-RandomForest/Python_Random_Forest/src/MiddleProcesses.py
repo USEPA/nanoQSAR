@@ -7,7 +7,6 @@ Created on Nov 29, 2021
 from UtilRecords import read_from_csv, write_to_csv, delete_columns_with_all_equal_values
 from Process_Units import process_data_units
 from Fix_Categorical_Data_Errors import fix_categorical_data
-from Encode_Categorical_Data import encode_categorical_columns
 from Delete_Unwanted_Columns import delete_unwanted_columns
 
 def middleProcesses(df):
@@ -54,9 +53,6 @@ def middleProcesses(df):
     # These columns will not be needed for the Random Forest analysis.
     delete_unwanted_columns(df)
     
-    # Encode categorical data
-    df = encode_categorical_columns(df)
-
     return df
 
 def replace_null_with_none(df):
@@ -108,6 +104,7 @@ def delete_merged_columns(df):
     # These columns were merged with other columns.
     list_merged_columns = ['particle concentration log parameter_value',
                            'particle concentration log parameter_unit',
+                           'particle concentration log parameter_nonnum',
                            'penicilin additive_value', 
                            'penicilin additive_unit',
                            'relative fluorescence result_value', 
