@@ -40,10 +40,10 @@ def initialProcesses(input_file):
     df = replace_null_with_none(df)
         
     # Proceed to split up the concatenated fields.
-    split_parameters_fields(df)
-    split_contaminant_fields(df)
-    split_additive_fields(df)
-    split_result_fields(df)
+    df = split_parameters_fields(df)
+    df = split_contaminant_fields(df)
+    df = split_additive_fields(df)
+    df = split_result_fields(df)
                         
     # Write data frame to a CSV file.
     write_to_csv(df, output_file)

@@ -24,7 +24,7 @@ def middleProcesses(df):
     replace_null_with_none(df)
     
     # Process units
-    process_data_units(df)
+    df = process_data_units(df)
     
     # Write DataFrame with processed units to a CSV file.
     write_to_csv(df, output_procesed_units)
