@@ -3616,6 +3616,7 @@ def process_results_units(df):
         df[col_value] = df[df[col_value]!= None][col_value].astype(float)
         if (col_low in list_result_low):
             df[col_low] = df[df[col_low]!= None][col_low].astype(float)
+            
         if (col_high in list_result_high):
             df[col_high] = df[df[col_high]!= None][col_high].astype(float)
         try:
@@ -3635,4 +3636,6 @@ def process_results_units(df):
                                            
         except ValueError as msg:
             error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-            print(error_message)     
+            print(error_message)
+            
+    return df
