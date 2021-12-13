@@ -5,7 +5,7 @@ Created on Feb 17, 2021
 '''
 
 
-def fix_categorical_data(df):
+def fix_categorical_data_errors(df):
     # Fix typos/misspellings
     df["CoatingComposition"].replace({"polyvinyl pyrrolidone": "polyvinylpyrrolidone"}, inplace = True)
     df["Shape"].replace({"sphere":"spherical", "shperical":"spherical"}, inplace = True)

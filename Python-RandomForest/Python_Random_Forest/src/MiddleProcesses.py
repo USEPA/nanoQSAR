@@ -6,7 +6,7 @@ Created on Nov 29, 2021
 
 from UtilRecords import read_from_csv, write_to_csv, delete_columns_with_all_equal_values
 from Process_Units import process_data_units
-from Fix_Categorical_Data_Errors import fix_categorical_data
+from Fix_Categorical_Data_Errors import fix_categorical_data_errors
 from Delete_Unwanted_Columns import delete_unwanted_columns
 
 def middleProcesses(df):
@@ -44,7 +44,7 @@ def middleProcesses(df):
     write_to_csv(df, output_post_processed_units)
     
     # Fix categorical data typos and misspellings.
-    fix_categorical_data(df)
+    fix_categorical_data_errors(df)
     
     # Write DataFrame with fixed categorical data
     write_to_csv(df, output_fixedCategoricalData)
