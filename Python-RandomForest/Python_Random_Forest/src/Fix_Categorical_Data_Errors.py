@@ -26,4 +26,4 @@ def fix_categorical_data_errors(df):
     for columns in categorical_columns:
         df[columns] = df[columns].str.lower()
     
-                      
+    return df                
