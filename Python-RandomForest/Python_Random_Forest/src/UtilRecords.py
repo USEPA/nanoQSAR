@@ -60,8 +60,8 @@ def write_to_csv(df, file_output):
     
         # Print message to console indicating that writing to CSV has completed.
     print("Writing of " + file_output + " to a CSV file has completed.")
-    
-def delete_columns_with_all_equal_values(df):
+
+def delete_columns_with_all_equal_values(df, keepUnits = True):
     '''
     Name
     ----
@@ -80,11 +80,13 @@ def delete_columns_with_all_equal_values(df):
     -----------------
     Modified DataFrame df.
     '''
-    
+
     for column in df:
+        if (keepUnits and ("_unit" in column or "Unit" in column)):
+            continue
         if (df[column].eq(df[column].iloc[0]).all() == True):
             df.drop(column, axis = 1, inplace = True)
         elif (df[column].isna().values.all() == True):
             df.drop(column, axis = 1, inplace = True)
-    
+
     return df
