@@ -31,29 +31,33 @@ def main():
     output_Imputed_Values = "data\\Imputed_Numerical_Columns.csv"
     output_Multivariate_Imputed_Values = "data\\Multivariate_Imputed_Numerical_Columns.csv"
     
-    # initial processes only
+    # initial processes only, translate concatenated data
     df = initialProcesses(input_file)
     
+    # middle processes only, translate units into most common
     df = middleProcesses(df)
     
     # Encode categorical data
     df = encode_categorical_columns(df)
 
     # Extract only the rows with viability results
-    df = extract_desired_rows("expression levels", df)
+    df = extract_desired_rows("viability", df)
     
     # Write DataFrame to CSV file.
     write_to_csv(df, output_Viability_Rows)
     
     # Delete columns with the same value
-    delete_columns_with_all_equal_values(df)
+    df = delete_columns_with_all_equal_values(df)
+    
+    # Delete columns with the same value
+    df = delete_columns_with_units(df)
     
     # Write DataFrame to CSV file
     write_to_csv(df, output_NonEmptyColumns_Viability_Rows)
     
     # Impute missing data of numerical columns.
     # df = impute_missing_data_of_numerical_columns(df)
-    #df = iteratively_impute_numerical_columns(df)
+    df = iteratively_impute_numerical_columns(df)
     
     # Write imputed DataFrame to a CSV file
     # write_to_csv(df, output_Imputed_Values)
@@ -69,6 +73,14 @@ def extract_desired_rows(desired_result, df):
     df1 = df1.reset_index(level = 0, drop = True)
     
     return df1
+
+def delete_columns_with_units(df):
+
+    for column in df:
+        if ("_unit" in column or "Unit" in column):
+            df.drop(column, axis = 1, inplace = True)
+
+    return df
 
 if __name__ == "__main__":
     main()

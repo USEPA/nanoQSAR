@@ -21,7 +21,7 @@ def middleProcesses(df):
     output_fixedCategoricalData = "data\\inVitro_fixed_categorical.data.csv"
     
     # Replace NULL with None.
-    replace_null_with_none(df)
+    df = replace_null_with_none(df)
     
     # Process units
     df = process_data_units(df)
@@ -30,28 +30,28 @@ def middleProcesses(df):
     write_to_csv(df, output_procesed_units)
     
     # Remove columns that were merged with other columns.
-    delete_merged_columns(df)
+    df = delete_merged_columns(df)
     
     # Remove rows that have no results
-    remove_rows_with_no_results(df)
+    df = remove_rows_with_no_results(df)
     
     # Delete columns with the same value
     # This step is necessary because if rows with no results are removed (see step above), 
     # there is the possibility of having columns that are now empty.
-    delete_columns_with_all_equal_values(df)
+    df = delete_columns_with_all_equal_values(df)
     
     # Write DataFrame with rows that have no results removed
     write_to_csv(df, output_post_processed_units)
     
     # Fix categorical data typos and misspellings.
-    fix_categorical_data_errors(df)
+    df = fix_categorical_data_errors(df)
     
     # Write DataFrame with fixed categorical data
     write_to_csv(df, output_fixedCategoricalData)
     
     # Delete columns that have no predictive capabilities.
     # These columns will not be needed for the Random Forest analysis.
-    delete_unwanted_columns(df)
+    df = delete_unwanted_columns(df)
     
     return df
 
@@ -79,7 +79,9 @@ def replace_null_with_none(df):
     df.replace({'NULL': None}, inplace = True)
     
     # Replace empty string with None.
-    df.replace({"": None}, inplace = True) 
+    df.replace({"": None}, inplace = True)
+    
+    return df
 
 def delete_merged_columns(df):
     '''
@@ -104,7 +106,7 @@ def delete_merged_columns(df):
     # These columns were merged with other columns.
     list_merged_columns = ['particle concentration log parameter_value',
                            'particle concentration log parameter_unit',
-                           'particle concentration log parameter_nonnum',
+                           #'particle concentration log parameter_nonnum',
                            'penicilin additive_value', 
                            'penicilin additive_unit',
                            'relative fluorescence result_value', 
@@ -112,6 +114,8 @@ def delete_merged_columns(df):
                         
     # Delete the merged columns
     df.drop(list_merged_columns, axis = 1, inplace = True)
+    
+    return df
 
 def remove_rows_with_no_results(df):
     # Extract the column headers
@@ -133,4 +137,5 @@ def remove_rows_with_no_results(df):
     # Reset the rows indices. 
     df.reset_index(level = 0, drop = True, inplace = True)
     #print("rows =",nrow,", no results =",nrow-len(df.index))
+    return df
     

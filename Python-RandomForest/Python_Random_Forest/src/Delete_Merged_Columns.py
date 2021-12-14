@@ -38,3 +38,5 @@ def delete_merged_columns(df):
                         
     # Delete the merged columns
     df.drop(list_merged_columns, axis = 1, inplace = True)
+    
+    return df
