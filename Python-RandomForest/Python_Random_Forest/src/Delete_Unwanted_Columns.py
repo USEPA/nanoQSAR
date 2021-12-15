@@ -42,26 +42,6 @@ def delete_unwanted_columns(df):
     subs_value = "contaminant_method"
     contaminant_method_columns  = [icol for icol in column_names if subs_value in icol]
     
-    # Extract columns with parameter_unit
-    subs_value = "parameter_unit"
-    #parameter_unit_columns  = [icol for icol in column_names if subs_value in icol]
-    parameter_unit_columns = []
-    
-    # Extract columns with contaminant_unit 
-    subs_value = "contaminant_unit"
-    #contaminant_unit_columns  = [icol for icol in column_names if subs_value in icol]
-    contaminant_unit_columns = []
-    
-    # Extract columns with additive_unit 
-    subs_value = "additive_unit"
-    #additive_unit_columns  = [icol for icol in column_names if subs_value in icol]
-    additive_unit_columns = []
-    
-    # Extract columns with result_unit 
-    subs_value = "result_unit"
-    #result_unit_columns  = [icol for icol in column_names if subs_value in icol]
-    result_unit_columns = []
-    
     # Extract columns with result_uncertainty 
     subs_value = "result_uncertainty"
     result_uncertainty_columns  = [icol for icol in column_names if subs_value in icol]
@@ -75,8 +55,7 @@ def delete_unwanted_columns(df):
     result_detail_columns  = [icol for icol in column_names if subs_value in icol]
     
     # Extract all unwanted columns
-    unwanted_columns = (columns_to_be_deleted + contaminant_method_columns + parameter_unit_columns +
-                        contaminant_unit_columns + additive_unit_columns + result_unit_columns +
+    unwanted_columns = (columns_to_be_deleted + contaminant_method_columns +
                         result_uncertainty_columns + result_approximation_columns + result_detail_columns)
     
     df.drop(unwanted_columns, inplace = True, axis = 1)
