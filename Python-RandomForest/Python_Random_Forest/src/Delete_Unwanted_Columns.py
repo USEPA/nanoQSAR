@@ -14,11 +14,17 @@ def delete_unwanted_columns(df):
                              'material_medium_publication_DOI', 'PubTitle', 'Journal', 'year',
                              'FirstAuthor', 'Volume', 'Issue', 'PageStart', 'PageEnd', 'Keywords',
                              'Correspondence', 'Affiliation', 'Abstract', 'OuterDiameterApproxSymbol',
-                             'OuterDiameterUnit', 'OuterDiameterUncertainty', 'OuterDiameterMethod',
-                             'ThicknessUnit', 'ThicknessUncertainty', 'SurfaceAreaApproxSymbo',
-                             'SurfaceAreaUnit', 'SurfaceAreaMethod', 'PurityApproxSymbol', 'PurityUnit', 
+                             #'OuterDiameterUnit',
+                             'OuterDiameterUncertainty', 'OuterDiameterMethod',
+                             #'ThicknessUnit',
+                             'ThicknessUncertainty', 'SurfaceAreaApproxSymbo',
+                             #'SurfaceAreaUnit',
+                             'SurfaceAreaMethod', 'PurityApproxSymbol',
+                             #'PurityUnit', 
                              'PurityRefChemical', 'PurityMethod', 'HydrodynamicDiameterApproxSymbol', 
-                             'HydrodynamicDiameterUnit', 'HydrodynamicDiameterMethod', 'ChargeUnit', 
+                             #'HydrodynamicDiameterUnit',
+                             'HydrodynamicDiameterMethod',
+                             #'ChargeUnit', 
                              'ChargeMethod', 'MaterialFGID', 'product type parameter_nonnum',  
                              'sensor type parameter_nonnum', 'subject source parameter_nonnum', 
                              'air parameter_nonnum', 'product parameter_nonnum', 'substrate parameter_nonnum',
@@ -38,19 +44,23 @@ def delete_unwanted_columns(df):
     
     # Extract columns with parameter_unit
     subs_value = "parameter_unit"
-    parameter_unit_columns  = [icol for icol in column_names if subs_value in icol]
+    #parameter_unit_columns  = [icol for icol in column_names if subs_value in icol]
+    parameter_unit_columns = []
     
     # Extract columns with contaminant_unit 
     subs_value = "contaminant_unit"
-    contaminant_unit_columns  = [icol for icol in column_names if subs_value in icol]
+    #contaminant_unit_columns  = [icol for icol in column_names if subs_value in icol]
+    contaminant_unit_columns = []
     
     # Extract columns with additive_unit 
     subs_value = "additive_unit"
-    additive_unit_columns  = [icol for icol in column_names if subs_value in icol]
+    #additive_unit_columns  = [icol for icol in column_names if subs_value in icol]
+    additive_unit_columns = []
     
     # Extract columns with result_unit 
     subs_value = "result_unit"
-    result_unit_columns  = [icol for icol in column_names if subs_value in icol]
+    #result_unit_columns  = [icol for icol in column_names if subs_value in icol]
+    result_unit_columns = []
     
     # Extract columns with result_uncertainty 
     subs_value = "result_uncertainty"
@@ -71,3 +81,4 @@ def delete_unwanted_columns(df):
     
     df.drop(unwanted_columns, inplace = True, axis = 1)
     
+    return df
