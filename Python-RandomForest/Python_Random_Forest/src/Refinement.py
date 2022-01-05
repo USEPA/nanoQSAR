@@ -25,10 +25,10 @@ from UtilRecords import read_from_csv, write_to_csv, delete_columns_with_all_equ
 
 def main():
     input_file = "..\\data\\assay_all_vw_out_22325rows.csv"
+    output_ProcessedData = "data\\InVitro_ProcessedData.csv"
     
     output_Viability_Rows = "data\\Viability_Results_Rows.csv"
     output_NonEmptyColumns_Viability_Rows = "data\\Viability_Results_Rows_NonEmptyColumns.csv"
-    output_Imputed_Values = "data\\Imputed_Numerical_Columns.csv"
     output_Multivariate_Imputed_Values = "data\\Multivariate_Imputed_Numerical_Columns.csv"
     
     # initial processes only, translate concatenated data
@@ -36,6 +36,9 @@ def main():
     
     # middle processes only, translate units into most common
     df = middleProcesses(df)
+    
+    # Write DataFrame processed data
+    write_to_csv(df, output_ProcessedData)
     
     # Encode categorical data
     df = encode_categorical_columns(df)
