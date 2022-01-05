@@ -16,6 +16,7 @@ from Transform_DataFrames_to_Arrays import transform_dataframes_to_arrays
 from Split_XY_Training_Testing_Matrices import split_X_y_training_testing
 from RandomForest_Regression import perform_RandomForest_regression
 from Write_to_CSV import write_to_csv
+import RandomForestAnalysis
 
 def main():
     # input_Imputed_Values = "..\\data\\Imputed_Numerical_Columns.csv"
@@ -49,11 +50,17 @@ def main():
     # Transform X and Y matrices to arrays
     X_train, y_train, X_test, y_test = transform_dataframes_to_arrays(dfX_train, dfX_test, dfy_train, dfy_test)
     
-    # Split X and Y matrices into training and testing data sets.
-    # X_train, X_test, y_train, y_test = split_X_y_training_testing(X_array, y_array)
+    # train Random Forest regressor
+    rfa = RandomForestAnalysis.RandomForestAnalysis(train_features)
+    regressor = rfa.train(X_train, y_train)
     
     # Perform a Random Forest regression
-    perform_RandomForest_regression(train_features, X_train, y_train, X_test, y_test)
+    y_pred = rfa.predict(X_test)
+    
+    # Evaluate prediction
+    rfa.evaluate(y_test, X_test)
+    
+    #perform_RandomForest_regression(train_features, X_train, y_train, X_test, y_test)
     
 def transform_dataframes_to_arrays(dfX_train, dfX_test, dfy_train, dfy_test):
     # Transform X DataFrames to arrays.
