@@ -35,7 +35,7 @@ def process_contaminants_units(df):
     # Determine number of rows in data frame.
     nrow = len(df.index)
     column_names = list(df.columns)
-    subs_value = "_contaminant_value"
+    subs_value = "contaminant_value"
     contam_columns  = [icol for icol in column_names if subs_value in icol]
     ''' Double Check this works, use similar conversions for additives '''
     # ########################################################################################################
