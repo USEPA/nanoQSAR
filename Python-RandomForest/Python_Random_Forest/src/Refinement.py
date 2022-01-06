@@ -7,6 +7,7 @@ Created on Oct 29, 2020
 @author: Wilson Melendez
 '''
 
+from DeconcatenationProcess import deconcatenationProcess
 from InitialProcesses import initialProcesses
 from MiddleProcesses import middleProcesses
 #from Replace_Null_with_None import replace_null_with_none
@@ -25,6 +26,7 @@ from UtilRecords import read_from_csv, write_to_csv, delete_columns_with_all_equ
 
 def main():
     input_file = "..\\data\\assay_all_vw_out_22325rows.csv"
+    output_DifferentValues = "data\\inVitro_Columns_with_Different_Values.csv"
     output_ProcessedData = "data\\InVitro_ProcessedData.csv"
     
     output_Viability_Rows = "data\\Viability_Results_Rows.csv"
@@ -32,7 +34,17 @@ def main():
     output_Multivariate_Imputed_Values = "data\\Multivariate_Imputed_Numerical_Columns.csv"
     
     # initial processes only, translate concatenated data
-    df = initialProcesses(input_file)
+    df = deconcatenationProcess(input_file, "in vitro")
+    #df = initialProcesses(input_file)
+    
+    # Delete columns with the same value
+    df = delete_columns_with_all_equal_values(df)
+    
+    # Write DataFrame to a CSV file.
+    write_to_csv(df, output_DifferentValues)
+    
+    # Read CSV file back into the program.
+    df = read_from_csv(output_DifferentValues)
     
     # middle processes only, translate units into most common
     df = middleProcesses(df)
