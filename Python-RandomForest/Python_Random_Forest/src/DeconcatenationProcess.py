@@ -32,7 +32,7 @@ def deconcatenationProcess(input_file, assayType):
     write_to_csv(df, invitro_output)
         
     # Read from invitro
-    df = read_from_csv(invitro_output)
+    #df = read_from_csv(invitro_output)
         
     # Replace NULL with None.
     df = replace_null_with_none(df)

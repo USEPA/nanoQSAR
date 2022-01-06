@@ -27,8 +27,8 @@ def read_from_csv(input_file):
     if not Path(input_file).exists():
         input_file = "..\\" + input_file
     
-    df = pd.read_csv(input_file, na_values = "NULL", skip_blank_lines = False, 
-                     keep_default_na = True, na_filter = False, low_memory = False,
+    df = pd.read_csv(input_file, skip_blank_lines = False, 
+                     na_filter = False, low_memory = False,
                      encoding = 'utf-8-sig')
     
     return df
@@ -56,7 +56,7 @@ def write_to_csv(df, file_output):
     # Write DataFrame to output.
     # Note that we must specify the right type of encoding to write out all characters correctly.
     # Some of the data contain Greek letters which need to be accounted for when writing to a CSV file.
-    df.to_csv(file_output, encoding = 'utf-8-sig', index = False)
+    df.replace({None,'Null'}).to_csv(file_output, encoding = 'utf-8-sig', index = False)
     
         # Print message to console indicating that writing to CSV has completed.
     print("Writing of " + file_output + " to a CSV file has completed.")
