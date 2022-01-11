@@ -8,7 +8,8 @@ from Contaminant_Fields import split_contaminant_fields
 from Additive_Fields import split_additive_fields
 from Result_Fields import split_result_fields
 import re
-from UtilRecords import read_from_csv, write_to_csv
+from UtilRecords import read_from_csv, write_to_csv, replace_null_with_none
+from numpy import NaN
 
 def deconcatenationProcess(input_file, assayType):
     '''
@@ -83,34 +84,6 @@ def select_AssayType_rows(df, sel_assayType):
     
     # Reset the rows indices.
     df = df.reset_index(level = 0, drop = True) 
-    
-    return df
-
-def replace_null_with_none(df):
-    '''
-    Name
-    ----
-    replace_null_with_none
-    
-    Description
-    -----------
-    This function replaces NULL entries with Python's None object.
-    
-    Input Parameters
-    ----------------
-    df : DataFrame
-        DataFrame containing the in vitro rows.
-    
-    Output Parameters
-    -----------------
-    Modified DataFrame df.
-    
-    '''
-    # Replace all NULL entries with Python's object.
-    df.replace({'NULL': None}, inplace = True)
-    
-    # Replace empty string with None.
-    df.replace({"": None}, inplace = True)
     
     return df
 
