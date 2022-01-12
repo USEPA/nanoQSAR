@@ -35,41 +35,6 @@ def read_from_csv(input_file):
     
     return df
 
-def read_from_csv_with_None(input_file):
-    '''
-    Name
-    ----
-    read_from_csv
-    
-    Description
-    -----------
-    This function reads a DataFrame from a CSV file.
-    
-    Input Parameters
-    ----------------
-    # input_file, a csv file. 
-    # Note that we must specify the right type of encoding in order to read in all characters
-    # correctly.  Some of the data contain Greek letters which me must account for.
-    '''
-    
-    if not Path(input_file).exists():
-        input_file = "..\\" + input_file
-    
-    df = pd.read_csv(input_file, skip_blank_lines = False, 
-                     na_filter = True, low_memory = False,
-                     encoding = 'utf-8-sig')
-    
- #  Replace all NULL entries with Python's object.
-    df.replace({'NULL': None}, inplace = True)
-    
-    # Replace empty string with None.
-    df.replace({"": None}, inplace = True)
-    
-    # Replace empty string with None.
-    df.replace({NaN: None}, inplace = True) 
-    
-    return df
-    
 def write_to_csv(df, file_output):
     '''
     Name
@@ -125,7 +90,7 @@ def replace_null_with_none(df):
     # Replace empty string with None.
     df.replace({"": None}, inplace = True)
     
-        # Replace empty string with None.
+    # Replace empty string with None.
     df.replace({NaN: None}, inplace = True)
     
     return df

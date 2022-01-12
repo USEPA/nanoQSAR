@@ -8,6 +8,7 @@ from UtilRecords import read_from_csv, write_to_csv, delete_columns_with_all_equ
 from Process_Units import process_data_units
 from Fix_Categorical_Data_Errors import fix_categorical_data_errors
 from Delete_Unwanted_Columns import delete_unwanted_columns
+from UtilRecords import read_from_csv, write_to_csv, replace_null_with_none
 
 def middleProcesses(df):
     '''
@@ -52,34 +53,6 @@ def middleProcesses(df):
     # Delete columns that have no predictive capabilities.
     # These columns will not be needed for the Random Forest analysis.
     df = delete_unwanted_columns(df)
-    
-    return df
-
-def replace_null_with_none(df):
-    '''
-    Name
-    ----
-    replace_null_with_none
-    
-    Description
-    -----------
-    This function replaces NULL entries with Python's None object.
-    
-    Input Parameters
-    ----------------
-    df : DataFrame
-        DataFrame containing the in vitro rows.
-    
-    Output Parameters
-    -----------------
-    Modified DataFrame df.
-    
-    '''
-    # Replace all NULL entries with Python's object.
-    df.replace({'NULL': None}, inplace = True)
-    
-    # Replace empty string with None.
-    df.replace({"": None}, inplace = True)
     
     return df
 
