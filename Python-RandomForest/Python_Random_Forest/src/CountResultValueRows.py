@@ -4,18 +4,19 @@ Created on Nov 30, 2021
 @author: PHARTEN
 '''
 import pandas as pd
-from UtilRecords import read_from_csv
+from UtilRecords import read_from_csv, replace_null_with_none
 from pandas.tests.extension.test_external_block import df
 
 def main():
     
-    input_file = "data\\inVitro_expanded_categorical.data.csv"
+    #input_file = "data\\inVitro_expanded_categorical.data.csv"
+    input_file = "data\\inVitro_No_Concatenated_Fields.csv"
     #input_file = "data\\assay_all_vw_out_inVitro.csv"
     
     # Read from CSV file.  
     df = read_from_csv(input_file)
     
-    #df = replace_null_with_none(df)
+    df = replace_null_with_none(df)
     
     # Extract the column headers
     col_names = list(df.columns)
@@ -37,7 +38,7 @@ def main():
         df2 = df.xs(list_result_value[icol],1)
         for irow in range(0, nrow):
         # Check whether all result values are empty for this row.
-            if (df2[irow]==""):
+            if (df2[irow]==None):
             # count DataFrame row
                 cnt = cnt+1
         
@@ -48,34 +49,6 @@ def main():
     # Reset the rows indices. 
     df.reset_index(level = 0, drop = True, inplace = True)
     #print("rows =",nrow,", no results =",nrow-len(df.index))
-    
-def replace_null_with_none(df):
-    '''
-    Name
-    ----
-    replace_null_with_none
-    
-    Description
-    -----------
-    This function replaces NULL entries with Python's None object.
-    
-    Input Parameters
-    ----------------
-    df : DataFrame
-        DataFrame containing the in vitro rows.
-    
-    Output Parameters
-    -----------------
-    Modified DataFrame df.
-    
-    '''
-    # Replace all NULL entries with Python's object.
-    df.replace({'NULL': None}, inplace = True)
-    
-    # Replace empty string with None.
-    df.replace({"": None}, inplace = True) 
-    
-    return df
 
 if __name__ == "__main__":
     main()
