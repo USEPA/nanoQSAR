@@ -44,7 +44,7 @@ def main():
     write_to_csv(df, output_DifferentValues)
     
     # Read CSV file back into the program.
-    df = read_from_csv(output_DifferentValues)
+    #df = read_from_csv(output_DifferentValues)
     
     # middle processes only, translate units into most common
     df = middleProcesses(df)
@@ -72,7 +72,7 @@ def main():
     
     # Impute missing data of numerical columns.
     # df = impute_missing_data_of_numerical_columns(df)
-    df = iteratively_impute_numerical_columns(df)
+    df = iteratively_impute_numerical_columns(df, "viability")
     
     # Write imputed DataFrame to a CSV file
     # write_to_csv(df, output_Imputed_Values)

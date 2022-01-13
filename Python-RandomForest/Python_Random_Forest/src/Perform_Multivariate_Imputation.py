@@ -20,7 +20,7 @@ from pandas.tests.test_nanops import skipna
 # from sklearn.ensemble import ExtraTreesRegressor
 # from sklearn.neighbors import KNeighborsRegressor
 
-def iteratively_impute_numerical_columns(df):    
+def iteratively_impute_numerical_columns(df, desired_type):    
     # Extract column names
     column_names = list(df.columns)
     
@@ -38,7 +38,7 @@ def iteratively_impute_numerical_columns(df):
     # Extract columns with additive_value
     subs_value = "additive_value"
     additive_columns  = [icol for icol in column_names if subs_value in icol]
-    additive_columns.remove("fetal bovine serum additive_value")
+    #additive_columns.remove("fetal bovine serum additive_value")
     
     # Extract columns with contaminant_value 
     subs_value = "contaminant_value"
@@ -60,13 +60,13 @@ def iteratively_impute_numerical_columns(df):
     # Extract results columns and store them in a separate DataFrame
     subs_value = "result_value"
     result_columns  = [icol for icol in column_names if subs_value in icol]
-    result_columns.remove("viability result_value")
+    result_columns.remove(desired_type+" result_value")
     #df_results = df[result_columns].copy()
     total_cols = total_cols + result_columns
     
-    subs_viability = "viability"
-    viability_columns  = [icol for icol in column_names if subs_viability in icol]
-    df_viability = df[viability_columns].copy()
+    #subs_viability = result_type
+    desired_columns  = [icol for icol in column_names if desired_type in icol]
+    df_desired = df[desired_columns].copy()
     
     # Make a copy of the DataFrame with the chosen columns.
     df_temp = df[total_cols].copy()
@@ -108,7 +108,7 @@ def iteratively_impute_numerical_columns(df):
     df_imputed = pd.DataFrame(data = df_imp, columns = total_cols)
     
     # Combine imputed DataFrame with results DataFrame
-    df_combined = pd.concat([df_imputed, df_viability], axis = 1)
+    df_combined = pd.concat([df_imputed, df_desired], axis = 1)
     
     return df_combined
 
