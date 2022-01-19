@@ -15,26 +15,45 @@ from sklearn.impute import IterativeImputer
 
 from sklearn.linear_model import BayesianRidge
 from pandas.tests.test_nanops import skipna
+from ctypes.test.test_pickling import name
 
 # from sklearn.tree import DecisionTreeRegressor
 # from sklearn.ensemble import ExtraTreesRegressor
 # from sklearn.neighbors import KNeighborsRegressor
 
-def iteratively_impute_numerical_columns(df, desired_type):    
+def iteratively_impute_numerical_columns(desired_type, df):    
     # Extract column names
     column_names = list(df.columns)
     
-    # Define list with parameter columns.
-    param_columns = ['OuterDiameterValue', 'SurfaceAreaValue', 'HydrodynamicDiameterValue', 
+    # Define list with possible parameter columns.
+    param_names = ['OuterDiameterValue',
+                    #'OuterDiameterLow', 'OuterDiameterHigh',
+                    'SurfaceAreaValue', 
+                    'Purity', 'HydrodynamicDiameterValue', 'ChargeAvg', 
                     'particle concentration parameter_value','duration incubation parameter_value', 
+                    'duration exposure parameter_value',
                     'duration aging parameter_value', 'duration irradiation parameter_value',  
+                    'temperature parameter_value',
+                    'concentration zinc parameter_value', 'concentration copper parameter_value',
                     'irradiance parameter_value', 'irradiation power parameter_value',
-                    'Purity', 'ChargeAvg', 'duration exposure parameter_value', 'temperature parameter_value',
                     'number of cells parameter_value', 'concentration carbon dioxide parameter_value'] 
     
-    # Store copper and zinc concentrations in a separate list.
-    param_conc_columns = ['concentration zinc parameter_value', 'concentration copper parameter_value']
+    param_columns = []
+    for name in param_names:
+        sub_name = name
+        if sub_name in column_names:
+            param_columns.append(sub_name)
     
+    # Store copper and zinc concentrations in a separate list.
+    param_conc_names = ['concentration zinc parameter_value', 'concentration copper parameter_value']
+    param_conc_columns = []
+    for name in param_conc_names:
+       sub_name = name
+       if sub_name in param_columns:
+           param_columns.remove(sub_name)
+           param_conc_columns.append(sub_name)
+    #param_conc_columns =  ['concentration zinc parameter_value', 'concentration copper parameter_value']
+
     # Extract columns with additive_value
     subs_value = "additive_value"
     additive_columns  = [icol for icol in column_names if subs_value in icol]

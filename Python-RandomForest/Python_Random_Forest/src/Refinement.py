@@ -4,7 +4,7 @@ program.
 
 Created on Oct 29, 2020
 
-@author: Wilson Melendez
+@author: Wilson Melendez & Paul Harten
 '''
 
 from DeconcatenationProcess import deconcatenationProcess
@@ -25,12 +25,13 @@ from Perform_Multivariate_Imputation import iteratively_impute_numerical_columns
 from UtilRecords import read_from_csv, write_to_csv, delete_columns_with_all_equal_values
 
 def main():
+    desired_type = "viability"
     input_file = "..\\data\\assay_all_vw_out_22325rows.csv"
     output_DifferentValues = "data\\inVitro_Columns_with_Different_Values.csv"
     output_ProcessedData = "data\\InVitro_ProcessedData.csv"
     
-    output_Viability_Rows = "data\\Viability_Results_Rows.csv"
-    output_NonEmptyColumns_Viability_Rows = "data\\Viability_Results_Rows_NonEmptyColumns.csv"
+    output_Desired_Rows = "data\\Desired_Results_Rows.csv"
+    output_NonEmptyColumns_Desired_Rows = "data\\Desired_Results_Rows_NonEmptyColumns.csv"
     output_Multivariate_Imputed_Values = "data\\Multivariate_Imputed_Numerical_Columns.csv"
     
     # initial processes only, translate concatenated data
@@ -56,10 +57,10 @@ def main():
     df = encode_categorical_columns(df)
 
     # Extract only the rows with viability results
-    df = extract_desired_rows("viability", df)
+    df = extract_desired_rows(desired_type, df)
     
     # Write DataFrame to CSV file.
-    write_to_csv(df, output_Viability_Rows)
+    write_to_csv(df, output_Desired_Rows)
     
     # Delete columns with the same value
     df = delete_columns_with_all_equal_values(df)
@@ -68,11 +69,11 @@ def main():
     df = delete_columns_with_units(df)
     
     # Write DataFrame to CSV file
-    write_to_csv(df, output_NonEmptyColumns_Viability_Rows)
+    write_to_csv(df, output_NonEmptyColumns_Desired_Rows)
     
     # Impute missing data of numerical columns.
     # df = impute_missing_data_of_numerical_columns(df)
-    df = iteratively_impute_numerical_columns(df, "viability")
+    df = iteratively_impute_numerical_columns(desired_type, df)
     
     # Write imputed DataFrame to a CSV file
     # write_to_csv(df, output_Imputed_Values)
