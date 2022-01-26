@@ -83,6 +83,7 @@ def main():
     
 def extract_desired_rows(desired_result, df):
     column_name = desired_result+" result_value"
+    #df1 = df.iloc[2062:2364].loc[df[column_name].isna() == False]
     df1 = df.loc[df[column_name].isna() == False]
     
     # Reset the rows indices.
