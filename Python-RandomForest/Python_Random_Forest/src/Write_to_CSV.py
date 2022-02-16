@@ -8,7 +8,7 @@ Created on Dec 21, 2020
 
 from pathlib import Path
 
-def write_to_csv(df, filename):
+def write_to_csv(df, file_output):
     '''
     Name
     ----
@@ -24,8 +24,8 @@ def write_to_csv(df, filename):
         DataFrame containing the in vitro rows.
     
     '''
-    if not Path(filename).exists():
-        file_output = "..\\" + filename
+    if not Path(file_output).exists():
+        file_output = "..\\" + file_output
         
     # Write DataFrame to output.
     # Note that we must specify the right type of encoding to write out all characters correctly.

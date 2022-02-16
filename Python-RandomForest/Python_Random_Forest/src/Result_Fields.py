@@ -138,3 +138,5 @@ def split_result_fields(df):
         
     # Print message to console indicating completion of this function's task.
     print("Splitting of concatenated result fields has completed.")
+    
+    return df

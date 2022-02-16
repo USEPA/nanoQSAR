@@ -1059,4 +1059,6 @@ def process_additive_units(df):
                                            
         except ValueError as msg:
             error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-            print(error_message)  
+            print(error_message)
+            
+    return df 

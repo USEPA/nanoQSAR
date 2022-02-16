@@ -24,4 +24,5 @@ def remove_rows_with_no_results(df):
             
     # Reset the rows indices. 
     df.reset_index(level = 0, drop = True, inplace = True)
+    #print("rows =",nrow,", no results =",nrow-len(df.index))
     

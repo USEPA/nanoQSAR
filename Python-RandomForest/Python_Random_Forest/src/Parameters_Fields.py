@@ -110,4 +110,5 @@ def split_parameters_fields(df):
     # Print message to console indicating completion of this function's task.
     print("Splitting of concatenated parameter fields has completed.")
 
+    return df
     

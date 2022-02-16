@@ -1,44 +1,103 @@
 '''
 Created on Apr 1, 2021
 
-@author: Wmelende
+@author: Wmelende and pharten
 '''
 
 import pandas as pd
 import numpy as np
-
+import sympy as sym
+from math import isnan
 
 # SKLearn explicitly requires this experimental feature
 from sklearn.experimental import enable_iterative_imputer
-
 # Now we can import normally from sklearn.impute
 from sklearn.impute import IterativeImputer
+
 from sklearn.linear_model import BayesianRidge
 from pandas.tests.test_nanops import skipna
-
 # from sklearn.tree import DecisionTreeRegressor
 # from sklearn.ensemble import ExtraTreesRegressor
 # from sklearn.neighbors import KNeighborsRegressor
+from UtilRecords import read_from_csv, write_to_csv, delete_columns_with_all_equal_values,\
+    replace_null_with_none
+from pandas._libs.missing import NA
+from pyparsing import And
+from numpy import NaN, nan
 
-def iteratively_impute_numerical_columns(df):    
+def iteratively_impute_numerical_columns(desired_type, df):    
     # Extract column names
     column_names = list(df.columns)
     
-    # Define list with parameter columns.
-    param_columns = ['OuterDiameterValue', 'SurfaceAreaValue', 'HydrodynamicDiameterValue', 
+    # Define list with possible parameter columns.
+    param_names = ['OuterDiameterValue',
+                    'OuterDiameterLow', 'OuterDiameterHigh',
+                    'SurfaceAreaValue', 
+                    'Purity', 'HydrodynamicDiameterValue', 'ChargeAvg', 
                     'particle concentration parameter_value','duration incubation parameter_value', 
+                    'duration exposure parameter_value',
                     'duration aging parameter_value', 'duration irradiation parameter_value',  
+                    'temperature parameter_value',
+                    'concentration zinc parameter_value', 'concentration copper parameter_value',
                     'irradiance parameter_value', 'irradiation power parameter_value',
-                    'Purity', 'ChargeAvg', 'duration exposure parameter_value', 'temperature parameter_value',
                     'number of cells parameter_value', 'concentration carbon dioxide parameter_value'] 
     
-    # Store copper and zinc concentrations in a separate list.
-    param_conc_columns = ['concentration zinc parameter_value', 'concentration copper parameter_value']
+    param_columns = []
+    for name in param_names:
+        sub_name = name
+        if sub_name in column_names:
+            param_columns.append(sub_name)
+            
+    #param_columns_found = list(param_columns)
+    #if 'OuterDiameterValue' in param_columns_found:
+    #    df_Outer = df['OuterDiameterValue']
+    #    if 'OuterDiameterLow' in param_columns_found:
+    #        df_Low = df['OuterDiameterLow']
+    #        df_Low = df_Low.fillna(df_Outer)
+    #        if 'OuterDiameterHigh' in param_columns_found:
+    #            df_High = df['OuterDiameterHigh']
+    #            df_High = df_High.fillna(df_Outer)
+    #            df_Outer = df_Outer.fillna((df_Low+df_High)*0.5)
+    #            df['OuterDiameterValue'] = df_Outer
+    #            df['OuterDiameterLow'] = df_Low
+    #            df['OuterDiameterHigh'] = df_High
+    #        else:
+    #            df_Outer = df_Outer.fillna(df_Low)
+    #            df['OuterDiameterValue'] = df_Outer
+    #            df['OuterDiameterLow'] = df_Low
+    #    else:
+    #        if 'OuterDiameterHigh' in param_columns_found:
+    #            df_High = df['OuterDiameterHigh']
+    #            df_High = df_High.fillna(df_Outer)
+    #            df_Outer = df_Outer.fillna(df_High)
+    #            df['OuterDiameterValue'] = df_Outer
+    #            df['OuterDiameterHigh'] = df_High
+    #else:
+    #    if 'OuterDiameterLow' in param_columns_found:
+    #        df_Low = df['OuterDiameterLow']
+    #        if 'OuterDiameterHigh' in param_columns_found:
+    #            df_High = df['OuterDiameterHigh']
+    #            df_High = df_High.fillna(df_Low)
+    #            df_Low = df_Low.fillna(df_High)
+    #            df['OuterDiameterLow'] = df_Low
+    #            df['OuterDiameterHigh'] = df_High            
+    #output_Modified_Diameter_Parameters = "data\\Modified_Diameter_Parameters.csv"                     
+    #write_to_csv(df, output_Modified_Diameter_Parameters)
     
+    # Store copper and zinc concentrations in a separate list.
+    param_conc_names = ['concentration zinc parameter_value', 'concentration copper parameter_value']
+    param_conc_columns = []
+    for name in param_conc_names:
+       sub_name = name
+       if sub_name in param_columns:
+           param_columns.remove(sub_name)
+           param_conc_columns.append(sub_name)
+    #param_conc_columns =  ['concentration zinc parameter_value', 'concentration copper parameter_value']
+
     # Extract columns with additive_value
     subs_value = "additive_value"
     additive_columns  = [icol for icol in column_names if subs_value in icol]
-    additive_columns.remove("fetal bovine serum additive_value")
+    #additive_columns.remove("fetal bovine serum additive_value")
     
     # Extract columns with contaminant_value 
     subs_value = "contaminant_value"
@@ -60,7 +119,20 @@ def iteratively_impute_numerical_columns(df):
     # Extract results columns and store them in a separate DataFrame
     subs_value = "result_value"
     result_columns  = [icol for icol in column_names if subs_value in icol]
-    df_results = df[result_columns].copy()
+    for icol in result_columns:
+        if desired_type in icol:
+            result_columns.remove(icol)
+    #df_results = df[result_columns].copy()
+
+    #for i in range(len(names)):
+        #maybe_greek = names[i].encode('utf-8', 'ignore')
+        #print('%r %a'%(maybe_greek,maybe_greek))
+        
+    total_cols = total_cols + result_columns
+    
+    #subs_viability = result_type
+    desired_columns  = [icol for icol in column_names if desired_type in icol]
+    df_desired = df[desired_columns].copy()
     
     # Make a copy of the DataFrame with the chosen columns.
     df_temp = df[total_cols].copy()
@@ -92,6 +164,7 @@ def iteratively_impute_numerical_columns(df):
                            random_state = 0, 
                            missing_values = np.nan, 
                            initial_strategy = 'mean',
+                           verbose = 0,
                            min_value = minimum_values,
                            max_value = maximum_values)
     
@@ -101,7 +174,8 @@ def iteratively_impute_numerical_columns(df):
     df_imputed = pd.DataFrame(data = df_imp, columns = total_cols)
     
     # Combine imputed DataFrame with results DataFrame
-    df_combined = pd.concat([df_imputed, df_results], axis = 1)
+    df_combined = pd.concat([df_imputed, df_desired], axis = 1)
+    #df_combined = pd.concat([df_temp, df_desired], axis = 1)
     
     return df_combined
 
