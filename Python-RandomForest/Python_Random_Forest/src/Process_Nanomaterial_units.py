@@ -211,4 +211,6 @@ def process_nanomaterial_units(df):
                                     df.loc[irow, col_high] = df.loc[irow, col_high] * 1000                        
         except ValueError as msg:
             error_message = str(msg) + ", " + str(col_value) + ", " + col_units +  ", row = " + str(irow)
-            print(error_message)  
+            print(error_message)
+            
+    return df

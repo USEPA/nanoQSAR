@@ -7,7 +7,7 @@ Created on Mar 3, 2021
 @author: Wmelende
 '''
 
-def extract_X_Y_matrices(df):
+def extract_X_Y_matrices(desired_result, df):
     '''
     Name
     ----
@@ -45,8 +45,9 @@ def extract_X_Y_matrices(df):
     list_results = list_result_value + list_result_low + list_result_high
     
     # Extract viability result column only (Y matrix)
-    viability_column = "viability result_value"
-    dfY = df[[viability_column]]
+    desired_column = desired_result+" result_value"
+    #desired_column = desired_result
+    dfY = df[desired_column]
     
     # Extract the X matrix
     dfX = df.drop(list_results, inplace = False, axis = 1)

@@ -30,6 +30,7 @@ def delete_merged_columns(df):
     # These columns were merged with other columns.
     list_merged_columns = ['particle concentration log parameter_value',
                            'particle concentration log parameter_unit',
+                           'particle concentration log parameter_nonnum',
                            'penicilin additive_value', 
                            'penicilin additive_unit',
                            'relative fluorescence result_value', 
@@ -37,3 +38,5 @@ def delete_merged_columns(df):
                         
     # Delete the merged columns
     df.drop(list_merged_columns, axis = 1, inplace = True)
+    
+    return df

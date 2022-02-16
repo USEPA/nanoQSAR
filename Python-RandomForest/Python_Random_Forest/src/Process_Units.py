@@ -49,17 +49,18 @@ def process_data_units(df):
     
     '''
     # Process nanomaterial units
-    process_nanomaterial_units(df)
+    df = process_nanomaterial_units(df)
     
     # Process parameters' units
-    process_parameters_units(df)
+    df = process_parameters_units(df)
     
     # Process additives' units
-    process_additive_units(df)
+    df = process_additive_units(df)
     
     # Process contaminants' units
-    process_contaminants_units(df)
+    df = process_contaminants_units(df)
     
     # Process results units
-    process_results_units(df)
+    df = process_results_units(df)
     
+    return df
