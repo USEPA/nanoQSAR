@@ -25,7 +25,8 @@ from Perform_Multivariate_Imputation import iteratively_impute_numerical_columns
 from UtilRecords import read_from_csv, write_to_csv, delete_columns_with_all_equal_values
 
 def main():
-    desired_type = "viability"
+    assayType = "in vitro"
+    desired_result = "viability"
     input_file = "..\\data\\assay_all_vw_out_22325rows.csv"
     output_DifferentValues = "data\\inVitro_Columns_with_Different_Values.csv"
     output_ProcessedData = "data\\InVitro_ProcessedData.csv"
@@ -35,14 +36,13 @@ def main():
     output_Multivariate_Imputed_Values = "data\\Multivariate_Imputed_Numerical_Columns.csv"
     
     # initial processes only, translate concatenated data
-    df = deconcatenationProcess(input_file, "in vitro")
-    #df = initialProcesses(input_file)
+    df = deconcatenationProcess(input_file, assayType)
     
     # Delete columns with the same value
-    df = delete_columns_with_all_equal_values(df)
+    #df = delete_columns_with_all_equal_values(df)
     
     # Write DataFrame to a CSV file.
-    write_to_csv(df, output_DifferentValues)
+    #write_to_csv(df, output_DifferentValues)
     
     # Read CSV file back into the program.
     #df = read_from_csv(output_DifferentValues)
@@ -51,16 +51,16 @@ def main():
     df = middleProcesses(df)
     
     # Write DataFrame processed data
-    write_to_csv(df, output_ProcessedData)
+    #write_to_csv(df, output_ProcessedData)
     
     # Encode categorical data
     df = encode_categorical_columns(df)
 
     # Extract only the rows with viability results
-    df = extract_desired_rows(desired_type, df)
+    df = extract_desired_rows(desired_result, df)
     
     # Write DataFrame to CSV file.
-    write_to_csv(df, output_Desired_Rows)
+    #write_to_csv(df, output_Desired_Rows)
     
     # Delete columns with the same value
     df = delete_columns_with_all_equal_values(df)
@@ -68,12 +68,12 @@ def main():
     # Delete columns with the same value
     df = delete_columns_with_units(df)
     
-    # Write DataFrame to CSV file
-    write_to_csv(df, output_NonEmptyColumns_Desired_Rows)
+    # Wr#ite DataFrame to CSV file
+    #write_to_csv(df, output_NonEmptyColumns_Desired_Rows)
     
     # Impute missing data of numerical columns.
     # df = impute_missing_data_of_numerical_columns(df)
-    df = iteratively_impute_numerical_columns(desired_type, df)
+    df = iteratively_impute_numerical_columns(desired_result, df)
     
     # Write imputed DataFrame to a CSV file
     # write_to_csv(df, output_Imputed_Values)
