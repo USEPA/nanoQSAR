@@ -9,7 +9,6 @@ from Additive_Fields import split_additive_fields
 from Result_Fields import split_result_fields
 import re
 from UtilRecords import read_from_csv, write_to_csv, replace_null_with_none
-from numpy import NaN
 
 def deconcatenationProcess(input_file, assayType):
     '''
@@ -30,7 +29,7 @@ def deconcatenationProcess(input_file, assayType):
     df = select_AssayType_rows(df, assayType)
         
     # Write inVitro rows to output
-    write_to_csv(df, invitro_output)
+    #write_to_csv(df, invitro_output)
         
     # Read from invitro
     #df = read_from_csv(invitro_output)
@@ -45,13 +44,13 @@ def deconcatenationProcess(input_file, assayType):
     df = split_result_fields(df)
                         
     # Write data frame to a CSV file.
-    write_to_csv(df, output_file)
+    #write_to_csv(df, output_file)
         
     # Remove concatenated columns
     df = delete_concatenated_columns(df)
     
     # Write DataFrame to a CSV file.
-    write_to_csv(df, output_NoConcatenatedFields)
+    #write_to_csv(df, output_NoConcatenatedFields)
       
     return df
 
