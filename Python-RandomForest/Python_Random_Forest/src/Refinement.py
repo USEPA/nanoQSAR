@@ -26,6 +26,8 @@ from UtilRecords import read_from_csv, write_to_csv, delete_columns_with_all_equ
 def main():
     assayType = "in vitro"
     desired_result = "viability"
+    #desired_result = "expression levels"
+
     input_file = "..\\data\\assay_all_vw_out_22325rows.csv"
     output_DifferentValues = "data\\inVitro_Columns_with_Different_Values.csv"
     output_ProcessedData = "data\\InVitro_ProcessedData.csv"
@@ -67,7 +69,7 @@ def main():
     # Delete columns with the same value
     df = delete_columns_with_units(df)
     
-    # Wr#ite DataFrame to CSV file
+    # Write DataFrame to CSV file
     #write_to_csv(df, output_NonEmptyColumns_Desired_Rows)
     
     # Impute missing data of numerical columns.
@@ -82,7 +84,7 @@ def main():
     
 def extract_desired_rows(desired_result, df):
     column_name = desired_result+" result_value"
-    #df1 = df.iloc[2062:2364].loc[df[column_name].isna() == False]
+    #df1 = df.iloc[2062:2333].loc[df[column_name].isna() == False]
     df1 = df.loc[df[column_name].isna() == False]
     
     # Reset the rows indices.

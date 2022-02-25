@@ -20,6 +20,8 @@ import RandomForestAnalysis
 
 def main():
     desired_type = "viability"
+    #desired_type = "expression levels"
+
     # input_Imputed_Values = "..\\data\\Imputed_Numerical_Columns.csv"
     input_Imputed_Values = "..\\data\\Multivariate_Imputed_Numerical_Columns.csv" 
     output_xtrain = "data\\X_Train.csv"

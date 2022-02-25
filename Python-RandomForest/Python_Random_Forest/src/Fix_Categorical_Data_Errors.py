@@ -20,7 +20,8 @@ def fix_categorical_data_errors(df):
     categorical_columns = ['CoreComposition', 'ShellComposition', 'CoatingComposition', 
                            'Shape', 'SurfaceChargeType', 'particle concentration parameter_nonnum', 
                            'cell type parameter_nonnum', 'subject parameter_nonnum', 
-                           'light parameter_nonnum']
+                           'light parameter_nonnum',
+                           'biochemical name parameter_nonnum', 'subpathway parameter_nonnum']
     
     # Change case of categories to lowercase.
     for columns in categorical_columns:

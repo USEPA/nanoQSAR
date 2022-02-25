@@ -15,7 +15,8 @@ def encode_categorical_columns(df):
     # Create list of columns to be encoded.
     columns_encode = ['CoreComposition', 'ShellComposition', 'CoatingComposition', 'Shape', 'SurfaceChargeType',
                       'particle concentration parameter_nonnum', 'cell type parameter_nonnum',
-                      'subject parameter_nonnum', 'light parameter_nonnum']
+                      'subject parameter_nonnum', 'light parameter_nonnum',
+                      'biochemical name parameter_nonnum', 'subpathway parameter_nonnum']
     
     # Replace None with empty string to avoid an error with One-Hot Encoder.
     # for icol in columns_encode:

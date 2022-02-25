@@ -107,7 +107,8 @@ def iteratively_impute_numerical_columns(desired_type, df):
     # Extract encoded categorical data
     cat_patterns = ['CoreComposition', 'ShellComposition', 'CoatingComposition', 'Shape', 'SurfaceChargeType',
                     'particle concentration parameter_nonnum', 'cell type parameter_nonnum',
-                    'subject parameter_nonnum', 'light parameter_nonnum']
+                    'subject parameter_nonnum', 'light parameter_nonnum',
+                    'biochemical name parameter_nonnum', 'subpathway parameter_nonnum']
     for pattern in cat_patterns:
         subs_value = pattern
         encoded_columns  = [icol for icol in column_names if subs_value in icol]
