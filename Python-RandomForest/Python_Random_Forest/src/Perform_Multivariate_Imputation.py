@@ -25,7 +25,13 @@ from pandas._libs.missing import NA
 from pyparsing import And
 from numpy import NaN, nan
 
-def iteratively_impute_numerical_columns(desired_type, df):    
+def iteratively_impute_numerical_columns(desired_type, df):
+    
+    # Use the OuterDiameterValue
+    df['OuterDiameterLow'] = df['OuterDiameterLow'].fillna(df['OuterDiameterValue'])
+    df['OuterDiameterHigh'] = df['OuterDiameterHigh'].fillna(df['OuterDiameterValue'])
+    df['OuterDiameterValue'] = df['OuterDiameterValue'].fillna(0.5*(df['OuterDiameterLow']+df['OuterDiameterHigh']))
+        
     # Extract column names
     column_names = list(df.columns)
     
