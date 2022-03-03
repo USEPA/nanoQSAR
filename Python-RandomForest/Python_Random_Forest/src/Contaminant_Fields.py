@@ -11,7 +11,8 @@ split_contaminant_fields(df, nrow, col_names)
 
 @author: Wilson Melendez
 '''
-import re 
+import re
+import pandas as pd 
 
 def split_contaminant_fields(df):
     '''
@@ -78,7 +79,11 @@ def split_contaminant_fields(df):
                     strvalue = list_str[1].strip().lower() + ' contaminant_value'
                     strunits = list_str[1].strip().lower() + ' contaminant_unit'
                     # strnum = list_str[1].strip().lower() + ' contaminant_number'
-                    strnonnum = list_str[1].strip().lower() + ' contaminant_method'     
+                    strnonnum = list_str[1].strip().lower() + ' contaminant_method'
+                    
+                    if strvalue not in list(df.columns):
+                        new_columns = pd.DataFrame(columns=[strvalue, strunits, strnonnum])
+                        df = pd.concat([df,new_columns], axis=1)
                     
                     # New columns are added to the DataFrame by specifying a new name and 
                     # assigning a value to it.  If the location of a new column is important, we 
