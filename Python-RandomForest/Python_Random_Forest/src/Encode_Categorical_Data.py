@@ -38,7 +38,8 @@ def encode_categorical_columns(df):
     encoder = OneHotEncoder(handle_unknown='ignore')
     encoder.fit(df_imp)
     trans_X_cat = encoder.transform(df_imp).toarray()
-    newHeaders = encoder.get_feature_names(original_headers_cat)
+    #newHeaders = encoder.get_feature_names(original_headers_cat) #python3.8
+    newHeaders = encoder.get_feature_names_out(original_headers_cat) #python3.9
     # df1 = pd.get_dummies(df_cat)
     
     # Create DataFrame with the transformed categorical data.
