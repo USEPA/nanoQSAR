@@ -35,7 +35,7 @@ def test_results_fields():
     nrow = len(dft.index)
     
     # Proceed to split up the concatenated fields.
-    split_result_fields(dft)
+    dft = split_result_fields(dft)
     
     # Assert selected values
     assert dft['front scatter result_value'][0] == 1
