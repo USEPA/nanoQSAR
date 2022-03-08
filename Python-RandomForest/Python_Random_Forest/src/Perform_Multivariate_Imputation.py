@@ -36,8 +36,7 @@ def iteratively_impute_numerical_columns(desired_type, df):
     column_names = list(df.columns)
     
     # Define list with possible parameter columns.
-    param_names = ['OuterDiameterValue',
-                    'OuterDiameterLow', 'OuterDiameterHigh',
+    param_names = ['OuterDiameterValue', 'OuterDiameterLow', 'OuterDiameterHigh',
                     'SurfaceAreaValue', 
                     'Purity', 'HydrodynamicDiameterValue', 'ChargeAvg', 
                     'particle concentration parameter_value','duration incubation parameter_value', 
@@ -50,56 +49,17 @@ def iteratively_impute_numerical_columns(desired_type, df):
     
     param_columns = []
     for name in param_names:
-        sub_name = name
-        if sub_name in column_names:
-            param_columns.append(sub_name)
-            
-    #param_columns_found = list(param_columns)
-    #if 'OuterDiameterValue' in param_columns_found:
-    #    df_Outer = df['OuterDiameterValue']
-    #    if 'OuterDiameterLow' in param_columns_found:
-    #        df_Low = df['OuterDiameterLow']
-    #        df_Low = df_Low.fillna(df_Outer)
-    #        if 'OuterDiameterHigh' in param_columns_found:
-    #            df_High = df['OuterDiameterHigh']
-    #            df_High = df_High.fillna(df_Outer)
-    #            df_Outer = df_Outer.fillna((df_Low+df_High)*0.5)
-    #            df['OuterDiameterValue'] = df_Outer
-    #            df['OuterDiameterLow'] = df_Low
-    #            df['OuterDiameterHigh'] = df_High
-    #        else:
-    #            df_Outer = df_Outer.fillna(df_Low)
-    #            df['OuterDiameterValue'] = df_Outer
-    #            df['OuterDiameterLow'] = df_Low
-    #    else:
-    #        if 'OuterDiameterHigh' in param_columns_found:
-    #            df_High = df['OuterDiameterHigh']
-    #            df_High = df_High.fillna(df_Outer)
-    #            df_Outer = df_Outer.fillna(df_High)
-    #            df['OuterDiameterValue'] = df_Outer
-    #            df['OuterDiameterHigh'] = df_High
-    #else:
-    #    if 'OuterDiameterLow' in param_columns_found:
-    #        df_Low = df['OuterDiameterLow']
-    #        if 'OuterDiameterHigh' in param_columns_found:
-    #            df_High = df['OuterDiameterHigh']
-    #            df_High = df_High.fillna(df_Low)
-    #            df_Low = df_Low.fillna(df_High)
-    #            df['OuterDiameterLow'] = df_Low
-    #            df['OuterDiameterHigh'] = df_High            
-    #output_Modified_Diameter_Parameters = "data\\Modified_Diameter_Parameters.csv"                     
-    #write_to_csv(df, output_Modified_Diameter_Parameters)
+        if name in column_names:
+            param_columns.append(name)
     
     # Store copper and zinc concentrations in a separate list.
     param_conc_names = ['concentration zinc parameter_value', 'concentration copper parameter_value']
     param_conc_columns = []
     for name in param_conc_names:
-       sub_name = name
-       if sub_name in param_columns:
-           param_columns.remove(sub_name)
-           param_conc_columns.append(sub_name)
-    #param_conc_columns =  ['concentration zinc parameter_value', 'concentration copper parameter_value']
-
+        if name in param_columns:
+            param_columns.remove(name)
+            param_conc_columns.append(name)
+            
     # Extract columns with additive_value
     subs_value = "additive_value"
     additive_columns  = [icol for icol in column_names if subs_value in icol]
@@ -115,6 +75,7 @@ def iteratively_impute_numerical_columns(desired_type, df):
                     'particle concentration parameter_nonnum', 'cell type parameter_nonnum',
                     'subject parameter_nonnum', 'light parameter_nonnum',
                     'biochemical name parameter_nonnum', 'subpathway parameter_nonnum']
+    
     for pattern in cat_patterns:
         subs_value = pattern
         encoded_columns  = [icol for icol in column_names if subs_value in icol]
