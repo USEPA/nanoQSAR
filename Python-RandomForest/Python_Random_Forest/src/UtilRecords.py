@@ -115,12 +115,40 @@ def delete_columns_with_all_equal_values(df, keepUnits = True):
     Modified DataFrame df.
     '''
 
+    unit_needed = False
+    low_needed = False
+    high_needed = False
     for column in df:
-        if (keepUnits and ("_unit" in column or "Unit" in column)):
-            continue
-        if (df[column].eq(df[column].iloc[0]).all() == True):
+        if (keepUnits and "_value" in column):
+            unit_needed = True
+        elif (keepUnits and "Value" in column):
+            unit_needed = True
+            low_needed = True
+            high_needed = True
+            
+        if (unit_needed and "_unit" in column):
+            unit_needed = False
+        elif (unit_needed and "Unit" in column):
+            unit_needed = False
+        elif (low_needed and "Low" in column):
+            low_needed = False
+        elif (high_needed and "High" in column):
+            high_needed = False
+        elif (df[column].eq(df[column].iloc[0]).all() == True):
+            if ("_value" in column):
+                unit_needed = False
+            elif ("Value" in column):
+                unit_needed = False
+                low_needed = False
+                high_needed = False
             df.drop(column, axis = 1, inplace = True)
         elif (df[column].isna().values.all() == True):
+            if ("_value" in column):
+                unit_needed = False
+            elif ("Value" in column):
+                unit_needed = False
+                low_needed = False
+                high_needed = False
             df.drop(column, axis = 1, inplace = True)
 
     return df
