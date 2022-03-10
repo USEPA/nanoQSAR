@@ -11,10 +11,13 @@ def fix_categorical_data_errors(df):
     df["Shape"].replace({"sphere":"spherical", "shperical":"spherical"}, inplace = True)
     
     # Combine subpathway and sub pathway columns into subpathway column.
-    df["subpathway parameter_nonnum"] = df["subpathway parameter_nonnum"].combine_first(df["sub pathway parameter_nonnum"])
-    
-    # Delete 'sub pathway parameter_nonnum' column
-    df.drop("sub pathway parameter_nonnum", axis = 1, inplace = True)
+    if "sub pathway parameter_nonnum" in df.columns:
+        if "subpathway_parameter_nonnum" in df.columns:
+            df["subpathway parameter_nonnum"] = df["subpathway parameter_nonnum"].combine_first(df["sub pathway parameter_nonnum"])
+            # Delete 'sub pathway parameter_nonnum' column
+            df.drop("sub pathway parameter_nonnum", axis = 1, inplace = True)
+        else:
+            df["sub pathway parameter_nonnum"].rename("subpathway parameter_nonnum")
     
     # Create list of categorical columns.
     categorical_columns = ['CoreComposition', 'ShellComposition', 'CoatingComposition', 
@@ -24,7 +27,8 @@ def fix_categorical_data_errors(df):
                            'biochemical name parameter_nonnum', 'subpathway parameter_nonnum']
     
     # Change case of categories to lowercase.
-    for columns in categorical_columns:
-        df[columns] = df[columns].str.lower()
+    for column in categorical_columns:
+        if column in df.columns:
+            df[column] = df[column].str.lower()
     
     return df                

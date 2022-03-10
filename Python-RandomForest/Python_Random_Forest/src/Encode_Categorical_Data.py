@@ -21,7 +21,9 @@ def encode_categorical_columns(df):
     # Replace None with empty string to avoid an error with One-Hot Encoder.
     # for icol in columns_encode:
     #     df[icol].replace({None:""}, inplace = True)
-    
+    column_names = list(df.columns)
+    columns_encode = [icol for icol in columns_encode if icol in column_names]
+            
     # Create DataFrame with categorical data
     df_cat = df[columns_encode]
     original_headers_cat = list(df_cat.columns)

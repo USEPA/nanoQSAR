@@ -40,6 +40,8 @@ def delete_unwanted_columns(df):
     # Extract column names
     column_names = list(df.columns)
     
+    columns_to_be_deleted = [icol for icol in columns_to_be_deleted if icol in column_names]
+    
     # Extract the columns with contaminant_method fields
     subs_value = "contaminant_method"
     contaminant_method_columns  = [icol for icol in column_names if subs_value in icol]
