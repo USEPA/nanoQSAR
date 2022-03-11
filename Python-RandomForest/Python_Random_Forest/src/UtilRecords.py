@@ -125,6 +125,10 @@ def delete_columns_with_all_equal_values(df, keepUnits = True):
             unit_needed = True
             low_needed = True
             high_needed = True
+        elif (keepUnits and "ChargeAvg" in column):
+            unit_needed = True
+            low_needed = True
+            high_needed = True
             
         if (unit_needed and "_unit" in column):
             unit_needed = False
@@ -141,11 +145,19 @@ def delete_columns_with_all_equal_values(df, keepUnits = True):
                 unit_needed = False
                 low_needed = False
                 high_needed = False
+            elif ("ChargeAvg" in column):
+                unit_needed = False
+                low_needed = False
+                high_needed = False
             df.drop(column, axis = 1, inplace = True)
         elif (df[column].isna().values.all() == True):
             if ("_value" in column):
                 unit_needed = False
             elif ("Value" in column):
+                unit_needed = False
+                low_needed = False
+                high_needed = False
+            elif ("ChargeAvg" in column):
                 unit_needed = False
                 low_needed = False
                 high_needed = False
