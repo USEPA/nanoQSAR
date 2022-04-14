@@ -103,12 +103,15 @@ def delete_columns_with_all_equal_values(df, keepUnits = True):
     
     Description
     -----------
-    This function deletes columns in DataFrame that have the same value repeated in all their rows.
+    This function deletes columns in DataFrame that have the same value repeated in all their rows,
+    except for units and other columns which might be needed for future use.
     
     Input Parameters
     ----------------
     df : DataFrame
         DataFrame containing the inVitro data.
+    keepUnits: boolean
+        default value of True
         
     Output Parameters
     -----------------
