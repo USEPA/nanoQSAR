@@ -25,8 +25,8 @@ from UtilRecords import read_from_csv, write_to_csv, delete_columns_with_all_equ
 
 def main():
     assayType = "in vitro"
-    desired_result = "viability"
-    #desired_result = "expression levels"
+    #desired_result = "viability"
+    desired_result = "expression levels"
 
     input_file = "..\\data\\assay_all_vw_out_22325rows.csv"
     output_DifferentValues = "data\\inVitro_Columns_with_Different_Values.csv"

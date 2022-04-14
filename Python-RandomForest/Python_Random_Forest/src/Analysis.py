@@ -19,8 +19,8 @@ from Write_to_CSV import write_to_csv
 import RandomForestAnalysis
 
 def main():
-    desired_result = "viability"
-    #desired_result = "expression levels"
+    #desired_result = "viability"
+    desired_result = "expression levels"
 
     # input_Imputed_Values = "..\\data\\Imputed_Numerical_Columns.csv"
     input_Imputed_Values = "..\\data\\Multivariate_Imputed_Numerical_Columns.csv" 
@@ -61,7 +61,7 @@ def main():
     y_pred = rfa.predict(X_test)
     
     # Evaluate prediction
-    rfa.evaluate(y_test, X_test)
+    rfa.evaluate(X_test, y_test)
     
     #perform_RandomForest_regression(train_features, X_train, y_train, X_test, y_test)
     
