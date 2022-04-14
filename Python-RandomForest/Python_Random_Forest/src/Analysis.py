@@ -19,8 +19,8 @@ from Write_to_CSV import write_to_csv
 import RandomForestAnalysis
 
 def main():
-    desired_type = "viability"
-    #desired_type = "expression levels"
+    desired_result = "viability"
+    #desired_result = "expression levels"
 
     # input_Imputed_Values = "..\\data\\Imputed_Numerical_Columns.csv"
     input_Imputed_Values = "..\\data\\Multivariate_Imputed_Numerical_Columns.csv" 
@@ -35,7 +35,7 @@ def main():
                      encoding = 'utf-8-sig')
     
     # Extract X and Y matrices
-    dfX, dfY = extract_X_Y_matrices(desired_type, df)
+    dfX, dfY = extract_X_Y_matrices(desired_result, df)
     
     # Keep features from dfX
     train_features = list(dfX.columns)
