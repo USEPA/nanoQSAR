@@ -17,7 +17,8 @@ class RandomForestAnalysis():
     def train(self, X_train, y_train):
         self.X_train = X_train
         self.y_train = y_train
-        self.regressor = RandomForestRegressor(n_estimators = 300, n_jobs=4, random_state = 0, min_samples_split=4, max_features=0.25)
+        #self.regressor = RandomForestRegressor(n_estimators = 300, n_jobs=4, random_state = 0, min_samples_split=4, max_features=0.25)
+        self.regressor = RandomForestRegressor(n_estimators=300, n_jobs=4, random_state=0, min_samples_split=4, max_samples=0.8, max_features=0.8)
         self.regressor.fit(self.X_train, self.y_train)
         return self.regressor
     
