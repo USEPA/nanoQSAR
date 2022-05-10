@@ -87,26 +87,22 @@ def iteratively_impute_numerical_columns(desired_type, df):
     # Extract results columns and store them in a separate DataFrame
     subs_value = "result_value"
     result_columns  = [icol for icol in column_names if subs_value in icol]
+    desired_columns = []
     for icol in result_columns:
         if desired_type in icol:
             result_columns.remove(icol)
-    #df_results = df[result_columns].copy()
-
-    #for i in range(len(names)):
-        #maybe_greek = names[i].encode('utf-8', 'ignore')
-        #print('%r %a'%(maybe_greek,maybe_greek))
+            desired_columns.append(icol)
         
     total_cols = total_cols + result_columns
-    
-    #subs_viability = result_type
-    desired_columns  = [icol for icol in column_names if desired_type in icol]
-    df_desired = df[desired_columns].copy()
     
     # Make a copy of the DataFrame with the chosen columns.
     df_temp = df[total_cols].copy()
     
+    # Place the desired type result value into separate column
+    df_desired = df[desired_columns].copy()
+    
     # Impute additives and parameter-concentrations missing values with zeros.
-    total_cols_zero = additive_columns + contaminant_columns + param_conc_columns
+    total_cols_zero = param_conc_columns + additive_columns + contaminant_columns
     df_temp[total_cols_zero] = df_temp[total_cols_zero].fillna(value = 0.0)
     
     # Extract minimum and maximum values of features and store them in separate lists.
@@ -142,7 +138,7 @@ def iteratively_impute_numerical_columns(desired_type, df):
     # Create DataFrame with the imputed missing data.
     df_imputed = pd.DataFrame(data=imputed, columns = total_cols)
     
-    # Combine imputed DataFrame with results DataFrame
+    # Combine imputed DataFrame with desired result as last column
     df_combined = pd.concat([df_imputed, df_desired], axis = 1)
     #df_combined = pd.concat([df_temp, df_desired], axis = 1)
     
