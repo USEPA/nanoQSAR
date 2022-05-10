@@ -28,9 +28,9 @@ from numpy import NaN, nan
 def iteratively_impute_numerical_columns(desired_type, df):
     
     # Use the OuterDiameterValue
-    df['OuterDiameterLow'] = df['OuterDiameterLow'].fillna(df['OuterDiameterValue'])
-    df['OuterDiameterHigh'] = df['OuterDiameterHigh'].fillna(df['OuterDiameterValue'])
-    df['OuterDiameterValue'] = df['OuterDiameterValue'].fillna(0.5*(df['OuterDiameterLow']+df['OuterDiameterHigh']))
+    #df['OuterDiameterLow'] = df['OuterDiameterLow'].fillna(df['OuterDiameterValue'])
+    #df['OuterDiameterHigh'] = df['OuterDiameterHigh'].fillna(df['OuterDiameterValue'])
+    #df['OuterDiameterValue'] = df['OuterDiameterValue'].fillna(0.5*(df['OuterDiameterLow']+df['OuterDiameterHigh']))
         
     # Extract column names
     column_names = list(df.columns)
@@ -127,8 +127,9 @@ def iteratively_impute_numerical_columns(desired_type, df):
     # 2) DecisionTreeRegressor: non-linear regression
     # 3) ExtraTreesRegressor: similar to missForest in R (missForest is very popular with R users)
     # 4) KNeighborsRegressor: comparable to other KNN imputation approaches
-    imp = IterativeImputer(estimator = BayesianRidge(),
-                           max_iter = 100, 
+    imputer = IterativeImputer(estimator = BayesianRidge(),
+                           sample_posterior = True,
+                           max_iter = 100,
                            random_state = 0, 
                            missing_values = np.nan, 
                            initial_strategy = 'mean',
@@ -136,10 +137,10 @@ def iteratively_impute_numerical_columns(desired_type, df):
                            min_value = minimum_values,
                            max_value = maximum_values)
     
-    df_imp = imp.fit_transform(df_temp)
+    imputed = imputer.fit_transform(df_temp)
     
     # Create DataFrame with the imputed missing data.
-    df_imputed = pd.DataFrame(data = df_imp, columns = total_cols)
+    df_imputed = pd.DataFrame(data=imputed, columns = total_cols)
     
     # Combine imputed DataFrame with results DataFrame
     df_combined = pd.concat([df_imputed, df_desired], axis = 1)
