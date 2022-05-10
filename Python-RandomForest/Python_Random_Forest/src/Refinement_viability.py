@@ -48,7 +48,7 @@ def main():
     # Delete columns not used
     df = delete_unwanted_columns(df)
     
-    #df = replace_null_with_none(df)
+    df = replace_null_with_none(df)
     
     # Delete columns with the same value
     df = delete_columns_with_all_equal_values(df, keepUnits=True)
@@ -56,9 +56,6 @@ def main():
     # Write DataFrame to a CSV file.
     write_to_csv(df, output_UsedColumns)
 
-    # Delete columns with the same value
-    #df = delete_columns_with_all_equal_values(df)
-    
     # Write DataFrame to a CSV file.
     #write_to_csv(df, output_DifferentValues)
     
@@ -83,11 +80,8 @@ def main():
     # Delete columns with the same value
     df = delete_columns_with_all_equal_values(df, keepUnits=False)
     
-    # Delete columns with the same value
+    # Explicitly delete columns with units
     df = delete_columns_with_units(df)
-    
-    # Write DataFrame to CSV file
-    #write_to_csv(df, output_NonEmptyColumns_Desired_Rows)
     
     # Impute missing data of numerical columns.
     # df = impute_missing_data_of_numerical_columns(df)
