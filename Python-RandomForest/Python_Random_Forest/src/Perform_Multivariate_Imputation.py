@@ -124,12 +124,14 @@ def iteratively_impute_numerical_columns(desired_type, df):
     # 3) ExtraTreesRegressor: similar to missForest in R (missForest is very popular with R users)
     # 4) KNeighborsRegressor: comparable to other KNN imputation approaches
     imputer = IterativeImputer(estimator = BayesianRidge(),
-                           sample_posterior = True,
-                           max_iter = 100,
+                           #sample_posterior = True,
+                           max_iter = 200,
+                           tol = 1.0e-3,
                            random_state = 0, 
                            missing_values = np.nan, 
                            initial_strategy = 'mean',
-                           verbose = 0,
+                           verbose = 3,
+                           imputation_order = 'descending',
                            min_value = minimum_values,
                            max_value = maximum_values)
     
