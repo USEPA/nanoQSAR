@@ -21,7 +21,7 @@ from pandas.tests.test_nanops import skipna
 # from sklearn.neighbors import KNeighborsRegressor
 from UtilRecords import read_from_csv, write_to_csv, delete_columns_with_all_equal_values,\
     replace_null_with_none
-from pandas._libs.missing import NA
+#from pandas._libs.missing import NA
 from pyparsing import And
 from numpy import NaN, nan
 
@@ -126,7 +126,7 @@ def iteratively_impute_numerical_columns(desired_type, df):
     imputer = IterativeImputer(estimator = BayesianRidge(),
                            #sample_posterior = True,
                            max_iter = 200,
-                           tol = 1.0e-3,
+                           tol = 1.0e-4,
                            random_state = 0, 
                            missing_values = np.nan, 
                            initial_strategy = 'mean',
