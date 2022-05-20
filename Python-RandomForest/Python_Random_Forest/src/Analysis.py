@@ -53,17 +53,17 @@ def main():
     # Transform X and Y matrices to arrays
     X_train, y_train, X_test, y_test = transform_dataframes_to_arrays(dfX_train, dfX_test, dfy_train, dfy_test)
     
-    # train Random Forest regressor
+    # Initialize Random Forest regressor
     rfa = RandomForestAnalysis.RandomForestAnalysis(train_features)
+    
+    # Train Random Forest regressor
     regressor = rfa.train(X_train, y_train)
     
-    # Perform a Random Forest regression
+    # Perform a Random Forest regression (not used here)
     y_pred = rfa.predict(X_test)
     
     # Evaluate prediction
     rfa.evaluate(X_test, y_test)
-    
-    #perform_RandomForest_regression(train_features, X_train, y_train, X_test, y_test)
     
 def transform_dataframes_to_arrays(dfX_train, dfX_test, dfy_train, dfy_test):
     # Transform X DataFrames to arrays.
