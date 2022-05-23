@@ -45,10 +45,10 @@ def main():
     dfX_train, dfX_test, dfy_train, dfy_test = train_test_split(dfX, dfY, test_size = 0.2, random_state = 0)
     
     # Write train and test matrices to CSV files.
-    write_to_csv(dfX_train, output_xtrain)
-    write_to_csv(dfX_test, output_xtest)
-    write_to_csv(dfy_train, output_ytrain)
-    write_to_csv(dfy_test, output_ytest)
+    #write_to_csv(dfX_train, output_xtrain)
+    #write_to_csv(dfX_test, output_xtest)
+    #write_to_csv(dfy_train, output_ytrain)
+    #write_to_csv(dfy_test, output_ytest)
     
     # Transform X and Y matrices to arrays
     X_train, y_train, X_test, y_test = transform_dataframes_to_arrays(dfX_train, dfX_test, dfy_train, dfy_test)
