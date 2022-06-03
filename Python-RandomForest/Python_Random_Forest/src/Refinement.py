@@ -25,8 +25,15 @@ from UtilRecords import read_from_csv, write_to_csv, delete_columns_with_all_equ
 
 def main():
     assayType = "in vitro"
+    
     #desired_result = "viability"
     desired_result = "expression levels"
+    
+    # Core Compositions, if needed
+    #coreComp = ""
+    #coreComp = "cerium(iv) oxide"
+    #coreComp = "titanium dioxide"
+    coreComp = "silicon dioxide"
 
     input_file = "..\\data\\assay_all_vw_out_22325rows.csv"
     output_DifferentValues = "data\\inVitro_Columns_with_Different_Values.csv"
@@ -58,7 +65,7 @@ def main():
     df = encode_categorical_columns(df)
 
     # Extract only the rows with viability results
-    df = extract_desired_rows(desired_result, df)
+    df = extract_desired_rows(desired_result, coreComp, df)
     
     # Write DataFrame to CSV file.
     #write_to_csv(df, output_Desired_Rows)
@@ -82,13 +89,25 @@ def main():
     
     print("Refinement Complete")
     
-def extract_desired_rows(desired_result, df):
+def extract_desired_rows(desired_result, coreComp, df):
     column_name = desired_result+" result_value"
+    
     #df1 = df.iloc[2062:2333].loc[df[column_name].isna() == False]
     df1 = df.loc[df[column_name].isna() == False]
     
     # Reset the rows indices.
     df1 = df1.reset_index(level = 0, drop = True)
+    
+    if desired_result=="expression levels":
+        df2 = df1.loc[df1[column_name]<10.0]
+        df2 = df2.reset_index(level = 0, drop = True)
+        if coreComp == "":
+            df1 = df2
+        else:
+            column_name = "CoreComposition_" + coreComp
+            df2 = df2.loc[df2[column_name]==1]
+            df2 = df2.reset_index(level = 0, drop = True)
+            df1 = df2
     
     return df1
 
