@@ -22,6 +22,7 @@ from Encode_Categorical_Data import encode_categorical_columns
 from Impute_Numerical_Columns import impute_missing_data_of_numerical_columns
 from Perform_Multivariate_Imputation import iteratively_impute_numerical_columns
 from UtilRecords import read_from_csv, write_to_csv, delete_columns_with_all_equal_values
+import pandas
 
 def main():
     assayType = "in vitro"
@@ -33,7 +34,8 @@ def main():
     #coreComp = ""
     #coreComp = "cerium(iv) oxide"
     #coreComp = "titanium dioxide"
-    coreComp = "silicon dioxide"
+    #coreComp = "silicon dioxide"
+    coreComp = "copper(ii) oxide"
 
     input_file = "..\\data\\assay_all_vw_out_22325rows.csv"
     output_DifferentValues = "data\\inVitro_Columns_with_Different_Values.csv"
@@ -103,6 +105,14 @@ def extract_desired_rows(desired_result, coreComp, df):
         df2 = df2.reset_index(level = 0, drop = True)
         if coreComp == "":
             df1 = df2
+        elif coreComp == "copper oxide":
+            column_name = "CoreComposition_copper(i) oxide"
+            df3 = df2.loc[df2[column_name]==1]
+            df3 = df3.reset_index(level = 0, drop = True)
+            column_name = "CoreComposition_copper(ii) oxide"
+            df4 = df2.loc[df2[column_name]==1]
+            df4 = df4.reset_index(level = 0, drop = True)
+            df1 = pandas.concat([df3,df4], ignore_index = True)
         else:
             column_name = "CoreComposition_" + coreComp
             df2 = df2.loc[df2[column_name]==1]
