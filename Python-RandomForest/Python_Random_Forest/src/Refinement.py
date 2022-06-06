@@ -105,14 +105,6 @@ def extract_desired_rows(desired_result, coreComp, df):
         df2 = df2.reset_index(level = 0, drop = True)
         if coreComp == "":
             df1 = df2
-        elif coreComp == "copper oxide":
-            column_name = "CoreComposition_copper(i) oxide"
-            df3 = df2.loc[df2[column_name]==1]
-            df3 = df3.reset_index(level = 0, drop = True)
-            column_name = "CoreComposition_copper(ii) oxide"
-            df4 = df2.loc[df2[column_name]==1]
-            df4 = df4.reset_index(level = 0, drop = True)
-            df1 = pandas.concat([df3,df4], ignore_index = True)
         else:
             column_name = "CoreComposition_" + coreComp
             df2 = df2.loc[df2[column_name]==1]
