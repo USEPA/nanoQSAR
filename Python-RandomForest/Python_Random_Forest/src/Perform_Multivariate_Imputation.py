@@ -21,17 +21,22 @@ from pandas.tests.test_nanops import skipna
 # from sklearn.neighbors import KNeighborsRegressor
 from UtilRecords import read_from_csv, write_to_csv, delete_columns_with_all_equal_values,\
     replace_null_with_none
-from pandas._libs.missing import NA
+#from pandas._libs.missing import NA
 from pyparsing import And
 from numpy import NaN, nan
 
-def iteratively_impute_numerical_columns(desired_type, df):    
+def iteratively_impute_numerical_columns(desired_type, df):
+    
+    # Use the OuterDiameterValue
+    #df['OuterDiameterLow'] = df['OuterDiameterLow'].fillna(df['OuterDiameterValue'])
+    #df['OuterDiameterHigh'] = df['OuterDiameterHigh'].fillna(df['OuterDiameterValue'])
+    #df['OuterDiameterValue'] = df['OuterDiameterValue'].fillna(0.5*(df['OuterDiameterLow']+df['OuterDiameterHigh']))
+        
     # Extract column names
     column_names = list(df.columns)
     
     # Define list with possible parameter columns.
-    param_names = ['OuterDiameterValue',
-                    'OuterDiameterLow', 'OuterDiameterHigh',
+    param_names = ['OuterDiameterValue', 'OuterDiameterLow', 'OuterDiameterHigh',
                     'SurfaceAreaValue', 
                     'Purity', 'HydrodynamicDiameterValue', 'ChargeAvg', 
                     'particle concentration parameter_value','duration incubation parameter_value', 
@@ -44,56 +49,17 @@ def iteratively_impute_numerical_columns(desired_type, df):
     
     param_columns = []
     for name in param_names:
-        sub_name = name
-        if sub_name in column_names:
-            param_columns.append(sub_name)
-            
-    #param_columns_found = list(param_columns)
-    #if 'OuterDiameterValue' in param_columns_found:
-    #    df_Outer = df['OuterDiameterValue']
-    #    if 'OuterDiameterLow' in param_columns_found:
-    #        df_Low = df['OuterDiameterLow']
-    #        df_Low = df_Low.fillna(df_Outer)
-    #        if 'OuterDiameterHigh' in param_columns_found:
-    #            df_High = df['OuterDiameterHigh']
-    #            df_High = df_High.fillna(df_Outer)
-    #            df_Outer = df_Outer.fillna((df_Low+df_High)*0.5)
-    #            df['OuterDiameterValue'] = df_Outer
-    #            df['OuterDiameterLow'] = df_Low
-    #            df['OuterDiameterHigh'] = df_High
-    #        else:
-    #            df_Outer = df_Outer.fillna(df_Low)
-    #            df['OuterDiameterValue'] = df_Outer
-    #            df['OuterDiameterLow'] = df_Low
-    #    else:
-    #        if 'OuterDiameterHigh' in param_columns_found:
-    #            df_High = df['OuterDiameterHigh']
-    #            df_High = df_High.fillna(df_Outer)
-    #            df_Outer = df_Outer.fillna(df_High)
-    #            df['OuterDiameterValue'] = df_Outer
-    #            df['OuterDiameterHigh'] = df_High
-    #else:
-    #    if 'OuterDiameterLow' in param_columns_found:
-    #        df_Low = df['OuterDiameterLow']
-    #        if 'OuterDiameterHigh' in param_columns_found:
-    #            df_High = df['OuterDiameterHigh']
-    #            df_High = df_High.fillna(df_Low)
-    #            df_Low = df_Low.fillna(df_High)
-    #            df['OuterDiameterLow'] = df_Low
-    #            df['OuterDiameterHigh'] = df_High            
-    #output_Modified_Diameter_Parameters = "data\\Modified_Diameter_Parameters.csv"                     
-    #write_to_csv(df, output_Modified_Diameter_Parameters)
+        if name in column_names:
+            param_columns.append(name)
     
     # Store copper and zinc concentrations in a separate list.
     param_conc_names = ['concentration zinc parameter_value', 'concentration copper parameter_value']
     param_conc_columns = []
     for name in param_conc_names:
-       sub_name = name
-       if sub_name in param_columns:
-           param_columns.remove(sub_name)
-           param_conc_columns.append(sub_name)
-    #param_conc_columns =  ['concentration zinc parameter_value', 'concentration copper parameter_value']
-
+        if name in param_columns:
+            param_columns.remove(name)
+            param_conc_columns.append(name)
+            
     # Extract columns with additive_value
     subs_value = "additive_value"
     additive_columns  = [icol for icol in column_names if subs_value in icol]
@@ -107,7 +73,9 @@ def iteratively_impute_numerical_columns(desired_type, df):
     # Extract encoded categorical data
     cat_patterns = ['CoreComposition', 'ShellComposition', 'CoatingComposition', 'Shape', 'SurfaceChargeType',
                     'particle concentration parameter_nonnum', 'cell type parameter_nonnum',
-                    'subject parameter_nonnum', 'light parameter_nonnum']
+                    'subject parameter_nonnum', 'light parameter_nonnum',
+                    'biochemical name parameter_nonnum', 'subpathway parameter_nonnum']
+    
     for pattern in cat_patterns:
         subs_value = pattern
         encoded_columns  = [icol for icol in column_names if subs_value in icol]
@@ -119,26 +87,22 @@ def iteratively_impute_numerical_columns(desired_type, df):
     # Extract results columns and store them in a separate DataFrame
     subs_value = "result_value"
     result_columns  = [icol for icol in column_names if subs_value in icol]
+    desired_columns = []
     for icol in result_columns:
         if desired_type in icol:
             result_columns.remove(icol)
-    #df_results = df[result_columns].copy()
-
-    #for i in range(len(names)):
-        #maybe_greek = names[i].encode('utf-8', 'ignore')
-        #print('%r %a'%(maybe_greek,maybe_greek))
+            desired_columns.append(icol)
         
     total_cols = total_cols + result_columns
-    
-    #subs_viability = result_type
-    desired_columns  = [icol for icol in column_names if desired_type in icol]
-    df_desired = df[desired_columns].copy()
     
     # Make a copy of the DataFrame with the chosen columns.
     df_temp = df[total_cols].copy()
     
+    # Place the desired type result value into separate column
+    df_desired = df[desired_columns].copy()
+    
     # Impute additives and parameter-concentrations missing values with zeros.
-    total_cols_zero = additive_columns + contaminant_columns + param_conc_columns
+    total_cols_zero = param_conc_columns + additive_columns + contaminant_columns
     df_temp[total_cols_zero] = df_temp[total_cols_zero].fillna(value = 0.0)
     
     # Extract minimum and maximum values of features and store them in separate lists.
@@ -159,21 +123,24 @@ def iteratively_impute_numerical_columns(desired_type, df):
     # 2) DecisionTreeRegressor: non-linear regression
     # 3) ExtraTreesRegressor: similar to missForest in R (missForest is very popular with R users)
     # 4) KNeighborsRegressor: comparable to other KNN imputation approaches
-    imp = IterativeImputer(estimator = BayesianRidge(),
-                           max_iter = 100, 
+    imputer = IterativeImputer(estimator = BayesianRidge(),
+                           #sample_posterior = True,
+                           max_iter = 200,
+                           tol = 1.0e-4,
                            random_state = 0, 
                            missing_values = np.nan, 
                            initial_strategy = 'mean',
-                           verbose = 0,
+                           verbose = 3,
+                           imputation_order = 'descending',
                            min_value = minimum_values,
                            max_value = maximum_values)
     
-    df_imp = imp.fit_transform(df_temp)
+    imputed = imputer.fit_transform(df_temp)
     
     # Create DataFrame with the imputed missing data.
-    df_imputed = pd.DataFrame(data = df_imp, columns = total_cols)
+    df_imputed = pd.DataFrame(data=imputed, columns = total_cols)
     
-    # Combine imputed DataFrame with results DataFrame
+    # Combine imputed DataFrame with desired result as last column
     df_combined = pd.concat([df_imputed, df_desired], axis = 1)
     #df_combined = pd.concat([df_temp, df_desired], axis = 1)
     

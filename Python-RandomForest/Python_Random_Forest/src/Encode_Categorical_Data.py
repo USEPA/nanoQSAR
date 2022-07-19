@@ -15,12 +15,15 @@ def encode_categorical_columns(df):
     # Create list of columns to be encoded.
     columns_encode = ['CoreComposition', 'ShellComposition', 'CoatingComposition', 'Shape', 'SurfaceChargeType',
                       'particle concentration parameter_nonnum', 'cell type parameter_nonnum',
-                      'subject parameter_nonnum', 'light parameter_nonnum']
+                      'subject parameter_nonnum', 'light parameter_nonnum',
+                      'biochemical name parameter_nonnum', 'subpathway parameter_nonnum']
     
     # Replace None with empty string to avoid an error with One-Hot Encoder.
     # for icol in columns_encode:
     #     df[icol].replace({None:""}, inplace = True)
-    
+    column_names = list(df.columns)
+    columns_encode = [icol for icol in columns_encode if icol in column_names]
+            
     # Create DataFrame with categorical data
     df_cat = df[columns_encode]
     original_headers_cat = list(df_cat.columns)
@@ -37,7 +40,8 @@ def encode_categorical_columns(df):
     encoder = OneHotEncoder(handle_unknown='ignore')
     encoder.fit(df_imp)
     trans_X_cat = encoder.transform(df_imp).toarray()
-    newHeaders = encoder.get_feature_names(original_headers_cat)
+    #newHeaders = encoder.get_feature_names(original_headers_cat) #python3.8
+    newHeaders = encoder.get_feature_names_out(original_headers_cat) #python3.9
     # df1 = pd.get_dummies(df_cat)
     
     # Create DataFrame with the transformed categorical data.

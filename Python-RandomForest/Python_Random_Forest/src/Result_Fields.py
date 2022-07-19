@@ -11,7 +11,8 @@ split_result_fields(df, nrow, col_names)
     
 @author: Wilson Melendez
 '''
-import re 
+import re
+import pandas as pd 
 
 def split_result_fields(df):
     '''
@@ -85,6 +86,10 @@ def split_result_fields(df):
                     struncer = list_str[1].strip().lower() + ' result_uncertainty'
                     strlow = list_str[1].strip().lower() + ' result_low'
                     strhigh = list_str[1].strip().lower() + ' result_high'
+                    
+                    if strvalue not in list(df.columns):
+                        new_columns = pd.DataFrame(columns=[strdtl, strvalue, strapprox, strunit, struncer, strlow, strhigh])
+                        df = pd.concat([df,new_columns], axis=1)
                     
                     # New columns are added to the DataFrame by specifying a new name and 
                     # assigning a value to it.  If the location of a new column is important, we 

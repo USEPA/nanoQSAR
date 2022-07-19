@@ -22,10 +22,25 @@ from Encode_Categorical_Data import encode_categorical_columns
 from Impute_Numerical_Columns import impute_missing_data_of_numerical_columns
 from Perform_Multivariate_Imputation import iteratively_impute_numerical_columns
 from UtilRecords import read_from_csv, write_to_csv, delete_columns_with_all_equal_values
+import pandas
 
 def main():
     assayType = "in vitro"
-    desired_result = "viability"
+    
+    #desired_result = "viability"
+    desired_result = "expression levels"
+    
+    # Core Compositions, if needed
+    coreComp = ""
+    #coreComp = "cerium(iv) oxide"
+    #coreComp = "titanium dioxide"
+    #coreComp = "silicon dioxide"
+    #coreComp = "copper(ii) oxide"
+    
+    #yearPub = ""
+    #yearPub = 2014
+    yearPub = 2017
+
     input_file = "..\\data\\assay_all_vw_out_22325rows.csv"
     output_DifferentValues = "data\\inVitro_Columns_with_Different_Values.csv"
     output_ProcessedData = "data\\InVitro_ProcessedData.csv"
@@ -56,7 +71,7 @@ def main():
     df = encode_categorical_columns(df)
 
     # Extract only the rows with viability results
-    df = extract_desired_rows(desired_result, df)
+    df = extract_desired_rows(desired_result, coreComp, yearPub, df)
     
     # Write DataFrame to CSV file.
     #write_to_csv(df, output_Desired_Rows)
@@ -67,7 +82,7 @@ def main():
     # Delete columns with the same value
     df = delete_columns_with_units(df)
     
-    # Wr#ite DataFrame to CSV file
+    # Write DataFrame to CSV file
     #write_to_csv(df, output_NonEmptyColumns_Desired_Rows)
     
     # Impute missing data of numerical columns.
@@ -80,13 +95,29 @@ def main():
     
     print("Refinement Complete")
     
-def extract_desired_rows(desired_result, df):
+def extract_desired_rows(desired_result, coreComp, yearPub, df):
     column_name = desired_result+" result_value"
-    #df1 = df.iloc[2062:2364].loc[df[column_name].isna() == False]
+    
+    #df1 = df.iloc[2062:2333].loc[df[column_name].isna() == False]
     df1 = df.loc[df[column_name].isna() == False]
     
     # Reset the rows indices.
     df1 = df1.reset_index(level = 0, drop = True)
+    
+    if desired_result=="expression levels":
+        df2 = df1.loc[df1[column_name]<10.0]
+        df2 = df2.reset_index(level = 0, drop = True)
+        if coreComp == "":
+            df1 = df2
+        else:
+            column_name = "CoreComposition_" + coreComp
+            df2 = df2.loc[df2[column_name]==1]
+            df2 = df2.reset_index(level = 0, drop = True)
+            df1 = df2
+            
+    if yearPub != "":
+        df1 = df1.loc[df1["year"]==yearPub]
+        df1 = df1.reset_index(level = 0, drop = True)
     
     return df1
 

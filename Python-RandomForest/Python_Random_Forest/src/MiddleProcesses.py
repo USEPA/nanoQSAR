@@ -86,6 +86,9 @@ def delete_merged_columns(df):
                            'relative fluorescence result_unit']
                         
     # Delete the merged columns
+    column_names = list(df.columns)
+    list_merged_columns = [icol for icol in list_merged_columns if icol in column_names]
+
     df.drop(list_merged_columns, axis = 1, inplace = True)
     
     return df

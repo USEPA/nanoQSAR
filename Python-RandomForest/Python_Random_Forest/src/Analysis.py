@@ -19,7 +19,9 @@ from Write_to_CSV import write_to_csv
 import RandomForestAnalysis
 
 def main():
-    desired_type = "viability"
+    #desired_result = "viability"
+    desired_result = "expression levels"
+
     # input_Imputed_Values = "..\\data\\Imputed_Numerical_Columns.csv"
     input_Imputed_Values = "..\\data\\Multivariate_Imputed_Numerical_Columns.csv" 
     output_xtrain = "data\\X_Train.csv"
@@ -33,7 +35,7 @@ def main():
                      encoding = 'utf-8-sig')
     
     # Extract X and Y matrices
-    dfX, dfY = extract_X_Y_matrices(desired_type, df)
+    dfX, dfY = extract_X_Y_matrices(desired_result, df)
     
     # Keep features from dfX
     train_features = list(dfX.columns)
@@ -43,25 +45,25 @@ def main():
     dfX_train, dfX_test, dfy_train, dfy_test = train_test_split(dfX, dfY, test_size = 0.2, random_state = 0)
     
     # Write train and test matrices to CSV files.
-    write_to_csv(dfX_train, output_xtrain)
-    write_to_csv(dfX_test, output_xtest)
-    write_to_csv(dfy_train, output_ytrain)
-    write_to_csv(dfy_test, output_ytest)
+    #write_to_csv(dfX_train, output_xtrain)
+    #write_to_csv(dfX_test, output_xtest)
+    #write_to_csv(dfy_train, output_ytrain)
+    #write_to_csv(dfy_test, output_ytest)
     
     # Transform X and Y matrices to arrays
     X_train, y_train, X_test, y_test = transform_dataframes_to_arrays(dfX_train, dfX_test, dfy_train, dfy_test)
     
-    # train Random Forest regressor
+    # Initialize Random Forest regressor
     rfa = RandomForestAnalysis.RandomForestAnalysis(train_features)
+    
+    # Train Random Forest regressor
     regressor = rfa.train(X_train, y_train)
     
-    # Perform a Random Forest regression
+    # Perform a Random Forest regression (not used here)
     y_pred = rfa.predict(X_test)
     
     # Evaluate prediction
-    rfa.evaluate(y_test, X_test)
-    
-    #perform_RandomForest_regression(train_features, X_train, y_train, X_test, y_test)
+    rfa.evaluate(X_test, y_test)
     
 def transform_dataframes_to_arrays(dfX_train, dfX_test, dfy_train, dfy_test):
     # Transform X DataFrames to arrays.
