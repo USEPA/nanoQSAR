@@ -10,16 +10,17 @@ from Fix_Categorical_Data_Errors import fix_categorical_data_errors
 from Delete_Unwanted_Columns import delete_unwanted_columns
 from UtilRecords import read_from_csv, write_to_csv, replace_null_with_none
 
-def middleProcesses(df):
+def middleProcesses(desired_result, coreComp, yearPub, df):
     '''
     these middle processes:
     1) translates units from one to another (e.g. from joules to eVolts)
     2) fix misspellings in categorical values
-    3) encodes categorical values using one-hot encoding
+    3) delete rows not used
     '''
     output_procesed_units = "data\\inVitro_processed_units.csv"
     output_post_processed_units = "data\\inVitro_post_processed_units.csv"
     output_fixedCategoricalData = "data\\inVitro_fixed_categorical.data.csv"
+    output_Desired_Rows = "data\\Desired_Results_Rows.csv"
     
     # Replace NULL with None.
     df = replace_null_with_none(df)
@@ -33,18 +34,7 @@ def middleProcesses(df):
     # Remove columns that were merged with other columns.
     df = delete_merged_columns(df)
     
-    # Remove rows that have no results
-    df = remove_rows_with_no_results(df)
-    
-    # Delete columns with the same value
-    # This step is necessary because if rows with no results are removed (see step above), 
-    # there is the possibility of having columns that are now empty.
-    df = delete_columns_with_all_equal_values(df)
-    
-    # Write DataFrame with rows that have no results removed
-    write_to_csv(df, output_post_processed_units)
-    
-    # Fix categorical data typos and misspellings.
+     # Fix categorical data typos and misspellings.
     df = fix_categorical_data_errors(df)
     
     # Write DataFrame with fixed categorical data
@@ -53,6 +43,23 @@ def middleProcesses(df):
     # Delete columns that have no predictive capabilities.
     # These columns will not be needed for the Random Forest analysis.
     df = delete_unwanted_columns(df)
+    
+    # Extract only the rows with desired_result, coreComp, yearPub results
+    df = extract_desired_rows(desired_result, coreComp, yearPub, df)
+    
+    # Write DataFrame to CSV file.
+    #write_to_csv(df, output_Desired_Rows)
+    
+    # Remove rows that have no results
+    #df = remove_rows_with_no_results(df)
+    
+    # Delete columns with the same value
+    # This step is necessary because if rows with no results are removed (see step above), 
+    # there is the possibility of having columns that are now empty.
+    df = delete_columns_with_all_equal_values(df)
+    
+    # Write DataFrame with rows that have no results removed
+    write_to_csv(df, output_post_processed_units)
     
     return df
 
@@ -92,6 +99,35 @@ def delete_merged_columns(df):
     df.drop(list_merged_columns, axis = 1, inplace = True)
     
     return df
+
+def extract_desired_rows(desired_result, coreComp, yearPub, df):
+    column_name = desired_result+" result_value"
+    
+    #df1 = df.iloc[2062:2333].loc[df[column_name].isna() == False]
+    df1 = df.loc[df[column_name].isna() == False]
+    
+    # Reset the rows indices.
+    df1 = df1.reset_index(level = 0, drop = True)
+    
+    if desired_result=="expression levels":
+        df2 = df1.loc[df1[column_name]<10.0]
+        df2 = df2.reset_index(level = 0, drop = True)
+        if coreComp == "":
+            df1 = df2
+        else:
+            #column_name = "CoreComposition_"+coreComp
+            df2 = df2.loc[df2["CoreComposition"]==coreComp]
+            df2 = df2.reset_index(level = 0, drop = True)
+            df1 = df2
+            
+    if yearPub != "":
+        df1 = df1.loc[df1["year"]==yearPub]
+        df1 = df1.reset_index(level = 0, drop = True)
+        
+    #df1 = df1.loc[df1["subpathway parameter_nonnum"]=="urea cycle"]
+    #df1 = df1.reset_index(level = 0, drop = True)
+    
+    return df1
 
 def remove_rows_with_no_results(df):
     # Extract the column headers

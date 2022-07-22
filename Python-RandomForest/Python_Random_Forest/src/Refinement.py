@@ -27,8 +27,8 @@ import pandas
 def main():
     assayType = "in vitro"
     
-    #desired_result = "viability"
-    desired_result = "expression levels"
+    desired_result = "viability"
+    #desired_result = "expression levels"
     
     # Core Compositions, if needed
     coreComp = ""
@@ -37,9 +37,9 @@ def main():
     #coreComp = "silicon dioxide"
     #coreComp = "copper(ii) oxide"
     
-    #yearPub = ""
+    yearPub = ""
     #yearPub = 2014
-    yearPub = 2017
+    #yearPub = 2017
 
     input_file = "..\\data\\assay_all_vw_out_22325rows.csv"
     output_DifferentValues = "data\\inVitro_Columns_with_Different_Values.csv"
@@ -62,7 +62,7 @@ def main():
     #df = read_from_csv(output_DifferentValues)
     
     # middle processes only, translate units into most common
-    df = middleProcesses(df)
+    df = middleProcesses(desired_result, coreComp, yearPub, df)
     
     # Write DataFrame processed data
     #write_to_csv(df, output_ProcessedData)
@@ -71,7 +71,7 @@ def main():
     df = encode_categorical_columns(df)
 
     # Extract only the rows with viability results
-    df = extract_desired_rows(desired_result, coreComp, yearPub, df)
+    #df = extract_desired_rows(desired_result, coreComp, yearPub, df)
     
     # Write DataFrame to CSV file.
     #write_to_csv(df, output_Desired_Rows)
