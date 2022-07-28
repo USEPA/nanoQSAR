@@ -5,13 +5,17 @@ Created on Jul 26, 2022
 '''
 
 import pandas as pd
-from sklearn.model_selection import train_test_split
+import numpy
+import random
+
+from sklearn.model_selection import train_test_split, KFold
 
 from Extract_X_and_Y_Matrices import extract_X_Y_matrices
 from Transform_DataFrames_to_Arrays import transform_dataframes_to_arrays
 
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import cross_val_score, cross_val_predict
+from sklearn.model_selection import cross_val_score, cross_val_predict, cross_validate
+from sklearn.metrics import get_scorer_names, r2_score
 
 def main():
     desired_result = "viability"
@@ -35,24 +39,39 @@ def main():
     X = dfX.to_numpy()
     y = dfY.to_numpy()
     
-    #print(y)
-    
     # sklearn RandomForestRegressor
-    rfa = RandomForestRegressor(n_estimators=100, n_jobs=1, random_state=0, min_samples_split=4, max_samples=0.8, max_features=0.8)
+    rfa = RandomForestRegressor(n_estimators=100, n_jobs=10, random_state=37, min_samples_split=4, max_samples=0.8, max_features=0.8)
     
-    #rfa.fit(X, y)
+    #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, random_state = 37)
     
-    #diff = y - rfa.predict(X)
+    # scramble arrays X and y
+    '''
+    n = len(y);
+    for i in range(len(y)):
+        ranint = random.randint(0,n-1)
+        row = X[i]
+        X[i] = X[ranint]
+        X[ranint] = row
+        elem = y[i]
+        y[i] = y[ranint]
+        y[ranint] = elem
+    '''
     
-    #print(diff.mean(), diff.std())
-    
-    # Train Random Forest regressor
-    scores = cross_val_score(rfa, X, y, cv=5, verbose=2)
-    
-    print(scores)
-    
-    print("%0.2f accuracy with a standard deviation of %0.2f" % (scores.mean(), scores.std()))
-    
+    index = 0
+    ns = 5
+    r2_train = numpy.zeros(ns)
+    r2_test = numpy.zeros(ns)
+    kf = KFold(n_splits=ns, random_state=37, shuffle=True)
+    for train, test in kf.split(X):
+        X_train, X_test, y_train, y_test = X[train], X[test], y[train], y[test]
+        rfa.fit(X_train, y_train)
+        r2_train[index] = rfa.score(X_train,y_train)
+        r2_test[index] = rfa.score(X_test, y_test)
+        print(" r2_train = %f, r2_test = %f" % (r2_train[index], r2_test[index] ))
+        index += 1
+
+    print(" r2_train = %f +/- %f, r2_test = %f +/- %f" % (r2_train.mean(), r2_train.std(), r2_test.mean(), r2_test.std() ))
+
 
 if __name__ == "__main__":
     main()
