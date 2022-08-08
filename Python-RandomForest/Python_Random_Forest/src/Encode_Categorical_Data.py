@@ -20,6 +20,7 @@ def encode_categorical_columns(df):
                       
     columns_multicode = ['biochemical name parameter_nonnum', 'subpathway parameter_nonnum']
     
+    # Use OrdinalEncoding instead of OneHotEncoder for some columns
     #multi=False
     multi=True
     
@@ -62,12 +63,11 @@ def encode_categorical_columns(df):
         df_multi = imp_missing.fit_transform(df_multicat)
         if (multi==False):
             # Encode the categorical data using the One-Hot Encoder
-            multicoder = OneHotEncoder(handle_unknown='ignore')
-            multicoder.fit(df_multi)
-            trans_X_multicat = multicoder.transform(df_multi).toarray()
+            encoder = OneHotEncoder(handle_unknown='ignore')
+            encoder.fit(df_multi)
+            trans_X_multicat = encoder.transform(df_multi).toarray()
             #print(trans_X_multicat)
-            newHeaders_multi = multicoder.get_feature_names_out(original_headers_multicat)
-            #print(newHeaders_multi)
+            newHeaders_multi = encoder.get_feature_names_out(original_headers_multicat)
             # Create DataFrame with the transformed categorical data.
             df2 = pd.DataFrame(data = trans_X_multicat, columns = newHeaders_multi)
             # Combine the One-Hot encoded categorical data with the numerical data.
@@ -75,15 +75,13 @@ def encode_categorical_columns(df):
         else:
             # Encode the categorical data using the OrdinalEncoder
             multicoder = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1)
-            print(multicoder.get_params().keys())
+            #print(multicoder.get_params().keys())
             multicoder.fit(df_multi)
-            print(multicoder.n_features_in_)
-            print(multicoder.categories_)
+            #print(multicoder.n_features_in_)
+            #print(multicoder.categories_)
             trans_X_multicat = multicoder.transform(df_multi)
-            print(trans_X_multicat)
-            #newHeaders_multi = original_headers_multicat
-            newHeaders_multi = multicoder.get_feature_names_out(original_headers_multicat)
-            print(newHeaders_multi)
+
+            newHeaders_multi = original_headers_multicat
             # Create DataFrame with the transformed categorical data.
             df2 = pd.DataFrame(data = trans_X_multicat, columns = newHeaders_multi)
             # Combine the One-Hot encoded categorical data with the numerical data.
