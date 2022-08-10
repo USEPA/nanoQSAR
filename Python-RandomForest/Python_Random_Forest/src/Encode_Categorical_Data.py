@@ -31,100 +31,68 @@ def encode_categorical_columns(df):
     columns_encode = [icol for icol in columns_encode if icol in column_names]
     columns_multicode = [icol for icol in columns_multicode if icol in column_names]
     
-    if (multi==False):
-             
-        # Create DataFrame with categorical data
+    # Create DataFrame with categorical data
+    if (multi==False):     
         columns_encode = columns_encode + columns_multicode
         df_cat = df[columns_encode]
         original_headers_cat = list(df_cat.columns)
-    
-        # Start DataFrame for numerical data
-        df_num = df
-        
-        # Create imputation transformer for completing missing values.
-        imp_missing = SimpleImputer(missing_values = None, strategy = 'constant', fill_value = 'missing')
-        
-        dfnew = None
-        
-        if (len(original_headers_cat)!=0):
-        
-            # Drop categorical data
-            df_num = df.drop(columns_encode, inplace = False, axis = 1)
-            
-            # Impute the categorical data.
-            df_imp = imp_missing.fit_transform(df_cat)
-    
-            # Encode the categorical data using the One-Hot Encoder
-            encoder = OneHotEncoder(handle_unknown='ignore')
-            encoder.fit(df_imp)
-            trans_X_cat = encoder.transform(df_imp).toarray()
-            #newHeaders = encoder.get_feature_names(original_headers_cat) #python3.8
-            newHeaders = encoder.get_feature_names_out(original_headers_cat) #python3.9
-        
-            # Create DataFrame with the transformed categorical data.
-            df1 = pd.DataFrame(data = trans_X_cat, columns = newHeaders)
-        
-            dfnew = pd.concat([dfnew, df1], axis = 1)
-            
-        dfnew = pd.concat([dfnew, df_num], axis = 1)
-        
-    else: #multi==True
-                
-        # Create DataFrame with categorical data
+        df_multicat = pd.DataFrame() #create empty DataFrame
+        original_headers_multicat = list(df_multicat.columns)
+    else:
         df_cat = df[columns_encode]
-        df_multicat = df[columns_multicode]
         original_headers_cat = list(df_cat.columns)
+        df_multicat = df[columns_multicode]
         original_headers_multicat = list(df_multicat.columns)
         
-        # Start DataFrame for numerical data
-        df_num = df
+    # Start DataFrame for numerical data
+    df_num = df
         
-        # Create imputation transformer for completing missing values.
-        imp_missing = SimpleImputer(missing_values = None, strategy = 'constant', fill_value = 'missing')
+    # Create imputation transformer for completing missing values.
+    imp_missing = SimpleImputer(missing_values = None, strategy = 'constant', fill_value = 'missing')
         
-        dfnew = None
+    dfnew = pd.DataFrame()
         
-        if (len(original_headers_cat)!=0):
+    if (len(original_headers_cat)!=0):
             
-            # Drop categorical data
-            df_num = df.drop(columns_encode, inplace = False, axis = 1)
+        # Drop categorical data
+        df_num = df_num.drop(columns_encode, inplace = False, axis = 1)
             
-            # Impute the categorical data.
-            df_imp = imp_missing.fit_transform(df_cat)
+        # Impute the categorical data.
+        df_imp = imp_missing.fit_transform(df_cat)
         
-            # Encode the categorical data using the One-Hot Encoder
-            encoder = OneHotEncoder(handle_unknown='ignore')
-            encoder.fit(df_imp)
-            trans_X_cat = encoder.transform(df_imp).toarray()
-            #newHeaders = encoder.get_feature_names(original_headers_cat) #python3.8
-            newHeaders = encoder.get_feature_names_out(original_headers_cat) #python3.9
+        # Encode the categorical data using the One-Hot Encoder
+        encoder = OneHotEncoder(handle_unknown='ignore')
+        encoder.fit(df_imp)
+        trans_X_cat = encoder.transform(df_imp).toarray()
         
-            # Create DataFrame with the transformed categorical data.
-            df1 = pd.DataFrame(data = trans_X_cat, columns = newHeaders)
-            
-            dfnew = pd.concat([dfnew, df1], axis = 1)
-            
-        df = df_num
+        #newHeaders = encoder.get_feature_names(original_headers_cat) #python3.8
+        newHeaders = encoder.get_feature_names_out(original_headers_cat) #python3.9
         
-        if (len(original_headers_multicat)!=0):
+        # Create DataFrame with the transformed categorical data.
+        df1 = pd.DataFrame(data = trans_X_cat, columns = newHeaders)
+        # Combine the OneeHot encoded categorical data with the numerical data.    
+        dfnew = pd.concat([dfnew, df1], axis = 1)
+        
+    if (len(original_headers_multicat)!=0):
             
-            # Drop categorical data
-            df_num = df.drop(columns_multicode, inplace = False, axis = 1)
+        # Drop categorical data
+        df_num = df_num.drop(columns_multicode, inplace = False, axis = 1)
 
-            df_imp = imp_missing.fit_transform(df_multicat)
+        df_imp = imp_missing.fit_transform(df_multicat)
 
-            # Encode the categorical data using the OrdinalEncoder
-            multicoder = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1)
-            multicoder.fit(df_imp)
-            trans_X_multicat = multicoder.transform(df_imp)
+        # Encode the categorical data using the OrdinalEncoder
+        multicoder = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1)
+        multicoder.fit(df_imp)
+        trans_X_multicat = multicoder.transform(df_imp)
     
-            newHeaders_multi = original_headers_multicat
-            # Create DataFrame with the transformed categorical data.
-            df2 = pd.DataFrame(data = trans_X_multicat, columns = newHeaders_multi)
-                # Combine the One-Hot encoded categorical data with the numerical data.
-            dfnew = pd.concat([dfnew, df2], axis = 1)
+        newHeaders_multi = original_headers_multicat
+        
+        # Create DataFrame with the transformed categorical data.
+        df2 = pd.DataFrame(data = trans_X_multicat, columns = newHeaders_multi)
+        # Combine the Ordinal encoded categorical data with the numerical data.
+        dfnew = pd.concat([dfnew, df2], axis = 1)
             
-        dfnew = pd.concat([dfnew, df_num], axis = 1)
+    dfnew = pd.concat([dfnew, df_num], axis = 1)
         
     # Write results to CSV file.
     write_to_csv(dfnew, output_expandedCategoricalData)
