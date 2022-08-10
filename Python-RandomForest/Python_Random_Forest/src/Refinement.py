@@ -32,9 +32,9 @@ def main():
     
     # Core Compositions, if needed
     coreComp = ""
-    #coreComp = "cerium(iv) oxide"
     #coreComp = "titanium dioxide"
     #coreComp = "silicon dioxide"
+    #coreComp = "cerium(iv) oxide"
     #coreComp = "copper(ii) oxide"
     
     yearPub = ""
