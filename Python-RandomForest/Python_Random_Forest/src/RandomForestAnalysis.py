@@ -18,7 +18,7 @@ class RandomForestAnalysis():
         self.X_train = X_train
         self.y_train = y_train
         #self.regressor = RandomForestRegressor(n_estimators = 300, n_jobs=4, random_state = 0, min_samples_split=4, max_features=0.25)
-        self.regressor = RandomForestRegressor(n_estimators=300, n_jobs=6, random_state=0, min_samples_split=4, max_samples=0.8, max_features=0.8)
+        self.regressor = RandomForestRegressor(n_estimators=100, n_jobs=6, random_state=37, min_samples_split=4, max_samples=0.8)
         self.regressor.fit(self.X_train, self.y_train)
         return self.regressor
     
@@ -69,7 +69,7 @@ class RandomForestAnalysis():
 
         for f in range(len(indices)):
             thisimp = importances[indices[f]]
-            if thisimp > 1.0e-2:
+            if thisimp > 1.0e-3:
                 print("%d) %s \t= %f" % (f,self.train_features[indices[f]],importances[indices[f]]))
 
 
