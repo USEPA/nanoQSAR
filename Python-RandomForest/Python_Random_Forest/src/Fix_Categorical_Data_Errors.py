@@ -12,7 +12,7 @@ def fix_categorical_data_errors(df):
     
     # Combine subpathway and sub pathway columns into subpathway column.
     if "sub pathway parameter_nonnum" in df.columns:
-        if "subpathway_parameter_nonnum" in df.columns:
+        if "subpathway parameter_nonnum" in df.columns:
             df["subpathway parameter_nonnum"] = df["subpathway parameter_nonnum"].combine_first(df["sub pathway parameter_nonnum"])
             # Delete 'sub pathway parameter_nonnum' column
             df.drop("sub pathway parameter_nonnum", axis = 1, inplace = True)

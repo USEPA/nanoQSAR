@@ -27,14 +27,14 @@ import pandas
 def main():
     assayType = "in vitro"
     
-    desired_result = "viability"
-    #desired_result = "expression levels"
+    #desired_result = "viability"
+    desired_result = "expression levels"
     
     # Core Compositions, if needed
     coreComp = ""
-    #coreComp = "cerium(iv) oxide"
     #coreComp = "titanium dioxide"
     #coreComp = "silicon dioxide"
+    #coreComp = "cerium(iv) oxide"
     #coreComp = "copper(ii) oxide"
     
     yearPub = ""

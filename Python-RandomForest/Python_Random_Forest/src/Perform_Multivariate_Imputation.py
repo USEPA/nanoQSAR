@@ -27,13 +27,21 @@ from numpy import NaN, nan
 
 def iteratively_impute_numerical_columns(desired_type, df):
     
-    # Use the OuterDiameterValue
-    #df['OuterDiameterLow'] = df['OuterDiameterLow'].fillna(df['OuterDiameterValue'])
-    #df['OuterDiameterHigh'] = df['OuterDiameterHigh'].fillna(df['OuterDiameterValue'])
-    #df['OuterDiameterValue'] = df['OuterDiameterValue'].fillna(0.5*(df['OuterDiameterLow']+df['OuterDiameterHigh']))
-        
     # Extract column names
     column_names = list(df.columns)
+    
+    # Use other OuterDiameter values
+    if ('OuterDiameterValue' in column_names):
+        if ('OuterDiameterLow' in column_names):
+            df['OuterDiameterLow'] = df['OuterDiameterLow'].fillna(df['OuterDiameterValue'])
+        if ('OuterDiameterHigh' in column_names):    
+            df['OuterDiameterHigh'] = df['OuterDiameterHigh'].fillna(df['OuterDiameterValue'])
+        if ('OuterDiameterLow' in column_names and 'OuterDiameterHigh' in column_names):
+            df['OuterDiameterValue'] = df['OuterDiameterValue'].fillna(0.5*(df['OuterDiameterLow']+df['OuterDiameterHigh']))
+    else:
+        if ('OuterDiameterLow' in column_names and 'OuterDiameterHigh' in column_names):
+            df['OuterDiameterLow'] = df['OuterDiameterLow'].fillna(df['OuterDiameterHigh'])
+            df['OuterDiameterHigh'] = df['OuterDiameterHigh'].fillna(df['OuterDiameterLow'])
     
     # Define list with possible parameter columns.
     param_names = ['OuterDiameterValue', 'OuterDiameterLow', 'OuterDiameterHigh',

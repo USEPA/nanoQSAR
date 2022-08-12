@@ -15,11 +15,11 @@ from Transform_DataFrames_to_Arrays import transform_dataframes_to_arrays
 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import cross_val_score, cross_val_predict, cross_validate
-from sklearn.metrics import get_scorer_names, r2_score
+from sklearn.metrics import r2_score
 
 def main():
-    desired_result = "viability"
-    #desired_result = "expression levels"
+    #desired_result = "viability"
+    desired_result = "expression levels"
 
     # input_Imputed_Values = "..\\data\\Imputed_Numerical_Columns.csv"
     input_Imputed_Values = "..\\data\\Multivariate_Imputed_Numerical_Columns.csv" 
@@ -40,7 +40,7 @@ def main():
     y = dfY.to_numpy()
     
     # sklearn RandomForestRegressor
-    rfa = RandomForestRegressor(n_estimators=100, n_jobs=10, random_state=37, min_samples_split=4, max_samples=0.8, max_features=0.8)
+    rfa = RandomForestRegressor(n_estimators=100, n_jobs=10, random_state=37, min_samples_split=4, max_samples=0.8)
     
     #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, random_state = 37)
     
