@@ -29,7 +29,7 @@ def test_additives_fields():
     dft = dft.replace({'NULL': None})
     
     # Proceed to split up the concatenated fields.
-    split_additive_fields(dft)
+    dft = split_additive_fields(dft)
     
     # Assert selected values
     assert dft['fetal bovine serum additive_value'][1] == 10

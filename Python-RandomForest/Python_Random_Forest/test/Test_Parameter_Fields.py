@@ -35,7 +35,7 @@ def test_parameters_fields():
     nrow = len(dft.index)
     
     # Proceed to split up the concatenated fields.
-    split_parameters_fields(dft)
+    dft = split_parameters_fields(dft)
     
     # Assert values
     assert dft['happel model parameter parameter_value'][1] == 29.91

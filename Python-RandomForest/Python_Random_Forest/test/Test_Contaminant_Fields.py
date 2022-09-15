@@ -35,7 +35,7 @@ def test_contaminants_fields():
     nrow = len(dft.index)
     
     # Proceed to split up the concatenated fields.
-    split_contaminant_fields(dft)
+    dft = split_contaminant_fields(dft)
     
     # Assert values
     assert dft['aluminum contaminant_value'][1] == 184
