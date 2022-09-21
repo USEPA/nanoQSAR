@@ -27,8 +27,8 @@ import pandas
 def main():
     assayType = "in vitro"
     
-    #desired_result = "viability"
-    desired_result = "expression levels"
+    desired_result = "viability"
+    #desired_result = "expression levels"
     
     # Core Compositions, if needed
     coreComp = ""
