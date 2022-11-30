@@ -16,10 +16,12 @@ from Transform_DataFrames_to_Arrays import transform_dataframes_to_arrays
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import cross_val_score, cross_val_predict, cross_validate
 from sklearn.metrics import r2_score
+from tokenize import Double
+from _operator import index
 
 def main():
-    #desired_result = "viability"
-    desired_result = "expression levels"
+    desired_result = "viability"
+    #desired_result = "expression levels"
 
     # input_Imputed_Values = "..\\data\\Imputed_Numerical_Columns.csv"
     input_Imputed_Values = "..\\data\\Multivariate_Imputed_Numerical_Columns.csv" 
@@ -36,32 +38,41 @@ def main():
     #train_features = list(dfX.columns)
     
     # Transform X and y DataFrames to arrays.
-    X = dfX.to_numpy()
-    y = dfY.to_numpy()
+    XFull = dfX.to_numpy()
+    yFull = dfY.to_numpy()
     
     # sklearn RandomForestRegressor
-    rfa = RandomForestRegressor(n_estimators=100, n_jobs=10, random_state=37, min_samples_split=4, max_samples=0.8)
+    rfa = RandomForestRegressor(n_estimators=200, n_jobs=10, random_state=37, min_samples_split=4, max_samples=0.8)
     
     #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.20, random_state = 37)
-    
     # scramble arrays X and y
-    '''
-    n = len(y);
-    for i in range(len(y)):
+
+    random.seed(17)
+    n = len(yFull)
+    for i in range(n):
         ranint = random.randint(0,n-1)
-        row = X[i]
-        X[i] = X[ranint]
-        X[ranint] = row
-        elem = y[i]
-        y[i] = y[ranint]
-        y[ranint] = elem
-    '''
+        row = XFull[i].copy()
+        XFull[i] = XFull[ranint]
+        XFull[ranint] = row
+        elem = yFull[i].copy()
+        yFull[i] = yFull[ranint]
+        yFull[ranint] = elem
+
+    ns = 6
+    n = len(yFull)
+    nsplit = int(n*((ns-1)/ns))
+    
+    # divide up XFull, yFull between X, y and XSave, ySave
+    X = XFull[0:nsplit]
+    y = yFull[0:nsplit]
+    XSave = XFull[nsplit:n]
+    ySave = yFull[nsplit:n]
     
     index = 0
-    ns = 5
+    ns = ns-1
     r2_train = numpy.zeros(ns)
     r2_test = numpy.zeros(ns)
-    kf = KFold(n_splits=ns, random_state=37, shuffle=True)
+    kf = KFold(n_splits=ns, shuffle=False)
     for train, test in kf.split(X):
         X_train, X_test, y_train, y_test = X[train], X[test], y[train], y[test]
         rfa.fit(X_train, y_train)
@@ -72,6 +83,10 @@ def main():
 
     print(" r2_train = %f +/- %f, r2_test = %f +/- %f" % (r2_train.mean(), r2_train.std(), r2_test.mean(), r2_test.std() ))
 
-
+    rfa.fit(X, y)
+    r2_trains = rfa.score(X, y)
+    r2_save = rfa.score(XSave, ySave)
+    print("\n r2_trains = %f, r2_save = %f" % (r2_trains, r2_save ))
+    
 if __name__ == "__main__":
     main()
