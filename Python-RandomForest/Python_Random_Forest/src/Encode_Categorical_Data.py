@@ -7,8 +7,7 @@ Created on Feb 11, 2021
 import pandas as pd
 from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder
 from sklearn.impute import SimpleImputer
-from Write_to_CSV import write_to_csv
-from pickle import FALSE
+from UtilRecords import write_to_csv
 
 def encode_categorical_columns(df):
     output_expandedCategoricalData = "data\\inVitro_expanded_categorical.data.csv"
