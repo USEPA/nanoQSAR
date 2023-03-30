@@ -10,7 +10,7 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
+import com.mysql.cj.jdbc.exceptions.*;
 
 /**
  * This class is used to handle connections to the MySQL database server.
