@@ -47,7 +47,7 @@ def main():
     
     output_Desired_Rows = "data\\Desired_Results_Rows.csv"
     output_NonEmptyColumns_Desired_Rows = "data\\Desired_Results_Rows_NonEmptyColumns.csv"
-    output_Multivariate_Imputed_Values = "data\\Multivariate_Imputed_Numerical_Columns.csv"
+    output_Multivariate_Imputed_Values = "..\\data\\Multivariate_Imputed_Numerical_Columns.csv"
     
     # initial processes only, translate concatenated data
     df = deconcatenationProcess(input_file, assayType)
