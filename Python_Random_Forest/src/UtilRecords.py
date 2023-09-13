@@ -26,9 +26,12 @@ def read_from_csv(input_file):
     # Note that we must specify the right type of encoding in order to read in all characters
     # correctly.  Some of the data contain Greek letters which me must account for.
     '''
+    if not Path(input_file).exists():
+        if input_file.startswith("..\\"):
+            input_file = input_file[3:]
     
     if not Path(input_file).exists():
-        input_file = "..\\" + input_file
+        AssertionError("input_file not found")
     
     df = pd.read_csv(input_file, skip_blank_lines = False, 
                      na_filter = True, low_memory = False,
@@ -53,8 +56,15 @@ def write_to_csv(df, file_output):
     file_output: text
         output file name
     '''
-    if not Path(file_output).exists():
-        file_output = "..\\" + file_output
+    #if file_output.startswith("data"):
+        #file_output = "..\\" + file_output
+    if not Path(file_output).parent.is_dir():
+        if file_output.startswith("..\\"):
+            file_output = file_output[3:]
+            
+    if not Path(file_output).parent.is_dir():
+        if file_output.startswith("data"):
+            file_output = "..\\" + file_output
         
     # Write DataFrame to output.
     # Note that we must specify the right type of encoding to write out all characters correctly.
@@ -79,8 +89,9 @@ def remove(filename):
     # remove file
     if Path(filename).exists(): os.remove(filename)
     else:
-        filename = "..\\" + filename
-        if Path(filename).exists(): os.remove(filename)
+        if filename.startswith("data"):
+            filename = "..\\" + filename
+            if Path(filename).exists(): os.remove(filename)
     
 
 def replace_null_with_none(df):
